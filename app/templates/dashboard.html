@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h1>Dashboard</h1>
+    <a href="/upload" class="btn btn-primary">+ Nuova Analisi</a>
+</div>
+
+<div class="card">
+    <h3>Ultime Analisi</h3>
+    <table class="recent-table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Documento</th>
+                <th>Ramo</th>
+                <th>Token</th>
+                <th>Stato</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for analysis in analyses %}
+            <tr>
+                <td>{{ analysis.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    {{ analysis.document.original_filename }}
+                    {% if analysis.source_document_ids and analysis.source_document_ids|length > 2 %}
+                    <br><span style="font-size:0.8em; color:var(--text-light);">(+ altri)</span>
+                    {% endif %}
+                </td>
+                <td>{{ analysis.document.ramo }}</td>
+                <td>{{ analysis.total_tokens or '-' }}</td>
+                <td>
+                    <span class="badge status-{{ analysis.status.value }}">
+                        {{ analysis.status.value }}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        {% if analysis.status.value == 'completed' %}
+                        <a href="/report/{{ analysis.id }}" class="btn btn-secondary"
+                            style="padding: 5px 10px; font-size: 0.8em;">Report</a>
+                        {% endif %}
+                        <button onclick="deleteAnalysis({{ analysis.id }})" class="btn"
+                            style="padding: 5px 10px; font-size: 0.8em; background-color: #fee; color: var(--danger); border: 1px solid var(--danger);">
+                            Elimina
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-light);">
+                    Nessuna analisi recente.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function deleteAnalysis(id) {
+        if (!confirm("Sicuro di voler eliminare questa analisi?")) return;
+        try {
+            const res = await fetch(`/analysis/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                alert("Errore durante l'eliminazione");
+            }
+        } catch (e) {
+            alert("Errore di connessione");
+        }
+    }
+</script>
+{% endblock %}

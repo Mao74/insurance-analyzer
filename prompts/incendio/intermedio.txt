@@ -1,0 +1,862 @@
+# PROMPT ULTRA-DETTAGLIATO: ANALISI POLIZZA INCENDIO E DANNI INDIRETTI + FURTO
+
+## OBIETTIVO GENERALE
+
+Generare un report HTML professionale di analisi tecnica di polizza Incendio (Danni Diretti, Danni Indiretti, Furto, Responsabilità Civile Incendio) con standard di qualità PhD-assicurativo, utilizzando il template HTML fornito. Il report deve essere completo in ogni sezione, tecnicamente rigoroso, e includere descrizioni narrative dettagliate delle clausole chiave secondo le migliori pratiche di brokeraggio assicurativo italiano.
+
+---
+
+## STANDARD DI QUALITÀ RICHIESTI
+
+### 1. Rigore Tecnico-Assicurativo
+- Terminologia tecnica precisa conforme alla normativa italiana (Codice delle Assicurazioni Privare, D.Lgs. 209/2005) e alle prassi di mercato
+- Citazioni letterali dei testi di polizza per clausole critiche
+- Distinzione netta tra garanzie base, ampliamenti, limitazioni e esclusioni
+- Identificazione precisa di: massimali, sottolimiti, aggregati, franchigie, scoperti, periodi di retroattività
+- Analisi della forma tecnica (Claims Made vs. Loss Occurrence) con retroattività, postuma e "waiting period"
+- Comprensione dei vincoli di operatività (causa mancata, causalità assicurativa, concatenazione di sinistri)
+
+### 2. Specializzazione Incendio
+- Distinzione fra Danni Diretti (Incendio, Esplosione, Fulmine) vs. Danni Indiretti (Perdita d'Esercizio, Interruzione Attività)
+- Analisi delle clausole di calcolo perdita (metodo della "Tabula Rasa", perdita effettiva, perdita stimata)
+- Esclusioni specifiche per Incendio (guerra, incendio da cause escluse, combustione spontanea, autocombustione)
+- Valutazione dell'indennizzo in funzione dell'Unità di Misura (giorno, mese, anno)
+- Corretta imputazione dei costi fissi vs. variabili nella perdita d'esercizio
+
+### 3. Completezza Documentale
+- Tutte le 13 sezioni del template HTML devono essere compilate (Incendio ha 2 sezioni in più rispetto a RC: Danni Indiretti e Furto)
+- Nessun campo deve rimanere con placeholder "..." 
+- Se un'informazione non è presente nei documenti, deve essere esplicitamente indicato con nota tipo: "Informazione non specificata nei documenti forniti"
+- Tracciabilità completa: ogni dato deve essere ricavabile dai documenti forniti o da interpretazione corretta dei termini
+
+### 4. Usabilità Professionale
+- Linguaggio chiaro ma tecnico, adatto a broker assicurativi e risk manager
+- Tabelle ben strutturate con allineamenti corretti (cifre a destra, testo a sinistra)
+- Alert box gialli per criticità, rossi per problemi severali, azzurri per info, verdi per conformità
+- Formattazione monetaria italiana: 1.000.000,00 € (punto per migliaia, virgola per decimali)
+- Grafici/tabelle di sintesi sinistri storica per valutazione loss history e predictive risk
+
+---
+
+## INPUT PREVISTI
+
+L'utente fornirà:
+
+1. **Documenti di polizza**: PDF o TXT contenenti:
+   - Frontespizio polizza
+   - Condizioni Generali di Assicurazione (CGA)
+   - Modulo di Proposta di Assicurazione (MPA)
+   - Eventuali Appendici, Condizioni Particolari, Variazioni
+   - Dati di valutazione (Valore Assicurato per categoria, ubicazione beni, fidi assicurati)
+
+2. **Dati sinistri** (se disponibili): Excel, CSV o testo strutturato con:
+   - Numero sinistro, Data evento, Causa, Stato, Importo pagato, Riserve, Descrizione evento
+   - Storico sinistri ultimi 5 anni (per calcolo frequency e severity)
+
+3. **Dati per calcolo premio** (se necessario):
+   - Valore Assicurato per categoria di beni (Edificio, Contenuto, Attrezzature, Macchinari, etc.)
+   - Ubicazioni e rischi specifici per categoria
+   - Dati di perdita d'esercizio (fatturato medio mensile, costi fissi, struttura costi)
+   - Tassi applicati per sezione (Incendio Danni Diretti, Danni Indiretti, Furto)
+
+---
+
+## STRUTTURA DELL'OUTPUT: TEMPLATE HTML
+
+Il report deve utilizzare il template HTML fornito (`Template_Incendio_Enhanced_PhD.html`) con le seguenti **13 sezioni** (vs. 11 di RC):
+
+1. **Dati Generali** - Informazioni base della polizza
+2. **Proprietà e Beni Assicurati** - Ubicazioni, categorie beni, valori
+3. **Calcolo del Premio** - Dettaglio premi per categoria beni e coperture
+4. **Massimali e Coperture** - Massimali, sottolimiti, aggregati, forme tecniche
+5. **Garanzie Danni Diretti** - Incendio, Esplosione, Fulmine (descrizioni narrative)
+6. **Garanzie Danni Indiretti** - Perdita d'Esercizio, Interruzione Attività (descrizioni narrative)
+7. **Garanzie Furto** - Furto, Rapina, Scasso (descrizioni narrative)
+8. **Responsabilità Civile Incendio** - RCE verso terzi
+9. **Statistica Sinistri** - Dati storici sinistri e KPI
+10. **Esclusioni** - Esclusioni operative organizzate per categoria
+11. **Definizioni** - Glossario tecnico dei termini di polizza
+12. **Appendici / Variazioni** - Change log e audit trail modifiche
+13. **Valutazione Rischio Complessiva** - Scoring sintetico e raccomandazioni
+
+---
+
+## ISTRUZIONI DETTAGLIATE PER OGNI SEZIONE
+
+### SEZIONE 1: DATI GENERALI
+
+**Obiettivo**: Fornire snapshot completo delle informazioni base della polizza incendio.
+
+**Dati da estrarre e compilare**:
+
+```
+Compagnia Assicuratrice: [Nome completo + forma giuridica, es. "ZURICH S.p.A."]
+Sede Compagnia: [Indirizzo completo]
+Numero polizza: [Numero completo]
+Contraente: [Ragione sociale completa + forma giuridica]
+Sede Legale Contraente: [Indirizzo completo con CAP]
+Partita IVA: [P.IVA con formattazione IT]
+Codice Rischio: [Se presente - Codice ATECO relativo all'attività]
+Broker: [Nome broker/intermediario se specificato]
+Data di decorrenza: [gg/mm/aaaa ore hh:mm]
+Data di scadenza: [gg/mm/aaaa ore hh:mm]
+Durata: [es. "12 mesi" o "365 giorni"]
+Data di emissione: [gg/mm/aaaa]
+Premio annuo totale: [Importo lordo con imposte]
+Frazionamento Premio: [es. "Annuale" o "Semestrale"]
+Numero di rate: [numero]
+Importo per rata: [se frazionato]
+Commissioni/Interessi frazionamento: [importo o percentuale]
+Attività assicurata: [Descrizione dettagliata attività come da polizza + ATECO]
+Forma Tecnica: [Claims Made vs. Loss Occurrence; Retroattività; Periodo Postuma]
+Coassicurazione: [Indicare ripartizione quote se presente]
+Legge applicabile: [Di solito "Legge italiana"]
+Foro competente: [es. "Foro di Milano"]
+```
+
+**Note aggiuntive:**
+- Verificare se polizza è "Named Perils" (rischi nominatim) o "All Risks" (tutti i rischi tranne esclusi)
+- Identificare il tipo di valutazione: valori assicurati dichiarati, valutazione assicuratore, scoperti
+- Verificare "Tacito Rinnovo" e "Disdetta" — criticità frequente in polizze incendio
+
+---
+
+### SEZIONE 2: PROPRIETÀ E BENI ASSICURATI
+
+**Obiettivo**: Elencare tutte le ubicazioni, categorie di beni e valori assicurati.
+
+**Struttura**:
+
+Per ogni ubicazione/categoria creare un blocco strutturato:
+
+```html
+<div class="property-block">
+<h3>Ubicazione [1]: [Indirizzo Completo]</h3>
+<table class="data-table">
+<tbody>
+<tr><td>Indirizzo Completo:</td><td>[Via, CAP, Città, Provincia, Regione]</td></tr>
+<tr><td>Uso Della Proprietà:</td><td>[es. "Capannone industriale uso manifatturiero", "Uffici", "Magazzino"]</td></tr>
+<tr><td>Costruzione Edificio:</td><td>[es. "Cemento armato", "Muratura in laterizio", "Acciaio"]</td></tr>
+<tr><td>Copertura Edificio:</td><td>[es. "Tegole", "Lamiera ondulata", "Membrana bituminosa"]</td></tr>
+<tr><td>Proprietario Edificio:</td><td>[Se diverso da Assicurato]</td></tr>
+<tr><td colspan="2"><strong>CATEGORIE DI BENI ASSICURATI</strong></td></tr>
+<tr><td>Categoria 1: Edificio (struttura)</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+<tr><td>Categoria 2: Contenuto (arredi, impianti)</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+<tr><td>Categoria 3: Macchinari Produttivi</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+<tr><td>Categoria 4: Merci/Materie Prime</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+<tr><td>Categoria 5: [Altra categoria se presente]</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+<tr><td><strong>TOTALE VALORE ASSICURATO (Ubicazione)</strong></td><td style="text-align: right;"><strong>... €</strong></td></tr>
+<tr><td>Protezione Incendio:</td><td>[es. "Nessuna", "Estintori", "Idrante interno", "Sprinkler automatico", "Sistema di rilevazione fumo"]</td></tr>
+<tr><td>Distanza da Rischi:</td><td>[es. "100m da stazione di servizio", "200m da linea ferroviaria"]</td></tr>
+<tr><td>Note Specifiche Rischio:</td><td>[Descrizione qualsiasi fattore rilevante per rischio incendio]</td></tr>
+</tbody>
+</table>
+</div>
+```
+
+**Nota Critica**: Verificare se il Valore Assicurato è corretto rispetto al Valore Reale di Mercato. Se scoperto ("Underinsurance"), evidenziare con alert box warning.
+
+---
+
+### SEZIONE 3: CALCOLO DEL PREMIO
+
+**Obiettivo**: Scomporre il premio totale per categoria beni e coperture.
+
+**Struttura richiesta**:
+
+#### 3.1 Tabella Principale - Dettaglio Premio per Categoria
+
+```html
+<table>
+<thead>
+<tr>
+<th>Categoria Beni</th>
+<th>Valore Assicurato (€)</th>
+<th>Tasso Incendio (%)</th>
+<th>Premio Incendio (€)</th>
+<th>Tasso Danni Indiretti (%)</th>
+<th>Premio Danni Indiretti (€)</th>
+<th>Tasso Furto (%)</th>
+<th>Premio Furto (€)</th>
+<th>Premio Totale (€)</th>
+</tr>
+</thead>
+<tbody>
+<!-- Riga per ogni categoria -->
+<tr>
+<td>[Categoria 1]</td>
+<td style="text-align: right;">[Valore]</td>
+<td style="text-align: right;">[Tasso]</td>
+<td style="text-align: right;">[Premio]</td>
+<td style="text-align: right;">[Tasso]</td>
+<td style="text-align: right;">[Premio]</td>
+<td style="text-align: right;">[Tasso]</td>
+<td style="text-align: right;">[Premio]</td>
+<td style="text-align: right;"><strong>[Totale]</strong></td>
+</tr>
+<!-- Ripetere per ogni categoria -->
+<!-- Riga totale -->
+<tr class="total-row">
+<td><strong>TOTALE</strong></td>
+<td style="text-align: right;"><strong>[Tot Valore]</strong></td>
+<td style="text-align: right;"><strong>-</strong></td>
+<td style="text-align: right;"><strong>[Tot Incendio]</strong></td>
+<td style="text-align: right;"><strong>-</strong></td>
+<td style="text-align: right;"><strong>[Tot D.Indiretti]</strong></td>
+<td style="text-align: right;"><strong>-</strong></td>
+<td style="text-align: right;"><strong>[Tot Furto]</strong></td>
+<td style="text-align: right;"><strong>[TOTALE PREMI]</strong></td>
+</tr>
+</tbody>
+</table>
+```
+
+#### 3.2 Analisi del Premio
+
+```html
+<table class="data-table">
+<tbody>
+<tr><td>Premio netto Incendio Danni Diretti:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Premio netto Incendio Danni Indiretti:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Premio netto Furto e Rapina:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Diritti:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Imposte (IPT 12.5%):</td><td style="text-align: right;">... €</td></tr>
+<tr><td><strong>TOTALE LORDO</strong></td><td style="text-align: right;"><strong>... €</strong></td></tr>
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 4: MASSIMALI E COPERTURE
+
+**Obiettivo**: Esporre architettura di massimali, sottolimiti, aggregati, forme tecniche.
+
+**Contenuto richiesto**:
+
+#### 4.1 Massimali Generali
+```html
+<table class="data-table">
+<tbody>
+<tr><td>Massimale Incendio per Sinistro (per ubicazione):</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Massimale Danni Indiretti per Sinistro:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Massimale Furto per Sinistro:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Massimale Aggregato Annuo (tutte le coperture):</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Sottoassicurazione/Scoperto:</td><td>... €</td></tr>
+<tr><td>Forma Tecnica Incendio:</td><td>[Claims Made / Loss Occurrence]</td></tr>
+<tr><td>Retroattività Incendio:</td><td>[Tipo e data]</td></tr>
+<tr><td>Copertura Postuma Incendio:</td><td>[Durata + nota]</td></tr>
+</tbody>
+</table>
+```
+
+#### 4.2 Franchigie e Scoperti
+```html
+<table>
+<thead>
+<tr>
+<th>Tipo Garanzia</th>
+<th>Franchigia (€ o %)</th>
+<th>Scoperto (%)</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incendio Edificio</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... %</td>
+<td>...</td>
+</tr>
+<!-- Altre righe -->
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 5: GARANZIE DANNI DIRETTI
+
+**Obiettivo**: Descrivere in dettaglio le garanzie di incendio, esplosione, fulmine.
+
+**Contenuto richiesto**:
+
+#### 5.1 Descrizione Narrativa (Obbligatoria)
+
+Esempio per Incendio:
+
+```
+La garanzia Incendio copre i danni causati da fuoco che ha origine dall'interno o dall'esterno 
+dei locali assicurati. Il rischio Incendio include:
+
+1. Fuoco derivante da qualsiasi causa, inclusi i difetti dell'impianto elettrico
+2. Propagazione del fuoco da edifici contigui
+3. Esplosione di gas combustibili derivante da incendio
+
+La copertura opera in base al principio della causa mancata: il sinistro deve derivare direttamente 
+dall'incendio, non da cause intermedie. Ad esempio, se un incendio causa interruzione della corrente 
+che a sua volta causa il malfunzionamento di un macchinario, il danno al macchinario è coperto 
+(danno diretto da incendio), ma il danno commerciale (perdita d'esercizio) è coperto solo se 
+esplicatamente previsto dalla sezione Danni Indiretti.
+
+Il massimale per sinistro è di [X €] per l'edificio e di [Y €] per il contenuto. 
+La franchigia è di [Z €] per sinistro. L'aggregato annuo complessivo è di [A €].
+
+La forma tecnica è [Claims Made / Loss Occurrence]. Se Claims Made, la retroattività è [data inizio] 
+e la postuma è [durata]. Se Loss Occurrence, la data di denunzia non influisce sull'operatività.
+
+[Continuare con altre garanzie specifiche...]
+```
+
+#### 5.2 Tabella Garanzie Danni Diretti
+
+```html
+<table>
+<thead>
+<tr>
+<th>Garanzia</th>
+<th>Limite di Indennizzo</th>
+<th>Franchigia</th>
+<th>Scoperto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="section-header"><th colspan="4">GARANZIE DANNI DIRETTI</th></tr>
+<tr>
+<td>Incendio (tutte le cause)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... %</td>
+</tr>
+<tr>
+<td>Esplosione di gas combustibili</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... %</td>
+</tr>
+<tr>
+<td>Fulmine (danno diretto + danno da scarica)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... %</td>
+</tr>
+</tbody>
+</table>
+```
+
+#### 5.3 Ampliamenti e Condizioni Particolari
+
+```html
+<h3>Ampliamenti Disponibili</h3>
+<ul>
+<li>Danni da Fumo (con limitazioni)</li>
+<li>Danni da Scoppi (con limite specifico)</li>
+<li>Danni da Calore Radiante</li>
+<li>Effetti del Calore su Merci</li>
+<li>Danni da Incendio Sottostante (per proprietari immobili)</li>
+</ul>
+```
+
+---
+
+### SEZIONE 6: GARANZIE DANNI INDIRETTI
+
+**Obiettivo**: Descrivere perdita d'esercizio, interruzione attività, altri danni indiretti.
+
+**Contenuto richiesto**:
+
+#### 6.1 Descrizione Narrativa (CRITICA — Elemento più complesso)
+
+```
+La sezione Danni Indiretti copre la perdita economica (perdita d'esercizio) derivante 
+dall'interruzione della produzione causata da un sinistro di incendio coperto.
+
+DEFINIZIONE DI PERDITA D'ESERCIZIO:
+La perdita d'esercizio è la perdita di utili lordi che l'Assicurato avrebbe conseguito se il sinistro 
+non si fosse verificato, calcolata per il periodo di interruzione dell'attività necessaria per 
+ripristinare i beni danneggiati.
+
+FORMULA DI CALCOLO:
+Perdita d'Esercizio = Utile Lordo Medio Giornaliero × Numero Giorni di Interruzione
+
+dove:
+
+Utile Lordo Medio Giornaliero = Utile Lordo Annuo / 365 giorni
+[oppure media degli ultimi 12 mesi se disponibile]
+
+Numero Giorni di Interruzione = dal giorno dell'incendio fino al giorno del ripristino completo 
+dei beni e ripresa produttiva.
+
+ESCLUSIONI FREQUENTI:
+- Perdita di profitto su ordini rinviati a clienti concorrenti (non è perdita d'esercizio dell'Assicurato)
+- Costi di affitto di locali/attrezzature sostitutive (se non esplicitamente inclusi)
+- Danni a merci/prodotti (rientra in Danni Diretti Contenuto)
+- Perdita dovuta a ritardo fornitori (non causalità diretta dall'incendio)
+
+CONDIZIONI DI OPERATIVITÀ:
+1. Il sinistro deve essere causato da un rischio coperto dalla sezione Danni Diretti
+2. Deve determinar interruzione dell'attività presso i locali assicurati
+3. L'interruzione deve essere provata da evidenza oggettiva (rapporto periti, certificati tecnici, ecc.)
+4. Il periodo di interruzione deve essere ragionevole e documentato
+
+MASSIMALE E AGGREGATO:
+Il massimale è di [X €] per sinistro. L'aggregato annuo è di [Y €].
+Franchigia temporale: [N] giorni (periodo di disattivazione prima che inizia l'indennizzo).
+Franchigia monetaria: [Z €] per sinistro.
+
+La forma tecnica è [Claims Made / Loss Occurrence]. Il periodo di retroattività è [data] 
+e la postuma è [durata].
+
+[Continuare con dettagli specifici della polizza...]
+```
+
+#### 6.2 Tabella Garanzie Danni Indiretti
+
+```html
+<table>
+<thead>
+<tr>
+<th>Garanzia</th>
+<th>Limite di Indennizzo</th>
+<th>Franchigia Temporale</th>
+<th>Franchigia Monetaria</th>
+</tr>
+</thead>
+<tbody>
+<tr class="section-header"><th colspan="4">GARANZIE DANNI INDIRETTI</th></tr>
+<tr>
+<td>Perdita d'Esercizio - Utile Lordo (interruzione attività)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... giorni</td>
+<td style="text-align: right;">... €</td>
+</tr>
+<tr>
+<td>Costi Fissi (paghe, affitti, utenze - durante interruzione)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... giorni</td>
+<td style="text-align: right;">... €</td>
+</tr>
+<tr>
+<td>Spese Salvamento (per limitare danni conseguenti)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">N/A</td>
+<td style="text-align: right;">... €</td>
+</tr>
+</tbody>
+</table>
+```
+
+#### 6.3 Metodo di Valutazione Perdita
+
+```html
+<h3>Metodo di Valutazione della Perdita d'Esercizio</h3>
+<table class="data-table">
+<tbody>
+<tr><td>Metodo Applicato:</td><td>... (Tabula Rasa / Perdita Effettiva / Perdita Stimata)</td></tr>
+<tr><td>Base di Calcolo Utile Lordo:</td><td>... (Bilancio ultimi 12 mesi / Media 3 anni / Previsionale)</td></tr>
+<tr><td>Utile Lordo Medio Giornaliero:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Utile Lordo Medio Mensile:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Periodo Coperto Max Giorni:</td><td>... (es. 90 giorni)</td></tr>
+<tr><td>Costi Fissi Inclusi:</td><td>Sì / No — [Descrizione quali costi inclusi]</td></tr>
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 7: GARANZIE FURTO
+
+**Obiettivo**: Descrivere coperture per furto, rapina, scasso.
+
+**Contenuto richiesto**:
+
+#### 7.1 Descrizione Narrativa
+
+```
+La garanzia Furto copre i danni causati da furto, rapina o scasso ai beni assicurati presso 
+i locali indicati in polizza.
+
+FURTO: Sottrazione furtiva di beni da locali assicurati, con appropriazione da parte di terzi.
+RAPINA: Furto commesso con violenza, minaccia o intimazione.
+SCASSO: Furto mediante rottura o forzamento di serrature, porte, finestre, vetrine.
+
+CONDIZIONI DI OPERATIVITÀ:
+1. Il furto deve verificarsi presso i locali assicurati durante le ore di chiusura
+2. Deve esserci evidenza di scasso (porte forzate, vetrine rotte, ecc.) oppure denuncia ai carabinieri
+3. La denuncia alle autorità deve essere fatta entro 48 ore dall'accertamento del furto
+4. Non sono coperti furti commessi da dipendenti (salvo copertura specifica "Infedeltà")
+5. Non sono coperti furti durante trasporto (copertura separata se richiesta)
+
+ESCLUSIONI FREQUENTI:
+- Furti in ore di apertura (dipendono da assicurazione clientela/responsabilità)
+- Furti da locali non chiusi a chiave
+- Furti da finestre aperte
+- Furti durante lavori di manutenzione/ristrutturazione
+- Furti da tempesta/calamità (rientra in polizza elementi naturali se coperta)
+
+MASSIMALE E FRANCHIGIA:
+Il massimale è di [X €] per sinistro, con sottolimite di [Y €] per articolo.
+Aggregato annuo: [Z €]
+Franchigia: [F €] per sinistro
+
+[Continuare con dettagli specifici...]
+```
+
+#### 7.2 Tabella Garanzie Furto
+
+```html
+<table>
+<thead>
+<tr>
+<th>Garanzia</th>
+<th>Limite di Indennizzo</th>
+<th>Sottolimite Articolo</th>
+<th>Franchigia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="section-header"><th colspan="4">GARANZIE FURTO E RAPINA</th></tr>
+<tr>
+<td>Furto Semplice e Rapina (durante chiusura locali)</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+</tr>
+<tr>
+<td>Scasso Effrazione</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+<td style="text-align: right;">... €</td>
+</tr>
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 8: RESPONSABILITÀ CIVILE INCENDIO
+
+**Obiettivo**: Descrivere copertura RCE verso terzi derivante da incendio.
+
+**Contenuto richiesto**:
+
+```
+La garanzia Responsabilità Civile Incendio copre la responsabilità civile dell'Assicurato 
+verso terzi per danni causati da incendio che ha origine presso i locali assicurati e si propaga 
+a proprietà di terzi.
+
+OPERATIVITÀ:
+La copertura opera quando:
+1. Un incendio coperto si verifica presso i locali assicurati
+2. L'incendio si propaga a proprietà di terzi (edifici contigui, merci, veicoli, ecc.)
+3. L'Assicurato è responsabile civilmente della propagazione per violazione di obbligo di custodia 
+   (art. 2051 c.c.)
+
+MASSIMALE E AGGREGATO:
+[X €] per sinistro / [Y €] aggregato annuo
+
+[Continuare con specifiche della polizza...]
+```
+
+---
+
+### SEZIONE 9: STATISTICA SINISTRI
+
+**Obiettivo**: Analisi storica sinistri e KPI di loss history.
+
+```html
+<table>
+<thead>
+<tr>
+<th>Numero Sinistro</th>
+<th>Data Evento</th>
+<th>Causa</th>
+<th>Tipo Danno</th>
+<th>Stato</th>
+<th>Importo Pagato (€)</th>
+<th>Riserva (€)</th>
+</tr>
+</thead>
+<tbody>
+<!-- Riga per ogni sinistro -->
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td style="text-align: right;">...</td>
+<td style="text-align: right;">...</td>
+</tr>
+</tbody>
+</table>
+
+<h3>KPI Sinistri — Ultimi 5 Anni</h3>
+<table class="data-table">
+<tbody>
+<tr><td>Numero sinistri totale:</td><td>...</td></tr>
+<tr><td>Frequency (sinistri/anno):</td><td>...</td></tr>
+<tr><td>Severity (importo medio):</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Totale importi pagati:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Totale riserve:</td><td style="text-align: right;">... €</td></tr>
+<tr><td>Loss Ratio storico:</td><td>... %</td></tr>
+<tr><td>Sinistri Incendio vs. Furto (split):</td><td>... % Incendio / ... % Furto</td></tr>
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 10: ESCLUSIONI
+
+**Obiettivo**: Catalogo completo esclusioni operative.
+
+```html
+<h3>I) Esclusioni Generali (tutte le sezioni)</h3>
+<ul>
+<li>Guerra, guerra civile, rivolta, tumulto, atti del nemico in tempo di guerra</li>
+<li>Radiazioni ionizzanti, radioattività, contaminazione radioattiva</li>
+<li>Inquinamento atmosferico, acustico, idrico (salvo incendio da causa improvvisa)</li>
+<li>Terremoto, assestamento terreni, maremoto (assicurazione separata se richiesta)</li>
+<li>Grandine, tempesta, allagamento (sezione separata se richiesta)</li>
+</ul>
+
+<h3>II) Esclusioni Specifiche Incendio</h3>
+<ul>
+<li>Autocombustione, combustione spontanea</li>
+<li>Incendio per uso improprio di apparecchiature/impianti</li>
+<li>Fuoco da sigarette/fiammiferi in ambienti dove vietato</li>
+<li>Incendio da lavori su fiamma libera senza permesso</li>
+</ul>
+
+<h3>III) Esclusioni Specifiche Danni Indiretti</h3>
+<ul>
+<li>Danni non derivanti direttamente da incendio coperto</li>
+<li>Perdita di clientela (danni puramente commerciali)</li>
+<li>Ritardo fornitori (non è interruzione dell'Assicurato)</li>
+<li>Danni a merci/prodotti (rientra in Danni Diretti Contenuto)</li>
+</ul>
+
+<h3>IV) Esclusioni Specifiche Furto</h3>
+<ul>
+<li>Furti durante ore di apertura</li>
+<li>Furti da locali non chiusi a chiave</li>
+<li>Furti commessi da dipendenti/fornitori (salvo copertura Infedeltà)</li>
+<li>Furti durante trasporto (copertura separata)</li>
+</ul>
+```
+
+---
+
+### SEZIONE 11: DEFINIZIONI
+
+**Obiettivo**: Glossario tecnico dei termini di polizza.
+
+```html
+<dl>
+<dt>Valore Assicurato</dt>
+<dd>Importo dichiarato dal contraente come valore dei beni esposti al rischio. 
+Se il Valore Assicurato è inferiore al valore reale (sottoassicurazione), la Compagnia 
+applica una proporzione sull'indennizzo. Es: se V.A. = 100.000 € ma valore reale = 200.000 €, 
+indennizzo ridotto del 50%.</dd>
+
+<dt>Claims Made</dt>
+<dd>Forma tecnica dove la copertura opera al momento della denuncia del sinistro alla Compagnia, 
+non del momento dell'evento. Retroattività: riguarda sinistri per eventi verificatisi dopo una 
+data specifica (es. 01/01/2024). Postuma: riguarda denunce ricevute dopo la scadenza della polizza 
+(es. 90 giorni dopo scadenza).</dd>
+
+<dt>Perdita d'Esercizio</dt>
+<dd>Perdita economica derivante da interruzione dell'attività causata da incendio. 
+Si calcola come Utile Lordo Medio Giornaliero × Giorni di Interruzione.</dd>
+
+<dt>Franchigia Temporale (Danni Indiretti)</dt>
+<dd>Numero di giorni di interruzione che decorrono prima dell'inizio dell'indennizzo. 
+Es: franchigia 3 giorni = l'Assicurato sopporta i primi 3 giorni di interruzione, 
+da giorno 4 in poi la Compagnia indennizza.</dd>
+
+<dt>Franchigia Monetaria</dt>
+<dd>Importo del danno che rimane a carico dell'Assicurato per ogni sinistro. 
+La Compagnia indennizza solo la parte superiore a questo importo.</dd>
+
+<dt>Scoperto (o Deductible Percentage)</dt>
+<dd>Percentuale del danno a carico dell'Assicurato. Es: scoperto 5% = l'Assicurato 
+sopporta il 5% del danno, la Compagnia il 95%.</dd>
+
+<dt>Massimale per Sinistro</dt>
+<dd>Importo massimo di indennizzo per un singolo sinistro, indipendentemente dal valore dei danni 
+effettivi. Raggiunto il massimale, la Compagnia non è obbligata a pagare oltre.</dd>
+
+<dt>Aggregato Annuo</dt>
+<dd>Importo massimo di indennizzo totale in un anno di validità della polizza, considerati 
+tutti i sinistri. Raggiunto l'aggregato, la Compagnia non paga sinistri successivi fino al 
+rinnovo della polizza.</dd>
+
+<dt>Sinistro Coperto</dt>
+<dd>Evento definito dalla polizza che causa danno ai beni assicurati e ricade nel perimetro 
+di copertura (rischi nominatim / Named Perils). Denuncia obbligatoria entro 30 giorni.</dd>
+</dl>
+```
+
+---
+
+### SEZIONE 12: APPENDICI / VARIAZIONI
+
+**Obiettivo**: Change log e audit trail modifiche della polizza.
+
+```html
+<h3>Tabella di Audit Modifiche</h3>
+<table>
+<thead>
+<tr>
+<th>Appendice</th>
+<th>Data Effetto</th>
+<th>Data Documento</th>
+<th>Campo Modificato</th>
+<th>Valore Prima → Valore Dopo</th>
+<th>Riferimenti</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App. 1</td>
+<td>15/06/2025</td>
+<td>10/06/2025</td>
+<td>Valore Assicurato Edificio</td>
+<td>2.000.000,00 € → 2.500.000,00 €</td>
+<td>Mod. Condizioni Particolari Art. 2</td>
+<td>Ampliamento protezione per acquisizione nuovo capannone filiale</td>
+</tr>
+</tbody>
+</table>
+```
+
+---
+
+### SEZIONE 13: VALUTAZIONE RISCHIO COMPLESSIVA
+
+**Obiettivo**: Scoring sintetico e raccomandazioni di brokeraggio.
+
+```html
+<h3>Analisi Qualitativa del Rischio</h3>
+<table class="data-table">
+<tbody>
+<tr><td>Categoria Rischio (ATECO):</td><td>... [Basso / Medio / Alto / Molto Alto]</td></tr>
+<tr><td>Loss History (ultimi 5 anni):</td><td>... [Buona / Accettabile / Problematica]</td></tr>
+<tr><td>Protezione Incendio Presente:</td><td>... [Assente / Parziale / Completa]</td></tr>
+<tr><td>Valore Assicurato vs. Valore Reale:</td><td>... [Adeguato / Possibile scoperto]</td></tr>
+<tr><td>Copertura Danni Indiretti:</td><td>... [Presente / Assente / Insufficiente]</td></tr>
+<tr><td>Rapporto Massimale vs. Valore Massima Perdita Possibile:</td><td>... %</td></tr>
+</tbody>
+</table>
+
+<h3>Raccomandazioni del Broker</h3>
+<div class="alert-box warning">
+<strong>⚠ ATTENZIONE:</strong> Il Valore Assicurato dell'Edificio è inferiore al 30% del valore 
+di mercato stimato. Si raccomanda di valutare l'aumento della copertura per evitare perdite 
+significative in caso di sinistro totale.
+</div>
+
+<div class="alert-box info">
+<strong>ℹ️ RACCOMANDAZIONE:</strong> Considerare l'estensione della copertura Danni Indiretti 
+a 180 giorni (attualmente 90 giorni), data la criticità dell'attività per la supply chain.
+</div>
+
+<div class="alert-box success">
+<strong>✓ PUNTO POSITIVO:</strong> La polizza include protezione incendio con sprinkler automatico. 
+La Compagnia potrebbe offrire uno sconto del 5-10% sul premio se installato ulteriore sistema 
+di rilevazione fumo.
+</div>
+```
+
+---
+
+## NOTE OPERATIVE FINALI
+
+### Gestione Informazioni Mancanti
+
+Quando un'informazione non è presente nei documenti forniti:
+
+```html
+<tr><td>Campo X:</td><td><em>Informazione non specificata nei documenti di polizza forniti</em></td></tr>
+```
+
+Oppure, se critica:
+
+```html
+<div class="alert-box danger">
+<strong>⚠ INFORMAZIONE MANCANTE CRITICA:</strong> [Campo X] non è specificato nei documenti di polizza forniti. 
+Si raccomanda di richiedere chiarimenti immediati alla Compagnia prima di qualsiasi denuncia di sinistro.
+</div>
+```
+
+### Formattazione Importi
+
+**SEMPRE utilizzare formattazione italiana**:
+- Separatore migliaia: punto (.)
+- Separatore decimali: virgola (,)
+- Simbolo valuta: € dopo l'importo con spazio
+
+Esempi:
+✅ 2.500.000,00 €
+✅ 1.500,50 €
+
+❌ 2,500,000.00 EUR
+❌ €2.5M
+
+### Date e Orari
+
+**Formato italiano**:
+- gg/mm/aaaa per le date (es. 31/12/2025)
+- ore hh:mm per gli orari (es. ore 24:00)
+
+---
+
+## OUTPUT FINALE RICHIESTO
+
+Al termine dell'analisi, il sistema deve produrre:
+
+1. **Un unico file HTML** basato sul template fornito, completo di tutte le 13 sezioni compilate
+2. **Nome file**: `Report_Incendio_[NOME_CONTRAENTE]_[NUMERO_POLIZZA]_[DATA].html`
+   - Esempio: `Report_Incendio_ACME_SPA_123-456789_18112025.html`
+3. **Codifica**: UTF-8
+4. **Compatibilità**: HTML5 standard, testabile su tutti i browser moderni
+5. **Funzionalità**: Tab navigabili, pulsante "Stampa PDF" funzionante, responsive design
+
+Il report deve essere **immediatamente utilizzabile** dal broker per:
+- Presentazione al cliente
+- Analisi tecnica interna di copertura vs. rischio
+- Confronto con offerte di altre compagnie
+- Base per denuncia sinistro futura
+- Documentazione storica dell'architettura di copertura
+
+---
+
+## CONCLUSIONE
+
+Questo prompt è stato progettato per ottenere report di analisi polizze Incendio con standard di qualità 
+**PhD-level**, mantenendo:
+
+- ✅ Rigore tecnico-assicurativo specializzato in rischi Incendio e Danni Indiretti
+- ✅ Completezza documentale (tutte le 13 sezioni compilate)
+- ✅ Descrizioni narrative obbligatorie per ogni garanzia (elemento mandatorio)
+- ✅ Distinzione chiara fra Danni Diretti, Danni Indiretti, Furto, RCE
+- ✅ Tracciabilità completa dei calcoli di premio e delle franchigie
+- ✅ Usabilità professionale per broker e risk manager
+- ✅ Valutazione integrata del rischio con raccomandazioni
+- ✅ Sistema alert multi-livello (warning, danger, success, info) per criticità
+
+Il risultato deve superare significativamente il livello di report standard, offrendo un'analisi 
+tecnica che consenta al cliente di comprendere completamente l'architettura della propria copertura 
+assicurativa e i rischi residui non coperti.
+
+---
+
+**Versione Prompt**: 1.0  
+**Data Creazione**: 18/11/2025  
+**Autore**: Maurizio Molinari  
+**Uso**: Analisi Polizze Incendio (Danni Diretti, Danni Indiretti, Furto, RCE) con AI — Uso Professionale Brokeraggio Assicurativo
+
+
+

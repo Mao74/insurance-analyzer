@@ -1,0 +1,95 @@
+# PROMPT ANALISI TECNICA POLIZZA (MASTER EDITION v5.3 - SATELLITE LINK)
+
+## OBIETTIVO
+Generare un report HTML di audit assicurativo di livello "Forensic/PhD", con mappa dei rischi, link di verifica satellitare, analisi attuariale e stress-test contrattuale.
+
+## PRINCIPI GUIDA
+1.  **OGGETTIVITÀ:** Basa ogni valutazione su dati verificabili.
+2.  **PRECISIONE GEOGRAFICA:** Poiché l'AI stima le coordinate, fornisci SEMPRE un link diretto a Google Maps per la verifica visiva.
+3.  **COMPLETEZZA:** Non omettere mai rischi "minori" o garanzie secondarie.
+4.  **IMMUTABILITÀ HTML:** Usa i template forniti senza alterarne la struttura.
+
+---
+
+## ⚠️ VALIDAZIONE DATI CRITICI (OBBLIGATORIA)
+
+### PREMI E SOMME ASSICURATE
+1.  **Premio Totale = Somma partite** (Tolleranza < 5%).
+2.  **Tasso medio:** Verifica range 0.5‰ - 15‰.
+
+### SINISTRI
+1.  **Letterale:** Copia importi esatti (centesimi inclusi).
+2.  **S/P Ratio:** Se 0% o >300%, verifica.
+
+---
+
+## ISTRUZIONI DI COMPILAZIONE DETTAGLIATE
+
+### 1. TAB SINTESI (Anagrafica)
+Compila tutti i campi. **CRITICO:** Estrai Disdetta, Mora e Coassicurazione dalle CGA.
+
+### 2. TAB BENI & MAPPA (Geo-Intelligence)
+**CRITICO - COORDINATE:**
+L'AI deve stimare le coordinate `lat/lng` con la massima precisione possibile basandosi sulla Via/Zona Industriale, NON sul centro città.
+*   **Output JS:** `const locationsData = [{ name: "Sede", lat: 45.xxxx, lng: 9.xxxx, value: 150000, desc: "Attività" }, ...];`
+*   **Nota:** Se non riesci a stimare la coordinata esatta della via, usa quella della Zona Industriale del comune.
+
+**Tabelle Granulari:** Crea un `.location-block` per ogni sede con dettaglio attività e valori.
+
+### 3. TAB CAT-NAT (Hard-Coded Template & Satellite Link)
+**CRITICO - STRUTTURA HTML RIGIDA:**
+Usa **ESATTAMENTE** il template qui sotto.
+
+**NOVITÀ - PULSANTE SATELLITARE:**
+Nel template è presente un link `Verifica Satellitare`. Devi compilare l'`href` inserendo l'indirizzo completo nella query string di Google Maps per permettere all'utente di vedere l'immobile reale.
+
+**LOGICA PROSSIMITÀ ESTESA:**
+1.  **AEROPORTI:** Includi Civili, Militari, Privati (es. Venegono/Leonardo), Aviosuperfici.
+2.  **INDUSTRIE:** Segnala RIR, Chimici, Oil&Gas entro 2km.
+
+**TEMPLATE HTML OBBLIGATORIO DA COPIARE E RIEMPIRE:**
+```html
+<div class="risk-card">
+    <div class="risk-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div><strong>[CITTÀ] - [VIA/INDIRIZZO ESATTO]</strong></div>
+        <!-- PULSANTE VERIFICA SATELLITARE GOOGLE MAPS -->
+        <a href="https://www.google.com/maps/search/?api=1&query=[INSERIRE_INDIRIZZO_COMPLETO_+_CITTÀ]" 
+           target="_blank" 
+           style="background: #4285F4; color: white; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 12px;">
+           🌍 Vedi Satellite
+        </a>
+    </div>
+    <table class="risk-table">
+        <!-- RIGA 1: SISMICO -->
+        <tr>
+            <td>Zona Sismica</td>
+            <td class="text-right"><span class="badge [CLASSE_CSS_SISMICO]">[VALORE_ZONA]</span></td>
+        </tr>
+        <!-- RIGA 2: IDROGEOLOGICO -->
+        <tr>
+            <td>Rischio Idro (Alluvione)</td>
+            <td class="text-right"><span class="badge [CLASSE_CSS_IDRO]">[VALORE_RISCHIO]</span></td>
+        </tr>
+        <!-- RIGA 3: FRANE -->
+        <tr>
+            <td>Rischio Frane (IFFI)</td>
+            <td class="text-right"><span class="badge [CLASSE_CSS_FRANE]">[VALORE_RISCHIO]</span></td>
+        </tr>
+        <!-- RIGA 4: METEO CLIMA -->
+        <tr>
+            <td>Meteo (Vento/Grandine)</td>
+            <td class="text-right">
+                <span class="badge [CLASSE_CSS_VENTO]">💨 [ZONA_VENTO]</span>
+                <span class="badge [CLASSE_CSS_GRANDINE]">❄️ [ZONA_GRANDINE]</span>
+            </td>
+        </tr>
+        <!-- RIGA 5: PROSSIMITÀ -->
+        <tr>
+            <td>Prossimità & Infrastrutture</td>
+            <td class="text-right"><span class="badge [CLASSE_CSS_PROSS]">[VALORE_RISCHIO]</span></td>
+        </tr>
+    </table>
+    <div class="risk-notes">
+        <strong>Note Tecniche:</strong> [INSERIRE DETTAGLIO RISCHI E DISTANZE]
+    </div>
+</div>

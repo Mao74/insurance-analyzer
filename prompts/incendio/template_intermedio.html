@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Report di analisi tecnica polizza Incendio - Standard PhD">
+    <meta name="author" content="Broker Assicurativo">
+    <title>Report Analisi Polizza Incendio - Danni Diretti/Indiretti/Furto</title>
+    <style>
+    :root {
+        --primary-dark: #1a2a42;
+        --primary-blue: #1e5aa5;
+        --primary-light: #2196F3;
+        --accent-light: #e3f2fd;
+        --text-dark: #333;
+        --text-light: #666;
+        --border-color: #ddd;
+        --alert-warning: #fff3cd;
+        --alert-warning-border: #ffc107;
+        --alert-danger: #f8d7da;
+        --alert-danger-border: #f5c6cb;
+        --success-color: #d4edda;
+        --success-border: #c3e6cb;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f7fa;
+        color: var(--text-dark);
+    }
+    
+    .report-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+    
+    .header {
+        padding: 30px;
+        background: linear-gradient(135deg, #f5f7fa 0%, var(--accent-light) 100%);
+        border-bottom: 3px solid var(--primary-blue);
+    }
+    
+    .header h1 {
+        margin: 0 0 8px 0;
+        color: var(--primary-dark);
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    .header h2 {
+        margin: 0 0 20px 0;
+        color: var(--text-light);
+        font-weight: 400;
+        font-size: 18px;
+    }
+    
+    .header-metadata {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .metadata-item {
+        background-color: rgba(255,255,255,0.8);
+        padding: 12px;
+        border-left: 4px solid var(--primary-blue);
+        border-radius: 2px;
+    }
+    
+    .metadata-item strong {
+        color: var(--primary-dark);
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    
+    .metadata-item span {
+        color: var(--text-dark);
+        font-size: 15px;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .header-highlights {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        font-size: 13px;
+    }
+    
+    .header-highlights span {
+        background-color: var(--accent-light);
+        color: var(--primary-blue);
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    
+    .tabs {
+        display: flex;
+        background-color: var(--primary-blue);
+        flex-wrap: wrap;
+        border-bottom: 2px solid var(--primary-dark);
+        overflow-x: auto;
+    }
+    
+    .tab-link {
+        background-color: var(--primary-blue);
+        color: white;
+        padding: 12px 16px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        outline: none;
+        position: relative;
+        white-space: nowrap;
+    }
+    
+    .tab-link:hover {
+        background-color: #1565a0;
+        padding: 12px 16px;
+    }
+    
+    .tab-link.active {
+        background-color: var(--primary-light);
+        font-weight: 600;
+    }
+    
+    .tab-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background-color: #fff;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 30px;
+        min-height: 600px;
+    }
+    
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .tab-content h2 {
+        color: var(--primary-dark);
+        font-size: 24px;
+        margin-top: 0;
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--accent-light);
+        padding-bottom: 10px;
+    }
+    
+    .tab-content h3 {
+        color: var(--primary-blue);
+        font-size: 18px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    
+    .print-button {
+        float: right;
+        margin-bottom: 15px;
+        padding: 10px 20px;
+        background-color: var(--primary-light);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+    
+    .print-button:hover {
+        background-color: #1565a0;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+    
+    th, td {
+        border: 1px solid var(--border-color);
+        padding: 12px;
+        text-align: left;
+        vertical-align: top;
+    }
+    
+    th {
+        background-color: var(--accent-light);
+        color: var(--primary-dark);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #fafbfc;
+    }
+    
+    tr:hover {
+        background-color: #f0f4f8;
+    }
+    
+    .section-header th {
+        background-color: var(--primary-blue);
+        color: white;
+        font-size: 13px;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+    
+    td[style*="text-align: right"] {
+        font-family: 'Courier New', monospace;
+        font-weight: 500;
+    }
+    
+    .data-table {
+        border: none;
+    }
+    
+    .data-table td {
+        border: none;
+        padding: 12px 5px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .data-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .data-table td:first-child {
+        font-weight: 600;
+        color: var(--primary-dark);
+        width: 280px;
+        background-color: #fafbfc;
+    }
+    
+    .data-table tr:nth-child(even) {
+        background-color: #fff;
+    }
+    
+    ul, ol {
+        padding-left: 25px;
+        margin: 15px 0;
+    }
+    
+    ul li, ol li {
+        margin-bottom: 10px;
+        color: var(--text-dark);
+    }
+    
+    ul li::marker {
+        color: var(--primary-blue);
+    }
+    
+    dl {
+        margin: 20px 0;
+    }
+    
+    dl dt {
+        font-weight: 600;
+        color: var(--primary-blue);
+        margin-top: 18px;
+        margin-bottom: 6px;
+        font-size: 15px;
+    }
+    
+    dl dd {
+        margin-left: 25px;
+        margin-bottom: 12px;
+        color: var(--text-dark);
+    }
+    
+    .footer {
+        padding: 20px 30px;
+        background-color: #f5f7fa;
+        border-top: 2px solid var(--border-color);
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-light);
+    }
+    
+    .footer p {
+        margin: 8px 0;
+    }
+    
+    .property-block {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 2px solid var(--accent-light);
+        border-left: 5px solid var(--primary-blue);
+        border-radius: 4px;
+        background-color: rgba(33, 150, 243, 0.03);
+    }
+    
+    .property-block h3 {
+        color: var(--primary-dark);
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    
+    .entity-block {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 2px solid var(--accent-light);
+        border-left: 5px solid var(--primary-blue);
+        border-radius: 4px;
+        background-color: rgba(33, 150, 243, 0.03);
+    }
+    
+    .entity-block h3 {
+        color: var(--primary-dark);
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    
+    .note {
+        font-size: 13px;
+        color: var(--text-light);
+        font-style: italic;
+        margin: 10px 0;
+    }
+    
+    .sub-item {
+        padding-left: 25px !important;
+        font-style: italic;
+        color: var(--text-light);
+    }
+    
+    .alert-box {
+        border-radius: 6px;
+        padding: 18px;
+        margin: 20px 0;
+        border-left: 5px solid;
+        padding-left: 50px;
+        position: relative;
+    }
+    
+    .alert-box::before {
+        content: '⚠️';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+    }
+    
+    .alert-box.warning {
+        background-color: var(--alert-warning);
+        border-color: var(--alert-warning-border);
+    }
+    
+    .alert-box.warning strong {
+        color: #856404;
+    }
+    
+    .alert-box.danger {
+        background-color: var(--alert-danger);
+        border-color: var(--alert-danger-border);
+    }
+    
+    .alert-box.danger strong {
+        color: #721c24;
+    }
+    
+    .alert-box.danger::before {
+        content: '🔴';
+    }
+    
+    .alert-box.success {
+        background-color: var(--success-color);
+        border-color: var(--success-border);
+    }
+    
+    .alert-box.success strong {
+        color: #155724;
+    }
+    
+    .alert-box.success::before {
+        content: '✓';
+        font-size: 16px;
+    }
+    
+    .alert-box.info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
+    
+    .alert-box.info strong {
+        color: #0c5460;
+    }
+    
+    .alert-box.info::before {
+        content: 'ℹ️';
+    }
+    
+    .total-row {
+        background-color: var(--accent-light) !important;
+        font-weight: 600;
+    }
+    
+    .total-row td {
+        border-top: 2px solid var(--primary-blue) !important;
+        border-bottom: 2px solid var(--primary-blue) !important;
+    }
+    
+    .highlight-cell {
+        background-color: #fff8e1;
+        font-weight: 500;
+    }
+    
+    .critical-cell {
+        background-color: #ffebee;
+        font-weight: 600;
+        color: #c62828;
+    }
+    
+    p {
+        margin: 12px 0;
+        line-height: 1.7;
+    }
+    
+    strong {
+        color: var(--primary-dark);
+    }
+    
+    em {
+        color: var(--text-light);
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+        
+        .header {
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .tab-link {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        
+        .tabs {
+            overflow-x: auto;
+        }
+        
+        .tab-content {
+            padding: 20px;
+        }
+        
+        table {
+            font-size: 12px;
+        }
+        
+        th, td {
+            padding: 8px;
+        }
+        
+        .data-table td:first-child {
+            width: 180px;
+        }
+        
+        .header-metadata {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media print {
+        body {
+            background-color: #fff;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+        }
+        
+        .report-container {
+            box-shadow: none;
+            border: none;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            border-radius: 0;
+        }
+        
+        .tabs, .print-button, .footer {
+            display: none !important;
+        }
+        
+        .header {
+            padding: 20px;
+            border-bottom: 2px solid var(--primary-blue);
+            background: none;
+            page-break-after: avoid;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .header h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .header-metadata {
+            display: none;
+        }
+        
+        .tab-content {
+            display: none !important;
+            padding: 0;
+            min-height: auto;
+        }
+        
+        .tab-content.active {
+            display: block !important;
+            padding: 0;
+            page-break-inside: avoid;
+        }
+        
+        .tab-content h2 {
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+            border: none;
+            padding: 0;
+        }
+        
+        .tab-content h3 {
+            font-size: 13px;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+        
+        table {
+            font-size: 9pt;
+            margin-top: 10px;
+            page-break-inside: avoid;
+            width: 100%;
+        }
+        
+        th {
+            background-color: #f0f0f0 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color: #000 !important;
+            font-size: 8pt;
+        }
+        
+        tr, td {
+            page-break-inside: avoid;
+            border-color: #999 !important;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #fafafa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .section-header th {
+            background-color: #cccccc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color: #000 !important;
+        }
+        
+        .total-row {
+            background-color: #e3f2fd !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-weight: bold;
+        }
+        
+        .property-block, .entity-block {
+            border: 1px solid #999;
+            margin-top: 15px;
+            page-break-inside: avoid;
+            background-color: #fafafa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .alert-box {
+            page-break-inside: avoid;
+            border-width: 1px;
+            background-color: #fafafa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        ul, ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        ul li, ol li {
+            margin-bottom: 4px;
+        }
+        
+        dl {
+            page-break-inside: avoid;
+        }
+        
+        dt {
+            margin-top: 8px;
+            margin-bottom: 2px;
+        }
+        
+        dd {
+            margin-left: 15px;
+            margin-bottom: 5px;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<div class="report-container">
+    <div class="header">
+        <h1>Report Analisi Polizza Incendio</h1>
+        <h2>Danni Diretti / Danni Indiretti / Furto — Analisi Tecnica PhD-level</h2>
+        
+        <div class="header-metadata">
+            <div class="metadata-item">
+                <strong>Numero Polizza</strong>
+                <span>...</span>
+            </div>
+            <div class="metadata-item">
+                <strong>Contraente</strong>
+                <span>...</span>
+            </div>
+            <div class="metadata-item">
+                <strong>Data Generazione Report</strong>
+                <span>...</span>
+            </div>
+            <div class="metadata-item">
+                <strong>Periodo di Vigenza</strong>
+                <span>... / ...</span>
+            </div>
+        </div>
+        
+        <div class="header-highlights">
+            <span><strong>P.IVA:</strong> ...</span>
+            <span><strong>Compagnia:</strong> ...</span>
+            <span><strong>Forma Tecnica:</strong> ...</span>
+            <span><strong>Massimale Polizza:</strong> ...</span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-link active" onclick="openTab(event, 'DatiGenerali')">Dati Generali</button>
+        <button class="tab-link" onclick="openTab(event, 'ProprietaBeni')">Proprietà e Beni</button>
+        <button class="tab-link" onclick="openTab(event, 'CalcoloPremio')">Calcolo Premio</button>
+        <button class="tab-link" onclick="openTab(event, 'Massimali')">Massimali e Coperture</button>
+        <button class="tab-link" onclick="openTab(event, 'DanniDiretti')">Danni Diretti</button>
+        <button class="tab-link" onclick="openTab(event, 'DanniIndiretti')">Danni Indiretti</button>
+        <button class="tab-link" onclick="openTab(event, 'Furto')">Furto</button>
+        <button class="tab-link" onclick="openTab(event, 'RCE')">RCE Incendio</button>
+        <button class="tab-link" onclick="openTab(event, 'StatisticaSinistri')">Sinistri</button>
+        <button class="tab-link" onclick="openTab(event, 'Esclusioni')">Esclusioni</button>
+        <button class="tab-link" onclick="openTab(event, 'Definizioni')">Definizioni</button>
+        <button class="tab-link" onclick="openTab(event, 'Appendici')">Appendici</button>
+        <button class="tab-link" onclick="openTab(event, 'Valutazione')">Valutazione Rischio</button>
+    </div>
+
+    <div id="DatiGenerali" class="tab-content active">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Dati Generali della Polizza</h2>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Compagnia Assicuratrice:</td><td>...</td></tr>
+            <tr><td>Sede Compagnia:</td><td>...</td></tr>
+            <tr><td>Numero polizza:</td><td>...</td></tr>
+            <tr><td>Contraente:</td><td>...</td></tr>
+            <tr><td>Sede Legale Contraente:</td><td>...</td></tr>
+            <tr><td>Partita IVA:</td><td>...</td></tr>
+            <tr><td>Codice Rischio (ATECO):</td><td>...</td></tr>
+            <tr><td>Broker:</td><td>...</td></tr>
+            <tr><td>Data di decorrenza:</td><td>...</td></tr>
+            <tr><td>Data di scadenza:</td><td>...</td></tr>
+            <tr><td>Durata:</td><td>...</td></tr>
+            <tr><td>Data di emissione:</td><td>...</td></tr>
+            <tr><td>Premio annuo totale:</td><td>...</td></tr>
+            <tr><td>Frazionamento Premio:</td><td>...</td></tr>
+            <tr><td>Numero di rate:</td><td>...</td></tr>
+            <tr><td>Importo per rata:</td><td>...</td></tr>
+            <tr><td>Commissioni/Interessi frazionamento:</td><td>...</td></tr>
+            <tr><td style="vertical-align: top;">Attività assicurata:</td><td>...</td></tr>
+            <tr><td style="vertical-align: top;">Forma Tecnica:</td><td>...</td></tr>
+            <tr><td style="vertical-align: top;">Retroattività:</td><td>...</td></tr>
+            <tr><td style="vertical-align: top;">Copertura Postuma:</td><td>...</td></tr>
+            <tr><td style="vertical-align: top;">Coassicurazione:</td><td>...</td></tr>
+            <tr><td>Legge applicabile:</td><td>...</td></tr>
+            <tr><td>Foro competente:</td><td>...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="ProprietaBeni" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Proprietà e Beni Assicurati</h2>
+        
+        <div class="property-block">
+            <h3>Ubicazione [1]: [Indirizzo Completo]</h3>
+            <table class="data-table">
+                <tbody>
+                <tr><td>Indirizzo Completo:</td><td>...</td></tr>
+                <tr><td>Uso Della Proprietà:</td><td>...</td></tr>
+                <tr><td>Costruzione Edificio:</td><td>...</td></tr>
+                <tr><td>Copertura Edificio:</td><td>...</td></tr>
+                <tr><td>Proprietario Edificio:</td><td>...</td></tr>
+                <tr><td colspan="2"><strong>CATEGORIE DI BENI ASSICURATI</strong></td></tr>
+                <tr><td>Categoria 1: Edificio (struttura)</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+                <tr><td>Categoria 2: Contenuto (arredi, impianti)</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+                <tr><td>Categoria 3: Macchinari Produttivi</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+                <tr><td>Categoria 4: Merci/Materie Prime</td><td style="text-align: right;">Valore Assicurato: ... €</td></tr>
+                <tr><td><strong>TOTALE VALORE ASSICURATO</strong></td><td style="text-align: right;"><strong>... €</strong></td></tr>
+                <tr><td>Protezione Incendio:</td><td>...</td></tr>
+                <tr><td>Distanza da Rischi:</td><td>...</td></tr>
+                <tr><td>Note Specifiche Rischio:</td><td>...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="CalcoloPremio" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Calcolo del Premio</h2>
+        
+        <h3>Dettaglio Premio per Categoria Beni</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Categoria Beni</th>
+                <th>Valore Assicurato (€)</th>
+                <th>Tasso Incendio (%)</th>
+                <th>Premio Incendio (€)</th>
+                <th>Tasso D.Indiretti (%)</th>
+                <th>Premio D.Indiretti (€)</th>
+                <th>Tasso Furto (%)</th>
+                <th>Premio Furto (€)</th>
+                <th>Premio Totale (€)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;"><strong>...</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>TOTALE</strong></td>
+                <td style="text-align: right;"><strong>...</strong></td>
+                <td style="text-align: right;"><strong>-</strong></td>
+                <td style="text-align: right;"><strong>...</strong></td>
+                <td style="text-align: right;"><strong>-</strong></td>
+                <td style="text-align: right;"><strong>...</strong></td>
+                <td style="text-align: right;"><strong>-</strong></td>
+                <td style="text-align: right;"><strong>...</strong></td>
+                <td style="text-align: right;"><strong>...</strong></td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <h3>Analisi del Premio</h3>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Premio netto Incendio Danni Diretti:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Premio netto Danni Indiretti:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Premio netto Furto e Rapina:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Diritti:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Imposte (IPT 12,5%):</td><td style="text-align: right;">... €</td></tr>
+            <tr><td><strong>TOTALE LORDO</strong></td><td style="text-align: right;"><strong>... €</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="Massimali" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Massimali e Coperture</h2>
+        
+        <h3>Massimali Generali</h3>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Massimale Incendio per Sinistro:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Massimale Danni Indiretti per Sinistro:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Massimale Furto per Sinistro:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Massimale Aggregato Annuo:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Sottoassicurazione/Scoperto:</td><td>...</td></tr>
+            <tr><td>Forma Tecnica:</td><td>...</td></tr>
+            <tr><td>Retroattività:</td><td>...</td></tr>
+            <tr><td>Copertura Postuma:</td><td>...</td></tr>
+            </tbody>
+        </table>
+        
+        <h3>Franchigie e Scoperti</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Tipo Garanzia</th>
+                <th>Franchigia (€ o %)</th>
+                <th>Scoperto (%)</th>
+                <th>Note</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Incendio Edificio</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>Incendio Contenuto</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>Danni Indiretti</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>Furto</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+                <td>...</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="DanniDiretti" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Garanzie Danni Diretti - Analisi Dettagliata</h2>
+        
+        <h3>Descrizione Narrativa della Copertura</h3>
+        <p>La garanzia Incendio copre i danni causati da fuoco che ha origine dall'interno o dall'esterno 
+        dei locali assicurati. <em>La descrizione completa della garanzia con tutti gli aspetti tecnici 
+        e le limitazioni deve essere inserita qui.</em></p>
+        
+        <table>
+            <thead>
+            <tr>
+                <th>Garanzia</th>
+                <th>Limite di Indennizzo</th>
+                <th>Franchigia</th>
+                <th>Scoperto</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="section-header"><th colspan="4">GARANZIE DANNI DIRETTI</th></tr>
+            <tr>
+                <td>Incendio (tutte le cause)</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... %</td>
+            </tr>
+            <tr>
+                <td>Esplosione di gas combustibili</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... %</td>
+            </tr>
+            <tr>
+                <td>Fulmine (danno diretto + scarica)</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... %</td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <h3>Ampliamenti Disponibili</h3>
+        <ul>
+            <li>...</li>
+        </ul>
+    </div>
+
+    <div id="DanniIndiretti" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Garanzie Danni Indiretti - Analisi Dettagliata</h2>
+        
+        <h3>Descrizione Narrativa della Copertura</h3>
+        <p>La sezione Danni Indiretti copre la perdita economica (perdita d'esercizio) derivante 
+        dall'interruzione della produzione causata da un sinistro di incendio coperto. 
+        <em>La descrizione completa, il metodo di calcolo e le condizioni di operatività devono 
+        essere inseriti qui con massimo dettaglio PhD.</em></p>
+        
+        <table>
+            <thead>
+            <tr>
+                <th>Garanzia</th>
+                <th>Limite di Indennizzo</th>
+                <th>Franchigia Temporale</th>
+                <th>Franchigia Monetaria</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="section-header"><th colspan="4">GARANZIE DANNI INDIRETTI</th></tr>
+            <tr>
+                <td>Perdita d'Esercizio - Utile Lordo</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... giorni</td>
+                <td style="text-align: right;">... €</td>
+            </tr>
+            <tr>
+                <td>Costi Fissi (durante interruzione)</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... giorni</td>
+                <td style="text-align: right;">... €</td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <h3>Metodo di Valutazione della Perdita d'Esercizio</h3>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Metodo Applicato:</td><td>...</td></tr>
+            <tr><td>Base di Calcolo Utile Lordo:</td><td>...</td></tr>
+            <tr><td>Utile Lordo Medio Giornaliero:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Utile Lordo Medio Mensile:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Periodo Coperto Max Giorni:</td><td>...</td></tr>
+            <tr><td>Costi Fissi Inclusi:</td><td>...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="Furto" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Garanzie Furto - Analisi Dettagliata</h2>
+        
+        <h3>Descrizione Narrativa della Copertura</h3>
+        <p>La garanzia Furto copre i danni causati da furto, rapina o scasso ai beni assicurati presso 
+        i locali indicati in polizza. <em>La descrizione completa deve includere definizioni di furto, 
+        rapina, scasso, condizioni di operatività e esclusioni specifiche.</em></p>
+        
+        <table>
+            <thead>
+            <tr>
+                <th>Garanzia</th>
+                <th>Limite di Indennizzo</th>
+                <th>Sottolimite Articolo</th>
+                <th>Franchigia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="section-header"><th colspan="4">GARANZIE FURTO E RAPINA</th></tr>
+            <tr>
+                <td>Furto Semplice e Rapina</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+            </tr>
+            <tr>
+                <td>Scasso Effrazione</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="RCE" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Responsabilità Civile Incendio - Analisi Dettagliata</h2>
+        
+        <h3>Descrizione Narrativa della Copertura</h3>
+        <p>La garanzia Responsabilità Civile Incendio copre la responsabilità civile dell'Assicurato 
+        verso terzi per danni causati da incendio che ha origine presso i locali assicurati e si propaga 
+        a proprietà di terzi. <em>Descrizione completa qui.</em></p>
+        
+        <table>
+            <thead>
+            <tr>
+                <th>Garanzia</th>
+                <th>Limite di Indennizzo</th>
+                <th>Franchigia</th>
+                <th>Aggregato</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="section-header"><th colspan="4">GARANZIE RCE</th></tr>
+            <tr>
+                <td>Responsabilità Civile Incendio verso Terzi</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+                <td style="text-align: right;">... €</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="StatisticaSinistri" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Statistica Sinistri</h2>
+        
+        <table>
+            <thead>
+            <tr>
+                <th>Numero Sinistro</th>
+                <th>Data Evento</th>
+                <th>Causa</th>
+                <th>Tipo Danno</th>
+                <th>Stato</th>
+                <th>Importo Pagato (€)</th>
+                <th>Riserva (€)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td style="text-align: right;">...</td>
+                <td style="text-align: right;">...</td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <h3>KPI Sinistri — Ultimi 5 Anni</h3>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Numero sinistri totale:</td><td>...</td></tr>
+            <tr><td>Frequency (sinistri/anno):</td><td>...</td></tr>
+            <tr><td>Severity (importo medio):</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Totale importi pagati:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Totale riserve:</td><td style="text-align: right;">... €</td></tr>
+            <tr><td>Loss Ratio storico:</td><td>... %</td></tr>
+            <tr><td>Sinistri Incendio vs. Furto (split):</td><td>... % Incendio / ... % Furto</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="Esclusioni" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Esclusioni Operative</h2>
+        
+        <h3>I) Esclusioni Generali</h3>
+        <ul>
+            <li>...</li>
+        </ul>
+        
+        <h3>II) Esclusioni Specifiche Incendio</h3>
+        <ul>
+            <li>...</li>
+        </ul>
+        
+        <h3>III) Esclusioni Specifiche Danni Indiretti</h3>
+        <ul>
+            <li>...</li>
+        </ul>
+        
+        <h3>IV) Esclusioni Specifiche Furto</h3>
+        <ul>
+            <li>...</li>
+        </ul>
+    </div>
+
+    <div id="Definizioni" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Definizioni Operative</h2>
+        
+        <dl>
+            <dt>...</dt>
+            <dd>...</dd>
+        </dl>
+    </div>
+
+    <div id="Appendici" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Appendici / Variazioni</h2>
+        
+        <h3>Tabella di Audit Modifiche</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Appendice</th>
+                <th>Data Effetto</th>
+                <th>Data Documento</th>
+                <th>Campo Modificato</th>
+                <th>Valore Prima → Valore Dopo</th>
+                <th>Riferimenti</th>
+                <th>Note</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="Valutazione" class="tab-content">
+        <button class="print-button" onclick="printActiveTab()">Stampa PDF</button>
+        <h2>Valutazione Rischio Complessiva</h2>
+        
+        <h3>Analisi Qualitativa del Rischio</h3>
+        <table class="data-table">
+            <tbody>
+            <tr><td>Categoria Rischio (ATECO):</td><td>...</td></tr>
+            <tr><td>Loss History (ultimi 5 anni):</td><td>...</td></tr>
+            <tr><td>Protezione Incendio Presente:</td><td>...</td></tr>
+            <tr><td>Valore Assicurato vs. Valore Reale:</td><td>...</td></tr>
+            <tr><td>Copertura Danni Indiretti:</td><td>...</td></tr>
+            <tr><td>Rapporto Massimale vs. Max Perdita Possibile:</td><td>...</td></tr>
+            </tbody>
+        </table>
+        
+        <h3>Raccomandazioni del Broker</h3>
+        <div class="alert-box warning">
+            <strong>⚠ ATTENZIONE:</strong> Descrivere qui le aree di potenziale miglioramento della copertura.
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>Report generato in data:</strong> ... | <strong>Polizza n.:</strong> ... | <strong>Compagnia - Contraente</strong></p>
+        <p><em>Documento di analisi tecnica - Non costituisce documento contrattuale</em></p>
+        <p>Analisi PhD-level per uso professionale esclusivo di broker assicurativi e risk manager</p>
+    </div>
+</div>
+
+<script>
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+function printActiveTab() {
+    var activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+    
+    var printWindow = window.open('', '_blank');
+    var styles = Array.from(document.styleSheets)
+        .map(sheet => {
+            try {
+                return Array.from(sheet.cssRules)
+                    .map(rule => rule.cssText)
+                    .join('\n');
+            } catch (e) {
+                return '';
+            }
+        })
+        .join('\n');
+    
+    var headerHTML = document.querySelector('.header').innerHTML;
+    var tabHTML = activeTab.innerHTML;
+    
+    printWindow.document.write('<html><head><title>Stampa Report</title>');
+    printWindow.document.write('<meta charset="UTF-8">');
+    printWindow.document.write('<style>' + styles + '</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<div class="report-container">');
+    printWindow.document.write('<div class="header">' + headerHTML + '</div>');
+    printWindow.document.write('<div class="tab-content active" style="display: block;">');
+    printWindow.document.write(tabHTML.replace(/<button[^>]*>.*?<\/button>/gi, ''));
+    printWindow.document.write('</div></div></body></html>');
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    setTimeout(function() {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
+}
+
+document.addEventListener('afterprint', function() {
+    window.close();
+});
+</script>
+
+</body>
+</html>

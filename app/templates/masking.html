@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="warning-box">
+    <strong>⚠️ IMPORTANTE:</strong> Inserisci i dati ESATTAMENTE come compaiono nel documento.
+    Il sistema effettuerà una sostituzione letterale. Sei responsabile dell'identificazione e inserimento dei dati
+    sensibili da oscurare.
+</div>
+
+<form id="masking-form" action="/analysis/start" method="POST"
+    style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+    <input type="hidden" name="document_ids" value="{{ document_ids }}">
+
+    <!-- Left Column: Inputs -->
+    <div>
+        <div class="card" style="margin-bottom: 20px;">
+            <h3>Dati Analisi</h3>
+            <p><strong>File Caricati ({{ filenames|length }}):</strong></p>
+            <div id="file-tabs" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                {% for doc in documents_data %}
+                <button type="button" class="btn btn-sm file-tab" data-id="{{ doc.id }}"
+                    onclick="switchTab('{{ doc.id }}')"
+                    style="text-align: left; background: #eee; border: 1px solid #ddd;">
+                    📄 {{ doc.filename }} <span style="font-size:0.8em; color:#666">({{ doc.tokens }} tok)</span>
+                </button>
+                {% endfor %}
+            </div>
+            <p><strong>Token Stimati:</strong> {{ total_tokens }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Dati da Oscurare</h3>
+
+            <div class="form-group">
+                <label class="form-label">Numero Polizza</label>
+                <input type="text" id="polizza" name="numero_polizza" class="form-control" placeholder="Es. 123456789">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contraente</label>
+                <input type="text" id="contraente" name="contraente" class="form-control"
+                    placeholder="Es. Mario Rossi S.r.l.">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Partita IVA</label>
+                <input type="text" id="piva" name="partita_iva" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Codice Fiscale</label>
+                <input type="text" id="cf" name="codice_fiscale" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Assicurato</label>
+                <input type="text" id="assicurato" name="assicurato" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Altri dati (uno per riga)</label>
+                <textarea name="altri" class="form-control altro-dato" rows="3"
+                    placeholder="Indirizzi, email, nomi aggiuntivi..."></textarea>
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <label style="display: flex; gap: 10px; align-items: start; cursor: pointer;">
+                    <input type="checkbox" id="confirm-masking" style="margin-top: 4px;">
+                    <span style="font-size: 0.9em;">
+                        Ho verificato e inserito tutti i dati sensibili da oscurare.
+                        Comprendo che il documento verrà inviato a un servizio esterno (LLM)
+                        e che sono responsabile dell'oscuramento dei dati personali.
+                    </span>
+                </label>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button type="button" id="skip-masking-btn" class="btn btn-secondary"
+                    style="color: var(--danger);">Salta e Procedi</button>
+                <button type="submit" id="apply-masking-btn" class="btn btn-primary" disabled>Analizza con
+                    Mascheramento</button>
+            </div>
+        </div>
+
+        <!-- Analysis Options -->
+        <div class="card">
+            <h3>Opzioni Analisi</h3>
+            <div class="form-group">
+                <label class="form-label">Tipo Polizza</label>
+                <select name="policy_type" class="form-control">
+                    <option value="rc_generale" {% if default_policy_type=='rc_generale' %}selected{% endif %}>RC
+                        Generale / RC Prodotti</option>
+                    <option value="incendio" {% if default_policy_type=='incendio' %}selected{% endif %}>Incendio /
+                        Property</option>
+                    <option value="trasporti" {% if default_policy_type=='trasporti' %}selected{% endif %}>Trasporti /
+                        Cargo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Livello Analisi</label>
+                <select name="analysis_level" class="form-control">
+                    <option value="base">Base - Analisi essenziale</option>
+                    <option value="intermedio">Intermedio - Analisi dettagliata</option>
+                    <option value="avanzato">Avanzato - Analisi completa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Modello LLM</label>
+                <select name="llm_model" class="form-control">
+                    <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                    <option value="gemini-2.5-pro" disabled>Gemini 2.5 Pro</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Preview -->
+    <div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>Anteprima Testo</h3>
+                <span style="font-size: 0.9em; color: var(--text-light);"><span id="replace-count">0</span>
+                    sostituzioni</span>
+            </div>
+
+            <!-- Hidden containers for raw text -->
+            {% for doc in documents_data %}
+            <textarea id="raw-text-{{ doc.id }}" style="display: none;">{{ doc.text }}</textarea>
+            {% endfor %}
+            <input type="hidden" id="current-doc-id" value="{{ documents_data[0].id if documents_data else '' }}">
+
+            <div id="masked-preview" class="text-preview"
+                style="max-height: 500px; overflow-y: auto; white-space: pre-wrap;">
+                <!-- Content will be injected via JS -->
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal -->
+<div id="confirm-skip-modal"
+    style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
+    <div class="card" style="max-width: 500px;">
+        <h3 style="color: var(--danger); margin-bottom: 15px;">⚠️ ATTENZIONE</h3>
+        <p style="margin-bottom: 20px;">
+            Stai per inviare il documento SENZA oscuramento a un servizio LLM esterno.
+            <br><br>
+            Confermo di aver letto l'informativa privacy e di assumermi la piena
+            responsabilità per eventuali dati personali contenuti nel documento.
+        </p>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="cancel-skip" class="btn btn-secondary">Annulla</button>
+            <button id="confirm-skip" class="btn btn-danger">Confermo e Procedo</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

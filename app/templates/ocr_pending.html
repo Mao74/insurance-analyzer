@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px;">
+    <h2>Elaborazione Documenti in Corso...</h2>
+    <p>Stiamo estraendo il testo dai tuoi documenti. L'operazione potrebbe richiedere qualche secondo.</p>
+
+    <div class="spinner" style="margin: 30px auto;"></div>
+
+    <p style="font-size: 0.9em; color: var(--text-light);">La pagina si aggiornerà automaticamente.</p>
+
+    <script>
+        setTimeout(() => window.location.reload(), 3000);
+    </script>
+</div>
+{% endblock %}
