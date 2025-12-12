@@ -1,0 +1,438 @@
+# PROMPT SCHEDA TECNICA RICHIESTA QUOTAZIONE - POLIZZA TRASPORTI (v1.0)
+
+## OBIETTIVO
+Generare una Scheda Tecnica in formato HTML per richiedere quotazione a Compagnie assicurative per polizze Marine Cargo / Trasporti Merci. Il documento deve contenere tutti i dati necessari all'underwriter per formulare un'offerta, presentati in formato tabulare, senza valutazioni o commenti.
+
+## TARGET DOCUMENTO
+- **Destinatario:** Underwriter / Ufficio Assuntivo Compagnia
+- **Scopo:** Fornire tutti i dati tecnici per quotazione
+- **Tono:** Neutro, tecnico, zero valutazioni
+- **Output atteso:** Documento che l'underwriter può leggere e quotare senza necessità di chiarimenti (o con minimi chiarimenti elencati nella sezione dedicata)
+
+## PRINCIPI GUIDA
+1. **NEUTRALITÀ ASSOLUTA:** Nessuna valutazione, nessun benchmark, nessun aggettivo (no "competitivo", "ottimo", "elevato")
+2. **DATI PURI:** Solo fatti, numeri, SÌ/NO - nessun commento interpretativo
+3. **COMPLETEZZA:** Meglio un dato con [DA CONFERMARE] che un dato omesso
+4. **FORMATO STANDARD:** Usare il template fornito senza alterazioni
+5. **TRASPARENZA:** Sezione esplicita per dati mancanti o da verificare
+6. **CONTATTO BROKER:** La compagnia contatta SOLO il broker, mai il cliente direttamente
+
+---
+
+## STRUTTURA DEL DOCUMENTO (13 SEZIONI)
+
+1. Dati Contraente/Assicurato
+2. Polizza in Essere
+3. Struttura Copertura Richiesta
+4. Dettaglio Merci
+5. Fatturato Trasportato e Flussi
+6. Massimali
+7. Garanzie e Estensioni
+8. Franchigie
+9. Loss Experience
+10. Dettaglio Sinistri
+11. Risk Management
+12. Informazioni da Confermare
+13. Contatti per Quotazione
+
+---
+
+## ISTRUZIONI DI COMPILAZIONE DETTAGLIATE
+
+### ==================================================
+### SEZIONE 1: DATI CONTRAENTE / ASSICURATO
+### ==================================================
+
+Compila con dati estratti da polizza e documenti cliente:
+
+| Campo | Istruzioni |
+|-------|------------|
+| Ragione Sociale | Esatta come da visura/polizza |
+| Partita IVA | Formato IT + 11 cifre |
+| Sede Legale | Indirizzo completo |
+| Codice ATECO | Se disponibile, altrimenti [NON DISPONIBILE] |
+| Attività | Descrizione sintetica (es. "Produzione macchinari industriali") |
+| Fatturato Annuo | Ultimo bilancio disponibile, formato € XX.XXX.XXX |
+
+**NOTA:** NON includere referente cliente. La compagnia contatta esclusivamente il broker.
+
+---
+
+### ==================================================
+### SEZIONE 2: POLIZZA IN ESSERE
+### ==================================================
+
+Se cliente ha polizza attiva, compilare:
+
+| Campo | Istruzioni |
+|-------|------------|
+| Compagnia Attuale | Nome compagnia (se coassicurazione, indicare delegataria) |
+| N° Polizza | Numero esatto |
+| Scadenza | Formato gg/mm/aaaa |
+| Premio Annuo Attuale | Imponibile, formato € XX.XXX,XX |
+| Tipologia | Open Cover / Polizza Viaggio / Misto |
+| Broker | Nome broker attuale (se diverso da richiedente) |
+
+**Se nuovo rischio (no polizza in essere):**
+Scrivere "NUOVO RISCHIO - Nessuna polizza in essere" e lasciare campi vuoti o con "-".
+
+---
+
+### ==================================================
+### SEZIONE 3: STRUTTURA COPERTURA RICHIESTA
+### ==================================================
+
+| Campo | Istruzioni |
+|-------|------------|
+| Tipologia Polizza | Open Cover / Polizza Viaggio / Misto |
+| Fatturato Trasportato Annuo | Preventivo per anno assicurativo, formato € |
+| LMI Richiesto | Massimale per singola spedizione richiesto |
+| Clausola Base | ICC(A) / ICC(B) / ICC(C) |
+| Ambito Territoriale | Es. "Italia", "UE", "Worldwide", "Worldwide esclusi paesi sanzionati" |
+| Modalità Trasporto | Strada / Mare / Aereo / Ferrovia / Misto |
+| Decorrenza Richiesta | Data decorrenza desiderata |
+
+---
+
+### ==================================================
+### SEZIONE 4: DETTAGLIO MERCI
+### ==================================================
+
+Compilare tabella con tipologie merci trasportate:
+
+| Colonna | Istruzioni |
+|---------|------------|
+| Tipologia Merce | Descrizione merceologica (es. "Macchinari industriali", "Componentistica elettronica") |
+| % sul Totale | Percentuale sul fatturato trasportato totale |
+| Valore Medio Spedizione | Valore medio per singola spedizione di quella merce |
+| Imballaggio | Tipo imballaggio (es. "Casse legno", "Pallet", "Container", "Sfuso") |
+
+**Note sulla Merce:**
+Indicare eventuali caratteristiche rilevanti:
+- Fragilità
+- Deperibilità
+- Pericolosità (ADR/IMDG)
+- Requisiti speciali (temperatura controllata, etc.)
+
+---
+
+### ==================================================
+### SEZIONE 5: FATTURATO TRASPORTATO E FLUSSI
+### ==================================================
+
+**CRITICAL:** Questa sezione è fondamentale per il calcolo premio. Compilare tutte le sotto-sezioni disponibili.
+
+#### 5.1 Suddivisione per Tipologia
+Breakdown Vendite vs Acquisti:
+- **Vendite:** Export + vendite Italia con trasporto a carico del cliente
+- **Acquisti:** Import + acquisti Italia con trasporto a carico del cliente
+
+#### 5.2 Suddivisione per Modalità di Trasporto
+Breakdown per modalità:
+- Strada (camion, autotreno, furgone)
+- Mare (FCL, LCL, rinfusa)
+- Aereo
+- Ferrovia
+- Corriere espresso
+
+#### 5.3 Matrice Dettagliata
+Se disponibili dati sufficienti, compilare matrice incrociata:
+- Righe: Vendite / Acquisti
+- Colonne: Strada / Mare / Aereo / Altro
+
+**Se dati non disponibili a questo livello di dettaglio:**
+Compilare solo 5.1 e 5.2, indicare in sezione 12 "Matrice dettagliata non disponibile - da richiedere a cliente".
+
+#### 5.4 Principali Direttrici Geografiche
+Elencare le 3-5 direttrici principali con:
+- Origine → Destinazione (es. "Italia → Germania", "Cina → Italia")
+- Modalità prevalente
+- Fatturato annuo stimato
+- N° spedizioni/anno stimato
+
+**Note sul Fatturato:**
+Indicare eventuali:
+- Stagionalità
+- Trend previsti (crescita/decrescita)
+- Variazioni significative vs anno precedente
+- Incoterms prevalenti utilizzati
+
+---
+
+### ==================================================
+### SEZIONE 6: MASSIMALI
+### ==================================================
+
+**CRITICAL:** Compilare tutti i massimali richiesti, distinguendo tra attuali (se polizza in essere) e richiesti.
+
+| Tipologia Massimale | Note Compilazione |
+|---------------------|-------------------|
+| Per Spedizione (LMI) | Massimale base per singola spedizione |
+| Per Singolo Autocarro | Limite per camion/furgone singolo |
+| Per Autotreno/Autoarticolato | Limite per autotreno completo |
+| Per Container (FCL) | Limite per container completo |
+| Per Nave/Stiva | Limite per accumulo su singola nave |
+| Per Aereo | Limite per accumulo su singolo aereo |
+| Per Evento/Sinistro | Limite massimo per singolo evento |
+| Aggregato Annuo | Se previsto limite annuo complessivo |
+
+**Note sui Massimali:**
+Indicare eventuali:
+- Spedizioni eccezionali previste (valore superiore a LMI standard)
+- Modalità gestione eccedenze desiderata (dichiarazione preventiva / automatica)
+
+---
+
+### ==================================================
+### SEZIONE 7: GARANZIE E ESTENSIONI
+### ==================================================
+
+Compilare tabella garanzie con:
+- **Richiesta:** SÌ / NO / OPZIONALE (se cliente vuole quotazione con e senza)
+- **Note:** Eventuali specifiche (es. per Danni Non Apparenti: "Termini riserva 5gg")
+
+**GARANZIE ORGANIZZATE PER CATEGORIA:**
+
+**Clausole Base:**
+- ICC(A) / ICC(B) / ICC(C)
+
+**Estensioni Rischi:**
+- War Risk (specificare JC2021 o JC2009)
+- SRCC (Strikes, Riots, Civil Commotions)
+- Terrorism
+- TPND (Theft, Pilferage, Non-Delivery)
+
+**Clausole Operative:**
+- Danni Non Apparenti
+- Imballo Accettato / Packing Accepted
+- Clausola Colpa del Mittente
+- Trasporto con Mezzi Propri
+- Deviazione / Cambio Viaggio
+- Mancata Partenza / Annullamento
+
+**Merci Speciali:**
+- Refrigerated Cargo / Reefer
+- Merci Pericolose (ADR/IMDG)
+- Merce Usata
+- Colli Eccezionali / Fuori Sagoma
+- Valori / Preziosi / Opere d'Arte
+
+**Estensioni Operative:**
+- Stocks in Transit / Giacenze (indicare max gg)
+- Magazzinaggio Prolungato
+- Exhibition / Fiere
+- Campionario presso Agenti
+- Montaggio / Installazione
+- Collaudo / Testing
+
+**Coperture Accessorie:**
+- Sue & Labour
+- Ricorso Terzi
+- Spese di Ricondizionamento
+- Spese di Smaltimento
+- Avaria Comune / General Average
+- Contributo Particolare
+
+**NOTA:** Non indicare limiti/sublimiti richiesti. Se la compagnia vorrà proporre sublimiti, lo farà in quotazione.
+
+---
+
+### ==================================================
+### SEZIONE 8: FRANCHIGIE
+### ==================================================
+
+Compilare tabella con:
+- **Franchigia Attuale:** Se polizza in essere, franchigia attualmente applicata
+- **Franchigia Richiesta:** Se cliente ha preferenze specifiche, altrimenti "A vs proposta"
+
+| Garanzia | Note |
+|----------|------|
+| Franchigia Base (All Risks) | Franchigia standard per danni generici |
+| Furto (TPND) | Spesso franchigia dedicata più alta |
+| Danni da Acqua | Se prevista franchigia specifica |
+| Rottura / Breakage | Per merci fragili, spesso franchigia dedicata |
+
+**Se cliente non ha preferenze specifiche:**
+Indicare "A vs proposta Compagnia" per tutte le voci.
+
+---
+
+### ==================================================
+### SEZIONE 9: LOSS EXPERIENCE
+### ==================================================
+
+**CRITICAL:** Compilare con dati ESATTI da attestato sinistri o documentazione compagnia.
+
+Tabella riepilogativa per anno:
+
+| Colonna | Istruzioni |
+|---------|------------|
+| Anno | Anno solare o assicurativo (specificare) |
+| Premio | Premio imponibile pagato quell'anno |
+| N° Sinistri | Numero totale sinistri denunciati |
+| Riservato | Totale riserve ancora aperte a fine periodo |
+| Pagato | Totale indennizzi effettivamente liquidati |
+| Loss Ratio | (Riservato + Pagato) / Premio × 100 |
+
+**Calcolo Loss Ratio:**
+- Usare formula: **(Riservato + Pagato) / Premio × 100**
+- NON commentare se alto/basso - solo dato numerico
+- Se Loss Ratio > 100%, riportare dato senza commenti
+
+**Riga TOTALE:**
+- Somma premi
+- Somma sinistri
+- Somma riservato
+- Somma pagato
+- Loss Ratio complessivo sul periodo
+
+---
+
+### ==================================================
+### SEZIONE 10: DETTAGLIO SINISTRI
+### ==================================================
+
+Elenco sinistri ultimi 3 anni (o 5 se disponibili):
+
+| Colonna | Istruzioni |
+|---------|------------|
+| Data | Data denuncia/avviso sinistro |
+| Causa | Descrizione sintetica (es. "Water Damage", "Theft", "Breakage", "Shortage") |
+| Riservato | Importo ancora a riserva (€0 se chiuso) |
+| Pagato | Importo liquidato |
+| Status | OPEN / CLOSED |
+| Note | Eventuali dettagli rilevanti (tratta, merce, etc.) |
+
+**NOTA:** Non includere colonna "Richiesto" - dato non rilevante per underwriter.
+
+**Se nessun sinistro:**
+Indicare "Nessun sinistro nel periodo di osservazione [ANNI]".
+
+---
+
+### ==================================================
+### SEZIONE 11: RISK MANAGEMENT
+### ==================================================
+
+Compilare tabella misure di prevenzione implementate dal cliente:
+
+| Misura | Implementata | Dettagli |
+|--------|--------------|----------|
+| Imballaggio certificato | SÌ/NO/PARZIALE | Specificare standard (es. ISPM15) |
+| Tracking GPS | SÌ/NO/PARZIALE | Specificare soglia valore |
+| Vettori qualificati | SÌ/NO/PARZIALE | Specificare certificazioni richieste |
+| Procedura controllo pre-spedizione | SÌ/NO/PARZIALE | Descrizione sintetica |
+| Documentazione fotografica | SÌ/NO/PARZIALE | Standard adottato |
+| Sicurezza magazzini | SÌ/NO/PARZIALE | Vigilanza, allarmi, etc. |
+
+**Se informazioni non disponibili:**
+Indicare [DA VERIFICARE CON CLIENTE] e riportare in sezione 12.
+
+---
+
+### ==================================================
+### SEZIONE 12: INFORMAZIONI DA CONFERMARE
+### ==================================================
+
+**CRITICAL:** Elencare TUTTI i dati mancanti, incerti o da verificare.
+
+**Box "Dati da Verificare / Completare":**
+Elenco puntato di ogni informazione non disponibile o da confermare:
+- [Dato X] - non presente in documentazione
+- [Dato Y] - da confermare con cliente
+- [Dato Z] - discrepanza tra documenti
+
+**Box "Domande per l'Underwriter":**
+Eventuali quesiti specifici che il broker pone alla compagnia:
+- Disponibilità copertura per [zona/merce specifica]
+- Possibilità estensione [garanzia particolare]
+- Trattamento [situazione specifica]
+
+---
+
+### ==================================================
+### SEZIONE 13: CONTATTI PER QUOTAZIONE
+### ==================================================
+
+**SOLO contatti broker:**
+
+| Campo | Valore |
+|-------|--------|
+| Broker | Ragione sociale broker |
+| Referente | Nome referente broker per questo rischio |
+| Email | Email per invio quotazione |
+| Telefono | Telefono diretto |
+| Data Richiesta | Data invio richiesta quotazione |
+
+**NOTA:** Non includere MAI contatti del cliente. Ogni comunicazione passa attraverso il broker.
+
+---
+
+## OUTPUT FINALE
+
+### FORMATO
+- HTML singolo file
+- Usare template fornito senza modifiche strutturali
+- Tutti i placeholder [XXX] devono essere sostituiti con dati reali o [NON DISPONIBILE]
+
+### VALIDATION CHECKLIST
+
+Prima di consegnare, verificare:
+
+**COMPLETEZZA:**
+- [ ] Tutte le 13 sezioni compilate
+- [ ] Nessun placeholder [XXX] residuo (sostituiti con dati o [NON DISPONIBILE])
+- [ ] Loss Experience con dati numerici verificati
+- [ ] Sezione 12 compilata con tutti i dati mancanti
+
+**COERENZA DATI:**
+- [ ] Totale fatturato sez. 5.1 = Totale sez. 5.2 = Totale sez. 5.3
+- [ ] Somma Loss Experience corretta
+- [ ] Loss Ratio calcolato correttamente: (Riservato + Pagato) / Premio
+
+**NEUTRALITÀ:**
+- [ ] Nessun aggettivo valutativo (ottimo, buono, elevato, competitivo, etc.)
+- [ ] Nessun benchmark o confronto con mercato
+- [ ] Nessun commento su Loss Ratio (solo dato numerico)
+- [ ] Nessuna raccomandazione o suggerimento
+
+**FORMATO:**
+- [ ] Importi in formato € XX.XXX,XX
+- [ ] Date in formato gg/mm/aaaa
+- [ ] Percentuali con una cifra decimale (es. 65,3%)
+
+---
+
+## COSA NON FARE
+
+❌ **NON** includere valutazioni ("loss ratio ottimo", "tasso competitivo")
+❌ **NON** includere benchmark di mercato
+❌ **NON** includere raccomandazioni al cliente o alla compagnia
+❌ **NON** includere contatti del cliente (solo broker)
+❌ **NON** commentare i dati - solo riportarli
+❌ **NON** omettere dati mancanti - indicarli esplicitamente in sez. 12
+❌ **NON** inventare dati non presenti nei documenti
+
+---
+
+## ESEMPIO COMPILAZIONE LOSS EXPERIENCE
+
+**CORRETTO:**
+```
+| Anno | Premio      | N° Sin. | Riservato  | Pagato     | Loss Ratio |
+|------|-------------|---------|------------|------------|------------|
+| 2022 | € 18.500,00 | 2       | € 0,00     | € 12.340,00| 66,7%      |
+| 2023 | € 19.200,00 | 1       | € 0,00     | € 3.200,00 | 16,7%      |
+| 2024 | € 20.100,00 | 3       | € 5.000,00 | € 18.750,00| 118,2%     |
+| TOT  | € 57.800,00 | 6       | € 5.000,00 | € 34.290,00| 67,9%      |
+```
+
+**ERRATO (da evitare):**
+```
+Loss Ratio 2024: 118,2% - ELEVATO, richiede attenzione ❌
+Loss Ratio triennale: 67,9% - BUONO, sotto media mercato ❌
+```
+
+---
+
+**FINE PROMPT v1.0 - SCHEDA TECNICA COMPAGNIA**

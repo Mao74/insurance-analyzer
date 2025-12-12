@@ -13,3 +13,5 @@ python-dotenv>=1.0.0
 itsdangerous>=2.1.2
 python-magic-bin>=0.4.14
 pydantic-settings
+beautifulsoup4>=4.12.0
+playwright>=1.40.0

@@ -47,13 +47,21 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     if not user_data:
         return RedirectResponse(url="/login", status_code=303)
     
-    # Get last 10 analyses
+    # Get Saved Analyses (Archived)
+    saved_analyses = db.query(models.Analysis).join(models.Document).\
+        filter(models.Document.user_id == user_data["id"]).\
+        filter(models.Analysis.is_saved == True).\
+        order_by(models.Analysis.last_updated.desc()).all()
+
+    # Get Recent Analyses (Not Saved, last 10)
     recent_analyses = db.query(models.Analysis).join(models.Document).\
         filter(models.Document.user_id == user_data["id"]).\
+        filter(models.Analysis.is_saved == False).\
         order_by(models.Analysis.created_at.desc()).limit(10).all()
         
     return templates.TemplateResponse("dashboard.html", {
         "request": request, 
         "user": user_data,
-        "analyses": recent_analyses
+        "saved_analyses": saved_analyses,
+        "analyses": recent_analyses # Keep key 'analyses' for recent to minimize template breakage initially
     })

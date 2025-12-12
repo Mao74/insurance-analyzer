@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +14,7 @@ import uvicorn
 # Let's rely on init_db() called manually or on startup.
 # We will call it on startup event for MVP simplicity.
 
-app = FastAPI(title="Insurance Analyzer")
+app = FastAPI(title="PoliSight")
 
 
 # Static files

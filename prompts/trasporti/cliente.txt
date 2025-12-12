@@ -1,0 +1,535 @@
+# PROMPT ANALISI TECNICA POLIZZA TRASPORTI - REPORT CLIENTE (v6.1)
+
+## OBIETTIVO
+Generare un report HTML di audit assicurativo di livello "Forensic/PhD" per polizze Marine Cargo, destinato al CLIENTE (imprenditore/risk manager aziendale). Il report deve rendere il cliente autonomo nella comprensione della propria copertura, dei gap e delle azioni da intraprendere.
+
+## TARGET DOCUMENTO
+- **Destinatario:** Imprenditore / Risk Manager aziendale (non tecnico assicurativo)
+- **Scopo:** Far capire cosa ha, cosa NON ha, cosa rischia, cosa fare
+- **Tono:** Consulenziale, autorevole ma accessibile, zero paternalismo
+- **Output atteso:** Il cliente legge e sa rispondere a "sono coperto adeguatamente?" con cognizione di causa
+
+## PRINCIPI GUIDA
+1. **OGGETTIVITÀ:** Basa ogni valutazione su dati verificabili dalla polizza.
+2. **COMPLETEZZA:** Non omettere mai garanzie secondarie.
+3. **IMMUTABILITÀ HTML:** Usa il template fornito senza alterarne la struttura CSS/JS.
+4. **DIDATTICA:** Il cliente deve capire OGNI meccanismo (franchigie, clausole, Incoterms, interesse assicurabile).
+5. **ESEMPI CONCRETI:** Gli esempi devono essere coerenti con la tipologia merceologica del cliente.
+6. **NO DATI INVENTATI:** Non ipotizzare tratte, geografie o dati non presenti nei documenti di input.
+
+---
+
+## STRUTTURA TAB DEL REPORT
+
+1. **Sintesi Contrattuale** - Dati generali, struttura copertura, alert operativi
+2. **Garanzie & Clausole** - Matrice garanzie, schede tecniche clausole critiche
+3. **Analisi Premi & Fatturato** - Breakdown premi, validazione, stress-test LMI
+4. **Storico Sinistri** - Registro sinistri, analytics, pattern
+5. **Esempi Pratici** - Esempi di sinistro calibrati sulla merce del cliente (NUOVA SEZIONE)
+6. **Approfondimenti Tecnici** - Interesse assicurabile, Incoterms con trappole, glossario
+7. **Procedura Sinistri** - Step-by-step operativo
+
+---
+
+## ⚠️ VALIDAZIONE DATI CRITICI (OBBLIGATORIA)
+
+### PREMI E FATTURATO
+1. **Premio Totale ≈ Somma premi tratte** (Tolleranza < 5%).
+2. **Tasso medio:** Range normale 0.5‰ - 15‰ (verificare outliers).
+3. **Fatturato Preventivo vs. Consuntivo:** Se scostamento >15% → Alert Alta Priorità.
+
+### LMI (LIMIT MARINE INSURANCE)
+1. **Verificare coerenza:** Se polizza dichiara spedizioni >LMI, segnalare mancata dichiarazione preventiva.
+2. **Gestione eccedenze:** Chiarire se automatica, con sovrapremio, o richiede conferma preventiva.
+
+### SINISTRI
+1. **Letterale:** Copia importi esatti (centesimi inclusi).
+2. **S/P Ratio:** Se 0% → "Nessun sinistro". Se >200% → Verifica accuratezza dati.
+
+---
+
+## ISTRUZIONI DI COMPILAZIONE DETTAGLIATE
+
+### ==================================================
+### TAB 1: SINTESI CONTRATTUALE
+### ==================================================
+
+#### 1.1 DATI GENERALI (Info-Grid)
+Compila tutti i campi estraendo da polizza/CGA:
+- **Contraente:** Ragione sociale completa
+- **Assicurato:** Se diverso da Contraente (spesso coincidono)
+- **Broker:** Nome intermediario
+- **Compagnia:** Nome compagnia + eventuale coassicurazione
+- **Numero Polizza:** Esatto come su frontespizio
+- **Vigenza:** Data decorrenza - Data scadenza (formato gg/mm/aaaa)
+- **Premio Annuo Totale:** Imponibile + accessori (formato € XX.XXX,XX)
+- **Frazionamento:** Annuale / Semestrale / Trimestrale / Mensile
+- **Disdetta:** Giorni preavviso (es. "60gg tramite raccomandata A/R")
+- **Mora:** Giorni tolleranza pagamento
+
+#### 1.2 STRUTTURA COPERTURA
+**CRITICO - TIPOLOGIA POLIZZA:**
+- **"Open Cover Annuale"** → Copertura continuativa su fatturato dichiarato
+- **"Polizza Viaggio"** → Singole spedizioni con data/tratta specifica
+- **"Open Cover + Viaggi Spot"** → Misto
+
+**FATTURATO:**
+- **Preventivo Annuo:** Dichiarato in polizza (base calcolo premio)
+- **Consuntivo:** Se disponibile
+- **Scostamento %:** Se >+15% → Alert Alta Priorità; Se <-15% → Alert Media
+
+**LMI:**
+- Estrai valore massimale per spedizione
+- **Gestione Eccedenze:** Dichiarazione preventiva / Automatica con sovrapremio / Esclusa
+
+#### 1.3 COASSICURAZIONE & DELEGA
+Se polizza è coassicurata, crea tabella con Compagnia, Quota %, Delega, Note.
+
+#### 1.4 ALERT OPERATIVI IMMEDIATI
+**SISTEMA A 3 LIVELLI:**
+
+**🔴 ALTA PRIORITÀ:** Situazioni che richiedono azione IMMEDIATA
+**🟡 ATTENZIONE:** Segnalazioni preventive che richiedono monitoraggio
+**🟢 CONFERME OPERATIVE:** Validazioni positive
+
+---
+
+### ==================================================
+### TAB 2: GARANZIE & CLAUSOLE
+### ==================================================
+
+#### 2.1 MATRICE GARANZIE OPERATIVE (Tabella)
+Per ogni garanzia estrai: Operativa (SÌ/NO/CONDIZIONATA), Franchigia, Scoperto, Note/Limiti.
+
+**GARANZIE OBBLIGATORIE DA VERIFICARE:**
+1. Institute Cargo Clauses (A) / (B) / (C)
+2. War Risk (JC2021 o JC2009)
+3. Strike, SRCC, Terrorism
+4. Theft, Pilferage, Non-Delivery (TPND)
+5. Ricorso Terzi (Third Party Liability)
+6. Sue & Labour Expenses
+7. Stocks & Stores (Giacenze)
+8. General Average (Avaria Comune)
+9. Danni Non Apparenti
+10. Delay (Ritardi) - tipicamente ESCLUSA
+
+#### 2.2 SCHEDE TECNICHE CLAUSOLE CRITICHE (6 Clause-Cards minimo)
+Usa il formato clause-card del template per: ICC(A), War Risk, TPND, Danni Non Apparenti, Cattivo Imballaggio, Sue & Labour.
+
+#### 2.3 ALERT CRITICI PRE-SINISTRO
+Check obbligatori prima di ogni spedizione (War Risk, Sanzioni, LMI, Imballaggio).
+
+---
+
+### ==================================================
+### TAB 3: ANALISI PREMI & FATTURATO
+### ==================================================
+
+#### 3.1 BREAKDOWN PREMI PER TRATTA/MODALITÀ
+Tabella con: Tratta/Zona, Fatturato Prev., Tasso ‰, Premio Calc., Premio Polizza, Delta %, Note.
+
+**IMPORTANTE:** Non includere valutazioni comparative con benchmark di mercato. Presentare i dati in modo descrittivo, non valutativo.
+
+#### 3.2 VALIDAZIONE PREMI & COERENZA
+Info-Grid con: Premio Totale Polizza, Somma Premi Calcolati, Delta Assoluto, Delta %, Tasso Medio Ponderato.
+
+#### 3.3 STRESS-TEST ECCEDENZE LMI
+Tabella analisi LMI con raccomandazioni operative.
+
+---
+
+### ==================================================
+### TAB 4: STORICO SINISTRI
+### ==================================================
+
+#### 4.1 REGISTRO SINISTRI (Tabella Ultimi 3 Anni)
+**CRITICAL - ESTRAZIONE LETTERALE:** Copia dati ESATTI. NON arrotondare, NON stimare.
+
+Colonne: Data, Tratta, Causa Sinistro, Val. Richiesto, Franchigia, Indennizzo, S/P Impact, Note.
+
+#### 4.2 ANALYTICS SINISTRALITÀ (Info-Grid)
+KPI: N° Sinistri, Totale Indennizzi, Totale Premi (3 anni), S/P Ratio, Frequency, Severity.
+
+#### 4.3 GRAFICO ANDAMENTO (Chart.js)
+
+**⚠️ CRITICAL - REGOLE GENERAZIONE DATI GRAFICO:**
+
+**1. DETERMINAZIONE RANGE ANNI:**
+```
+Anno_inizio = MIN(anno del primo sinistro per Data Avviso, anno prima annualità premio disponibile)
+Anno_fine = Anno corrente (SEMPRE includere, anche se non ci sono ancora sinistri)
+```
+- Generare array `years` con TUTTI gli anni nel range, SENZA BUCHI
+- Esempio: se primo sinistro è 2022 e siamo nel 2025 → years = ['2022', '2023', '2024', '2025']
+
+**2. ASSEGNAZIONE SINISTRI AGLI ANNI:**
+- Usare **SEMPRE la colonna "Data Avviso" o "Data Denuncia"** per assegnare il sinistro all'anno
+- **IGNORARE** eventuali note tipo "Sinistro del 20XX" - queste indicano l'anno di accadimento, non l'anno di gestione
+- Sommare tutti gli indennizzi pagati per sinistri con Data Avviso in quell'anno
+
+**3. ASSEGNAZIONE PREMI AGLI ANNI:**
+- Usare i premi annui da polizza/appendici di rinnovo
+- Se premio anno X non è esplicitamente disponibile ma la polizza era attiva:
+  - Usare il premio dell'anno più vicino disponibile
+  - Oppure segnalare [PREMIO NON DISPONIBILE - STIMATO]
+- **Anno corrente:** usare il premio annuo intero (NON pro-rata)
+
+**4. GESTIONE ANNI A ZERO:**
+- Se un anno ha premio pagato ma ZERO indennizzi → `claims[anno] = 0`
+- La colonna DEVE comunque apparire nel grafico (non omettere l'anno)
+
+**5. VERIFICA COERENZA:**
+- `years.length` deve essere uguale a `premiums.length` e `claims.length`
+- Somma di `claims` deve coincidere con "Totale Indennizzi Pagati" nella tabella Analytics
+
+**ESEMPIO CORRETTO:**
+
+Scenario: Polizza attiva dal 2022, siamo nel 2025
+- 2022: Premio €20.000, Indennizzi €23.500
+- 2023: Premio €18.000, Indennizzi €10.875 
+- 2024: Premio €17.000, Indennizzi €11.193
+- 2025: Premio €17.000, Indennizzi €0 (sinistro aperto ma non ancora liquidato)
+
+```javascript
+const years = ['2022', '2023', '2024', '2025'];
+const premiums = [20000, 18000, 17000, 17000];
+const claims = [23500, 10875, 11193, 0];
+```
+
+**ESEMPIO ERRATO (DA EVITARE):**
+```javascript
+// ERRORE: manca il 2025
+const years = ['2022', '2023', '2024'];
+// ERRORE: anni non allineati con sinistri effettivi per Data Avviso
+```
+
+**OUTPUT JS FINALE:**
+```javascript
+const years = ['ANNO_1', 'ANNO_2', ..., 'ANNO_CORRENTE'];
+const premiums = [PREMIO_1, PREMIO_2, ..., PREMIO_CORRENTE];
+const claims = [INDENNIZZI_1, INDENNIZZI_2, ..., INDENNIZZI_CORRENTE];
+```
+
+#### 4.4 PATTERN RECOGNITION & RACCOMANDAZIONI
+Analizza sinistri e identifica pattern (ricorrenza tratta, causa, modalità, stagionalità).
+
+---
+
+### ==================================================
+### TAB 5: ESEMPI PRATICI (NUOVA SEZIONE)
+### ==================================================
+
+**OBIETTIVO:** Illustrare situazioni tipiche di sinistro calibrate sulla tipologia di merce del cliente.
+
+#### 5.1 IDENTIFICAZIONE CATEGORIA MERCEOLOGICA
+**STEP 1:** Analizza polizza e sinistri per identificare la categoria merceologica prevalente del cliente.
+
+**CATEGORIE POSSIBILI:**
+- Macchinari industriali
+- Alimentari deperibili
+- Elettronica/Hi-Tech
+- Chimici/Pericolosi (ADR)
+- Materie prime sfuse
+- Componentistica automotive
+- Tessile/Abbigliamento
+- Farmaceutici
+- Prodotti siderurgici
+- Vetro/Ceramica
+
+**STEP 2:** Indica la categoria nel report: `[CATEGORIA_MERCEOLOGICA]`
+
+#### 5.2 GENERAZIONE ESEMPI (4-5 Example-Cards)
+
+**CRITICAL:** Gli esempi devono essere COERENTI con la categoria merceologica identificata. NON usare esempi generici o di altre categorie.
+
+**STRUTTURA OGNI ESEMPIO:**
+```html
+<div class="example-card">
+    <div class="example-header">
+        <span>[ICONA]</span>
+        <span>[TITOLO_ESEMPIO]</span>
+    </div>
+    <div class="example-body">
+        <div class="example-section">
+            <div class="example-section-title">Situazione tipo</div>
+            <p>[DESCRIZIONE SCENARIO REALISTICO PER QUELLA MERCE]</p>
+        </div>
+        
+        <div class="example-section">
+            <div class="example-section-title">Cosa copre tipicamente la polizza</div>
+            <ul>
+                <li>[COPERTURA 1]</li>
+                <li>[COPERTURA 2]</li>
+            </ul>
+        </div>
+        
+        <div class="example-section">
+            <div class="example-section-title">Cosa spesso NON è coperto</div>
+            <ul>
+                <li>[ESCLUSIONE 1]</li>
+                <li>[ESCLUSIONE 2]</li>
+            </ul>
+        </div>
+        
+        <div class="example-warning">
+            <strong>⚠️ Trappola comune:</strong> [ERRORE TIPICO CHE IL CLIENTE POTREBBE FARE]
+        </div>
+        
+        <div class="example-tip">
+            <strong>✓ Da verificare nella tua polizza:</strong> [COSA CONTROLLARE]
+        </div>
+    </div>
+</div>
+```
+
+#### 5.3 ESEMPI PER CATEGORIA MERCEOLOGICA
+
+**MACCHINARI INDUSTRIALI:**
+1. Danno da urto/ribaltamento durante movimentazione
+2. Danno da vibrazione durante trasporto
+3. Vizio di imballaggio per macchinario fuori sagoma
+4. Danno durante montaggio/smontaggio per carico
+5. Ossidazione/corrosione da umidità in transito marittimo
+
+**ALIMENTARI DEPERIBILI:**
+1. Rottura catena del freddo
+2. Contaminazione da altro carico
+3. Rifiuto merce a destino per ritardo
+4. Deterioramento per sosta prolungata in dogana
+5. Infestazione parassiti
+
+**ELETTRONICA/HI-TECH:**
+1. Furto in area di sosta (destrezza vs. effrazione)
+2. Danno occulto da urto (scoperto all'installazione)
+3. Danno da umidità/condensa
+4. Danno elettrostatico
+5. Obsolescenza per ritardo consegna
+
+**CHIMICI/PERICOLOSI:**
+1. Sversamento e contaminazione
+2. Reazione chimica da stoccaggio errato
+3. Rifiuto carico per documentazione ADR incompleta
+4. Danni a terzi (responsabilità)
+5. Confisca per violazione normativa
+
+**MATERIE PRIME SFUSE:**
+1. Calo naturale di peso
+2. Contaminazione da altro carico
+3. Bagnamento in stiva
+4. Errore di pesatura (differenza peso partenza/arrivo)
+5. Furto parziale (pilferage)
+
+#### 5.4 NOTA FINALE ESEMPI
+Includi sempre alert box finale che chiarisce che gli esempi sono illustrativi e la copertura effettiva dipende dalle condizioni specifiche della polizza.
+
+---
+
+### ==================================================
+### TAB 6: APPROFONDIMENTI TECNICI
+### ==================================================
+
+#### 6.1 BOX PRINCIPIO FONDAMENTALE: INTERESSE ASSICURABILE
+
+**CRITICAL:** Questo box DEVE apparire per primo, prima di qualsiasi altro contenuto del tab.
+
+```html
+<div class="principle-box">
+    <div class="principle-title">
+        <span>⚠️</span>
+        <span>Principio Fondamentale: Senza Interesse, Nessun Indennizzo</span>
+    </div>
+    <div class="principle-content">
+        <p>La polizza trasporti indennizza <strong>solo chi ha un interesse economico sulla merce nel momento del danno</strong>. 
+        Se al momento del sinistro il rischio era già trasferito alla controparte (per effetto dell'Incoterm applicato), 
+        la polizza <strong>non paga</strong>, anche se formalmente attiva.</p>
+        
+        <p>L'interesse assicurabile è il fondamento stesso del contratto: se manca, il contratto è nullo o comunque inoperante per quel sinistro.</p>
+        
+        <div class="principle-example">
+            <strong>Esempio pratico:</strong><br>
+            Vendi EXW (Franco Fabbrica). La merce si danneggia durante il trasporto verso il cliente. 
+            Tu hai una polizza trasporti attiva, ma <strong>non ti spetta alcun indennizzo</strong>: 
+            il rischio è passato al compratore dal momento del ritiro presso il tuo magazzino. 
+            La tua polizza non aveva più "interesse" su quella merce.
+        </div>
+    </div>
+</div>
+```
+
+#### 6.2 INCOTERMS 2020 - GUIDA PRATICA CON TRAPPOLE
+
+**CRITICAL:** Focus sui 5 Incoterms più diffusi. Per ognuno evidenziare la TRAPPOLA comune.
+
+**FORMATO PER OGNI INCOTERM:**
+```html
+<div class="clause-card" style="margin-bottom: 20px;">
+    <div class="clause-header">📍 [CODICE] - [NOME ESTESO]</div>
+    <div class="clause-body">
+        <p><strong>Trasferimento del rischio:</strong> [MOMENTO ESATTO]</p>
+        <p><strong>Chi deve assicurare:</strong> [VENDITORE/COMPRATORE]</p>
+        
+        <div class="incoterm-trap">
+            <strong>⚠️ TRAPPOLA:</strong> [ERRORE COMUNE E CONSEGUENZE]
+        </div>
+    </div>
+</div>
+```
+
+**INCOTERMS DA INCLUDERE (5):**
+
+**1. EXW - Ex Works (Franco Fabbrica)**
+- Trasferimento rischio: Alla messa a disposizione presso venditore
+- Chi assicura: COMPRATORE per l'intero trasporto
+- TRAPPOLA: Il compratore spesso non sa di essere responsabile dal primo metro. Se non ha polizza propria, viaggia scoperto. Il venditore pensa "non è più affar mio" ma potrebbe trovarsi in difficoltà commerciali se la merce non arriva.
+
+**2. FCA - Free Carrier (Franco Vettore)**
+- Trasferimento rischio: Alla consegna al vettore nel luogo convenuto
+- Chi assicura: COMPRATORE dal momento della consegna al vettore
+- TRAPPOLA: Il punto esatto di consegna è critico. "FCA magazzino venditore" vs "FCA terminal" hanno momenti di trasferimento diversi. Confondere i due casi può creare buchi di copertura.
+
+**3. CIF/CIP - Cost, Insurance & Freight**
+- Trasferimento rischio: CIF a bordo nave, CIP alla consegna al primo vettore
+- Chi assicura: VENDITORE ha obbligo di stipulare assicurazione
+- TRAPPOLA: Nel CIF il venditore può assicurare con ICC(C), che copre quasi nulla. Il compratore si illude di essere coperto ma in caso di danno "normale" non riceve nulla. VERIFICARE SEMPRE il tipo di clausola ICC stipulata!
+
+**4. DAP - Delivered at Place (Reso al Luogo)**
+- Trasferimento rischio: Alla messa a disposizione nel luogo di destino, merce ancora sul mezzo
+- Chi assicura: VENDITORE per l'intero trasporto
+- TRAPPOLA: Il venditore pensa che il suo rischio finisca quando il camion parte. FALSO. È esposto per tutto il trasporto. Senza polizza trasporti, paga di tasca propria.
+
+**5. DDP - Delivered Duty Paid (Reso Sdoganato)**
+- Trasferimento rischio: Alla messa a disposizione nel luogo di destino, sdoganata
+- Chi assicura: VENDITORE, massima esposizione possibile
+- TRAPPOLA: Massima esposizione: tutti i rischi comprese dogane, dazi, IVA. Se la merce viene bloccata/danneggiata in dogana, paga il venditore. Richiede polizza robusta + conoscenza normativa doganale.
+
+#### 6.3 GLOSSARIO OPERATIVO (3 Edu-Cards)
+
+**CARD 1: Interesse Assicurabile - Composizione**
+(Definizione, composizione tipica, esempio numerico)
+
+**CARD 2: LMI (Limit Marine Insurance)**
+(Definizione, differenze per spedizione/evento/veicolo, caso critico)
+
+**CARD 3: Differenze ICC(A) / ICC(B) / ICC(C)**
+(Confronto coperture, regola pratica di scelta)
+
+#### 6.4 MECCANISMI FRANCHIGIE & SCOPERTI
+Edu-card con spiegazione ed esempi numerici di:
+1. Franchigia fissa
+2. Franchigia percentuale con minimo
+3. Scoperto (diverso da franchigia!)
+
+#### 6.5 RESPONSABILITÀ VETTORE VS. ASSICURAZIONE
+Tabella con limiti legali vettore per modalità (Mare, Aereo, Strada, Ferrovia) e gap assicurativo tipico.
+
+---
+
+### ==================================================
+### TAB 7: PROCEDURA SINISTRI STEP-BY-STEP
+### ==================================================
+
+Mantieni la struttura esistente con i 6 step:
+1. Azioni Immediate (0-24h)
+2. Denuncia Formale & Danni Non Apparenti (entro 3gg)
+3. Invio Documentazione Completa (entro 7gg)
+4. Gestione Perizia (7-30gg)
+5. Liquidazione & Pagamento (30-90gg)
+6. Archiviazione & Impatto su Polizza
+
+Includi: Template email denuncia, checklist documentazione, contatti emergenza.
+
+---
+
+## SEZIONE OUTPUT FINALE: JS DATA
+
+### OUTPUT JS OBBLIGATORIO (CLAIMS CHART)
+
+**Segui ESATTAMENTE le regole descritte in sezione 4.3 per generare questi dati.**
+
+```javascript
+// ESEMPIO - Adattare ai dati reali del cliente
+const years = ['2022', '2023', '2024', '2025'];  // DAL PRIMO ANNO CON DATI ALL'ANNO CORRENTE
+const premiums = [20000, 18000, 17000, 17000];   // Premi annui per ogni anno
+const claims = [23500, 10875, 11193, 0];         // Indennizzi pagati per anno (per Data Avviso)
+```
+
+**REGOLE RAPIDE:**
+1. `years` deve includere SEMPRE l'anno corrente
+2. Assegnare sinistri per **Data Avviso**, NON per "anno di accadimento" nelle note
+3. Se anno ha zero sinistri ma premio pagato → `claims[anno] = 0` (NON omettere l'anno)
+4. `years.length === premiums.length === claims.length` (OBBLIGATORIO)
+
+**NOTA:** Non generare routesData per la mappa - sezione eliminata.
+
+---
+
+## VALIDATION CHECKLIST FINALE
+
+Prima di consegnare il report, verifica:
+
+**DATI NUMERICI:**
+- [ ] Tutti i premi hanno formato € XX.XXX,XX
+- [ ] Premio Totale ≈ Σ Premi Tratte (tolleranza <5%)
+- [ ] S/P Ratio calcolato correttamente
+
+**⚠️ GRAFICO SINISTRI/PREMI (CRITICAL):**
+- [ ] Array `years` include l'anno corrente
+- [ ] Array `years` non ha buchi (tutti gli anni consecutivi dal primo all'ultimo)
+- [ ] Sinistri assegnati per Data Avviso (NON per anno nelle note)
+- [ ] `years.length === premiums.length === claims.length`
+- [ ] Somma `claims` = Totale Indennizzi in tabella Analytics
+- [ ] Anni con zero sinistri hanno `claims[anno] = 0` (non omessi)
+
+**COMPLETEZZA:**
+- [ ] Tutte le 6 Clause Cards compilate
+- [ ] Tutti i sinistri riportati letteralmente
+- [ ] Info-Grid completamente compilate (nessun [PLACEHOLDER])
+- [ ] Alert-Box presenti nei 3 livelli se applicabile
+- [ ] Box Interesse Assicurabile presente in Tab Approfondimenti
+- [ ] 5 Incoterms con trappole presenti
+- [ ] 4-5 Esempi Pratici coerenti con categoria merceologica
+
+**ESEMPI PRATICI:**
+- [ ] Categoria merceologica identificata correttamente
+- [ ] Esempi pertinenti alla merce del cliente
+- [ ] Nessun esempio generico o di altra categoria
+- [ ] Trappole specifiche per ogni esempio
+
+**COERENZA:**
+- [ ] Clausole Tab 2 coerenti con premi Tab 3
+- [ ] Alert Tab 1 coerenti con criticità Tab 2-3
+- [ ] Esempi Tab 5 coerenti con sinistri Tab 4
+
+**NEUTRALITÀ:**
+- [ ] Nessuna valutazione comparativa con benchmark di mercato
+- [ ] Nessun giudizio su "tasso basso/alto"
+- [ ] Dati presentati in modo descrittivo, non valutativo
+
+---
+
+## NOTE FINALI PER L'AI
+
+**TONE & LANGUAGE:**
+- Linguaggio tecnico ma comprensibile
+- Esempi numerici SEMPRE presenti per concetti complessi
+- Nessuna ambiguità: sostituire "potrebbe" con "si raccomanda verifica"
+
+**PRIORITÀ:**
+1. Accuratezza dati (non inventare mai)
+2. Completezza
+3. Chiarezza didattica
+4. Esempi pertinenti alla merce del cliente
+
+**SE DATI MANCANO:**
+- NON inventare
+- Scrivere: "[DATO NON DISPONIBILE - Richiedere a Compagnia]"
+
+**COSA NON FARE:**
+- NON ipotizzare tratte/geografie non presenti nei documenti
+- NON generare mappe o coordinate
+- NON valutare tassi come "competitivi" o "elevati"
+- NON usare esempi di merci diverse da quelle del cliente
+
+---
+
+**FINE PROMPT v6.1 - REPORT CLIENTE**

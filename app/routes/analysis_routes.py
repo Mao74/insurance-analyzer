@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+from playwright.async_api import async_playwright
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse, Response, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -8,7 +9,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from .. import models, masking, llm_client
 from ..config import settings
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -278,6 +279,8 @@ def full_analysis_pipeline(
         db.commit()
         
         print(f"DEBUG: Analysis Completed. Report Size: {len(report_display or '')} chars.")
+
+
         print(f"DEBUG: Report Content Preview: {(report_display or '')[:200]}")
         
     except Exception as e:
@@ -303,7 +306,8 @@ async def view_report(request: Request, analysis_id: int, db: Session = Depends(
     return templates.TemplateResponse("report.html", {
         "request": request,
         "user": request.session.get("user"),
-        "analysis": analysis
+        "analysis": analysis,
+        "timestamp": int(datetime.utcnow().timestamp())
     })
 
 @router.get("/report/{analysis_id}/content", response_class=HTMLResponse)
@@ -311,7 +315,157 @@ async def report_content(analysis_id: int, db: Session = Depends(get_db)):
     analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
     if not analysis or not analysis.report_html_display:
         return Response("Report content not available", status_code=404)
-    return HTMLResponse(content=analysis.report_html_display)
+    
+    html = analysis.report_html_display
+    
+    # Inject Edit Toolbar if not present (Backward compatibility + Feature enhancement)
+    if "id=\"edit-toolbar\"" not in html:
+        toolbar_html = f"""
+        <style>
+            @media print {{
+                #edit-toolbar {{ display: none !important; }}
+                .tabs {{ display: none !important; }}
+                .tab-content {{ display: block !important; page-break-after: always; }}
+                .tab-content:last-child {{ page-break-after: auto; }}
+                .report-container {{ box-shadow: none !important; border: none !important; }}
+                body {{ background: white !important; }}
+            }}
+        </style>
+        
+        <div id="edit-toolbar" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; gap: 10px; background: rgba(255,255,255,0.95); padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid #e5e7eb;">
+            <a href="/report/{analysis_id}/download-pdf" 
+               onclick="const el=this; el.innerHTML='⏳ Generazione...'; el.style.opacity='0.7'; el.style.pointerEvents='none'; setTimeout(function(){{ el.innerHTML='📥 PDF'; el.style.opacity='1'; el.style.pointerEvents='auto'; }}, 8000);"
+               style="background: #db2777; color: white; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-family: sans-serif; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer;">
+                📥 PDF
+            </a>
+            <button id="btn-print" onclick="printReport()" style="background: #7c3aed; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: sans-serif; font-size: 14px;">
+                🖨️ Stampa
+            </button>
+            <button id="btn-edit" onclick="toggleEditMode()" style="background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: sans-serif; font-size: 14px;">
+                ✏️ Modifica
+            </button>
+            <button id="btn-save" onclick="saveContent()" style="background: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: sans-serif; font-size: 14px; display: none;">
+                💾 Salva
+            </button>
+            <button id="btn-cancel" onclick="cancelEdit()" style="background: #dc2626; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: sans-serif; font-size: 14px; display: none;">
+                ❌ Annulla
+            </button>
+        </div>
+
+        <script>
+            let isEditMode = false;
+            let originalContentBackup = "";
+            const analysisId = {analysis_id};
+            
+            function printReport() {{
+                // Force all tabs visible before printing
+                var tabs = document.querySelectorAll('.tab-content');
+                var originalDisplay = [];
+                for (var i = 0; i < tabs.length; i++) {{
+                    originalDisplay[i] = tabs[i].style.display;
+                    tabs[i].style.display = 'block';
+                }}
+                
+                // Print
+                window.print();
+                
+                // Restore original display after a delay (print dialog is async)
+                setTimeout(function() {{
+                    for (var j = 0; j < tabs.length; j++) {{
+                        tabs[j].style.display = originalDisplay[j] || '';
+                    }}
+                }}, 1000);
+            }}
+
+            function toggleEditMode() {{
+                isEditMode = !isEditMode;
+                const container = document.querySelector('.report-container') || document.body;
+                const btnEdit = document.getElementById('btn-edit');
+                const btnSave = document.getElementById('btn-save');
+                const btnCancel = document.getElementById('btn-cancel');
+                const btnPrint = document.getElementById('btn-print');
+
+                if (isEditMode) {{
+                    originalContentBackup = container.innerHTML; // Backup for Cancel
+                    container.contentEditable = "true";
+                    container.style.outline = "2px dashed #93c5fd";
+                    container.style.padding = "10px";
+                    btnEdit.style.display = "none";
+                    btnSave.style.display = "inline-block";
+                    btnCancel.style.display = "inline-block";
+                    btnPrint.style.display = "none";
+                    
+                    document.querySelectorAll('a').forEach(a => a.style.pointerEvents = 'none');
+                }} else {{
+                    exitEditMode();
+                }}
+            }}
+
+            function exitEditMode() {{
+                isEditMode = false;
+                const container = document.querySelector('.report-container') || document.body;
+                container.contentEditable = "false";
+                container.style.outline = "none";
+                container.style.padding = "";
+                document.getElementById('btn-edit').style.display = "inline-block";
+                document.getElementById('btn-save').style.display = "none";
+                document.getElementById('btn-cancel').style.display = "none";
+                document.getElementById('btn-print').style.display = "inline-block";
+                document.querySelectorAll('a').forEach(a => a.style.pointerEvents = 'auto');
+            }}
+
+            function cancelEdit() {{
+                if (confirm("Annullare le modifiche non salvate?")) {{
+                    const container = document.querySelector('.report-container') || document.body;
+                    container.innerHTML = originalContentBackup;
+                    exitEditMode();
+                }}
+            }}
+
+            async function saveContent() {{
+                const btnSave = document.getElementById('btn-save');
+                btnSave.innerText = "Salvataggio...";
+                btnSave.disabled = true;
+
+                const container = document.querySelector('.report-container') || document.body;
+                
+                // 1. Prepare for saving: Remove edit artifacts
+                container.contentEditable = "false";
+                container.style.outline = "none";
+                const toolbars = document.querySelectorAll('#edit-toolbar');
+                toolbars.forEach(t => t.remove()); // Remove toolbar to not save it (backend reinjects it)
+
+                // 2. Capture FULL document (Head + Body + Styles)
+                const fullHtml = document.documentElement.outerHTML;
+                
+                try {{
+                    const res = await fetch(`/analysis/${{analysisId}}/content?t=${{Date.now()}}`, {{
+                        method: 'POST',
+                        headers: {{ 'Content-Type': 'text/html; charset=utf-8' }},
+                        body: fullHtml 
+                    }});
+                    
+                    if (res.ok) {{
+                        alert("Modifiche salvate con successo!");
+                        window.location.reload(); // Reload to get fresh state with re-injected toolbar
+                    }} else {{
+                        alert("Errore nel salvataggio via server.");
+                        window.location.reload();
+                    }}
+                }} catch (e) {{
+                    alert("Errore di connessione: " + e);
+                    window.location.reload();
+                }}
+            }}
+        </script>
+        """
+        # Append to body
+        if "</body>" in html:
+            html = html.replace("</body>", f"{toolbar_html}</body>")
+        else:
+            html += toolbar_html
+            
+    return HTMLResponse(content=html)
 
 @router.get("/report/{analysis_id}/download")
 async def download_report(analysis_id: int, format: str = "html", db: Session = Depends(get_db)):
@@ -333,11 +487,78 @@ async def download_report(analysis_id: int, format: str = "html", db: Session = 
         )
     elif format == "pdf":
         try:
+            import re
             from xhtml2pdf import pisa
             from io import BytesIO
+            from bs4 import BeautifulSoup
+            
+            html_content = analysis.report_html_display
+            
+            # Replace CSS var() with fallback values
+            css_var_map = {
+                '--primary': '#2563eb', '--primary-dark': '#1d4ed8',
+                '--secondary': '#64748b', '--success': '#16a34a',
+                '--danger': '#dc2626', '--warning': '#f59e0b',
+                '--background': '#f8fafc', '--surface': '#ffffff',
+                '--text': '#1e293b', '--text-light': '#64748b',
+                '--border': '#e2e8f0', '--border-subtle': '#f1f5f9',
+            }
+            def replace_var(match):
+                var_name = match.group(1)
+                fallback = match.group(3) if match.group(3) else None
+                return css_var_map.get(var_name, fallback or '#000000')
+            html_content = re.sub(r'var\(\s*(--[\w-]+)\s*(,\s*([^)]+))?\)', replace_var, html_content)
+            
+            # Strip @font-face rules (xhtml2pdf can't load external fonts on Windows)
+            html_content = re.sub(r'@font-face\s*\{[^}]*\}', '', html_content, flags=re.DOTALL | re.IGNORECASE)
+            html_content = re.sub(r'<link[^>]*fonts\.googleapis\.com[^>]*>', '', html_content, flags=re.IGNORECASE)
+            html_content = re.sub(r'<link[^>]*fonts\.gstatic\.com[^>]*>', '', html_content, flags=re.IGNORECASE)
+            html_content = re.sub(r'@import\s+url\([^)]*fonts[^)]*\)\s*;?', '', html_content, flags=re.IGNORECASE)
+            
+            # Strip gradients (xhtml2pdf doesn't support linear-gradient)
+            html_content = re.sub(r'background:\s*linear-gradient\([^;]+\);?', 'background: #ffffff;', html_content, flags=re.IGNORECASE)
+            html_content = re.sub(r'background-image:\s*linear-gradient\([^;]+\);?', '', html_content, flags=re.IGNORECASE)
+            
+            # Use BeautifulSoup to manipulate DOM
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # Force all tab-content to display: block
+            for tab in soup.find_all(class_='tab-content'):
+                tab['style'] = tab.get('style', '') + '; display: block !important;'
+            
+            # Remove tab navigation (useless in PDF)
+            for tabs in soup.find_all(class_='tabs'):
+                tabs.decompose()
+            
+            # Remove edit toolbar if present
+            for toolbar in soup.find_all(id='edit-toolbar'):
+                toolbar.decompose()
+                
+            # Remove print buttons
+            for btn in soup.find_all(class_='print-btn'):
+                btn.decompose()
+            
+            # Inject print-safe CSS
+            print_css = """
+            <style>
+                body { background: white !important; font-family: Arial, sans-serif !important; }
+                .report-container { box-shadow: none !important; border: none !important; max-width: 100% !important; }
+                .tab-content { display: block !important; page-break-inside: avoid; margin-bottom: 20px; }
+                .info-grid, .summary-grid { page-break-inside: avoid; }
+                table { page-break-inside: avoid; }
+                .highlight-box { background: #fffbeb !important; border: 1px solid #f59e0b !important; }
+                .alert-high { background: #fef2f2 !important; border-left: 4px solid #dc2626 !important; }
+                .alert-medium { background: #fffbeb !important; border-left: 4px solid #f59e0b !important; }
+                .alert-low { background: #f0fdf4 !important; border-left: 4px solid #16a34a !important; }
+            </style>
+            """
+            if soup.head:
+                soup.head.append(BeautifulSoup(print_css, 'html.parser'))
+            
+            html_content = str(soup)
             
             buffer = BytesIO()
-            pisa_status = pisa.CreatePDF(analysis.report_html_display, dest=buffer)
+            pisa_status = pisa.CreatePDF(html_content, dest=buffer)
             
             if pisa_status.err:
                return Response(f"PDF Generation Error", status_code=500)
@@ -349,6 +570,8 @@ async def download_report(analysis_id: int, format: str = "html", db: Session = 
                 headers={"Content-Disposition": f"attachment; filename=report_{analysis_id}.pdf"}
             )
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return Response(f"PDF Generation failed: {str(e)}", status_code=500)
             
     return Response("Invalid format", status_code=400)
@@ -383,3 +606,248 @@ async def delete_analysis(request: Request, analysis_id: int, db: Session = Depe
         print(f"DELETE ERROR: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@router.post("/download-custom-pdf")
+async def download_custom_pdf(request: Request):
+    """
+    Generates a PDF from the provided HTML content.
+    Used for 'Edit Mode' where the user modifies the report in the browser.
+    """
+    import re
+    
+    try:
+        # Get raw body as bytes, then decode
+        body = await request.body()
+        html_content = body.decode('utf-8')
+        
+        if not html_content:
+             raise HTTPException(status_code=400, detail="Empty HTML content")
+
+        # Replace CSS var() with fallback values (xhtml2pdf doesn't support CSS variables)
+        css_var_map = {
+            '--primary': '#2563eb',
+            '--primary-dark': '#1d4ed8',
+            '--secondary': '#64748b',
+            '--success': '#16a34a',
+            '--danger': '#dc2626',
+            '--warning': '#f59e0b',
+            '--background': '#f8fafc',
+            '--surface': '#ffffff',
+            '--text': '#1e293b',
+            '--text-light': '#64748b',
+            '--border': '#e2e8f0',
+            '--border-subtle': '#f1f5f9',
+        }
+        
+        # Replace var(--name) or var(--name, fallback) patterns
+        def replace_var(match):
+            var_name = match.group(1)
+            fallback = match.group(3) if match.group(3) else None
+            return css_var_map.get(var_name, fallback or '#000000')
+        
+        html_content = re.sub(r'var\(\s*(--[\w-]+)\s*(,\s*([^)]+))?\)', replace_var, html_content)
+
+        # Strip @font-face rules (xhtml2pdf can't load external fonts on Windows - permission issues)
+        html_content = re.sub(r'@font-face\s*\{[^}]*\}', '', html_content, flags=re.DOTALL | re.IGNORECASE)
+        
+        # Strip Google Fonts link tags
+        html_content = re.sub(r'<link[^>]*fonts\.googleapis\.com[^>]*>', '', html_content, flags=re.IGNORECASE)
+        html_content = re.sub(r'<link[^>]*fonts\.gstatic\.com[^>]*>', '', html_content, flags=re.IGNORECASE)
+        
+        # Strip @import for fonts
+        html_content = re.sub(r'@import\s+url\([^)]*fonts[^)]*\)\s*;?', '', html_content, flags=re.IGNORECASE)
+
+        from xhtml2pdf import pisa
+        from io import BytesIO
+        
+        buffer = BytesIO()
+        
+        pisa_status = pisa.CreatePDF(html_content, dest=buffer)
+        
+        if pisa_status.err:
+           return Response(f"PDF Generation Error", status_code=500)
+           
+        pdf_bytes = buffer.getvalue()
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=custom_report_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.pdf"}
+        )
+    except Exception as e:
+        print(f"Custom PDF Error: {e}")
+        return Response(f"PDF Generation failed: {str(e)}", status_code=500)
+
+@router.post("/analysis/{analysis_id}/save")
+async def save_analysis(
+    analysis_id: int, 
+    request: Request,
+    title: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+        if not analysis:
+            raise HTTPException(status_code=404, detail="Analysis not found")
+            
+        analysis.title = title
+        analysis.is_saved = True
+        analysis.last_updated = datetime.utcnow()
+        db.commit()
+        
+        return JSONResponse({"status": "success", "message": "Report saved successfully"})
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+@router.post("/analysis/{analysis_id}/rename")
+async def rename_analysis(
+    analysis_id: int, 
+    request: Request,
+    title: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+        if not analysis:
+            raise HTTPException(status_code=404, detail="Analysis not found")
+            
+        analysis.title = title
+        analysis.last_updated = datetime.utcnow()
+        db.commit()
+        
+        return JSONResponse({"status": "success", "message": "Report renamed successfully"})
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+@router.post("/analysis/{analysis_id}/content")
+async def update_analysis_content(
+    analysis_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """
+    Updates the HTML content of the report (persistence for Edit Mode).
+    Expects raw HTML body.
+    """
+    try:
+        body = await request.body()
+        html_content = body.decode('utf-8')
+        
+        print(f"DEBUG: Saving content for analysis {analysis_id}. Length: {len(html_content)}")
+        
+        analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+        if not analysis:
+            print("DEBUG: Analysis not found!")
+            raise HTTPException(status_code=404, detail="Analysis not found")
+            
+        analysis.report_html_display = html_content
+        analysis.last_updated = datetime.utcnow()
+        db.commit()
+        print("DEBUG: Commit successful.")
+        
+        return JSONResponse({"status": "success", "message": "Content updated"})
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+
+from playwright.sync_api import sync_playwright
+
+@router.get("/report/{analysis_id}/download-pdf")
+def download_report_pdf(analysis_id: int, request: Request, db: Session = Depends(get_db)):
+    """
+    Generates a high-quality PDF using Playwright (Chromium) - Synchronous Version for Windows Compatibility.
+    """
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    # Use the display version (user edited) if available, otherwise masked
+    html_content = analysis.report_html_display or analysis.report_html_masked
+    if not html_content:
+        raise HTTPException(status_code=404, detail="Report content not ready")
+
+    filename = f"PoliSight_Report_{analysis_id}.pdf"
+    if analysis.title:
+        safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
+        filename = f"{safe_title}.pdf"
+
+    # Base URL using request.base_url
+    base_url = str(request.base_url)
+
+    # Use sync_playwright (runs in threadpool via FastAPI)
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+
+
+        # Inject <base> tag for relative links
+        if "<head>" in html_content:
+            html_content = html_content.replace("<head>", f'<head><base href="{base_url}">')
+        else:
+            html_content = f'<base href="{base_url}">' + html_content
+
+        # Set content with base_url
+        page.set_content(html_content, wait_until="networkidle")
+
+        # Inject Print CSS optimizations
+        page.add_style_tag(content="""
+            @page { margin: 15mm 10mm; size: A4; }
+            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            /* Force all tabs visible */
+            .tab-content { display: block !important; opacity: 1 !important; visibility: visible !important; height: auto !important; margin-bottom: 20px; border-bottom: 1px dashed #e2e8f0; }
+            
+            /* Hide UI elements */
+            .tabs, .header-navigation, #edit-toolbar, .print-btn, .btn, button, .navbar { display: none !important; }
+            
+            /* Avoid breaking cards and keep headers with content */
+            h1, h2, h3, h4, h5, h6 { page-break-after: avoid; break-after: avoid; }
+            .card, .section, .clause-card, .edu-card, .example-card, .alert-box { page-break-inside: avoid; break-inside: avoid; margin-bottom: 15px; }
+            
+            /* Fix Tables overflow and overlap */
+            table { width: 100% !important; border-collapse: collapse; margin-bottom: 10px; }
+            td, th { 
+                padding: 6px 4px; 
+                font-size: 9pt; 
+                vertical-align: top; 
+                line-height: 1.4;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                border: 1px solid #e2e8f0; /* adds clarity */
+            }
+            
+            /* Specific fix for numeric/money columns to prevent wrapping midsentence if possible, but allow if needed */
+            td.numeric { white-space: nowrap; }
+            
+            /* Reset container width for print */
+            .report-container { max-width: 100% !important; width: 100% !important; border: none !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
+            
+            /* Better font rendering */
+            body { -webkit-font-smoothing: antialiased; }
+            
+            /* Hide empty chart containers if any */
+            canvas { max-width: 100%; }
+        """)
+
+        # Disable Chart.js animations
+        page.evaluate("() => { if(window.Chart) { Chart.defaults.animation = false; } }")
+        
+        # Security wait
+        page.wait_for_timeout(1000)
+
+        pdf_data = page.pdf(
+            format="A4",
+            print_background=True,
+            margin={"top": "15mm", "bottom": "15mm", "left": "10mm", "right": "10mm"}
+        )
+
+        browser.close()
+
+    return Response(
+        content=pdf_data,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+

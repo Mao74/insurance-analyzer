@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Tecnico Polizza RC - Versione Compagnia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+    --bg-body: #f1f5f9;
+    --bg-paper: #ffffff;
+    --primary-dark: #1e293b;
+    --primary-main: #475569;
+    --accent-blue: #2563eb;
+    --accent-green: #16a34a;
+    --accent-amber: #d97706;
+    --accent-red: #dc2626;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 20px;
+    background: var(--bg-body);
+    color: var(--text-main);
+}
+
+.report-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--bg-paper);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* === HEADER === */
+.header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #334155 100%);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-left h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+}
+.header-left .subtitle {
+    font-size: 11px;
+    opacity: 0.8;
+}
+.header-right {
+    text-align: right;
+    font-size: 11px;
+}
+.header-right .label {
+    opacity: 0.7;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+.header-right .value {
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* === TABS === */
+.tabs {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border-strong);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+.tab-link {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+.tab-link:hover {
+    color: var(--primary-dark);
+    background: #f1f5f9;
+}
+.tab-link.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+    background: white;
+}
+
+/* === CONTENT === */
+.tab-content {
+    display: none;
+    padding: 25px 30px;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* === SECTION HEADERS === */
+.section-header {
+    background: linear-gradient(90deg, var(--primary-dark) 0%, #334155 100%);
+    color: white;
+    padding: 8px 15px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 20px 0 0 0;
+}
+.section-header:first-child {
+    margin-top: 0;
+}
+
+/* === TABLES === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-bottom: 0;
+}
+th {
+    background: #f1f5f9;
+    color: var(--primary-dark);
+    font-weight: 700;
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid var(--border-strong);
+    font-size: 10px;
+    text-transform: uppercase;
+}
+td {
+    padding: 6px 10px;
+    border: 1px solid var(--border-subtle);
+    vertical-align: top;
+}
+tr:nth-child(even) {
+    background: #fafbfc;
+}
+.col-label {
+    background: #f8fafc;
+    font-weight: 600;
+    width: 25%;
+    color: var(--primary-dark);
+}
+.col-value {
+    width: 25%;
+}
+.col-curr {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+}
+.col-center {
+    text-align: center;
+}
+.col-full {
+    width: 75%;
+}
+
+/* === BADGES === */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.tag-rct { background: #dbeafe; color: #1e40af; }
+.tag-rco { background: #dcfce7; color: #166534; }
+.tag-rcp { background: #fef3c7; color: #92400e; }
+.tag-ok { background: #dcfce7; color: #166534; }
+.tag-warn { background: #fef3c7; color: #92400e; }
+.tag-error { background: #fee2e2; color: #991b1b; }
+.tag-claims-made { background: #fce7f3; color: #9d174d; }
+.tag-loss-occurrence { background: #e0e7ff; color: #3730a3; }
+.tag-info { background: #e0e7ff; color: #3730a3; }
+
+/* === STATUS INDICATORS === */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+.status-green { background: #16a34a; }
+.status-yellow { background: #eab308; }
+.status-red { background: #dc2626; }
+
+/* === ALERT FLAGS === */
+.flag-row {
+    background: #fef3c7 !important;
+}
+.flag-critical {
+    background: #fee2e2 !important;
+}
+
+/* === NOTES === */
+.note-cell {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+.note-inline {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* === CHART === */
+.chart-container {
+    background: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    padding: 15px;
+    margin: 15px 0;
+    height: 300px;
+}
+
+/* === SUMMARY BOX === */
+.summary-box {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid var(--accent-blue);
+    padding: 15px;
+    margin: 15px 0;
+}
+.summary-box.warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+    border-left-color: var(--accent-amber);
+}
+.summary-box.critical {
+    background: #fef2f2;
+    border-color: #fecaca;
+    border-left-color: var(--accent-red);
+}
+.summary-title {
+    font-weight: 700;
+    font-size: 11px;
+    margin-bottom: 8px;
+    color: var(--primary-dark);
+}
+.summary-content {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* === KPI GRID === */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+.kpi-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    padding: 12px;
+    text-align: center;
+}
+.kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--primary-dark);
+}
+.kpi-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* === PRINT === */
+@media print {
+    body { padding: 0; background: white; font-size: 9px; }
+    .report-container { border: none; box-shadow: none; }
+    .tabs { display: none; }
+    .tab-content { display: block !important; page-break-inside: avoid; }
+    .section-header { background: #1e293b !important; -webkit-print-color-adjust: exact; }
+    th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
+    .chart-container { height: 250px; }
+}
+</style>
+</head>
+<body>
+
+<div class="report-container">
+
+    <!-- ============================================================ -->
+    <!-- HEADER -->
+    <!-- ============================================================ -->
+    <div class="header">
+        <div class="header-left">
+            <h1>Report Tecnico RC - Analisi Completa</h1>
+            <div class="subtitle">Responsabilità Civile Terzi • Operai • Prodotti</div>
+        </div>
+        <div class="header-right">
+            <div><span class="label">Polizza</span><br><span class="value">[NUMERO_POLIZZA]</span></div>
+            <div style="margin-top:8px;"><span class="label">Vigenza</span><br><span class="value">[DECORRENZA] → [SCADENZA]</span></div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TABS -->
+    <!-- ============================================================ -->
+    <div class="tabs">
+        <button class="tab-link active" onclick="openTab('Anagrafica')">1. Anagrafica</button>
+        <button class="tab-link" onclick="openTab('Entita')">2. Entità Assicurate</button>
+        <button class="tab-link" onclick="openTab('Massimali')">3. Massimali</button>
+        <button class="tab-link" onclick="openTab('GaranzieRCT')">4. Garanzie RCT</button>
+        <button class="tab-link" onclick="openTab('GaranzieRCO')">5. Garanzie RCO</button>
+        <button class="tab-link" onclick="openTab('GaranzieRCP')">6. Garanzie RCP</button>
+        <button class="tab-link" onclick="openTab('Esclusioni')">7. Esclusioni</button>
+        <button class="tab-link" onclick="openTab('Premio')">8. Calcolo Premio</button>
+        <button class="tab-link" onclick="openTab('Sinistri')">9. Sinistri</button>
+        <button class="tab-link" onclick="openTab('Appendici')">10. Appendici</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: ANAGRAFICA -->
+    <!-- ============================================================ -->
+    <div id="Anagrafica" class="tab-content active">
+
+        <div class="section-header">Dati Contrattuali</div>
+        <table>
+            <tr>
+                <td class="col-label">Compagnia</td>
+                <td class="col-value">[COMPAGNIA]</td>
+                <td class="col-label">Numero Polizza</td>
+                <td class="col-value">[NUMERO_POLIZZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Contraente</td>
+                <td class="col-value">[CONTRAENTE]</td>
+                <td class="col-label">P.IVA / C.F.</td>
+                <td class="col-value">[PIVA_CF]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Sede Legale</td>
+                <td colspan="3">[SEDE_LEGALE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Broker</td>
+                <td class="col-value">[BROKER]</td>
+                <td class="col-label">Codice IVASS</td>
+                <td class="col-value">[CODICE_IVASS]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Validità e Durata</div>
+        <table>
+            <tr>
+                <td class="col-label">Data Decorrenza</td>
+                <td class="col-value">[DATA_DECORRENZA]</td>
+                <td class="col-label">Ora Decorrenza</td>
+                <td class="col-value">[ORA_DECORRENZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Data Scadenza</td>
+                <td class="col-value">[DATA_SCADENZA]</td>
+                <td class="col-label">Ora Scadenza</td>
+                <td class="col-value">[ORA_SCADENZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Durata Contratto</td>
+                <td class="col-value">[DURATA]</td>
+                <td class="col-label">Rinnovo</td>
+                <td class="col-value">[TIPO_RINNOVO]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Disdetta</td>
+                <td colspan="3">[TERMINI_DISDETTA]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Premio</div>
+        <table>
+            <tr>
+                <td class="col-label">Premio Annuo Lordo</td>
+                <td class="col-value col-curr">[PREMIO_LORDO]</td>
+                <td class="col-label">Premio Imponibile</td>
+                <td class="col-value col-curr">[PREMIO_IMPONIBILE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Imposte</td>
+                <td class="col-value col-curr">[IMPOSTE]</td>
+                <td class="col-label">Aliquota</td>
+                <td class="col-value col-center">[ALIQUOTA]%</td>
+            </tr>
+            <tr>
+                <td class="col-label">Frazionamento</td>
+                <td class="col-value">[FRAZIONAMENTO]</td>
+                <td class="col-label">Regolazione</td>
+                <td class="col-value">[TIPO_REGOLAZIONE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Base Calcolo Premio</td>
+                <td colspan="3">[BASE_CALCOLO: Fatturato / Retribuzioni / Fisso]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Coassicurazione</div>
+        <table>
+            <tr>
+                <td class="col-label">Polizza Coassicurata</td>
+                <td class="col-value">[SI/NO]</td>
+                <td class="col-label">Modalità Riparto</td>
+                <td class="col-value">[MODALITA_RIPARTO]</td>
+            </tr>
+        </table>
+        <!-- [AI: SE coassicurata, aggiungere tabella dettaglio coassicuratori] -->
+        <!--
+        <table>
+            <thead>
+                <tr>
+                    <th>Coassicuratore</th>
+                    <th>Ruolo</th>
+                    <th>Quota %</th>
+                    <th>Quota €</th>
+                    <th>Delega</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[COMPAGNIA_1]</td>
+                    <td>Delegataria</td>
+                    <td class="col-center">60%</td>
+                    <td class="col-curr">€ 6.000.000</td>
+                    <td>Piena</td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+
+        <div class="section-header">Forma di Copertura</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%">Sezione</th>
+                    <th style="width:20%">Trigger</th>
+                    <th style="width:20%">Retroattività</th>
+                    <th style="width:20%">Postuma</th>
+                    <th style="width:25%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge tag-rct">RCT</span></td>
+                    <td>[LOSS OCC. / CLAIMS MADE]</td>
+                    <td>[DATA o N/A]</td>
+                    <td>[DURATA o N/A]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rco">RCO</span></td>
+                    <td>[LOSS OCC. / CLAIMS MADE]</td>
+                    <td>[DATA o N/A]</td>
+                    <td>[DURATA o N/A]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rcp">RCP</span></td>
+                    <td>[LOSS OCC. / CLAIMS MADE]</td>
+                    <td>[DATA o N/A]</td>
+                    <td>[DURATA o N/A]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Obblighi Contrattuali</div>
+        <table>
+            <tr>
+                <td class="col-label">Termine Denuncia Sinistri</td>
+                <td class="col-full">[GIORNI] giorni dalla conoscenza del sinistro</td>
+            </tr>
+            <tr>
+                <td class="col-label">Variazioni Rischio</td>
+                <td class="col-full">[OBBLIGO_COMUNICAZIONE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Regolazione Premio</td>
+                <td class="col-full">[TERMINI_REGOLAZIONE]</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: ENTITÀ ASSICURATE -->
+    <!-- ============================================================ -->
+    <div id="Entita" class="tab-content">
+
+        <div class="section-header">Elenco Entità Assicurate</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Denominazione</th>
+                    <th style="width:15%">P.IVA</th>
+                    <th style="width:25%">Sede</th>
+                    <th style="width:20%">Attività</th>
+                    <th style="width:15%">Tipo Copertura</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI SOCIETÀ/ENTITÀ ASSICURATA] -->
+                <tr>
+                    <td><strong>[SOCIETÀ_1]</strong></td>
+                    <td>[PIVA_1]</td>
+                    <td>[SEDE_1]</td>
+                    <td>[ATTIVITÀ_1]</td>
+                    <td><span class="badge tag-info">Polizza Italia</span></td>
+                </tr>
+                <tr>
+                    <td><strong>[SOCIETÀ_2]</strong></td>
+                    <td>[PIVA_2]</td>
+                    <td>[SEDE_2]</td>
+                    <td>[ATTIVITÀ_2]</td>
+                    <td><span class="badge tag-info">Polizza Italia</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Dettaglio Attività per Entità</div>
+        <!-- [AI: RIPETERE QUESTO BLOCCO PER OGNI SOCIETÀ] -->
+        <table>
+            <tr>
+                <td class="col-label" style="width:20%">Società</td>
+                <td colspan="3"><strong>[SOCIETÀ_1]</strong></td>
+            </tr>
+            <tr>
+                <td class="col-label">Attività Principale</td>
+                <td colspan="3">[DESCRIZIONE_ATTIVITÀ_PRINCIPALE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Attività Secondarie</td>
+                <td colspan="3">[DESCRIZIONE_ATTIVITÀ_SECONDARIE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Prodotti</td>
+                <td colspan="3">[PRODOTTI_FABBRICATI_COMMERCIALIZZATI]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Fatturato Dichiarato</td>
+                <td style="width:25%">[FATTURATO_TOTALE]</td>
+                <td class="col-label" style="width:20%">N° Dipendenti</td>
+                <td style="width:25%">[N_DIPENDENTI]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Codice ATECO</td>
+                <td>[ATECO]</td>
+                <td class="col-label">Ubicazioni</td>
+                <td>[N_SEDI_STABILIMENTI]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Struttura di Gruppo (se applicabile)</div>
+        <table>
+            <tr>
+                <td class="col-label">Capogruppo</td>
+                <td class="col-full">[CAPOGRUPPO o N/A]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Polizza Master</td>
+                <td class="col-full">[SI/NO - riferimenti]</td>
+            </tr>
+            <tr>
+                <td class="col-label">DIC/DIL</td>
+                <td class="col-full">[Difference in Conditions / Limits - descrizione o N/A]</td>
+            </tr>
+        </table>
+
+    </div>
+	
+	<!-- ============================================================ -->
+    <!-- TAB 3: MASSIMALI -->
+    <!-- ============================================================ -->
+    <div id="Massimali" class="tab-content">
+
+        <div class="section-header">Massimali Principali per Sezione</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">Sezione</th>
+                    <th style="width:18%">Massimale Sinistro</th>
+                    <th style="width:18%">Sottolimite Persona</th>
+                    <th style="width:18%">Aggregato Annuo</th>
+                    <th style="width:17%">Rapporto Agg/Max</th>
+                    <th style="width:17%">Validità Territoriale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge tag-rct">RCT</span></td>
+                    <td class="col-curr">[MASSIMALE_RCT]</td>
+                    <td class="col-curr">[SOTTOLIM_PERSONA_RCT]</td>
+                    <td class="col-curr">[AGGREGATO_RCT]</td>
+                    <td class="col-center">[RAPPORTO_RCT]x</td>
+                    <td>[TERRITORIO_RCT]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rco">RCO</span></td>
+                    <td class="col-curr">[MASSIMALE_RCO]</td>
+                    <td class="col-curr">[SOTTOLIM_PERSONA_RCO]</td>
+                    <td class="col-curr">[AGGREGATO_RCO]</td>
+                    <td class="col-center">[RAPPORTO_RCO]x</td>
+                    <td>[TERRITORIO_RCO]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rcp">RCP</span></td>
+                    <td class="col-curr">[MASSIMALE_RCP]</td>
+                    <td class="col-curr">[SOTTOLIM_PERSONA_RCP]</td>
+                    <td class="col-curr">[AGGREGATO_RCP]</td>
+                    <td class="col-center">[RAPPORTO_RCP]x</td>
+                    <td>[TERRITORIO_RCP]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="background: #e6f0ff; font-weight: 700;">
+                    <td>TOTALE</td>
+                    <td class="col-curr">[MASSIMALE_UNICO]</td>
+                    <td class="col-curr">-</td>
+                    <td class="col-curr">[AGGREGATO_TOTALE]</td>
+                    <td class="col-center">[RAPPORTO_TOT]x</td>
+                    <td>-</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Limite Aggregato Cumulativo</div>
+        <table>
+            <tr>
+                <td class="col-label">Aggregato Cumulativo RCT+RCO+RCP</td>
+                <td class="col-value col-curr">[AGGREGATO_CUMULATIVO o "Separati per sezione"]</td>
+                <td class="col-label">Ricostituzione</td>
+                <td class="col-value">[Automatica / A pagamento / Non prevista]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Validità Territoriale Dettagliata</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">Sezione</th>
+                    <th style="width:30%">Ambito Attività</th>
+                    <th style="width:30%">Ambito Danni</th>
+                    <th style="width:28%">Esclusioni/Limitazioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge tag-rct">RCT</span></td>
+                    <td>[Dove si svolge l'attività coperta]</td>
+                    <td>[Dove devono verificarsi i danni]</td>
+                    <td class="note-cell">[Paesi esclusi, limitazioni]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rco">RCO</span></td>
+                    <td>[Italia/SM/CV + trasferte]</td>
+                    <td>[Dove avviene l'infortunio]</td>
+                    <td class="note-cell">[Max giorni trasferta estero]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rcp">RCP</span></td>
+                    <td>[Dove sono consegnati i prodotti]</td>
+                    <td>[Dove si verificano i danni]</td>
+                    <td class="note-cell">[USA/CAN diretto/occulto]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Franchigie e Scoperti Base</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">Sezione</th>
+                    <th style="width:15%">Franchigia Cose</th>
+                    <th style="width:15%">Franchigia Persone</th>
+                    <th style="width:15%">Scoperto %</th>
+                    <th style="width:15%">Minimo Scoperto</th>
+                    <th style="width:28%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge tag-rct">RCT</span></td>
+                    <td class="col-curr">[FRANCH_COSE_RCT]</td>
+                    <td class="col-curr">[FRANCH_PERS_RCT]</td>
+                    <td class="col-center">[SCOP_RCT]%</td>
+                    <td class="col-curr">[MIN_SCOP_RCT]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rco">RCO</span></td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-curr">[FRANCH_PERS_RCO]</td>
+                    <td class="col-center">[SCOP_RCO]%</td>
+                    <td class="col-curr">[MIN_SCOP_RCO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rcp">RCP</span></td>
+                    <td class="col-curr">[FRANCH_RCP_ROW]</td>
+                    <td class="col-curr">[FRANCH_PERS_RCP]</td>
+                    <td class="col-center">[SCOP_RCP]%</td>
+                    <td class="col-curr">[MIN_SCOP_RCP]</td>
+                    <td class="note-cell">[Franch. USA/CAN se diversa]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- [AI: SE esistono franchigie differenziate per area geografica RCP] -->
+        <div class="section-header">Franchigie RCP per Area Geografica</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Area Geografica</th>
+                    <th style="width:20%">Franchigia Base</th>
+                    <th style="width:20%">Franchigia Recall</th>
+                    <th style="width:15%">Scoperto</th>
+                    <th style="width:20%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Italia</td>
+                    <td class="col-curr">[FRANCH_ITA]</td>
+                    <td class="col-curr">[FRANCH_RECALL_ITA]</td>
+                    <td class="col-center">[SCOP_ITA]%</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Europa (esclusa Italia)</td>
+                    <td class="col-curr">[FRANCH_EU]</td>
+                    <td class="col-curr">[FRANCH_RECALL_EU]</td>
+                    <td class="col-center">[SCOP_EU]%</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>ROW (escluso USA/CAN)</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_RECALL_ROW]</td>
+                    <td class="col-center">[SCOP_ROW]%</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>USA/Canada - Esportazione Occulta</td>
+                    <td class="col-curr">[FRANCH_USA_OCC]</td>
+                    <td class="col-curr">[FRANCH_RECALL_USA]</td>
+                    <td class="col-center">[SCOP_USA]%</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>USA/Canada - Esportazione Diretta</td>
+                    <td class="col-curr">[FRANCH_USA_DIR]</td>
+                    <td class="col-curr">[FRANCH_RECALL_USA_DIR]</td>
+                    <td class="col-center">[SCOP_USA_DIR]%</td>
+                    <td class="note-cell"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: GARANZIE RCT -->
+    <!-- ============================================================ -->
+    <div id="GaranzieRCT" class="tab-content">
+
+        <div class="section-header">Garanzia Base RCT</div>
+        <table>
+            <tr>
+                <td class="col-label">Oggetto della Garanzia</td>
+                <td class="col-full">[DESCRIZIONE_GARANZIA_BASE_RCT]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Massimale per Sinistro</td>
+                <td class="col-full col-curr">[MASSIMALE_RCT]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Riferimento Articolo</td>
+                <td class="col-full">[ART_POLIZZA]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Estensioni di Garanzia RCT</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:28%">Garanzia</th>
+                    <th style="width:14%">Limite Sinistro</th>
+                    <th style="width:14%">Limite Anno</th>
+                    <th style="width:12%">Franchigia</th>
+                    <th style="width:10%">Scoperto</th>
+                    <th style="width:22%">Note / Condizioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Danni ai veicoli in sosta (Parcheggio)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni a mezzi sotto carico e scarico</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da interruzione o sospensione attività</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni alle cose in consegna e custodia</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni a cose nell'ambito dei lavori</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni alle cose sulle quali si eseguono lavori</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da incendio o esplosione</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da furto agevolato (impalcature/ponteggi)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni a condutture e impianti sotterranei</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni a cose traslate, sollevate, rimorchiate</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da installazione/riparazione/manutenzione</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">Postuma: [X] mesi</td>
+                </tr>
+                <tr>
+                    <td>Danni da inquinamento accidentale</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da errato trattamento dati (GDPR)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>RC Committenza (art. 26 D.Lgs 81/08)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Responsabilità personale dipendenti</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE GARANZIE PRESENTI IN POLIZZA] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Condizioni Particolari RCT</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">Codice</th>
+                    <th style="width:30%">Descrizione</th>
+                    <th style="width:15%">Limite</th>
+                    <th style="width:12%">Franchigia</th>
+                    <th style="width:31%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: ELENCARE CONDIZIONI PARTICOLARI ES. RCT.01, RCT.02, ETC.] -->
+                <tr>
+                    <td>[RCT.01]</td>
+                    <td>[DESCRIZIONE]</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 5: GARANZIE RCO -->
+    <!-- ============================================================ -->
+    <div id="GaranzieRCO" class="tab-content">
+
+        <div class="section-header">Garanzia Base RCO</div>
+        <table>
+            <tr>
+                <td class="col-label">Oggetto della Garanzia</td>
+                <td class="col-full">[DESCRIZIONE_GARANZIA_BASE_RCO: Responsabilità civile verso prestatori di lavoro per infortuni e malattie professionali]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Massimale per Sinistro</td>
+                <td class="col-full col-curr">[MASSIMALE_RCO]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Sottolimite per Persona</td>
+                <td class="col-full col-curr">[SOTTOLIMITE_PERSONA_RCO]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Riferimento Articolo</td>
+                <td class="col-full">[ART_POLIZZA]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Prestatori di Lavoro Coperti</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:50%">Categoria</th>
+                    <th style="width:15%">Coperta</th>
+                    <th style="width:35%">Note / Limitazioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dipendenti a tempo indeterminato</td>
+                    <td class="col-center"><span class="badge tag-ok">SI</span></td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Dipendenti a tempo determinato</td>
+                    <td class="col-center"><span class="badge tag-ok">SI</span></td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Apprendisti</td>
+                    <td class="col-center"><span class="badge tag-ok">SI</span></td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Stagisti e tirocinanti</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Lavoratori somministrati (ex interinali)</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Lavoratori distaccati (art. 30 D.Lgs 276/03)</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Collaboratori a progetto / parasubordinati</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Amministratori (escluso L.R.)</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Soggetti D.Lgs. 81/08 (RSPP, RLS, etc.)</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Volontari</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Malattie Professionali</div>
+        <table>
+            <tr>
+                <td class="col-label">Copertura Malattie Professionali</td>
+                <td class="col-value">[SI/NO]</td>
+                <td class="col-label">Tipologia</td>
+                <td class="col-value">[Solo tabellate / Anche extratabellate]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Data Retroattività MP</td>
+                <td class="col-value">[DATA o Illimitata]</td>
+                <td class="col-label">Franchigia Specifica MP</td>
+                <td class="col-value col-curr">[FRANCHIGIA_MP]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Esclusioni Specifiche MP</td>
+                <td colspan="3">[Amianto, Silicosi, altre esclusioni]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Estensioni di Garanzia RCO</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%">Garanzia</th>
+                    <th style="width:15%">Limite</th>
+                    <th style="width:12%">Franchigia</th>
+                    <th style="width:10%">Scoperto</th>
+                    <th style="width:33%">Note / Condizioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Danno biologico / differenziale</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danno esistenziale</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danno morale</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Eredi e aventi diritto</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="col-center">[SCOP]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESTENSIONI PRESENTI IN POLIZZA] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Validità Territoriale RCO</div>
+        <table>
+            <tr>
+                <td class="col-label">Territorio Base</td>
+                <td class="col-value">[Italia, San Marino, Città del Vaticano]</td>
+                <td class="col-label">Trasferte Estero</td>
+                <td class="col-value">[SI/NO - max giorni]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Paesi Esteri Specifici</td>
+                <td colspan="3">[Elenco paesi inclusi o "Come da territorio RCT"]</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 6: GARANZIE RCP -->
+    <!-- ============================================================ -->
+    <div id="GaranzieRCP" class="tab-content">
+
+        <div class="section-header">Garanzia Base RCP</div>
+        <table>
+            <tr>
+                <td class="col-label">Oggetto della Garanzia</td>
+                <td class="col-full">[DESCRIZIONE_GARANZIA_BASE_RCP: Danni causati a terzi da prodotti difettosi dopo la consegna]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Massimale per Sinistro</td>
+                <td class="col-full col-curr">[MASSIMALE_RCP]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Trigger</td>
+                <td class="col-full"><span class="badge tag-claims-made">[CLAIMS MADE / LOSS OCCURRENCE]</span></td>
+            </tr>
+            <tr>
+                <td class="col-label">Riferimento Articolo</td>
+                <td class="col-full">[ART_POLIZZA]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Prodotti Coperti</div>
+        <table>
+            <tr>
+                <td class="col-label">Prodotti Fabbricati</td>
+                <td class="col-full">[ELENCO_PRODOTTI_FABBRICATI]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Prodotti Commercializzati</td>
+                <td class="col-full">[ELENCO_PRODOTTI_COMMERCIALIZZATI]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Prodotti di Terzi Incorporati</td>
+                <td class="col-full">[SI/NO - condizioni]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Prodotti Esclusi</td>
+                <td class="col-full">[ELENCO_PRODOTTI_ESCLUSI]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Estensioni di Garanzia RCP</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Garanzia</th>
+                    <th style="width:13%">Limite Sinistro</th>
+                    <th style="width:13%">Limite Anno</th>
+                    <th style="width:12%">Franch. ROW</th>
+                    <th style="width:12%">Franch. USA</th>
+                    <th style="width:25%">Note / Condizioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Prodotto difettoso incorporato (Sisterhood)</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><strong>Ritiro prodotti (Recall)</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[Spese coperte]</td>
+                </tr>
+                <tr>
+                    <td><strong>Danni patrimoniali puri</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><strong>Garanzia di fornitura (Vendor's Liability)</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><strong>Garanzia USA/Canada - Esportazione Diretta</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td><strong>Garanzia USA/Canada - Esportazione Occulta</strong></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da installazione/manutenzione (postuma)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">Postuma: [X] mesi</td>
+                </tr>
+                <tr>
+                    <td>Danni da inquinamento prodotti</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[LIMITE_ANNO]</td>
+                    <td class="col-curr">[FRANCH_ROW]</td>
+                    <td class="col-curr">[FRANCH_USA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESTENSIONI PRESENTI IN POLIZZA] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Dettaglio Garanzia Recall</div>
+        <table>
+            <tr>
+                <td class="col-label">Ambito Recall</td>
+                <td class="col-value">[Ritiro diretto / indiretto / entrambi]</td>
+                <td class="col-label">Quando Opera</td>
+                <td class="col-value">[Sinistro verificato / preventivo / ordine autorità]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Spese Coperte</td>
+                <td colspan="3">[Pubblicità, trasporto, ispezione, riparazione, sostituzione - dettagliare]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Spese Escluse</td>
+                <td colspan="3">[Valore prodotto, perdita profitto, altre esclusioni specifiche]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Validità Temporale RCP</div>
+        <table>
+            <tr>
+                <td class="col-label">Trigger</td>
+                <td class="col-value">[Claims Made / Loss Occurrence / Misto]</td>
+                <td class="col-label">Data Retroattività</td>
+                <td class="col-value">[DATA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Postuma Automatica</td>
+                <td class="col-value">[SI/NO - durata]</td>
+                <td class="col-label">Postuma Opzionale</td>
+                <td class="col-value">[SI/NO - costo]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Condizioni Particolari RCP</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">Codice</th>
+                    <th style="width:30%">Descrizione</th>
+                    <th style="width:15%">Limite</th>
+                    <th style="width:12%">Franchigia</th>
+                    <th style="width:31%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: ELENCARE CONDIZIONI PARTICOLARI ES. RCP.01, RCP.02, ETC.] -->
+                <tr>
+                    <td>[RCP.01]</td>
+                    <td>[DESCRIZIONE]</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCH]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+	
+	<!-- ============================================================ -->
+    <!-- TAB 7: ESCLUSIONI -->
+    <!-- ============================================================ -->
+    <div id="Esclusioni" class="tab-content">
+
+        <div class="section-header">Esclusioni Generali (Comuni a RCT/RCO/RCP)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:35%">Esclusione</th>
+                    <th style="width:15%">Rif. Articolo</th>
+                    <th style="width:15%">Deroga Presente</th>
+                    <th style="width:30%">Note / Condizioni Deroga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Danni da dolo dell'Assicurato</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell">Esclusione assoluta</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Responsabilità contrattuale (oltre ex lege)</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Danni a cose di proprietà/detenute/custodite</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[Deroga: cose in consegna con sottolimite]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Danni da furto</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[Deroga: furto agevolato]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Danni a cose su cui si lavora</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">6</td>
+                    <td>Danni da interruzione attività terzi</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">7</td>
+                    <td>Danni da inquinamento (graduale)</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[Deroga: inquinamento accidentale]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">8</td>
+                    <td>Danni a condutture sotterranee</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">9</td>
+                    <td>Rischio atomico/nucleare</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell">Esclusione assoluta</td>
+                </tr>
+                <tr>
+                    <td class="col-center">10</td>
+                    <td>Amianto e materiali contenenti amianto</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell">Esclusione assoluta</td>
+                </tr>
+                <tr>
+                    <td class="col-center">11</td>
+                    <td>PFAS (sostanze perfluoroalchiliche)</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell">Esclusione assoluta</td>
+                </tr>
+                <tr>
+                    <td class="col-center">12</td>
+                    <td>Terrorismo/guerra/insurrezione</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell">Esclusione assoluta</td>
+                </tr>
+                <tr>
+                    <td class="col-center">13</td>
+                    <td>Danni cyber / virus informatici</td>
+                    <td>[ART]</td>
+                    <td class="col-center">[SI/NO]</td>
+                    <td class="note-cell">[Deroga parziale GDPR]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">14</td>
+                    <td>Veicoli soggetti ad RCA obbligatoria</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td class="col-center">15</td>
+                    <td>Aeromobili</td>
+                    <td>[ART]</td>
+                    <td class="col-center"><span class="badge tag-error">NO</span></td>
+                    <td class="note-cell"></td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESCLUSIONI GENERALI PRESENTI IN POLIZZA] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusioni Specifiche RCT</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:40%">Esclusione</th>
+                    <th style="width:15%">Rif. Articolo</th>
+                    <th style="width:40%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Danni tra società del gruppo/consociate</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Responsabilità professionale</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Multe e penali contrattuali</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESCLUSIONI RCT] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusioni Specifiche RCO</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:40%">Esclusione</th>
+                    <th style="width:15%">Rif. Articolo</th>
+                    <th style="width:40%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Malattie non professionali</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Malattie da amianto / silicosi</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Infortuni in itinere (casa-lavoro)</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Danni a cose dei dipendenti</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Dipendenti non regolarmente assunti</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESCLUSIONI RCO] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusioni Specifiche RCP</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:40%">Esclusione</th>
+                    <th style="width:15%">Rif. Articolo</th>
+                    <th style="width:40%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Garanzia commerciale oltre obblighi di legge</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Spese recall/richiamo (se non estensione)</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Controvalore prodotto difettoso</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Spese sostituzione/riparazione prodotto</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Inefficienza prodotto senza danno</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">6</td>
+                    <td>Danni da uso improprio noto</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">7</td>
+                    <td>Prodotti farmaceutici/dispositivi medici</td>
+                    <td>[ART]</td>
+                    <td class="note-cell">[SE ESCLUSI]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE ALTRE ESCLUSIONI RCP] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusione Sostanze Specifiche</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%">Categoria</th>
+                    <th style="width:70%">Sostanze Escluse</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Amianto</strong></td>
+                    <td>Amianto e tutti i materiali contenenti amianto in qualsiasi forma</td>
+                </tr>
+                <tr>
+                    <td><strong>PFAS</strong></td>
+                    <td>Tutte le sostanze per- e polifluoroalchiliche (PFOA, PFOS, GenX, etc.)</td>
+                </tr>
+                <tr>
+                    <td><strong>Inquinanti Organici Persistenti</strong></td>
+                    <td>[Elenco da Convenzione Stoccolma se presente in polizza]</td>
+                </tr>
+                <tr>
+                    <td><strong>Altre Sostanze</strong></td>
+                    <td>[Piombo, Silice cristallina, Ftalati, Glifosato, PCB, Diossine, etc. - come da polizza]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusione Cyber</div>
+        <table>
+            <tr>
+                <td class="col-label">Definizione Sistema Informatico</td>
+                <td class="col-full">[DEFINIZIONE_DA_POLIZZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Ambito Esclusione</td>
+                <td class="col-full">[Perdite da utilizzo/funzionamento sistemi, accesso dati, virus, malware, attacchi, etc.]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Eccezioni all'Esclusione</td>
+                <td class="col-full">[SE PRESENTI - es. danni materiali conseguenti, GDPR limitato]</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 8: CALCOLO PREMIO -->
+    <!-- ============================================================ -->
+    <div id="Premio" class="tab-content">
+
+        <div class="section-header">Calcolo Premio per Società</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:18%">Società</th>
+                    <th style="width:13%">Fatturato USA/CAN</th>
+                    <th style="width:8%">Tasso ‰</th>
+                    <th style="width:13%">Fatturato ROW</th>
+                    <th style="width:8%">Tasso ‰</th>
+                    <th style="width:13%">Premio Imponibile</th>
+                    <th style="width:10%">Imposte</th>
+                    <th style="width:13%">Premio Lordo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI SOCIETÀ ASSICURATA] -->
+                <tr>
+                    <td>[SOCIETÀ_1]</td>
+                    <td class="col-curr">[FATT_USA_1]</td>
+                    <td class="col-center">[TASSO_USA_1]</td>
+                    <td class="col-curr">[FATT_ROW_1]</td>
+                    <td class="col-center">[TASSO_ROW_1]</td>
+                    <td class="col-curr">[PREMIO_IMP_1]</td>
+                    <td class="col-curr">[IMPOSTE_1]</td>
+                    <td class="col-curr">[PREMIO_LORDO_1]</td>
+                </tr>
+                <tr>
+                    <td>[SOCIETÀ_2]</td>
+                    <td class="col-curr">[FATT_USA_2]</td>
+                    <td class="col-center">[TASSO_USA_2]</td>
+                    <td class="col-curr">[FATT_ROW_2]</td>
+                    <td class="col-center">[TASSO_ROW_2]</td>
+                    <td class="col-curr">[PREMIO_IMP_2]</td>
+                    <td class="col-curr">[IMPOSTE_2]</td>
+                    <td class="col-curr">[PREMIO_LORDO_2]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight: 700; background: #e6f0ff;">
+                    <td><strong>TOTALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_FATT_USA]</strong></td>
+                    <td class="col-center">-</td>
+                    <td class="col-curr"><strong>[TOT_FATT_ROW]</strong></td>
+                    <td class="col-center">-</td>
+                    <td class="col-curr"><strong>[TOT_PREMIO_IMP]</strong></td>
+                    <td class="col-curr"><strong>[TOT_IMPOSTE]</strong></td>
+                    <td class="col-curr"><strong>[TOT_PREMIO_LORDO]</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Dettaglio Calcolo</div>
+        <table>
+            <tr>
+                <td class="col-label">Formula Premio Imponibile</td>
+                <td class="col-full">(Fatturato USA/CAN × Tasso‰ / 1000) + (Fatturato ROW × Tasso‰ / 1000)</td>
+            </tr>
+            <tr>
+                <td class="col-label">Aliquota Imposte</td>
+                <td class="col-full">[ALIQUOTA]% (standard RC: 22,25%)</td>
+            </tr>
+            <tr>
+                <td class="col-label">Base di Calcolo</td>
+                <td class="col-full">Fatturato annuo a preventivo come dichiarato in polizza</td>
+            </tr>
+            <tr>
+                <td class="col-label">Minimo di Premio</td>
+                <td class="col-full">[MINIMO_PREMIO o "Non previsto"]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Regolazione Premio</div>
+        <table>
+            <tr>
+                <td class="col-label">Tipo Regolazione</td>
+                <td class="col-value">[Deposito + Conguaglio / Fisso / Dichiarazione periodica]</td>
+                <td class="col-label">Termine Regolazione</td>
+                <td class="col-value">[Es. entro 90 giorni dalla scadenza]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Base Regolazione</td>
+                <td class="col-value">[Fatturato effettivo / Retribuzioni effettive]</td>
+                <td class="col-label">Conseguenze Mancata Regolazione</td>
+                <td class="col-value">[Proporzionale / Sospensione / Altro]</td>
+            </tr>
+        </table>
+
+        <!-- [AI: SE presente coassicurazione, mostrare riparto premi] -->
+        <!--
+        <div class="section-header">Riparto Premio per Coassicuratore</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Coassicuratore</th>
+                    <th>Quota %</th>
+                    <th>Premio Imponibile</th>
+                    <th>Imposte</th>
+                    <th>Premio Lordo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[COMPAGNIA_1] (Delegataria)</td>
+                    <td class="col-center">60%</td>
+                    <td class="col-curr">[PREMIO_IMP_1]</td>
+                    <td class="col-curr">[IMPOSTE_1]</td>
+                    <td class="col-curr">[PREMIO_LORDO_1]</td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+
+        <div class="summary-box">
+            <div class="summary-title">📊 Verifica Coerenza</div>
+            <div class="summary-content">
+                Premio calcolato: <strong>[TOT_PREMIO_LORDO]</strong><br>
+                Premio dichiarato in polizza: <strong>[PREMIO_POLIZZA]</strong><br>
+                Differenza: <strong>[DIFFERENZA o "Coerente"]</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 9: SINISTRI -->
+    <!-- ============================================================ -->
+    <div id="Sinistri" class="tab-content">
+
+        <div class="section-header">Andamento Premi vs Sinistri</div>
+        <div class="chart-container">
+            <canvas id="claimsChart"></canvas>
+        </div>
+
+        <div class="section-header">KPI Sinistralità</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">[LOSS_RATIO]%</div>
+                <div class="kpi-label">Loss Ratio</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">[N_SINISTRI]</div>
+                <div class="kpi-label">N° Sinistri Totali</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">€ [TOTALE_PAGATO]</div>
+                <div class="kpi-label">Totale Liquidato</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">€ [TOTALE_RISERVE]</div>
+                <div class="kpi-label">Riserve Aperte</div>
+            </div>
+        </div>
+
+        <div class="section-header">Loss Experience per Anno</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:10%">Anno</th>
+                    <th style="width:15%">Premio</th>
+                    <th style="width:10%">N° Sin.</th>
+                    <th style="width:15%">Riservato</th>
+                    <th style="width:15%">Pagato</th>
+                    <th style="width:15%">Totale (R+P)</th>
+                    <th style="width:10%">Loss Ratio</th>
+                    <th style="width:10%">Freq.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI ANNO] -->
+                <tr>
+                    <td class="col-center">[ANNO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="col-center">[N_SIN]</td>
+                    <td class="col-curr">[RISERVATO]</td>
+                    <td class="col-curr">[PAGATO]</td>
+                    <td class="col-curr">[TOTALE]</td>
+                    <td class="col-curr">[LR]%</td>
+                    <td class="col-center">[FREQ]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight: 700; background: #e6f0ff;">
+                    <td class="col-center"><strong>TOTALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_PREMIO]</strong></td>
+                    <td class="col-center"><strong>[TOT_SIN]</strong></td>
+                    <td class="col-curr"><strong>[TOT_RISERVATO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_PAGATO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_TOTALE]</strong></td>
+                    <td class="col-curr"><strong>[TOT_LR]%</strong></td>
+                    <td class="col-center">-</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Distribuzione per Sezione</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%">Sezione</th>
+                    <th style="width:12%">N° Sinistri</th>
+                    <th style="width:12%">% N°</th>
+                    <th style="width:18%">Importo Totale</th>
+                    <th style="width:13%">% Importo</th>
+                    <th style="width:15%">Media Sinistro</th>
+                    <th style="width:15%">Sinistro Max</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge tag-rct">RCT</span></td>
+                    <td class="col-center">[N_RCT]</td>
+                    <td class="col-center">[%_N_RCT]</td>
+                    <td class="col-curr">[TOT_RCT]</td>
+                    <td class="col-center">[%_IMP_RCT]</td>
+                    <td class="col-curr">[MEDIA_RCT]</td>
+                    <td class="col-curr">[MAX_RCT]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rco">RCO</span></td>
+                    <td class="col-center">[N_RCO]</td>
+                    <td class="col-center">[%_N_RCO]</td>
+                    <td class="col-curr">[TOT_RCO]</td>
+                    <td class="col-center">[%_IMP_RCO]</td>
+                    <td class="col-curr">[MEDIA_RCO]</td>
+                    <td class="col-curr">[MAX_RCO]</td>
+                </tr>
+                <tr>
+                    <td><span class="badge tag-rcp">RCP</span></td>
+                    <td class="col-center">[N_RCP]</td>
+                    <td class="col-center">[%_N_RCP]</td>
+                    <td class="col-curr">[TOT_RCP]</td>
+                    <td class="col-center">[%_IMP_RCP]</td>
+                    <td class="col-curr">[MEDIA_RCP]</td>
+                    <td class="col-curr">[MAX_RCP]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Distribuzione per Causa</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%">Causa</th>
+                    <th style="width:15%">N° Sinistri</th>
+                    <th style="width:15%">% N°</th>
+                    <th style="width:20%">Importo Totale</th>
+                    <th style="width:20%">% Importo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: RAGGRUPPARE PER CAUSA] -->
+                <tr>
+                    <td>[CAUSA_1]</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Dettaglio Sinistri</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:8%">N° Sin.</th>
+                    <th style="width:10%">Data Evento</th>
+                    <th style="width:10%">Data Denuncia</th>
+                    <th style="width:8%">Sezione</th>
+                    <th style="width:22%">Causa / Descrizione</th>
+                    <th style="width:12%">Riservato</th>
+                    <th style="width:12%">Pagato</th>
+                    <th style="width:8%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI SINISTRO] -->
+                <tr>
+                    <td class="col-center">[N_SIN]</td>
+                    <td class="col-center">[DATA_EVENTO]</td>
+                    <td class="col-center">[DATA_DENUNCIA]</td>
+                    <td class="col-center"><span class="badge tag-rct">[SEZ]</span></td>
+                    <td>[CAUSA]</td>
+                    <td class="col-curr">[RISERVATO]</td>
+                    <td class="col-curr">[PAGATO]</td>
+                    <td class="col-center"><span class="badge tag-ok">[STATUS]</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="summary-box">
+            <div class="summary-title">📋 Note sulla Sinistralità</div>
+            <div class="summary-content">
+                [AI: Inserire osservazioni rilevanti sulla sinistralità: trend, concentrazioni, sinistri significativi, impatto su aggregato, etc.]
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 10: APPENDICI -->
+    <!-- ============================================================ -->
+    <div id="Appendici" class="tab-content">
+
+        <div class="section-header">Elenco Appendici</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:12%">N° Appendice</th>
+                    <th style="width:12%">Data Emissione</th>
+                    <th style="width:12%">Data Effetto</th>
+                    <th style="width:44%">Oggetto / Descrizione</th>
+                    <th style="width:20%">Impatto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI APPENDICE] -->
+                <tr>
+                    <td class="col-center">[N_APP]</td>
+                    <td class="col-center">[DATA_EMISSIONE]</td>
+                    <td class="col-center">[DATA_EFFETTO]</td>
+                    <td>[OGGETTO]</td>
+                    <td class="note-cell">[Massimali / Premio / Garanzie / Altro]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Audit Modifiche</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:10%">Appendice</th>
+                    <th style="width:10%">Data Effetto</th>
+                    <th style="width:20%">Campo Modificato</th>
+                    <th style="width:20%">Valore Precedente</th>
+                    <th style="width:20%">Nuovo Valore</th>
+                    <th style="width:20%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI MODIFICA TRACCIATA] -->
+                <tr>
+                    <td class="col-center">[N_APP]</td>
+                    <td class="col-center">[DATA]</td>
+                    <td>[CAMPO]</td>
+                    <td class="col-curr">[VALORE_OLD]</td>
+                    <td class="col-curr">[VALORE_NEW]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Change Log</div>
+        <table>
+            <tr>
+                <td class="col-label" style="width:15%">Polizza Base</td>
+                <td>[DATA_EMISSIONE] - Emissione polizza originale</td>
+            </tr>
+            <!-- [AI: AGGIUNGERE RIGHE PER OGNI APPENDICE IN ORDINE CRONOLOGICO] -->
+            <tr>
+                <td class="col-label">Appendice [N]</td>
+                <td>[DATA_EFFETTO] - [DESCRIZIONE_SINTETICA_MODIFICA]</td>
+            </tr>
+        </table>
+
+        <!-- [AI: SE presenti conflitti o ambiguità] -->
+        <!--
+        <div class="summary-box warning">
+            <div class="summary-title">⚠️ Segnalazioni</div>
+            <div class="summary-content">
+                <strong>Conflitto rilevato:</strong> [Descrizione del conflitto tra appendici]<br>
+                <strong>Risoluzione applicata:</strong> [Come è stato risolto - es. applicato ultimo valore per data effetto]
+            </div>
+        </div>
+        -->
+
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================ -->
+<script>
+function openTab(tabName) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("tab-content");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
+}
+
+// Chart.js - Grafico Sinistri/Premi
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('claimsChart');
+    if (ctx) {
+        /* ============================================================
+           ISTRUZIONI PER LA COMPILAZIONE DEL GRAFICO
+           ============================================================
+           1. RANGE ANNI: Dal primo anno con dati fino all'anno corrente
+              - SEMPRE includere l'anno corrente anche se non ci sono sinistri
+           
+           2. ASSEGNAZIONE PREMI: Anno di COMPETENZA della polizza
+              - Polizza 31/12/2024 → 31/12/2025 = premio assegnato a 2025
+              - NON duplicare premi su più anni
+           
+           3. ASSEGNAZIONE SINISTRI: Usare la DATA DI DENUNCIA
+              - NON usare l'anno indicato nelle note del sinistro
+           
+           4. ANNI A ZERO: Se un anno ha premio ma zero sinistri,
+              inserire 0 (non omettere l'anno)
+           
+           5. COERENZA: years.length === premiums.length === claims.length
+           ============================================================ */
+        
+        // [AI: SOSTITUIRE CON DATI REALI]
+        const years = ['2022', '2023', '2024', '2025'];
+        const premiums = [45000, 48000, 52000, 55000];
+        const claims = [32000, 15000, 28000, 0];
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Premi',
+                        data: premiums,
+                        backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 1,
+                        order: 2
+                    },
+                    {
+                        label: 'Sinistri (Pagato + Riservato)',
+                        data: claims,
+                        backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        borderWidth: 1,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Andamento Premi vs Sinistri'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '€ ' + value.toLocaleString('it-IT');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
+	

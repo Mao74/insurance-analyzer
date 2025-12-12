@@ -1,0 +1,2616 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report Tecnico Polizza Incendio - Property All Risks</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-body: #f1f5f9;
+    --bg-paper: #ffffff;
+    --primary-dark: #0f172a;
+    --primary-main: #334155;
+    --accent-blue: #2563eb;
+    --accent-green: #16a34a;
+    --accent-amber: #d97706;
+    --accent-red: #dc2626;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 20px;
+    background: var(--bg-body);
+    color: var(--text-main);
+}
+
+.report-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--bg-paper);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* --- HEADER COMPATTO --- */
+.header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-left h1 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+.header-left p {
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    margin: 3px 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.header-right {
+    text-align: right;
+    font-size: 10px;
+}
+.header-right .policy-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #60a5fa;
+}
+
+/* --- TABS --- */
+.tabs {
+    background: #1e293b;
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid #334155;
+}
+.tab-link {
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+.tab-link:hover { color: white; background: rgba(255,255,255,0.05); }
+.tab-link.active { color: #60a5fa; border-bottom-color: #60a5fa; background: rgba(96,165,250,0.1); }
+
+/* --- CONTENT --- */
+.tab-content { display: none; padding: 20px 25px; }
+.tab-content.active { display: block; }
+
+/* --- SECTION HEADERS --- */
+.section-header {
+    background: linear-gradient(90deg, #334155, #475569);
+    color: white;
+    padding: 8px 15px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 20px 0 10px 0;
+    border-radius: 4px;
+}
+.section-header:first-child { margin-top: 0; }
+
+/* --- TABELLE COMPATTE --- */
+table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10px; }
+th {
+    background: #f1f5f9;
+    color: var(--primary-dark);
+    font-weight: 700;
+    padding: 6px 8px;
+    text-align: left;
+    border: 1px solid var(--border-strong);
+    font-size: 9px;
+    text-transform: uppercase;
+}
+td {
+    padding: 5px 8px;
+    border: 1px solid var(--border-subtle);
+    vertical-align: middle;
+}
+tr:nth-child(even) { background: #f8fafc; }
+.col-label { background: #f1f5f9; font-weight: 600; width: 25%; }
+.col-curr { text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+.col-center { text-align: center; }
+.note-cell { font-size: 9px; color: var(--text-muted); font-style: italic; }
+
+/* --- MAPPA --- */
+#map { height: 320px; width: 100%; border-radius: 6px; border: 1px solid var(--border-strong); margin-bottom: 15px; z-index: 1; }
+
+/* --- LOCATION BLOCK --- */
+.location-block {
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    background: white;
+    overflow: hidden;
+}
+.loc-header {
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+    color: white;
+    padding: 10px 15px;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.loc-header a {
+    color: #bfdbfe;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 500;
+}
+.loc-header a:hover { color: white; text-decoration: underline; }
+.loc-body { padding: 12px 15px; }
+.loc-info { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); }
+.loc-info-item span:first-child { display: block; font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+.loc-info-item span:last-child { font-weight: 600; color: var(--primary-dark); }
+
+/* --- RISK CARDS CAT-NAT --- */
+.catnat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 15px; margin-bottom: 15px; }
+.risk-card {
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: white;
+    overflow: hidden;
+}
+.risk-header {
+    background: linear-gradient(90deg, #1e293b, #475569);
+    color: white;
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.risk-header a {
+    color: #93c5fd;
+    font-size: 10px;
+    text-decoration: none;
+}
+.risk-header a:hover { color: white; }
+.risk-body { padding: 10px 12px; }
+.risk-table { width: 100%; margin: 0; }
+.risk-table td { padding: 6px 8px; border: none; border-bottom: 1px solid #f1f5f9; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-notes { margin-top: 8px; padding: 8px; background: #f8fafc; border-radius: 4px; font-size: 9px; color: var(--text-muted); }
+
+/* --- BADGES --- */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.tag-ok { background: #dcfce7; color: #166534; }
+.tag-warn { background: #fef3c7; color: #92400e; }
+.tag-error { background: #fee2e2; color: #991b1b; }
+.tag-info { background: #dbeafe; color: #1e40af; }
+
+.risk-low { background: #dcfce7; color: #166534; }
+.risk-med { background: #fef9c3; color: #854d0e; }
+.risk-high { background: #fee2e2; color: #991b1b; }
+
+/* --- SUMMARY BOX --- */
+.summary-box {
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+.summary-box.info { border-left: 4px solid #2563eb; background: #eff6ff; }
+.summary-box.warning { border-left: 4px solid #d97706; background: #fffbeb; }
+.summary-box.critical { border-left: 4px solid #dc2626; background: #fef2f2; }
+.summary-title { padding: 8px 12px; font-weight: 700; font-size: 10px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+.summary-content { padding: 10px 12px; font-size: 10px; }
+
+/* --- KPI GRID --- */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 15px; }
+.kpi-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+}
+.kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--primary-dark); }
+.kpi-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+
+/* --- CHART --- */
+.chart-container {
+    background: white;
+    padding: 15px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    height: 280px;
+}
+
+/* --- PRINT --- */
+@media print {
+    body { padding: 0; background: white; font-size: 9px; }
+    .report-container { border: none; box-shadow: none; }
+    .tabs { display: none; }
+    .tab-content { display: block !important; page-break-inside: avoid; }
+    .section-header { background: #334155 !important; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="report-container">
+
+    <!-- ================================================================ -->
+    <!-- HEADER -->
+    <!-- ================================================================ -->
+    <div class="header">
+        <div class="header-left">
+            <h1>Report Tecnico Polizza Incendio / Property All Risks</h1>
+            <p>Analisi Assuntiva • Audit Coperture • Esposizione Cat-Nat</p>
+        </div>
+        <div class="header-right">
+            <div class="policy-num">[NUMERO_POLIZZA]</div>
+            <div style="margin-top:3px;">[CONTRAENTE]</div>
+            <div>Vigenza: [DECORRENZA] - [SCADENZA]</div>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TABS -->
+    <!-- ================================================================ -->
+    <div class="tabs">
+        <button class="tab-link active" onclick="openTab('Anagrafica')">1. Anagrafica</button>
+        <button class="tab-link" onclick="openTab('Ubicazioni')">2. Ubicazioni</button>
+        <button class="tab-link" onclick="openTab('CatNat')">3. Cat-Nat</button>
+        <button class="tab-link" onclick="openTab('Partite')">4. Partite</button>
+        <button class="tab-link" onclick="openTab('Garanzie')">5. Garanzie</button>
+        <button class="tab-link" onclick="openTab('Franchigie')">6. Franchigie</button>
+        <button class="tab-link" onclick="openTab('Esclusioni')">7. Esclusioni</button>
+        <button class="tab-link" onclick="openTab('Premio')">8. Premio</button>
+        <button class="tab-link" onclick="openTab('Sinistri')">9. Sinistri</button>
+        <button class="tab-link" onclick="openTab('Appendici')">10. Appendici</button>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 1: ANAGRAFICA -->
+    <!-- ================================================================ -->
+    <div id="Anagrafica" class="tab-content active">
+
+        <div class="section-header">Dati Contrattuali</div>
+        <table>
+            <tr>
+                <td class="col-label">Compagnia</td>
+                <td>[COMPAGNIA]</td>
+                <td class="col-label">Numero Polizza</td>
+                <td style="font-family: 'JetBrains Mono', monospace; font-weight:700;">[NUMERO_POLIZZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Contraente</td>
+                <td>[CONTRAENTE]</td>
+                <td class="col-label">P.IVA / C.F.</td>
+                <td style="font-family: 'JetBrains Mono', monospace;">[PARTITA_IVA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Sede Legale</td>
+                <td colspan="3">[INDIRIZZO_SEDE_LEGALE], [CAP] [CITTÀ] ([PROV])</td>
+            </tr>
+            <tr>
+                <td class="col-label">Broker</td>
+                <td>[BROKER]</td>
+                <td class="col-label">Cod. IVASS Broker</td>
+                <td>[CODICE_RUI]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Validità e Durata</div>
+        <table>
+            <tr>
+                <td class="col-label">Data Decorrenza</td>
+                <td>[DATA_DECORRENZA]</td>
+                <td class="col-label">Ora Decorrenza</td>
+                <td>[ORA_DECORRENZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Data Scadenza</td>
+                <td>[DATA_SCADENZA]</td>
+                <td class="col-label">Ora Scadenza</td>
+                <td>[ORA_SCADENZA]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Durata Contratto</td>
+                <td>[DURATA]</td>
+                <td class="col-label">Rinnovo</td>
+                <td>[TACITO/ESPRESSO]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Disdetta</td>
+                <td colspan="3">[TERMINE_DISDETTA] giorni prima della scadenza - [MODALITÀ]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Mora / Grace Period</td>
+                <td colspan="3">[GIORNI_MORA] giorni dalla scadenza rata</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Premio</div>
+        <table>
+            <tr>
+                <td class="col-label">Premio Annuo Lordo</td>
+                <td class="col-curr" style="font-size:13px; font-weight:700; color:#2563eb;">[PREMIO_LORDO]</td>
+                <td class="col-label">Premio Imponibile</td>
+                <td class="col-curr">[PREMIO_IMPONIBILE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Imposte</td>
+                <td class="col-curr">[IMPOSTE]</td>
+                <td class="col-label">Aliquota</td>
+                <td>[ALIQUOTA]%</td>
+            </tr>
+            <tr>
+                <td class="col-label">Frazionamento</td>
+                <td>[FRAZIONAMENTO]</td>
+                <td class="col-label">Regolazione Premio</td>
+                <td>[SI/NO - TIPO]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Coassicurazione</div>
+        <table>
+            <tr>
+                <td class="col-label">Polizza Coassicurata</td>
+                <td>[SI/NO]</td>
+                <td class="col-label">Modalità Riparto</td>
+                <td>[QUOTA FISSA / DELEGA / ALTRO]</td>
+            </tr>
+        </table>
+
+        <!-- [AI: SE COASSICURATA, MOSTRARE DETTAGLIO] -->
+        <!--
+        <table>
+            <thead>
+                <tr>
+                    <th>Coassicuratore</th>
+                    <th>Ruolo</th>
+                    <th class="col-center">Quota %</th>
+                    <th class="col-curr">Quota Premio</th>
+                    <th>Delega Sinistri</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[COMPAGNIA_1]</td>
+                    <td>Delegataria</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[€]</td>
+                    <td>SI - fino a € [LIMITE]</td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+
+        <div class="section-header">Obblighi Contrattuali</div>
+        <table>
+            <tr>
+                <td class="col-label">Termine Denuncia Sinistri</td>
+                <td>[GG] giorni dalla data di conoscenza del sinistro</td>
+            </tr>
+            <tr>
+                <td class="col-label">Variazioni Rischio</td>
+                <td>Comunicazione entro [GG] giorni da variazioni significative</td>
+            </tr>
+            <tr>
+                <td class="col-label">Vincoli</td>
+                <td>[SI/NO] - vedi TAB Appendici per dettaglio</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Riepilogo Ubicazioni e Partite</div>
+        
+        <!--
+        ╔══════════════════════════════════════════════════════════════════════════════╗
+        ║ REGOLA CRITICA: DETTAGLIO ANALITICO PER OGNI UBICAZIONE                     ║
+        ╠══════════════════════════════════════════════════════════════════════════════╣
+        ║ Per ogni sede: elencare TUTTE le partite con SA, Tasso ‰, Premio calcolato  ║
+        ║ Il calcolo deve essere verificabile: SA × Tasso ÷ 1000 = Premio             ║
+        ║ NON accorpare partite, NON omettere ubicazioni                               ║
+        ╚══════════════════════════════════════════════════════════════════════════════╝
+        -->
+
+        <!-- [AI: RIPETERE QUESTO BLOCCO PER OGNI UBICAZIONE] -->
+        <div class="location-block">
+            <div class="loc-header">
+                <span>📍 UB. [N] - [INDIRIZZO], [CAP] [COMUNE] ([PROV])</span>
+                <span>Totale: [TOTALE_UBICAZIONE]</span>
+            </div>
+            <div class="loc-body">
+                <div class="loc-info">
+                    <div class="loc-info-item">
+                        <span>Attività</span>
+                        <span>[DESCRIZIONE_ATTIVITÀ]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Tipologia Edificio</span>
+                        <span>[CAPANNONE/UFFICI/MAGAZZINO]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Anno Costruzione</span>
+                        <span>[ANNO]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Superficie (MQ)</span>
+                        <span>[MQ]</span>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:30%">Partita</th>
+                            <th class="col-curr" style="width:20%">Somma Assicurata</th>
+                            <th style="width:15%">Criterio</th>
+                            <th class="col-curr" style="width:12%">Tasso ‰</th>
+                            <th class="col-curr" style="width:15%">Premio Imponibile</th>
+                            <th style="width:8%">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- [AI: UNA RIGA PER OGNI PARTITA - CALCOLO ANALITICO] -->
+                        <tr>
+                            <td>Fabbricato</td>
+                            <td class="col-curr">[SA_FABBRICATO]</td>
+                            <td>Valore a Nuovo</td>
+                            <td class="col-curr">[TASSO]</td>
+                            <td class="col-curr">[PREMIO]</td>
+                            <td class="note-cell"></td>
+                        </tr>
+                        <tr>
+                            <td>Macchinari e Impianti</td>
+                            <td class="col-curr">[SA_MACCHINARI]</td>
+                            <td>Valore a Nuovo</td>
+                            <td class="col-curr">[TASSO]</td>
+                            <td class="col-curr">[PREMIO]</td>
+                            <td class="note-cell"></td>
+                        </tr>
+                        <tr>
+                            <td>Attrezzature</td>
+                            <td class="col-curr">[SA_ATTREZZATURE]</td>
+                            <td>Valore a Nuovo</td>
+                            <td class="col-curr">[TASSO]</td>
+                            <td class="col-curr">[PREMIO]</td>
+                            <td class="note-cell"></td>
+                        </tr>
+                        <tr>
+                            <td>Merci e Scorte</td>
+                            <td class="col-curr">[SA_MERCI]</td>
+                            <td>Valore Mercato</td>
+                            <td class="col-curr">[TASSO]</td>
+                            <td class="col-curr">[PREMIO]</td>
+                            <td class="note-cell"></td>
+                        </tr>
+                        <tr>
+                            <td>Perdita Profitto (BI)</td>
+                            <td class="col-curr">[SA_BI]</td>
+                            <td>Margine Contrib.</td>
+                            <td class="col-curr">[TASSO]</td>
+                            <td class="col-curr">[PREMIO]</td>
+                            <td class="note-cell">[MESI] mesi</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-weight:700; background:#e6f0ff;">
+                            <td>TOTALE UBICAZIONE</td>
+                            <td class="col-curr">[TOT_SA]</td>
+                            <td></td>
+                            <td class="col-curr">[TASSO_MEDIO]</td>
+                            <td class="col-curr">[TOT_PREMIO]</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <!-- [END LOOP UBICAZIONI] -->
+
+        <div class="section-header">Totale Generale Polizza</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:40%">Sezione</th>
+                    <th class="col-curr" style="width:30%">Somma Assicurata</th>
+                    <th class="col-curr" style="width:30%">Premio Imponibile</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Totale Danni Diretti</td>
+                    <td class="col-curr">[TOT_SA_DD]</td>
+                    <td class="col-curr">[TOT_PREMIO_DD]</td>
+                </tr>
+                <tr>
+                    <td>Totale Danni Indiretti (BI)</td>
+                    <td class="col-curr">[TOT_SA_BI]</td>
+                    <td class="col-curr">[TOT_PREMIO_BI]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#dcfce7;">
+                    <td><strong>TOTALE POLIZZA</strong></td>
+                    <td class="col-curr" style="font-size:12px;"><strong>[TOT_SA_POLIZZA]</strong></td>
+                    <td class="col-curr" style="font-size:12px;"><strong>[TOT_PREMIO_POLIZZA]</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 2: UBICAZIONI -->
+    <!-- ================================================================ -->
+    <div id="Ubicazioni" class="tab-content">
+
+        <div class="section-header">Mappa Concentrazione Rischi</div>
+        <div id="map"></div>
+
+        <div class="section-header">Elenco Ubicazioni Assicurate</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:30%">Indirizzo</th>
+                    <th style="width:15%">Comune</th>
+                    <th style="width:8%">CAP</th>
+                    <th style="width:22%">Attività</th>
+                    <th class="col-curr" style="width:20%">Totale Assicurato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI UBICAZIONE] -->
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>[INDIRIZZO]</td>
+                    <td>[COMUNE]</td>
+                    <td class="col-center">[CAP]</td>
+                    <td>[ATTIVITÀ]</td>
+                    <td class="col-curr">[TOTALE_SA]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#e6f0ff;">
+                    <td colspan="5"><strong>TOTALE GENERALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_GENERALE]</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Dettaglio per Ubicazione</div>
+
+        <!-- [AI: RIPETERE PER OGNI UBICAZIONE] -->
+        <div class="location-block">
+            <div class="loc-header">
+                <span>📍 UB. [N] - [INDIRIZZO], [CAP] [COMUNE] ([PROV])</span>
+                <a href="https://www.google.com/maps/search/?api=1&query=[INDIRIZZO_ENCODED]" target="_blank">🌍 Vedi su Google Maps</a>
+            </div>
+            <div class="loc-body">
+                <div class="loc-info">
+                    <div class="loc-info-item">
+                        <span>Attività Svolta</span>
+                        <span>[DESCRIZIONE_ATTIVITÀ_DETTAGLIATA]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Tipologia</span>
+                        <span>[TIPOLOGIA_EDIFICIO]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Anno Costruzione</span>
+                        <span>[ANNO]</span>
+                    </div>
+                    <div class="loc-info-item">
+                        <span>Superficie</span>
+                        <span>[MQ] mq</span>
+                    </div>
+                </div>
+                <table style="margin-bottom:0;">
+                    <thead>
+                        <tr>
+                            <th style="width:35%">Partita</th>
+                            <th class="col-curr" style="width:25%">Somma Assicurata</th>
+                            <th style="width:15%">Criterio</th>
+                            <th style="width:25%">Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fabbricato</td>
+                            <td class="col-curr">[SA]</td>
+                            <td>Valore a Nuovo</td>
+                            <td class="note-cell">[NOTE]</td>
+                        </tr>
+                        <tr>
+                            <td>Macchinari e Impianti</td>
+                            <td class="col-curr">[SA]</td>
+                            <td>Valore a Nuovo</td>
+                            <td class="note-cell">[NOTE]</td>
+                        </tr>
+                        <tr>
+                            <td>Merci e Scorte</td>
+                            <td class="col-curr">[SA]</td>
+                            <td>Valore Mercato</td>
+                            <td class="note-cell">[NOTE]</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-weight:600; background:#f8fafc;">
+                            <td>Totale Ubicazione</td>
+                            <td class="col-curr">[TOT_SA]</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <!-- [END LOOP UBICAZIONI] -->
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 3: CAT-NAT -->
+    <!-- ================================================================ -->
+    <div id="CatNat" class="tab-content">
+
+        <div class="section-header">Fonti Classificazione Rischi</div>
+        <div class="summary-box info">
+            <div class="summary-title">📊 DATABASE E FONTI UTILIZZATE</div>
+            <div class="summary-content">
+                <strong>Zona Sismica:</strong> Classificazione sismica dei comuni italiani - INGV/Protezione Civile (agg. 2023)<br>
+                <strong>Rischio Idrogeologico:</strong> Piani di Assetto Idrogeologico (PAI) regionali + Mosaicatura ISPRA<br>
+                <strong>Rischio Frane:</strong> Inventario Fenomeni Franosi in Italia (IFFI) - ISPRA<br>
+                <strong>Prossimità Infrastrutture:</strong> Analisi georeferenziata (RIR, aeroporti, corsi d'acqua, ferrovie)
+            </div>
+        </div>
+
+        <div class="section-header">Analisi Rischi per Ubicazione</div>
+        
+        <div class="catnat-grid">
+            <!-- [AI: UNA RISK-CARD PER OGNI UBICAZIONE] -->
+            <div class="risk-card">
+                <div class="risk-header">
+                    <span>📍 UB. [N] - [COMUNE]</span>
+                    <a href="https://www.google.com/maps/@[LAT],[LNG],500m/data=!3m1!1e3" target="_blank">🛰️ Vista Satellite</a>
+                </div>
+                <div class="risk-body">
+                    <table class="risk-table">
+                        <tr>
+                            <td style="width:50%"><strong>Zona Sismica</strong></td>
+                            <td style="width:50%"><span class="badge [risk-low/risk-med/risk-high]">ZONA [1/2/3/4]</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rischio Alluvione (PAI)</strong></td>
+                            <td><span class="badge [risk-low/risk-med/risk-high]">[P1/P2/P3/P4]</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rischio Frane (IFFI)</strong></td>
+                            <td><span class="badge [risk-low/risk-med/risk-high]">[BASSO/MEDIO/ALTO]</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rischio Vento</strong></td>
+                            <td><span class="badge [risk-low/risk-med/risk-high]">[BASSO/MEDIO/ALTO]</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rischio Grandine</strong></td>
+                            <td><span class="badge [risk-low/risk-med/risk-high]">[BASSO/MEDIO/ALTO]</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prossimità RIR/Seveso</strong></td>
+                            <td><span class="badge [risk-low/risk-high]">[NO / SI - dist. Xkm]</span></td>
+                        </tr>
+                    </table>
+                    <div class="risk-notes">
+                        <strong>Note prossimità:</strong> [AI: Indicare distanza da aeroporti, corsi d'acqua principali, ferrovie, industrie RIR, altri elementi rilevanti]
+                    </div>
+                </div>
+            </div>
+            <!-- [END LOOP UBICAZIONI] -->
+        </div>
+
+        <div class="section-header">Classificazione Zone Sismiche Italia</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%">Zona</th>
+                    <th style="width:20%">Livello Rischio</th>
+                    <th style="width:25%">PGA (ag/g)</th>
+                    <th style="width:40%">Descrizione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center"><span class="badge risk-high">ZONA 1</span></td>
+                    <td>Rischio ALTO</td>
+                    <td>ag > 0.25g</td>
+                    <td>Zona a più elevata pericolosità sismica</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-high">ZONA 2</span></td>
+                    <td>Rischio MEDIO-ALTO</td>
+                    <td>0.15g < ag ≤ 0.25g</td>
+                    <td>Zona a pericolosità sismica media-alta</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-med">ZONA 3</span></td>
+                    <td>Rischio MEDIO-BASSO</td>
+                    <td>0.05g < ag ≤ 0.15g</td>
+                    <td>Zona a pericolosità sismica media-bassa</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-low">ZONA 4</span></td>
+                    <td>Rischio BASSO</td>
+                    <td>ag ≤ 0.05g</td>
+                    <td>Zona a minore pericolosità sismica</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Classificazione PAI Alluvione</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:15%">Classe PAI</th>
+                    <th style="width:20%">Probabilità</th>
+                    <th style="width:25%">Tempo di Ritorno</th>
+                    <th style="width:40%">Descrizione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center"><span class="badge risk-low">P1</span></td>
+                    <td>Bassa</td>
+                    <td>TR > 500 anni</td>
+                    <td>Scenario con bassa probabilità di accadimento</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-med">P2</span></td>
+                    <td>Media</td>
+                    <td>TR 100-200 anni</td>
+                    <td>Scenario con media probabilità di accadimento</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-high">P3</span></td>
+                    <td>Alta</td>
+                    <td>TR 20-50 anni</td>
+                    <td>Scenario con alta probabilità di accadimento</td>
+                </tr>
+                <tr>
+                    <td class="col-center"><span class="badge risk-high">P4</span></td>
+                    <td>Molto Alta</td>
+                    <td>TR < 20 anni</td>
+                    <td>Aree frequentemente allagabili</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Sintesi Esposizione Catastrofale</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Ubicazione</th>
+                    <th class="col-curr" style="width:15%">SA Esposta</th>
+                    <th class="col-center" style="width:12%">Sismico</th>
+                    <th class="col-center" style="width:12%">Alluvione</th>
+                    <th class="col-center" style="width:12%">Frane</th>
+                    <th class="col-center" style="width:12%">Meteo</th>
+                    <th class="col-center" style="width:12%">Prossimità</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI UBICAZIONE] -->
+                <tr>
+                    <td>[COMUNE] - [VIA]</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center"><span class="badge [risk-level]">[ZONA]</span></td>
+                    <td class="col-center"><span class="badge [risk-level]">[PAI]</span></td>
+                    <td class="col-center"><span class="badge [risk-level]">[IFFI]</span></td>
+                    <td class="col-center"><span class="badge [risk-level]">[METEO]</span></td>
+                    <td class="col-center"><span class="badge [risk-level]">[PROX]</span></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#f8fafc;">
+                    <td>TOTALE ESPOSTO</td>
+                    <td class="col-curr">[TOT_SA]</td>
+                    <td colspan="5"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Copertura Catastrofale in Polizza</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:18%">Evento</th>
+                    <th class="col-center" style="width:10%">Coperto</th>
+                    <th class="col-curr" style="width:15%">Limite Evento</th>
+                    <th class="col-curr" style="width:15%">Aggregato Annuo</th>
+                    <th class="col-curr" style="width:12%">Franchigia</th>
+                    <th class="col-center" style="width:10%">Scoperto</th>
+                    <th style="width:20%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Terremoto</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Alluvione / Inondazione</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Eventi Atmosferici</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Grandine</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Frana / Smottamento</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- [AI: SE ESISTONO GAP DI COPERTURA] -->
+        <div class="summary-box critical">
+            <div class="summary-title">🚨 GAP DI COPERTURA RILEVATI</div>
+            <div class="summary-content">
+                [AI: Indicare eventuali rischi non coperti o con limiti insufficienti rispetto all'esposizione.
+                Es: "Ubicazione di Firenze in Zona Sismica 2 con SA esposta € 5.000.000 - Garanzia Terremoto NON attiva"]
+            </div>
+        </div>
+
+    </div>
+
+   <!-- ================================================================ -->
+    <!-- TAB 4: PARTITE & VALORI -->
+    <!-- ================================================================ -->
+    <div id="Partite" class="tab-content">
+
+        <div class="section-header">Riepilogo Somme Assicurate per Categoria</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%">Categoria</th>
+                    <th class="col-curr" style="width:20%">Somma Assicurata</th>
+                    <th class="col-center" style="width:12%">% su Totale</th>
+                    <th style="width:15%">Criterio</th>
+                    <th style="width:13%">Forma</th>
+                    <th style="width:10%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Fabbricati</td>
+                    <td class="col-curr">[SA_FABBRICATI]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore a Nuovo</td>
+                    <td>Valore Intero</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Macchinari e Impianti</td>
+                    <td class="col-curr">[SA_MACCHINARI]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore a Nuovo</td>
+                    <td>Valore Intero</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Attrezzature</td>
+                    <td class="col-curr">[SA_ATTREZZATURE]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore a Nuovo</td>
+                    <td>Valore Intero</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Merci e Scorte</td>
+                    <td class="col-curr">[SA_MERCI]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore di Mercato</td>
+                    <td>Valore Intero</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Beni di Terzi</td>
+                    <td class="col-curr">[SA_TERZI]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore Dichiarato</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Dati e Software</td>
+                    <td class="col-curr">[SA_DATI]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Costo Ricostituzione</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell"></td>
+                </tr>
+                <tr>
+                    <td>Beni all'Aperto</td>
+                    <td class="col-curr">[SA_APERTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td>Valore a Nuovo</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#e6f0ff;">
+                    <td><strong>TOTALE DANNI DIRETTI</strong></td>
+                    <td class="col-curr"><strong>[TOT_DD]</strong></td>
+                    <td class="col-center"><strong>100%</strong></td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Sezione Danni Indiretti (Business Interruption)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%">Voce</th>
+                    <th class="col-curr" style="width:20%">Somma Assicurata</th>
+                    <th style="width:18%">Periodo Indennizzo</th>
+                    <th style="width:15%">Franch. Temporale</th>
+                    <th style="width:17%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Margine di Contribuzione / Perdita Profitto</td>
+                    <td class="col-curr">[SA_BI]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Maggiori Costi</td>
+                    <td class="col-curr">[SA_MAGGIORI_COSTI]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Perdita Pigioni</td>
+                    <td class="col-curr">[SA_PIGIONI]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#f3e8ff;">
+                    <td><strong>TOTALE DANNI INDIRETTI</strong></td>
+                    <td class="col-curr"><strong>[TOT_BI]</strong></td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Spese Accessorie e Limiti Supplementari</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:35%">Voce</th>
+                    <th class="col-curr" style="width:20%">Limite / Massimale</th>
+                    <th style="width:15%">Forma</th>
+                    <th style="width:30%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Spese di Demolizione e Sgombero</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Spese di Salvataggio</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Onorari Periti di Parte</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Ricostituzione Archivi e Documenti</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Spese di Trasferimento</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni da Contaminazione</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Incremento Costi di Lavoro (BI)</td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td>Primo Rischio</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Verifica Adeguatezza Valori</div>
+        <div class="summary-box warning">
+            <div class="summary-title">⚠️ NOTE SOTTOASSICURAZIONE / ADEGUATEZZA</div>
+            <div class="summary-content">
+                [AI: Indicare eventuali segnalazioni su adeguatezza valori dichiarati, rischi di sottoassicurazione, 
+                necessità di aggiornamento valori rispetto a inflazione o investimenti recenti]
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 5: GARANZIE -->
+    <!-- ================================================================ -->
+    <div id="Garanzie" class="tab-content">
+
+        <div class="section-header">Garanzie Base - Incendio e Rischi Accessori</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:28%">Garanzia</th>
+                    <th class="col-center" style="width:10%">Stato</th>
+                    <th class="col-curr" style="width:18%">Limite / Sottolimite</th>
+                    <th style="width:22%">Condizioni</th>
+                    <th style="width:22%">Riferimento CGA/CP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Incendio</strong></td>
+                    <td class="col-center"><span class="badge tag-ok">ATTIVA</span></td>
+                    <td class="col-curr">Pieno</td>
+                    <td>Garanzia Base</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td>Fulmine</td>
+                    <td class="col-center"><span class="badge tag-ok">ATTIVA</span></td>
+                    <td class="col-curr">Pieno</td>
+                    <td>Incluso in base</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td>Esplosione / Scoppio</td>
+                    <td class="col-center"><span class="badge tag-ok">ATTIVA</span></td>
+                    <td class="col-curr">Pieno</td>
+                    <td>Incluso in base</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td>Implosione</td>
+                    <td class="col-center"><span class="badge tag-ok">ATTIVA</span></td>
+                    <td class="col-curr">Pieno</td>
+                    <td>Incluso in base</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Estensioni Danni Diretti</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:22%">Garanzia</th>
+                    <th class="col-center" style="width:8%">Stato</th>
+                    <th class="col-curr" style="width:14%">Sottolimite</th>
+                    <th class="col-curr" style="width:12%">Franchigia</th>
+                    <th class="col-center" style="width:10%">Scoperto</th>
+                    <th style="width:18%">Condizioni</th>
+                    <th style="width:16%">Rif. CGA/CP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Danni d'Acqua</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Fenomeno Elettrico</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Furto / Rapina</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Atti Vandalici</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Rottura Vetri/Lastre</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Ricerca Guasto</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Urto Veicoli Stradali</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Caduta Aeromobili</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Onde Soniche</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <!-- [AI: AGGIUNGERE TUTTE LE GARANZIE PRESENTI IN POLIZZA] -->
+            </tbody>
+        </table>
+
+        <div class="section-header">Garanzie Catastrofali</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:18%">Garanzia</th>
+                    <th class="col-center" style="width:8%">Stato</th>
+                    <th class="col-curr" style="width:14%">Limite Evento</th>
+                    <th class="col-curr" style="width:14%">Aggregato Annuo</th>
+                    <th class="col-curr" style="width:12%">Franchigia</th>
+                    <th class="col-center" style="width:10%">Scoperto</th>
+                    <th style="width:12%">Min/Max</th>
+                    <th style="width:12%">Rif.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Terremoto</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MIN/MAX]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Alluvione</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MIN/MAX]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Eventi Atmosferici</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MIN/MAX]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Grandine</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MIN/MAX]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Frana / Smottamento</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[LIMITE]</td>
+                    <td class="col-curr">[AGGREGATO]</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MIN/MAX]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Sezione Danni Indiretti (Business Interruption)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:22%">Garanzia</th>
+                    <th class="col-center" style="width:8%">Stato</th>
+                    <th class="col-curr" style="width:15%">Somma Assicurata</th>
+                    <th style="width:15%">Periodo Indenn.</th>
+                    <th style="width:12%">Franch. Temp.</th>
+                    <th style="width:15%">Condizioni</th>
+                    <th style="width:13%">Rif.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Perdita Profitto / Margine</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Maggiori Costi</td>
+                    <td class="col-center"><span class="badge tag-ok">✓</span></td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Interdipendenza Fornitori</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Interdipendenza Clienti</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Interdipendenza Utilities</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[✓/✗]</span></td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-center">[MESI] mesi</td>
+                    <td class="col-center">[GG] giorni</td>
+                    <td class="note-cell">[CONDIZIONI]</td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Clausole Speciali Attive</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Clausola</th>
+                    <th style="width:55%">Descrizione / Effetto</th>
+                    <th style="width:20%">Riferimento CP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: ELENCARE TUTTE LE CLAUSOLE SPECIALI] -->
+                <tr>
+                    <td>Clausola Valore a Nuovo</td>
+                    <td>Indennizzo senza deduzione per vetustà fino a [X] anni</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Clausola 72 ore</td>
+                    <td>Più eventi Cat-Nat entro 72 ore = unico sinistro</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Cross Liability</td>
+                    <td>Copertura reciproca tra co-assicurati</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Automatic Reinstatement</td>
+                    <td>Ripristino automatico SA dopo sinistro</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Breach of Warranty</td>
+                    <td>Violazione obblighi non pregiudica copertura se non causale</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 6: FRANCHIGIE -->
+    <!-- ================================================================ -->
+    <div id="Franchigie" class="tab-content">
+
+        <div class="section-header">Matrice Completa Franchigie e Scoperti</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:22%">Garanzia / Evento</th>
+                    <th class="col-curr" style="width:15%">Franchigia Fissa</th>
+                    <th class="col-center" style="width:12%">Scoperto %</th>
+                    <th class="col-curr" style="width:12%">Minimo</th>
+                    <th class="col-curr" style="width:12%">Massimo</th>
+                    <th style="width:27%">Note / Condizioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- DANNI DIRETTI BASE -->
+                <tr style="background:#f1f5f9;">
+                    <td colspan="6"><strong>DANNI DIRETTI - BASE</strong></td>
+                </tr>
+                <tr>
+                    <td>Incendio</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Danni d'Acqua</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Fenomeno Elettrico</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Furto / Rapina</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Atti Vandalici</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+
+                <!-- CATASTROFALI -->
+                <tr style="background:#fef3c7;">
+                    <td colspan="6"><strong>EVENTI CATASTROFALI</strong></td>
+                </tr>
+                <tr>
+                    <td>Terremoto</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Alluvione</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Eventi Atmosferici</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Grandine</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MIN]</td>
+                    <td class="col-curr">[MAX]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+
+                <!-- DANNI INDIRETTI -->
+                <tr style="background:#f3e8ff;">
+                    <td colspan="6"><strong>DANNI INDIRETTI (BI)</strong></td>
+                </tr>
+                <tr>
+                    <td>Perdita Profitto</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-center">N/A</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="note-cell">Franchigia temporale: [GG] giorni</td>
+                </tr>
+                <tr>
+                    <td>Interdipendenza</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-center">N/A</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="col-curr">N/A</td>
+                    <td class="note-cell">Franchigia temporale: [GG] giorni</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Franchigie Speciali per Ubicazione</div>
+        <!-- [AI: SE esistono franchigie diverse per ubicazione] -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Ubicazione</th>
+                    <th style="width:20%">Garanzia</th>
+                    <th class="col-curr" style="width:15%">Franchigia</th>
+                    <th class="col-center" style="width:12%">Scoperto</th>
+                    <th style="width:28%">Motivazione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>[UBICAZIONE]</td>
+                    <td>[GARANZIA]</td>
+                    <td class="col-curr">[FRANCHIGIA_SPECIALE]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="note-cell">[MOTIVAZIONE: es. zona a rischio elevato]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Analisi Impatto Franchigie</div>
+        <div class="summary-box info">
+            <div class="summary-title">📊 SIMULAZIONE IMPATTO SU SINISTRO TIPO</div>
+            <div class="summary-content">
+                <strong>Scenario: Sinistro incendio con danno € 100.000</strong><br><br>
+                Franchigia fissa: € [X]<br>
+                Scoperto [%] su € 100.000 = € [Y]<br>
+                Scoperto applicato (con min/max): € [Z]<br>
+                <strong>Indennizzo netto: € [RISULTATO]</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 7: ESCLUSIONI -->
+    <!-- ================================================================ -->
+    <div id="Esclusioni" class="tab-content">
+
+        <div class="section-header">Esclusioni Assolute (Non Derogabili)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:25%">Esclusione</th>
+                    <th style="width:50%">Descrizione</th>
+                    <th style="width:20%">Riferimento CGA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Dolo dell'Assicurato</td>
+                    <td>Danni causati intenzionalmente dal contraente/assicurato o suoi rappresentanti</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Guerra e Rischi Bellici</td>
+                    <td>Guerra dichiarata o non, invasione, atti di nemici stranieri, guerra civile</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Rischi Nucleari</td>
+                    <td>Contaminazione radioattiva, reazioni nucleari, fusione nucleare</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Terrorismo NBCR</td>
+                    <td>Atti terroristici con uso di agenti nucleari, biologici, chimici, radiologici</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Sanzioni Internazionali</td>
+                    <td>Operazioni in violazione di sanzioni ONU, UE, USA</td>
+                    <td class="note-cell">Art. [X] CGA</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusioni Relative (Assicurabili con Estensione)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:22%">Esclusione</th>
+                    <th style="width:38%">Descrizione</th>
+                    <th class="col-center" style="width:15%">Estensione Attiva</th>
+                    <th style="width:20%">Riferimento</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Terremoto</td>
+                    <td>Danni da sisma, maremoto conseguente</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Alluvione / Inondazione</td>
+                    <td>Straripamento corsi d'acqua, allagamento da precipitazioni</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Terrorismo (convenzionale)</td>
+                    <td>Atti terroristici con mezzi convenzionali</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Beni all'Aperto</td>
+                    <td>Beni non sotto tetto o copertura permanente</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Danni Indiretti Catastrofali</td>
+                    <td>BI da terremoto, alluvione</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-error]">[SI/NO]</span></td>
+                    <td class="note-cell">Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Esclusioni Specifiche della Polizza</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:25%">Esclusione</th>
+                    <th style="width:50%">Descrizione / Motivazione</th>
+                    <th style="width:20%">Riferimento CP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: ELENCARE ESCLUSIONI SPECIFICHE DELLE CP] -->
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Danni da cedimento terreno</td>
+                    <td>Escluso cedimento, subsidenza, assestamento (salvo se causato da evento coperto)</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Danni da vizio intrinseco</td>
+                    <td>Difetti preesistenti, errori di progettazione o costruzione</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>Usura e deterioramento</td>
+                    <td>Usura naturale, corrosione graduale, ossidazione, ruggine</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">4</td>
+                    <td>Fermentazione / Autoriscaldamento</td>
+                    <td>Danni da processi naturali delle merci (escluso incendio conseguente)</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">5</td>
+                    <td>Furto senza effrazione</td>
+                    <td>Sottrazione senza segni di scasso (salvo rapina)</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">6</td>
+                    <td>Danni estetici</td>
+                    <td>Graffi, ammaccature senza pregiudizio funzionale</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">7</td>
+                    <td>Mancato rispetto prescrizioni</td>
+                    <td>Danni da mancata osservanza obblighi contrattuali (mezzi protezione, etc.)</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Limitazioni Particolari per Categoria Beni</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:25%">Categoria Beni</th>
+                    <th style="width:55%">Limitazione / Esclusione</th>
+                    <th style="width:20%">Riferimento</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Valori e Contanti</td>
+                    <td>Limite massimo € [X] in cassaforte, € [Y] fuori cassaforte</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Titoli e Documenti</td>
+                    <td>Solo costo ricostituzione materiale</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Supporti Dati</td>
+                    <td>Solo costo supporto vergine + ricostituzione dati se backup</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Merci Refrigerate</td>
+                    <td>Escluso deterioramento da guasto frigorifero (salvo estensione)</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+                <tr>
+                    <td>Opere d'Arte / Antichità</td>
+                    <td>Richiesta perizia preventiva oltre € [X]</td>
+                    <td class="note-cell">CP Art. [X]</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+  
+   <!-- ================================================================ -->
+    <!-- TAB 8: CALCOLO PREMIO -->
+    <!-- ================================================================ -->
+    <div id="Premio" class="tab-content">
+
+        <div class="section-header">Sviluppo Premio per Sezione</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:32%">Sezione / Garanzia</th>
+                    <th class="col-curr" style="width:20%">Somma Assicurata</th>
+                    <th class="col-curr" style="width:12%">Tasso ‰</th>
+                    <th class="col-curr" style="width:18%">Premio Netto</th>
+                    <th style="width:18%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background:#f1f5f9;">
+                    <td colspan="5"><strong>DANNI DIRETTI - BASE</strong></td>
+                </tr>
+                <tr>
+                    <td>Incendio e Rischi Accessori</td>
+                    <td class="col-curr">[SA_BASE]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                
+                <tr style="background:#f1f5f9;">
+                    <td colspan="5"><strong>ESTENSIONI DANNI DIRETTI</strong></td>
+                </tr>
+                <tr>
+                    <td>Danni d'Acqua</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Fenomeno Elettrico</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Furto / Rapina</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Atti Vandalici</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                
+                <tr style="background:#fef3c7;">
+                    <td colspan="5"><strong>GARANZIE CATASTROFALI</strong></td>
+                </tr>
+                <tr>
+                    <td>Terremoto</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Alluvione</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Eventi Atmosferici</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                
+                <tr style="background:#f3e8ff;">
+                    <td colspan="5"><strong>DANNI INDIRETTI (BI)</strong></td>
+                </tr>
+                <tr>
+                    <td>Perdita Profitto / Margine</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Maggiori Costi</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#e6f0ff;">
+                    <td colspan="3"><strong>TOTALE PREMIO NETTO</strong></td>
+                    <td class="col-curr"><strong>[TOT_PREMIO_NETTO]</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Dettaglio Premio per Ubicazione</div>
+        
+        <!--
+        ╔══════════════════════════════════════════════════════════════════════════════╗
+        ║ REGOLA CRITICA: NON ACCORPARE LE UBICAZIONI                                  ║
+        ╠══════════════════════════════════════════════════════════════════════════════╣
+        ║ Ogni ubicazione deve avere la propria riga SEPARATA nella tabella.           ║
+        ║ ERRORE: Accorpare ubicazioni in "TOTALE ITALIA" o simili                     ║
+        ║ CORRETTO: Una riga per ogni ubicazione (Sede Milano, Deposito Torino, etc.)  ║
+        ╚══════════════════════════════════════════════════════════════════════════════╝
+        -->
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:8%">#</th>
+                    <th style="width:27%">Ubicazione</th>
+                    <th class="col-curr" style="width:18%">Somma Assicurata</th>
+                    <th class="col-curr" style="width:12%">Tasso Medio ‰</th>
+                    <th class="col-curr" style="width:17%">Premio DD</th>
+                    <th class="col-curr" style="width:18%">Premio BI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI UBICAZIONE - NO ACCORPAMENTI] -->
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>[UBICAZIONE_1]</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO_DD]</td>
+                    <td class="col-curr">[PREMIO_BI]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>[UBICAZIONE_2]</td>
+                    <td class="col-curr">[SA]</td>
+                    <td class="col-curr">[TASSO]</td>
+                    <td class="col-curr">[PREMIO_DD]</td>
+                    <td class="col-curr">[PREMIO_BI]</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#f8fafc;">
+                    <td colspan="2"><strong>TOTALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_SA]</strong></td>
+                    <td class="col-curr"><strong>[TASSO_MEDIO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_DD]</strong></td>
+                    <td class="col-curr"><strong>[TOT_BI]</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Composizione Premio Finale</div>
+        <table>
+            <tr>
+                <td class="col-label" style="width:40%">Premio Netto Danni Diretti</td>
+                <td class="col-curr" style="width:25%">[PREMIO_DD]</td>
+                <td style="width:35%"></td>
+            </tr>
+            <tr>
+                <td class="col-label">Premio Netto Danni Indiretti</td>
+                <td class="col-curr">[PREMIO_BI]</td>
+                <td></td>
+            </tr>
+            <tr style="background:#f1f5f9;">
+                <td class="col-label"><strong>Totale Premio Netto</strong></td>
+                <td class="col-curr"><strong>[TOT_NETTO]</strong></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="col-label">Diritti / Accessori</td>
+                <td class="col-curr">[DIRITTI]</td>
+                <td class="note-cell">[NOTE]</td>
+            </tr>
+            <tr style="background:#e6f0ff;">
+                <td class="col-label"><strong>Premio Imponibile</strong></td>
+                <td class="col-curr"><strong>[PREMIO_IMPONIBILE]</strong></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="col-label">Imposte ([ALIQUOTA]%)</td>
+                <td class="col-curr">[IMPOSTE]</td>
+                <td class="note-cell">Aliquota: [ALIQUOTA]%</td>
+            </tr>
+            <tr>
+                <td class="col-label">SSN ([SSN]%)</td>
+                <td class="col-curr">[SSN_IMPORTO]</td>
+                <td class="note-cell">Se applicabile</td>
+            </tr>
+            <tr style="background:#dcfce7; font-weight:700;">
+                <td class="col-label"><strong>PREMIO ANNUO LORDO</strong></td>
+                <td class="col-curr" style="font-size:14px;"><strong>[PREMIO_LORDO]</strong></td>
+                <td></td>
+            </tr>
+        </table>
+
+        <div class="section-header">Regolazione Premio</div>
+        <table>
+            <tr>
+                <td class="col-label" style="width:30%">Tipo Regolazione</td>
+                <td style="width:70%">[TIPO: Nessuna / Annua su fatturato / Annua su SA / Altro]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Base di Regolazione</td>
+                <td>[DESCRIZIONE_BASE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Tasso di Regolazione</td>
+                <td>[TASSO_REGOLAZIONE] ‰</td>
+            </tr>
+            <tr>
+                <td class="col-label">Minimo / Deposito</td>
+                <td>[MINIMO_DEPOSITO]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Analisi Tasso Tecnico</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">[TASSO_MEDIO] ‰</div>
+                <div class="kpi-label">Tasso Medio Polizza</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">[TASSO_DD] ‰</div>
+                <div class="kpi-label">Tasso Danni Diretti</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">[TASSO_BI] ‰</div>
+                <div class="kpi-label">Tasso Danni Indiretti</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">[RAPPORTO]</div>
+                <div class="kpi-label">Premio / SA (per mille)</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 9: SINISTRI -->
+    <!-- ================================================================ -->
+    <div id="Sinistri" class="tab-content">
+
+        <div class="section-header">KPI Sinistralità</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:[COLOR_RATIO];">[LOSS_RATIO]%</div>
+                <div class="kpi-label">Loss Ratio (S/P)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">[N_SINISTRI]</div>
+                <div class="kpi-label">N° Sinistri Totali</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--accent-red);">[TOT_PAGATO]</div>
+                <div class="kpi-label">Totale Pagato</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--accent-amber);">[TOT_RISERVATO]</div>
+                <div class="kpi-label">Totale Riservato</div>
+            </div>
+        </div>
+
+        <div class="section-header">Andamento Premi vs Sinistri</div>
+        <div class="chart-container">
+            <canvas id="claimsChart"></canvas>
+        </div>
+
+        <div class="section-header">Dettaglio Analitico Sinistri</div>
+        
+        <!-- [AI: SE NON CI SONO SINISTRI] -->
+        <!--
+        <div class="summary-box info">
+            <div class="summary-title">✅ NESSUN SINISTRO REGISTRATO</div>
+            <div class="summary-content">
+                Nel periodo di osservazione non risultano sinistri denunciati su questa polizza.
+            </div>
+        </div>
+        -->
+
+        <!-- [AI: SE CI SONO SINISTRI] -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:10%">N° Sinistro</th>
+                    <th style="width:10%">Data Evento</th>
+                    <th style="width:10%">Data Denuncia</th>
+                    <th style="width:12%">Ubicazione</th>
+                    <th style="width:18%">Causa</th>
+                    <th class="col-curr" style="width:12%">Riservato</th>
+                    <th class="col-curr" style="width:12%">Pagato</th>
+                    <th class="col-center" style="width:8%">Stato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI SINISTRO] -->
+                <tr>
+                    <td>[N_SINISTRO]</td>
+                    <td>[DATA_EVENTO]</td>
+                    <td>[DATA_DENUNCIA]</td>
+                    <td>[UBICAZIONE]</td>
+                    <td>[CAUSA]</td>
+                    <td class="col-curr">[RISERVATO]</td>
+                    <td class="col-curr">[PAGATO]</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[STATO]</span></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#fee2e2;">
+                    <td colspan="5"><strong>TOTALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_RISERVATO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_PAGATO]</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Storico Premi e Sinistri per Anno</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:10%">Anno</th>
+                    <th class="col-curr" style="width:18%">Premio Imponibile</th>
+                    <th class="col-center" style="width:10%">N° Sinistri</th>
+                    <th class="col-curr" style="width:15%">Pagato</th>
+                    <th class="col-curr" style="width:15%">Riservato</th>
+                    <th class="col-curr" style="width:15%">Totale (P+R)</th>
+                    <th class="col-center" style="width:17%">Loss Ratio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI ANNO - INCLUDERE ANNI A ZERO] -->
+                <tr>
+                    <td class="col-center">[ANNO]</td>
+                    <td class="col-curr">[PREMIO]</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[PAGATO]</td>
+                    <td class="col-curr">[RISERVATO]</td>
+                    <td class="col-curr">[TOTALE]</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[LR]%</span></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight:700; background:#f1f5f9;">
+                    <td class="col-center"><strong>TOTALE</strong></td>
+                    <td class="col-curr"><strong>[TOT_PREMI]</strong></td>
+                    <td class="col-center"><strong>[TOT_N]</strong></td>
+                    <td class="col-curr"><strong>[TOT_PAGATO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_RISERVATO]</strong></td>
+                    <td class="col-curr"><strong>[TOT_SINISTRI]</strong></td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]"><strong>[LR_TOT]%</strong></span></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="section-header">Analisi per Tipologia Sinistro</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:28%">Tipologia</th>
+                    <th class="col-center" style="width:15%">N° Sinistri</th>
+                    <th class="col-curr" style="width:20%">Importo Totale</th>
+                    <th class="col-center" style="width:15%">% su Totale</th>
+                    <th class="col-curr" style="width:22%">Costo Medio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Incendio</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MEDIO]</td>
+                </tr>
+                <tr>
+                    <td>Danni d'Acqua</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MEDIO]</td>
+                </tr>
+                <tr>
+                    <td>Furto</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MEDIO]</td>
+                </tr>
+                <tr>
+                    <td>Eventi Atmosferici</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MEDIO]</td>
+                </tr>
+                <tr>
+                    <td>Altro</td>
+                    <td class="col-center">[N]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="col-center">[%]</td>
+                    <td class="col-curr">[MEDIO]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Note Tecniche Sinistralità</div>
+        <div class="summary-box [info/warning/critical]">
+            <div class="summary-title">📊 VALUTAZIONE ANDAMENTO TECNICO</div>
+            <div class="summary-content">
+                [AI: Commento sull'andamento sinistri, cause principali, eventuali trend, 
+                raccomandazioni per il rinnovo, azioni di loss prevention suggerite]
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- TAB 10: APPENDICI -->
+    <!-- ================================================================ -->
+    <div id="Appendici" class="tab-content">
+
+        <div class="section-header">Cronologia Modifiche Contrattuali</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:10%">N° App.</th>
+                    <th style="width:12%">Data Emissione</th>
+                    <th style="width:12%">Data Effetto</th>
+                    <th style="width:36%">Oggetto Variazione</th>
+                    <th class="col-curr" style="width:15%">Variazione Premio</th>
+                    <th style="width:15%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: UNA RIGA PER OGNI APPENDICE] -->
+                <tr>
+                    <td class="col-center">[N_APP]</td>
+                    <td class="col-center">[DATA_EMISSIONE]</td>
+                    <td class="col-center">[DATA_EFFETTO]</td>
+                    <td>[OGGETTO]</td>
+                    <td class="col-curr">[VARIAZIONE]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Vincoli e Beneficiari</div>
+        
+        <!-- [AI: SE NON CI SONO VINCOLI] -->
+        <!--
+        <div class="summary-box info">
+            <div class="summary-title">ℹ️ NESSUN VINCOLO REGISTRATO</div>
+            <div class="summary-content">
+                La polizza non presenta vincoli o appendici di vincolo.
+            </div>
+        </div>
+        -->
+
+        <!-- [AI: SE CI SONO VINCOLI] -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:8%">N° App.</th>
+                    <th style="width:25%">Beneficiario Vincolatario</th>
+                    <th style="width:17%">Ubicazione</th>
+                    <th style="width:15%">Partite Vincolate</th>
+                    <th class="col-curr" style="width:15%">Importo Vincolato</th>
+                    <th style="width:20%">Riferimento</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-center">[N_APP]</td>
+                    <td>[BENEFICIARIO]</td>
+                    <td>[UBICAZIONE]</td>
+                    <td>[PARTITE]</td>
+                    <td class="col-curr">[IMPORTO]</td>
+                    <td class="note-cell">[RIF: contratto finanziamento]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Documenti di Polizza</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:40%">Documento</th>
+                    <th style="width:15%">Edizione</th>
+                    <th style="width:15%">Data</th>
+                    <th style="width:30%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Condizioni Generali di Assicurazione (CGA)</td>
+                    <td class="col-center">[EDIZIONE]</td>
+                    <td class="col-center">[DATA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Condizioni Particolari (CP)</td>
+                    <td class="col-center">[EDIZIONE]</td>
+                    <td class="col-center">[DATA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Questionario di Assunzione</td>
+                    <td class="col-center">-</td>
+                    <td class="col-center">[DATA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+                <tr>
+                    <td>Rapporto di Sopralluogo</td>
+                    <td class="col-center">-</td>
+                    <td class="col-center">[DATA]</td>
+                    <td class="note-cell">[NOTE]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Prescrizioni e Obblighi Contrattuali</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:22%">Prescrizione</th>
+                    <th style="width:40%">Descrizione</th>
+                    <th class="col-center" style="width:15%">Stato</th>
+                    <th style="width:18%">Scadenza</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- [AI: ELENCARE PRESCRIZIONI DA CP O RAPPORTO PERITALE] -->
+                <tr>
+                    <td class="col-center">1</td>
+                    <td>Impianto Antincendio</td>
+                    <td>Manutenzione semestrale obbligatoria con rilascio attestazione</td>
+                    <td class="col-center"><span class="badge tag-ok">CONFORME</span></td>
+                    <td class="col-center">[SCADENZA]</td>
+                </tr>
+                <tr>
+                    <td class="col-center">2</td>
+                    <td>Sistema Allarme Furto</td>
+                    <td>Collegamento a centrale operativa H24</td>
+                    <td class="col-center"><span class="badge tag-ok">CONFORME</span></td>
+                    <td class="col-center">Permanente</td>
+                </tr>
+                <tr>
+                    <td class="col-center">3</td>
+                    <td>CPI (Certificato Prevenzione Incendi)</td>
+                    <td>Rinnovo periodico e invio copia a Compagnia</td>
+                    <td class="col-center"><span class="badge [tag-ok/tag-warn]">[STATO]</span></td>
+                    <td class="col-center">[SCADENZA]</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-header">Contatti Riferimento</div>
+        <table>
+            <tr>
+                <td class="col-label" style="width:25%">Broker</td>
+                <td style="width:75%">[NOME_BROKER] - Tel: [TEL] - Email: [EMAIL]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Referente Cliente</td>
+                <td>[NOME_REFERENTE] - Tel: [TEL] - Email: [EMAIL]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Compagnia - Ufficio Assuntivo</td>
+                <td>[CONTATTO_ASSUNZIONE]</td>
+            </tr>
+            <tr>
+                <td class="col-label">Compagnia - Ufficio Sinistri</td>
+                <td>[CONTATTO_SINISTRI]</td>
+            </tr>
+        </table>
+
+        <div class="section-header">Note Generali e Raccomandazioni</div>
+        <div class="summary-box info">
+            <div class="summary-title">📝 NOTE DELL'ANALISTA</div>
+            <div class="summary-content">
+                [AI: Inserire eventuali note, osservazioni, raccomandazioni per il rinnovo, 
+                suggerimenti di adeguamento coperture, segnalazioni particolari]
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================================================ -->
+<!-- JAVASCRIPT -->
+<!-- ================================================================ -->
+<script>
+function openTab(tabName) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("tab-content");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    
+    // Refresh mappa se TAB Ubicazioni o CatNat
+    if ((tabName === 'Ubicazioni' || tabName === 'CatNat') && typeof map !== 'undefined') {
+        setTimeout(function() { map.invalidateSize(); }, 100);
+    }
+    
+    event.currentTarget.className += " active";
+}
+
+/* ============================================================
+   ISTRUZIONI COMPILAZIONE DATI
+   ============================================================
+   
+   1. GRAFICO SINISTRI/PREMI (Chart.js)
+      - years: array anni (dal primo con dati all'anno corrente)
+      - premiums: premi per anno di COMPETENZA polizza
+      - claims: sinistri (pagato + riservato) per anno di DENUNCIA
+      - INCLUDERE anni a zero, NON omettere
+      
+   2. MAPPA UBICAZIONI (Leaflet)
+      - locationsData: array oggetti {name, lat, lng, value, activity, desc}
+      - Coordinate: da VIA/INDIRIZZO esatto, NON centro città
+      - Se via non trovata, usare Zona Industriale del comune
+      
+   ============================================================ */
+
+// [AI: SOSTITUIRE CON DATI REALI DALLA POLIZZA]
+const years = ['2021', '2022', '2023', '2024', '2025'];
+const premiums = [42000, 45000, 48000, 52000, 55000];
+const claims = [0, 15000, 0, 78000, 0];
+
+const locationsData = [
+    { 
+        name: "Sede Principale", 
+        lat: 45.4642, 
+        lng: 9.1900, 
+        value: 8000000, 
+        activity: "Stabilimento produttivo",
+        desc: "Via Industriale 25, Milano"
+    },
+    { 
+        name: "Deposito Nord", 
+        lat: 45.6500, 
+        lng: 9.0500, 
+        value: 2500000, 
+        activity: "Magazzino merci",
+        desc: "Via Logistica 10, Monza"
+    }
+];
+
+// --- INIT CHART ---
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('claimsChart');
+    if (ctx) {
+        // Calcolo Loss Ratio cumulato
+        const totPremiums = premiums.reduce((a, b) => a + b, 0);
+        const totClaims = claims.reduce((a, b) => a + b, 0);
+        const lossRatio = totPremiums > 0 ? ((totClaims / totPremiums) * 100).toFixed(1) : 0;
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Premio Imponibile',
+                        data: premiums,
+                        backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 1,
+                        order: 2
+                    },
+                    {
+                        label: 'Sinistri (Pagato + Riservato)',
+                        data: claims,
+                        backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        borderWidth: 1,
+                        order: 1
+                    },
+                    {
+                        label: 'Loss Ratio Cumulato %',
+                        data: years.map((_, i) => {
+                            const cumPrem = premiums.slice(0, i + 1).reduce((a, b) => a + b, 0);
+                            const cumClaim = claims.slice(0, i + 1).reduce((a, b) => a + b, 0);
+                            return cumPrem > 0 ? ((cumClaim / cumPrem) * 100).toFixed(1) : 0;
+                        }),
+                        type: 'line',
+                        borderColor: '#16a34a',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        fill: false,
+                        yAxisID: 'y1',
+                        order: 0,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { font: { size: 10 } } },
+                    title: { 
+                        display: true, 
+                        text: 'Andamento Premi vs Sinistri | Loss Ratio Cumulato: ' + lossRatio + '%',
+                        font: { size: 12 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        ticks: {
+                            font: { size: 9 },
+                            callback: function(value) {
+                                return '€ ' + value.toLocaleString('it-IT');
+                            }
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        max: 150,
+                        grid: { drawOnChartArea: false },
+                        ticks: {
+                            font: { size: 9 },
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: { font: { size: 9 } }
+                    }
+                }
+            }
+        });
+    }
+});
+
+// --- INIT MAP ---
+var map;
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof locationsData !== 'undefined' && locationsData.length > 0 && document.getElementById('map')) {
+        // Trova ubicazione con valore massimo per centrare
+        let maxLocation = locationsData[0];
+        locationsData.forEach(loc => {
+            if (loc.value > maxLocation.value) maxLocation = loc;
+        });
+        
+        map = L.map('map').setView([maxLocation.lat, maxLocation.lng], 7);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Aggiungi marker per ogni ubicazione
+        var markers = [];
+        locationsData.forEach((loc, index) => {
+            // Calcola raggio proporzionale al valore
+            let radius = Math.sqrt(loc.value) / 15;
+            if (radius < 800) radius = 800;
+            if (radius > 5000) radius = 5000;
+            
+            var circle = L.circle([loc.lat, loc.lng], {
+                color: '#dc2626',
+                fillColor: '#f87171',
+                fillOpacity: 0.5,
+                radius: radius
+            }).addTo(map);
+            
+            let valFmt = new Intl.NumberFormat('it-IT', { 
+                style: 'currency', 
+                currency: 'EUR', 
+                maximumFractionDigits: 0 
+            }).format(loc.value);
+            
+            circle.bindPopup(
+                `<b>UB. ${index + 1} - ${loc.name}</b><br>` +
+                `<em>${loc.activity}</em><br>` +
+                `${loc.desc}<br>` +
+                `SA Totale: <b>${valFmt}</b><br>` +
+                `<a href="https://www.google.com/maps/@${loc.lat},${loc.lng},500m/data=!3m1!1e3" target="_blank">🛰️ Vista Satellite</a>`
+            );
+            
+            markers.push(L.marker([loc.lat, loc.lng]));
+        });
+        
+        // Fit bounds per vedere tutte le ubicazioni
+        if (locationsData.length > 1) {
+            var group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.2));
+        }
+    }
+});
+</script>
+
+</body>
+</html>

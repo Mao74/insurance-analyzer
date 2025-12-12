@@ -1,0 +1,1248 @@
+﻿<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Tecnica Richiesta Quotazione - Polizza Trasporti</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* --- SECTION --- */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        /* --- TABELLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        .col-right {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        .col-label {
+            font-weight: 600;
+            background: #f8fafc;
+            width: 35%;
+        }
+
+        /* --- INFO GRID 2 COLONNE --- */
+        .info-table {
+            width: 100%;
+        }
+
+        .info-table td {
+            width: 50%;
+            padding: 6px 10px;
+        }
+
+        .info-table .label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .info-table .value {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* --- NOTE BOX --- */
+        .note-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-top: 15px;
+            font-size: 11px;
+        }
+
+        .note-box-title {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 5px;
+        }
+
+        /* --- CONFIRM BOX --- */
+        .confirm-box {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-top: 15px;
+            font-size: 11px;
+        }
+
+        .confirm-box-title {
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 8px;
+        }
+
+        .confirm-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .confirm-box li {
+            margin-bottom: 4px;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            padding: 15px 30px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-strong);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .report-container {
+                border: none;
+                max-width: 100%;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
+            th {
+                background-color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>SCHEDA TECNICA RICHIESTA QUOTAZIONE</h1>
+            <p>Polizza Trasporti Merci / Marine Cargo Insurance</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 1: DATI CONTRAENTE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Contraente / Assicurato</h2>
+
+            <table class="info-table">
+                <tr>
+                    <td>
+                        <div class="label">Ragione Sociale</div>
+                        <div class="value">[RAGIONE_SOCIALE]</div>
+                    </td>
+                    <td>
+                        <div class="label">Partita IVA</div>
+                        <div class="value">[PARTITA_IVA]</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Sede Legale</div>
+                        <div class="value">[SEDE_LEGALE]</div>
+                    </td>
+                    <td>
+                        <div class="label">Codice ATECO</div>
+                        <div class="value">[ATECO]</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Attività</div>
+                        <div class="value">[DESCRIZIONE_ATTIVITA]</div>
+                    </td>
+                    <td>
+                        <div class="label">Fatturato Annuo</div>
+                        <div class="value">[FATTURATO_ANNUO]</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 2: POLIZZA IN ESSERE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">2. Polizza in Essere</h2>
+
+            <table class="info-table">
+                <tr>
+                    <td>
+                        <div class="label">Compagnia Attuale</div>
+                        <div class="value">[COMPAGNIA_ATTUALE]</div>
+                    </td>
+                    <td>
+                        <div class="label">N° Polizza</div>
+                        <div class="value">[NUMERO_POLIZZA]</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Scadenza</div>
+                        <div class="value">[DATA_SCADENZA]</div>
+                    </td>
+                    <td>
+                        <div class="label">Premio Annuo Attuale</div>
+                        <div class="value">[PREMIO_ATTUALE]</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Tipologia</div>
+                        <div class="value">[TIPO_POLIZZA]</div>
+                    </td>
+                    <td>
+                        <div class="label">Broker</div>
+                        <div class="value">[BROKER]</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 3: STRUTTURA COPERTURA RICHIESTA -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">3. Struttura Copertura Richiesta</h2>
+
+            <table>
+                <tr>
+                    <td class="col-label">Tipologia Polizza</td>
+                    <td>[OPEN_COVER / POLIZZA_VIAGGIO / MISTO]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Fatturato Trasportato Annuo</td>
+                    <td class="col-right">[FATTURATO_TRASPORTATO]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">LMI Richiesto (per spedizione)</td>
+                    <td class="col-right">[LMI_RICHIESTO]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Clausola Base</td>
+                    <td>[ICC_A / ICC_B / ICC_C]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Ambito Territoriale</td>
+                    <td>[AMBITO_TERRITORIALE]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Modalità Trasporto</td>
+                    <td>[STRADA / MARE / AEREO / FERROVIA / MISTO]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Decorrenza Richiesta</td>
+                    <td>[DATA_DECORRENZA]</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 4: DETTAGLIO MERCI -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">4. Dettaglio Merci Trasportate</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Tipologia Merce</th>
+                        <th style="width:20%">% sul Totale</th>
+                        <th style="width:25%">Valore Medio Spedizione</th>
+                        <th style="width:20%">Imballaggio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- [AI: POPOLARE CON DATI ESTRATTI] -->
+                    <tr>
+                        <td>[TIPO_MERCE_1]</td>
+                        <td class="col-center">[PERCENTUALE_1]</td>
+                        <td class="col-right">[VALORE_MEDIO_1]</td>
+                        <td>[IMBALLAGGIO_1]</td>
+                    </tr>
+                    <tr>
+                        <td>[TIPO_MERCE_2]</td>
+                        <td class="col-center">[PERCENTUALE_2]</td>
+                        <td class="col-right">[VALORE_MEDIO_2]</td>
+                        <td>[IMBALLAGGIO_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <div class="note-box-title">Note sulla Merce</div>
+                [NOTE_MERCE: natura, fragilità, deperibilità, pericolosità ADR, eventuali requisiti speciali]
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 5: FATTURATO TRASPORTATO E FLUSSI -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">5. Fatturato Trasportato e Flussi</h2>
+
+            <!-- 5.1 BREAKDOWN PER TIPOLOGIA (VENDITE/ACQUISTI) -->
+            <h3
+                style="font-size: 11px; font-weight: 600; color: #475569; margin: 0 0 10px 0; text-transform: uppercase;">
+                5.1 Suddivisione per Tipologia</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40%">Tipologia</th>
+                        <th style="width:30%">Fatturato Annuo</th>
+                        <th style="width:30%">% sul Totale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vendite (Export / Vendite Italia)</td>
+                        <td class="col-right">[FATTURATO_VENDITE]</td>
+                        <td class="col-center">[%_VENDITE]</td>
+                    </tr>
+                    <tr>
+                        <td>Acquisti (Import / Acquisti Italia)</td>
+                        <td class="col-right">[FATTURATO_ACQUISTI]</td>
+                        <td class="col-center">[%_ACQUISTI]</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: 700; background: #f1f5f9;">
+                        <td>TOTALE FATTURATO TRASPORTATO</td>
+                        <td class="col-right">[TOTALE_FATTURATO]</td>
+                        <td class="col-center">100%</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- 5.2 BREAKDOWN PER MODALITÀ DI TRASPORTO -->
+            <h3
+                style="font-size: 11px; font-weight: 600; color: #475569; margin: 20px 0 10px 0; text-transform: uppercase;">
+                5.2 Suddivisione per Modalità di Trasporto</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40%">Modalità</th>
+                        <th style="width:30%">Fatturato Annuo</th>
+                        <th style="width:30%">% sul Totale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🚛 Strada (Camion / Autotreno)</td>
+                        <td class="col-right">[FATTURATO_STRADA]</td>
+                        <td class="col-center">[%_STRADA]</td>
+                    </tr>
+                    <tr>
+                        <td>🚢 Mare (FCL / LCL / Rinfusa)</td>
+                        <td class="col-right">[FATTURATO_MARE]</td>
+                        <td class="col-center">[%_MARE]</td>
+                    </tr>
+                    <tr>
+                        <td>✈️ Aereo</td>
+                        <td class="col-right">[FATTURATO_AEREO]</td>
+                        <td class="col-center">[%_AEREO]</td>
+                    </tr>
+                    <tr>
+                        <td>🚂 Ferrovia</td>
+                        <td class="col-right">[FATTURATO_FERROVIA]</td>
+                        <td class="col-center">[%_FERROVIA]</td>
+                    </tr>
+                    <tr>
+                        <td>📦 Corriere Espresso</td>
+                        <td class="col-right">[FATTURATO_CORRIERE]</td>
+                        <td class="col-center">[%_CORRIERE]</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: 700; background: #f1f5f9;">
+                        <td>TOTALE</td>
+                        <td class="col-right">[TOTALE_FATTURATO]</td>
+                        <td class="col-center">100%</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- 5.3 MATRICE DETTAGLIATA (OPZIONALE) -->
+            <h3
+                style="font-size: 11px; font-weight: 600; color: #475569; margin: 20px 0 10px 0; text-transform: uppercase;">
+                5.3 Matrice Dettagliata (se disponibile)</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Tipologia / Modalità</th>
+                        <th style="width:15%">Strada</th>
+                        <th style="width:15%">Mare</th>
+                        <th style="width:15%">Aereo</th>
+                        <th style="width:15%">Altro</th>
+                        <th style="width:15%">Totale Riga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vendite</strong></td>
+                        <td class="col-right">[V_STRADA]</td>
+                        <td class="col-right">[V_MARE]</td>
+                        <td class="col-right">[V_AEREO]</td>
+                        <td class="col-right">[V_ALTRO]</td>
+                        <td class="col-right">[TOT_VENDITE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acquisti</strong></td>
+                        <td class="col-right">[A_STRADA]</td>
+                        <td class="col-right">[A_MARE]</td>
+                        <td class="col-right">[A_AEREO]</td>
+                        <td class="col-right">[A_ALTRO]</td>
+                        <td class="col-right">[TOT_ACQUISTI]</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: 700; background: #f1f5f9;">
+                        <td>Totale Colonna</td>
+                        <td class="col-right">[TOT_STRADA]</td>
+                        <td class="col-right">[TOT_MARE]</td>
+                        <td class="col-right">[TOT_AEREO]</td>
+                        <td class="col-right">[TOT_ALTRO]</td>
+                        <td class="col-right">[TOTALE_GENERALE]</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- 5.4 DIRETTRICI GEOGRAFICHE -->
+            <h3
+                style="font-size: 11px; font-weight: 600; color: #475569; margin: 20px 0 10px 0; text-transform: uppercase;">
+                5.4 Principali Direttrici Geografiche</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Direttrice</th>
+                        <th style="width:15%">Modalità Prev.</th>
+                        <th style="width:20%">Fatturato Annuo</th>
+                        <th style="width:15%">N° Sped./Anno</th>
+                        <th style="width:20%">Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- [AI: POPOLARE CON DATI ESTRATTI] -->
+                    <tr>
+                        <td>[DIRETTRICE_1: es. Italia → UE]</td>
+                        <td class="col-center">[MODALITA]</td>
+                        <td class="col-right">[FATTURATO]</td>
+                        <td class="col-center">[N_SPEDIZIONI]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>[DIRETTRICE_2: es. Italia → USA]</td>
+                        <td class="col-center">[MODALITA]</td>
+                        <td class="col-right">[FATTURATO]</td>
+                        <td class="col-center">[N_SPEDIZIONI]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>[DIRETTRICE_3]</td>
+                        <td class="col-center">[MODALITA]</td>
+                        <td class="col-right">[FATTURATO]</td>
+                        <td class="col-center">[N_SPEDIZIONI]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <div class="note-box-title">Note sul Fatturato</div>
+                [NOTE_FATTURATO: stagionalità, trend previsti, variazioni significative rispetto anno precedente,
+                Incoterms prevalenti]
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 6: MASSIMALI -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">6. Massimali Richiesti</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:50%">Tipologia Massimale</th>
+                        <th style="width:25%">Massimale Attuale</th>
+                        <th style="width:25%">Massimale Richiesto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Per Spedizione (LMI)</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Singolo Autocarro</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Autotreno / Autoarticolato</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Container (FCL)</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Nave / Stiva</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Aereo</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Per Evento / Sinistro</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Aggregato Annuo (se previsto)</td>
+                        <td class="col-right">[MASSIMALE_ATTUALE]</td>
+                        <td class="col-right">[MASSIMALE_RICHIESTO]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <div class="note-box-title">Note sui Massimali</div>
+                [NOTE_MASSIMALI: eventuali esigenze specifiche, spedizioni eccezionali previste, gestione eccedenze]
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 7: GARANZIE RICHIESTE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">7. Garanzie e Estensioni Richieste</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:55%">Garanzia / Estensione</th>
+                        <th style="width:15%">Richiesta</th>
+                        <th style="width:30%">Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- CLAUSOLE BASE -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Clausole Base</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Institute Cargo Clauses (A) - All Risks</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Institute Cargo Clauses (B)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Institute Cargo Clauses (C)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+
+                    <!-- ESTENSIONI RISCHI -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Estensioni Rischi</strong></td>
+                    </tr>
+                    <tr>
+                        <td>War Risk (JC2021 / JC2009)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Strikes, Riots, Civil Commotions (SRCC)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Terrorism</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Theft, Pilferage, Non-Delivery (TPND)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+
+                    <!-- CLAUSOLE OPERATIVE -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Clausole Operative</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Danni Non Apparenti</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE: es. termini riserva]</td>
+                    </tr>
+                    <tr>
+                        <td>Imballo Accettato / Packing Accepted</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Clausola Colpa del Mittente</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Trasporto Effettuato con Mezzi Propri</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Deviazione / Cambio Viaggio</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Mancata Partenza / Annullamento</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+
+                    <!-- ESTENSIONI MERCI SPECIALI -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Merci Speciali</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Refrigerated Cargo / Reefer</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Merci Pericolose (ADR/IMDG)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Merce Usata / Second Hand</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Merce in Colli Eccezionali / Fuori Sagoma</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Valori / Preziosi / Opere d'Arte</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+
+                    <!-- ESTENSIONI OPERATIVE -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Estensioni Operative</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Stocks in Transit / Giacenze Temporanee</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[MAX GG]</td>
+                    </tr>
+                    <tr>
+                        <td>Magazzinaggio Prolungato</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Exhibition / Fiere e Mostre</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Campionario presso Agenti</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Montaggio / Installazione</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Collaudo / Testing</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+
+                    <!-- COPERTURE ACCESSORIE -->
+                    <tr style="background: #f1f5f9;">
+                        <td colspan="3"><strong>Coperture Accessorie</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Sue & Labour (Spese di Salvataggio)</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Ricorso Terzi / Third Party Liability</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Ricondizionamento</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Smaltimento</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Avaria Comune / General Average</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td>Contributo Particolare / Particular Charges</td>
+                        <td class="col-center">[SÌ/NO]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 8: FRANCHIGIE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">8. Franchigie</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40%">Garanzia</th>
+                        <th style="width:30%">Franchigia Attuale</th>
+                        <th style="width:30%">Franchigia Richiesta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Franchigia Base (All Risks)</td>
+                        <td class="col-right">[FRANCHIGIA_ATTUALE]</td>
+                        <td class="col-right">[FRANCHIGIA_RICHIESTA]</td>
+                    </tr>
+                    <tr>
+                        <td>Furto (TPND)</td>
+                        <td class="col-right">[FRANCHIGIA_ATTUALE]</td>
+                        <td class="col-right">[FRANCHIGIA_RICHIESTA]</td>
+                    </tr>
+                    <tr>
+                        <td>Danni da Acqua / Water Damage</td>
+                        <td class="col-right">[FRANCHIGIA_ATTUALE]</td>
+                        <td class="col-right">[FRANCHIGIA_RICHIESTA]</td>
+                    </tr>
+                    <tr>
+                        <td>Rottura / Breakage</td>
+                        <td class="col-right">[FRANCHIGIA_ATTUALE]</td>
+                        <td class="col-right">[FRANCHIGIA_RICHIESTA]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 9: LOSS EXPERIENCE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">9. Loss Experience (Storico Sinistri)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:12%">Anno</th>
+                        <th style="width:18%">Premio</th>
+                        <th style="width:12%">N° Sinistri</th>
+                        <th style="width:18%">Riservato</th>
+                        <th style="width:18%">Pagato</th>
+                        <th style="width:22%">Loss Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- [AI: POPOLARE CON DATI ESTRATTI] -->
+                    <tr>
+                        <td class="col-center">[ANNO_1]</td>
+                        <td class="col-right">[PREMIO_1]</td>
+                        <td class="col-center">[N_SINISTRI_1]</td>
+                        <td class="col-right">[RISERVATO_1]</td>
+                        <td class="col-right">[PAGATO_1]</td>
+                        <td class="col-right">[LOSS_RATIO_1]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center">[ANNO_2]</td>
+                        <td class="col-right">[PREMIO_2]</td>
+                        <td class="col-center">[N_SINISTRI_2]</td>
+                        <td class="col-right">[RISERVATO_2]</td>
+                        <td class="col-right">[PAGATO_2]</td>
+                        <td class="col-right">[LOSS_RATIO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center">[ANNO_3]</td>
+                        <td class="col-right">[PREMIO_3]</td>
+                        <td class="col-center">[N_SINISTRI_3]</td>
+                        <td class="col-right">[RISERVATO_3]</td>
+                        <td class="col-right">[PAGATO_3]</td>
+                        <td class="col-right">[LOSS_RATIO_3]</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: 700; background: #f1f5f9;">
+                        <td class="col-center">TOTALE</td>
+                        <td class="col-right">[TOT_PREMI]</td>
+                        <td class="col-center">[TOT_SINISTRI]</td>
+                        <td class="col-right">[TOT_RISERVATO]</td>
+                        <td class="col-right">[TOT_PAGATO]</td>
+                        <td class="col-right">[LOSS_RATIO_TOTALE]</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 10: DETTAGLIO SINISTRI -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">10. Dettaglio Sinistri (Ultimi 3 Anni)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:10%">Data</th>
+                        <th style="width:22%">Causa</th>
+                        <th style="width:15%">Riservato</th>
+                        <th style="width:15%">Pagato</th>
+                        <th style="width:10%">Status</th>
+                        <th style="width:28%">Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- [AI: POPOLARE CON DATI ESTRATTI - FORMATO STANDARD] -->
+                    <tr>
+                        <td class="col-center">[DATA]</td>
+                        <td>[CAUSA]</td>
+                        <td class="col-right">[RISERVATO]</td>
+                        <td class="col-right">[PAGATO]</td>
+                        <td class="col-center">[OPEN/CLOSED]</td>
+                        <td>[NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 11: RISK MANAGEMENT -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">11. Misure di Risk Management</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:50%">Misura</th>
+                        <th style="width:20%">Implementata</th>
+                        <th style="width:30%">Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Imballaggio certificato / professionale</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td>Tracking GPS spedizioni</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td>Vettori qualificati / certificati</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td>Procedura controllo merce pre-spedizione</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td>Documentazione fotografica standard</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td>Magazzini con sicurezza / sorveglianza</td>
+                        <td class="col-center">[SÌ/NO/PARZIALE]</td>
+                        <td>[DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 12: INFORMAZIONI DA CONFERMARE -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">12. Informazioni da Confermare in Fase di Trattativa</h2>
+
+            <div class="confirm-box">
+                <div class="confirm-box-title">⚠️ Dati da Verificare / Completare</div>
+                <ul>
+                    <!-- [AI: ELENCARE TUTTI I DATI MANCANTI O DA CONFERMARE] -->
+                    <li>[DATO_DA_CONFERMARE_1]</li>
+                    <li>[DATO_DA_CONFERMARE_2]</li>
+                    <li>[DATO_DA_CONFERMARE_3]</li>
+                </ul>
+            </div>
+
+            <div class="note-box" style="margin-top: 15px;">
+                <div class="note-box-title">Domande per l'Underwriter</div>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <!-- [AI: ELENCARE EVENTUALI DOMANDE SPECIFICHE] -->
+                    <li>[DOMANDA_1]</li>
+                    <li>[DOMANDA_2]</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEZIONE 13: CONTATTI -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2 class="section-title">13. Contatti per Quotazione</h2>
+
+            <table class="info-table">
+                <tr>
+                    <td>
+                        <div class="label">Broker</div>
+                        <div class="value">[BROKER_NOME]</div>
+                    </td>
+                    <td>
+                        <div class="label">Email</div>
+                        <div class="value">[BROKER_EMAIL]</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label">Telefono</div>
+                        <div class="value">[BROKER_TEL]</div>
+                    </td>
+                    <td>
+                        <div class="label">Data Richiesta</div>
+                        <div class="value">[DATA_RICHIESTA]</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            Documento generato il [DATA_GENERAZIONE] | Rif. [RIFERIMENTO_INTERNO]<br>
+            Le informazioni contenute sono fornite dal Broker sulla base della documentazione del Cliente.
+        </div>
+
+    </div>
+
+
+
+    <!-- EDIT MODE TOOLBAR & SCRIPT -->
+    <div id="edit-toolbar"
+        style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 9999; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid #ddd;">
+        <button id="btn-edit" onclick="toggleEditMode()"
+            style="background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: sans-serif;">
+            ✏️ Modifica Testo
+        </button>
+
+        <button id="btn-save-changes" onclick="commitChanges()"
+            style="background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: sans-serif; display: none;">
+            💾 Salva Modifiche
+        </button>
+
+        <button id="btn-cancel-changes" onclick="cancelChanges()"
+            style="background: #dc2626; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: sans-serif; display: none;">
+            ❌ Annulla
+        </button>
+
+        <button id="btn-download-pdf" onclick="downloadCurrentPDF()"
+            style="background: #4f46e5; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: sans-serif;">
+            📄 Scarica PDF
+        </button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let originalContentBackup = "";
+
+        function toggleEditMode() {
+            const container = document.querySelector('.report-container');
+            const btnEdit = document.getElementById('btn-edit');
+            const btnSave = document.getElementById('btn-save-changes');
+            const btnCancel = document.getElementById('btn-cancel-changes');
+            const btnDownload = document.getElementById('btn-download-pdf');
+
+            if (!isEditMode) {
+                isEditMode = true;
+                originalContentBackup = container.innerHTML;
+
+                container.contentEditable = "true";
+                container.style.outline = "2px dashed #93c5fd";
+
+                btnEdit.style.display = "none";
+                btnSave.style.display = "block";
+                btnCancel.style.display = "block";
+                btnDownload.style.display = "none";
+
+                document.querySelectorAll('a').forEach(a => a.style.pointerEvents = 'none');
+            }
+        }
+
+        function commitChanges() {
+            const container = document.querySelector('.report-container');
+            const btnEdit = document.getElementById('btn-edit');
+            const btnSave = document.getElementById('btn-save-changes');
+            const btnCancel = document.getElementById('btn-cancel-changes');
+            const btnDownload = document.getElementById('btn-download-pdf');
+
+            isEditMode = false;
+            container.contentEditable = "false";
+            container.style.outline = "none";
+
+            btnEdit.style.display = "block";
+            btnSave.style.display = "none";
+            btnCancel.style.display = "none";
+            btnDownload.style.display = "block";
+
+            document.querySelectorAll('a').forEach(a => a.style.pointerEvents = 'auto');
+            alert("Modifiche salvate in memoria. Ora puoi scaricare il PDF.");
+        }
+
+        function cancelChanges() {
+            const container = document.querySelector('.report-container');
+            const btnEdit = document.getElementById('btn-edit');
+            const btnSave = document.getElementById('btn-save-changes');
+            const btnCancel = document.getElementById('btn-cancel-changes');
+            const btnDownload = document.getElementById('btn-download-pdf');
+
+            if (originalContentBackup) {
+                container.innerHTML = originalContentBackup;
+            }
+
+            isEditMode = false;
+            container.contentEditable = "false";
+            container.style.outline = "none";
+
+            btnEdit.style.display = "block";
+            btnSave.style.display = "none";
+            btnCancel.style.display = "none";
+            btnDownload.style.display = "block";
+
+            document.querySelectorAll('a').forEach(a => a.style.pointerEvents = 'auto');
+        }
+
+        async function downloadCurrentPDF() {
+            const btnDownload = document.getElementById('btn-download-pdf');
+            const originalText = btnDownload.innerHTML;
+            btnDownload.innerHTML = "⏳ Generazione...";
+            btnDownload.disabled = true;
+
+            try {
+                const container = document.querySelector('.report-container');
+                const clone = container.cloneNode(true);
+
+                clone.removeAttribute('contenteditable');
+                clone.style.outline = "none";
+
+                const tabs = clone.querySelectorAll('.tab-content');
+                if (tabs.length > 0) {
+                    tabs.forEach(t => {
+                        t.style.display = 'block';
+                        t.classList.add('active');
+                    });
+                }
+
+                const nav = clone.querySelector('.tabs');
+                if (nav) nav.remove();
+
+                const printBtns = clone.querySelectorAll('.print-btn');
+                printBtns.forEach(b => b.remove());
+
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html lang="it">
+                    <head>
+                        ${document.head.innerHTML}
+                        <style>
+                            body { background: white; padding: 0; }
+                            .report-container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+                            .tab-content { display: block !important; page-break-after: always; }
+                            .tab-content:last-child { page-break-after: auto; }
+                            a { text-decoration: none; color: inherit; }
+                        </style>
+                    </head>
+                    <body>
+                        ${clone.outerHTML}
+                    </body>
+                    </html>
+                `;
+
+                const response = await fetch('/download-custom-pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: htmlContent
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Scheda_Quotazione_Modificata_${new Date().toISOString().slice(0, 10)}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    console.error(await response.text());
+                    alert("Errore PDF.");
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert("Errore: " + e.message);
+            } finally {
+                btnDownload.innerHTML = originalText;
+                btnDownload.disabled = false;
+            }
+        }
+    </script>
+</body></html>

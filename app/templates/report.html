@@ -29,8 +29,6 @@
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <a href="/report/{{ analysis.id }}/download?format=html" target="_blank" class="btn btn-secondary">📥
                     HTML Completo</a>
-                <a href="/report/{{ analysis.id }}/download?format=pdf" target="_blank" class="btn btn-secondary">📥
-                    PDF</a>
                 <a href="/report/{{ analysis.id }}/download?format=html_masked" target="_blank"
                     class="btn btn-secondary">📥 HTML Anonimizzato</a>
             </div>
@@ -39,7 +37,7 @@
 
     <div class="report-viewer">
         {% if analysis.status.value == 'completed' %}
-        <iframe src="/report/{{ analysis.id }}/content" class="report-frame"></iframe>
+        <iframe src="/report/{{ analysis.id }}/content?t={{ timestamp }}" class="report-frame"></iframe>
         {% elif analysis.status.value == 'analyzing' %}
         <div style="text-align: center; padding: 50px;">
             <h2>In fase di analisi...</h2>

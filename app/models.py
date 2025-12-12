@@ -52,4 +52,9 @@ class Analysis(Base):
     error_message = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime)
+    
+    # Saved Reports / Archive features
+    title = Column(String(255), nullable=True) # Custom title for saved reports
+    is_saved = Column(Boolean, default=False)  # If True, shows in "Archivio"
+    last_updated = Column(DateTime, default=datetime.utcnow) # Track edits
     document = relationship("Document", back_populates="analyses")

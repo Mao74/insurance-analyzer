@@ -1,3 +1,1461 @@
-Sei un esperto analista senior (Trasporti).
-LIVELLO ANALISI: AVANZATO (PhD)
-Analisi profonda ICC, rivalsa, giurisdizione, limiti vettoriali.
+# PROMPT ANALISI TECNICA POLIZZA TRASPORTI (MASTER EDITION v5.3)
+
+## OBIETTIVO
+Generare un report HTML di audit assicurativo di livello "Forensic/PhD" per polizze Marine Cargo, con analisi geo-risk intelligente, validazione attuariale, sezione didattica per cliente e procedura sinistri step-by-step.
+
+## PRINCIPI GUIDA
+1. **OGGETTIVITÀ:** Basa ogni valutazione su dati verificabili dalla polizza.
+2. **PRECISIONE GEOGRAFICA:** Stima coordinate città con precisione, genera link Google Maps per verifica visiva.
+3. **COMPLETEZZA:** Non omettere mai garanzie secondarie o tratte minori.
+4. **IMMUTABILITÀ HTML:** Usa il template fornito senza alterarne la struttura CSS/JS.
+5. **DIDATTICA:** Il cliente deve capire OGNI meccanismo (franchigie, clausole, responsabilità vettore).
+
+---
+
+## ⚠️ VALIDAZIONE DATI CRITICI (OBBLIGATORIA)
+
+### PREMI E FATTURATO
+1. **Premio Totale ≈ Somma premi tratte** (Tolleranza < 5%).
+2. **Tasso medio:** Range normale 0.5‰ - 15‰ (verificare outliers).
+3. **Fatturato Preventivo vs. Consuntivo:** Se scostamento >15% → Alert Alta Priorità.
+
+### LMI (LIMIT MARINE INSURANCE)
+1. **Verificare coerenza:** Se polizza dichiara spedizioni >LMI, segnalare mancata dichiarazione preventiva.
+2. **Gestione eccedenze:** Chiarire se automatica, con sovrapremio, o richiede conferma preventiva.
+
+### SINISTRI
+1. **Letterale:** Copia importi esatti (centesimi inclusi).
+2. **S/P Ratio:** Se 0% → "Nessun sinistro". Se >200% → Verifica accuratezza dati.
+
+---
+
+## ISTRUZIONI DI COMPILAZIONE DETTAGLIATE
+
+### ==================================================
+### TAB 1: SINTESI CONTRATTUALE
+### ==================================================
+
+#### 1.1 DATI GENERALI (Info-Grid)
+Compila tutti i campi estraendo da polizza/CGA:
+- **Contraente:** Ragione sociale completa
+- **Assicurato:** Se diverso da Contraente (spesso coincidono)
+- **Broker:** Nome intermediario
+- **Compagnia:** Nome compagnia + eventuale coassicurazione (vedi punto 1.3)
+- **Numero Polizza:** Esatto come su frontespizio
+- **Vigenza:** Data decorrenza - Data scadenza (formato gg/mm/aaaa)
+- **Premio Annuo Totale:** Imponibile + accessori (formato € XX.XXX,XX)
+- **Frazionamento:** Annuale / Semestrale / Trimestrale / Mensile
+- **Disdetta:** Giorni preavviso (es. "60gg tramite raccomandata A/R")
+- **Mora:** Giorni tolleranza pagamento (es. "30gg" o "Sospensione immediata")
+
+#### 1.2 STRUTTURA COPERTURA
+**CRITICO - TIPOLOGIA POLIZZA:**
+Identifica dalla polizza:
+- **"Open Cover Annuale"** → Copertura continuativa su fatturato dichiarato
+- **"Polizza Viaggio"** → Singole spedizioni con data/tratta specifica
+- **"Open Cover + Viaggi Spot"** → Misto (dichiara entrambi)
+
+**FATTURATO:**
+- **Preventivo Annuo:** Dichiarato in polizza (base calcolo premio)
+- **Consuntivo:** Se disponibile (da bilancio/dichiarazioni cliente)
+- **Scostamento %:** Calcola (Consuntivo - Preventivo) / Preventivo × 100
+  - Se >+15% → Alert Alta Priorità (possibile sottopremio)
+  - Se <-15% → Alert Media (possibile sovrapremio, diritto restituzione)
+
+**LMI (LIMIT MARINE INSURANCE):**
+- Estrai valore massimale per spedizione (es. "€250,000 per shipment")
+- **Gestione Eccedenze:** Cerca in CGA come vengono gestite spedizioni >LMI:
+  - "Dichiarazione preventiva obbligatoria"
+  - "Automatica con sovrapremio X‰"
+  - "Esclusa copertura oltre LMI"
+
+#### 1.3 COASSICURAZIONE & DELEGA
+Se polizza è coassicurata, crea tabella:
+```
+| Compagnia          | Quota % | Delega | Note                    |
+|--------------------|---------|--------|-------------------------|
+| Compagnia A (Lead) | 60%     | Sì     | Delegataria per conto  |
+| Compagnia B        | 25%     | No     | Segue leader           |
+| Compagnia C        | 15%     | No     | Segue leader           |
+```
+
+#### 1.4 ALERT OPERATIVI IMMEDIATI
+
+**CRITICAL - SISTEMA A 3 LIVELLI:**
+
+**🔴 ALTA PRIORITÀ (Alert-Box alert-high):**
+Situazioni che richiedono azione IMMEDIATA o espongono a rischio scoperto:
+- Fatturato consuntivo >+15% preventivo → "Richiesta adeguamento premio urgente"
+- N° spedizioni >LMI non dichiarate → "Rischio copertura limitata a LMI"
+- War Risk operativa ma tratte coinvolgono Listed Areas JC2021 → "Verifica estensione con compagnia"
+- Scadenza polizza <60gg e no disdetta → "Rinnovo tacito in corso"
+- Premio in mora >30gg → "Rischio sospensione copertura"
+
+**🟡 ATTENZIONE (Alert-Box alert-medium):**
+Segnalazioni preventive che richiedono monitoraggio:
+- Incremento traffico zona sensibile vs. anno precedente → "Monitorare evoluzione geopolitica"
+- Porto con giacenze medie >30gg → "Verificare operatività Stocks & Stores"
+- Nuove tratte non presenti in storico → "Confermare copertura geografica"
+- S/P Ratio triennale >80% → "Possibile impatto su condizioni rinnovo"
+
+**🟢 CONFERME OPERATIVE (Alert-Box alert-low):**
+Validazioni positive:
+- Nessuna tratta coinvolge paesi OFAC-sanctioned
+- Tutti i sinistri anno corrente gestiti con indennizzo regolare
+- Fatturato in linea con preventivo (±10%)
+- LMI adeguato a valori storici spedizioni
+
+---
+
+### ==================================================
+### TAB 2: GARANZIE & CLAUSOLE
+### ==================================================
+
+#### 2.1 MATRICE GARANZIE OPERATIVE (Tabella)
+
+Compila riga per riga dalla polizza. **CRITICAL:** Non omettere nessuna garanzia anche se "minore".
+
+Per ogni garanzia estrai:
+- **Operativa:** SÌ / NO / CONDIZIONATA (specificare condizioni)
+- **Franchigia:** Valore esatto (es. "€500", "10% con minimo €500", "€1,000 o 5% maggiore")
+- **Scoperto:** Percentuale a carico assicurato (es. "10%", "Nessuno")
+- **Note/Limiti:** Massimali sublimiti, esclusioni specifiche, aree geografiche
+
+**GARANZIE OBBLIGATORIE DA VERIFICARE:**
+
+1. **Institute Cargo Clauses (A) / (B) / (C) o equivalenti**
+   - Se RICC (Russian) o SCARR (Chinese): specificare
+   - Note: Differenze copertura (vedi Tab Didattica)
+
+2. **War Risk (JC2021 o JC2009)**
+   - CRITICAL: Se attiva, verificare se Listed Areas sono coperte
+   - Note: "Esclusione automatica zone JCC Listed Areas salvo accordo"
+
+3. **Strike, SRCC, Terrorism**
+   - Spesso inclusa in War Risk o separata
+   - Note: Massimale sublimite se diverso da principale
+
+4. **Theft, Pilferage, Non-Delivery (TPND)**
+   - CRITICAL: Operatività condizionata a imballaggio integro
+   - Note: "Escluso se imballo danneggiato/inadeguato"
+
+5. **Ricorso Terzi (Third Party Liability)**
+   - Massimale tipico €50k-€250k
+   - Note: "Solo per responsabilità contrattuale assicurato"
+
+6. **Sue & Labour Expenses (Spese Straordinarie)**
+   - Limite: Somma assicurata + Sue & Labour (no doppio limite)
+   - Note: "Autorizzazione preventiva raccomandata"
+
+7. **Stocks & Stores (Giacenze in Magazzino/Porto)**
+   - Verificare se estensione è automatica o condizionata
+   - Note: "Operativa solo se giacenza >30gg dichiarata preventivamente"
+
+8. **General Average (Avaria Comune)**
+   - Quasi sempre inclusa in ICC(A)
+   - Note: "Contributo spese salvataggio nave"
+
+9. **Danni Non Apparenti**
+   - CRITICAL: Riserva scritta entro 3gg obbligatoria
+   - Note: "Decadenza diritti se riserva oltre termine"
+
+10. **Delay (Ritardi)**
+    - Tipicamente ESCLUSA
+    - Note: "Sempre escluso anche se causa è evento coperto"
+
+#### 2.2 SCHEDE TECNICHE CLAUSOLE CRITICHE (Clause-Cards)
+
+**CRITICAL - USA ESATTAMENTE QUESTO FORMATO PER OGNI CLAUSOLA:**
+
+```html
+<div class="clause-card">
+    <div class="clause-header">[ICONA] [NOME CLAUSOLA]</div>
+    <div class="clause-body">
+        <p><span class="clause-coverage">✓ COPRE:</span></p>
+        <ul>
+            <li>[COSA COPRE - PUNTO 1]</li>
+            <li>[COSA COPRE - PUNTO 2]</li>
+        </ul>
+        <p><span class="clause-exclusion">✗ ESCLUDE:</span></p>
+        <ul>
+            <li>[COSA ESCLUDE - PUNTO 1]</li>
+            <li>[COSA ESCLUDE - PUNTO 2]</li>
+        </ul>
+        <div class="clause-note">
+            <strong>[ICONA NOTA] [TITOLO NOTA]:</strong> [CONTENUTO NOTA CRITICA]
+        </div>
+    </div>
+</div>
+```
+
+**CLAUSOLE OBBLIGATORIE DA CREARE (6 cards minimo):**
+
+1. **📋 Institute Cargo Clauses (A)** [o B/C se applicabile]
+   - Copre: All Risks, danni acqua, rotture, avaria particolare
+   - Esclude: Inherent vice, imballaggio inadeguato, ritardi, dolo
+   - Nota: "Burden of Proof - Assicurato prova danno durante trasporto, Compagnia prova esclusione"
+
+2. **⚔️ War Risk (JC2021)**
+   - Copre: Guerra, mine, sequestro, cattura
+   - Esclude: Listed Areas automatiche, armi NBC, cyber war
+   - Nota: "Verificare JCC Map aggiornata su https://www.jccomarine.com - Israele/Gaza/Mar Rosso possono essere Listed"
+
+3. **🔒 Theft, Pilferage, Non-Delivery**
+   - Copre: Furto totale collo, furto parziale se imballo integro
+   - Esclude: Furto con imballo danneggiato, ammanchi peso non imputabili
+   - Nota: "Imballaggio certificato raccomandato per merci valore >€50k"
+
+4. **📦 Danni Non Apparenti**
+   - Copre: Danni non visibili alla consegna, scoperti all'apertura
+   - Esclude: Se riserva scritta NON effettuata entro 3gg lavorativi
+   - Nota CRITICAL: "Riserva scritta OBBLIGATORIA entro 3gg. Senza riserva, clausola NON opera"
+
+5. **📦 Esclusione Cattivo Imballaggio**
+   - Sempre Escluso: Danni da imballaggio inadeguato/insufficiente
+   - Come Evitare: Certificazione imballaggio, foto pre-spedizione, standard ISPM15
+   - Nota: "Per merci fragili/alto valore, certificazione imballaggio professionale obbligatoria"
+
+6. **💰 Sue & Labour (Spese Straordinarie)**
+   - Copre: Spese ragionevoli per evitare/ridurre danno coperto
+   - Limiti: Massimale = somma assicurata, autorizzazione preventiva raccomandata
+   - Nota: "Contattare IMMEDIATAMENTE compagnia prima di sostenere spese straordinarie"
+
+#### 2.3 ALERT CRITICI PRE-SINISTRO (Alert-Box alert-high)
+
+```
+⚠️ CHECK OBBLIGATORI PRIMA DI OGNI SPEDIZIONE
+
+1. War Risk JC2021: Verificare se destinazione è in Listed Area (link JCC Map).
+   Se sì, confermare con compagnia che estensione War è operativa.
+
+2. Sanzioni OFAC/EU: Check paese destinazione e natura merce (dual-use goods).
+   Tool: https://sanctionssearch.ofac.treas.gov/
+
+3. LMI Exceeded: Se valore spedizione >[LMI], dichiarazione preventiva 
+   obbligatoria altrimenti copertura limitata a LMI.
+
+4. Imballaggio: Per merce fragile o valore >€50k, certificazione imballaggio 
+   professionale per evitare esclusione.
+
+5. Incoterms: Verificare chi ha obbligo assicurazione (CIF=venditore, FOB=acquirente).
+   Anche senza obbligo, assicurarsi sempre dal momento del carico.
+```
+
+---
+
+### ==================================================
+### TAB 3: ANALISI PREMI & FATTURATO
+### ==================================================
+
+#### 3.1 BREAKDOWN PREMI PER TRATTA/MODALITÀ (Tabella)
+
+**LOGIC ESTRAZIONE DATI:**
+
+**CASO A - Open Cover con Rate Differentiate per Zona:**
+Se polizza dichiara tassi diversi per area geografica (es. "EU: 0.8‰, USA: 1.2‰, Far East: 2.5‰"):
+- Estrai ogni zona con tasso dichiarato
+- Se disponibile fatturato per zona → calcola premio
+- Se fatturato NON suddiviso → stimalo proporzionalmente (es. "EU rappresenta storicamente 60% traffico")
+
+**CASO B - Open Cover con Rate Unica:**
+Se polizza ha tasso unico indipendente da destinazione:
+- Unica riga tabella: "Copertura Mondiale"
+- Premio = Fatturato × Tasso
+
+**CASO C - Polizza Viaggio con Spedizioni Specifiche:**
+Se polizza copre singole spedizioni con premi dichiarati:
+- Una riga per ogni spedizione/tratta
+- Estrai valore merce + premio specifico → calcola tasso effettivo
+
+**FORMATO TABELLA:**
+```
+| Tratta/Zona          | Fatturato Prev. | Tasso ‰ | Premio Calc. | Premio Pol. | Delta % | Valutazione        |
+|----------------------|-----------------|---------|--------------|-------------|---------|-------------------|
+| EU → USA (Mare)      | €500,000        | 1.2‰    | €600         | €650        | +8%     | Congruo           |
+| IT → Israele (Aereo) | €200,000        | 8.5‰    | €1,700       | €1,700      | 0%      | Congruo (War Risk)|
+| Giacenze Magazzino   | €1,000,000      | 0.8‰    | €800         | €800        | 0%      | Adeguato          |
+| TOTALE               | €1,700,000      | 1.88‰   | €3,100       | €3,150      | +1.6%   | Validato          |
+```
+
+**COLONNA "VALUTAZIONE" - LOGIC:**
+- Delta <5%: "Congruo" / "Validato"
+- Delta 5-15%: "Accettabile con nota" (specificare se sovra/sotto-stima)
+- Delta >15%: "Verificare" (possibile errore calcolo o missing data)
+- Per tassi War Risk (>5‰): "Congruo considerato scenario geopolitico"
+
+#### 3.2 VALIDAZIONE PREMI & COERENZA ATTUARIALE (Info-Grid)
+
+Calcola e confronta:
+- **Premio Totale Polizza:** Da frontespizio (imponibile)
+- **Somma Premi Calcolati:** Σ (Fatturato × Tasso) di tutte le righe
+- **Delta Assoluto:** Premio Polizza - Somma Calc
+- **Delta %:** (Delta / Premio Polizza) × 100
+- **Tasso Medio Ponderato:** Premio Totale / Fatturato Totale × 1000 (in ‰)
+
+**VALIDATION ALERT:**
+- Se Delta <5%: Alert-Box alert-low → "Validazione superata. Premi coerenti con fatturato dichiarato."
+- Se Delta 5-10%: Alert-Box alert-medium → "Scostamento accettabile. Possibile arrotondamento o premio fisso minimo."
+- Se Delta >10%: Alert-Box alert-high → "VERIFICA NECESSARIA. Discrepanza significativa tra premi dichiarati e calcolo teorico. Possibili cause: franchigia minima, caricamenti amministrativi, errore trascrizione."
+
+**TASSO MEDIO - BENCHMARK QUALITATIVO:**
+- 0.5-1.5‰: Basso (tipico EU intra-UE, merce generale, ICC(C))
+- 1.5-3‰: Normale (EU-USA, ICC(A), merce standard)
+- 3-6‰: Medio-Alto (Far East, War Risk inclusa, merce valore medio)
+- 6-15‰: Alto (Zone sensibili, War Risk obbligatoria, merci pregiate)
+- >15‰: Molto Alto (verificare se include War+Strike+SRCC o zona ad altissimo rischio)
+
+#### 3.3 STRESS-TEST ECCEDENZE LMI (Tabella)
+
+```
+| Parametro                           | Valore Polizza | Analisi Storico              | Raccomandazione                |
+|-------------------------------------|----------------|------------------------------|--------------------------------|
+| LMI (Limit per Shipment)            | €250,000       | -                            | -                              |
+| N° Spedizioni >LMI (anno prec.)     | -              | [N] spedizioni               | [VEDI SOTTO]                   |
+| Valore massimo spedizione storico   | -              | €[MAX] ([DATA])              | [VEDI SOTTO]                   |
+| Gestione Eccedenze Attuale          | [MODALITÀ]     | -                            | [VEDI SOTTO]                   |
+```
+
+**RACCOMANDAZIONI - LOGIC:**
+- Se N=0 spedizioni >LMI: "LMI adeguato a storico operativo"
+- Se N=1-3 spedizioni >LMI: "LMI sostanzialmente adeguato. Spedizioni eccezionali gestibili con dichiarazione preventiva."
+- Se N>3 spedizioni >LMI: "⚠️ LMI sottodimensionato. Consigliato innalzamento a €[VALORE_SUGGERITO] per evitare ripetute dichiarazioni."
+- Se Gestione = "Dichiarazione preventiva": "Procedura corretta. Verificare che cliente effettui sempre dichiarazione per spedizioni >LMI."
+- Se Gestione = "Automatica con sovrapremio": "Verificare sostenibilità costo sovrapremio se eccedenze frequenti."
+- Se Gestione = "Esclusa copertura oltre LMI": "🚨 CRITICO. Cliente esposto a rischio scoperto su spedizioni eccedenti. Modificare clausola urgentemente."
+
+#### 3.4 LOGICA TASSI APPLICATI (Clause-Grid con Cards)
+
+Per ogni tratta/zona rilevante (min 3, max 6 cards), crea analisi qualitativa:
+
+```html
+<div class="clause-card">
+    <div class="clause-header">📊 Tasso [TRATTA/ZONA]</div>
+    <div class="clause-body">
+        <p><strong>Tasso Applicato:</strong> [X.X]‰</p>
+        <p><strong>Valutazione:</strong> <span class="badge [risk-low/medium/high]">[CONGRUO/ELEVATO/CONTENUTO]</span></p>
+        <p><strong>Motivazione:</strong> [ANALISI]</p>
+        <p><strong>Fattori di rischio considerati:</strong></p>
+        <ul>
+            <li>[FATTORE_1]</li>
+            <li>[FATTORE_2]</li>
+        </ul>
+    </div>
+</div>
+```
+
+**ESEMPIO COMPILAZIONE:**
+- Tratta: IT → USA (Mare)
+- Tasso: 1.2‰
+- Badge: risk-low (CONGRUO)
+- Motivazione: "Tasso in linea con standard di mercato per rotta transatlantica, merce general cargo, ICC(A) senza estensioni War Risk. Rotta a basso rischio geopolitico e pirateria."
+- Fattori: "Modalità marittima stabile", "No War Risk necessaria", "Porto NY sicuro", "Frequenza sinistri storicamente bassa"
+
+---
+
+### ==================================================
+### TAB 4: GEO-RISK & ROUTE MAPPING
+### ==================================================
+
+**CRITICAL - DECISION TREE PER IDENTIFICAZIONE TRATTE:**
+
+#### STEP 1: IDENTIFICA SCENARIO
+
+**DOMANDA OBBLIGATORIA DA PORTI ALL'AI:**
+"Analizza la polizza e determina quale scenario si applica:"
+
+**SCENARIO 1: POLIZZA VIAGGIO (Tratte Specifiche)**
+Trigger: Polizza dichiara spedizioni con origine/destinazione esplicite e date.
+Esempio: "Spedizione Genova → New York, 15/11/2024, valore €500k"
+→ Procedi con STEP 2A
+
+**SCENARIO 2: OPEN COVER CON ZONE DICHIARATE**
+Trigger: Polizza copre aree geografiche senza tratte precise.
+Esempio: "Copertura Mondiale", "EU ↔ Far East", "Italia ↔ Nord America"
+→ Procedi con STEP 2B
+
+**SCENARIO 3: OPEN COVER CON STORICO SPEDIZIONI**
+Trigger: Polizza Open Cover generica + Cliente fornisce storico spedizioni ultimi 12 mesi.
+→ Procedi con STEP 2C
+
+#### STEP 2A: SCENARIO 1 - TRATTE SPECIFICHE
+
+**ESTRAZIONE DATI:**
+Per ogni spedizione dichiarata in polizza:
+- Origine: Città (es. Genova, Milano, Trieste)
+- Destinazione: Città (es. New York, Dubai, Singapore)
+- Modalità: Mare / Aereo / Strada / Ferrovia
+- Valore: Somma assicurata
+- Data: Se rilevante
+
+**COORDINATE (STIMA PRECISA):**
+Stima coordinate città con precisione centro urbano/porto/aeroporto principale:
+- Genova (Porto): 44.4056, 8.9463
+- Milano (Aeroporto Malpensa): 45.6301, 8.7278
+- New York (Porto): 40.7128, -74.0060
+- Singapore (Porto): 1.2644, 103.8220
+- Dubai (Aeroporto): 25.2528, 55.3644
+- Rotterdam (Porto): 51.9244, 4.4777
+- Hong Kong (Porto): 22.3193, 114.1694
+- Shanghai (Porto): 31.2304, 121.4737
+- Los Angeles (Porto): 33.7405, -118.2705
+
+**OUTPUT JS:**
+```javascript
+const routesData = [
+    { 
+      origin: { name: "Genova", lat: 44.41, lng: 8.95 },
+      destination: { name: "New York", lat: 40.71, lng: -74.01 },
+      mode: "sea",
+      value: 500000
+    },
+    { 
+      origin: { name: "Milano", lat: 45.63, lng: 8.73 },
+      destination: { name: "Dubai", lat: 25.25, lng: 55.36 },
+      mode: "air",
+      value: 200000
+    }
+];
+```
+
+**ROUTE CARDS:**
+Crea una Route Card per OGNI tratta. Usa template esatto:
+
+```html
+<div class="route-card">
+    <div class="route-header">
+        <div><strong>[ICONA_MODALITÀ] [ORIGINE] → [DESTINAZIONE]</strong></div>
+        <a href="https://www.google.com/maps/dir/[ORIGINE_CITY],[ORIGINE_COUNTRY]/[DEST_CITY],[DEST_COUNTRY]/" target="_blank">🌍 Vedi Rotta Satellite</a>
+    </div>
+    <table class="route-table">
+        <tr>
+            <td style="width:50%"><strong>Modalità Trasporto</strong></td>
+            <td class="text-right"><span class="badge">[🚢 Mare / ✈️ Aereo / 🚛 Strada / 🚂 Ferrovia]</span></td>
+        </tr>
+        <tr>
+            <td><strong>Rischio Geopolitico</strong></td>
+            <td class="text-right"><span class="badge [risk-low/medium/high]">[BASSO/MEDIO/ALTO]</span></td>
+        </tr>
+        <tr>
+            <td><strong>Pirateria</strong></td>
+            <td class="text-right"><span class="badge [risk-low/medium/high]">[BASSA/MEDIA/ALTA]</span></td>
+        </tr>
+        <tr>
+            <td><strong>Sanzioni OFAC/EU</strong></td>
+            <td class="text-right"><span class="badge [risk-low/medium/high]">[NESSUNA/ATTENZIONE/VIETATO]</span></td>
+        </tr>
+        <tr>
+            <td><strong>War Risk JC2021</strong></td>
+            <td class="text-right"><span class="badge [risk-low/medium/high]">[NON NECESSARIA/RACCOMANDATA/OBBLIGATORIA]</span></td>
+        </tr>
+        <tr>
+            <td><strong>Condizioni Meteorologiche</strong></td>
+            <td class="text-right"><span class="badge [risk-low/medium/high]">[FAVOREVOLI/VARIABILI/CRITICHE]</span></td>
+        </tr>
+    </table>
+    <div class="route-notes">
+        <strong>📍 Scali Intermedi:</strong> [LISTA SCALI] <br>
+        <strong>⏱️ Tempi Giacenza Medi:</strong> [GIORNI] giorni <br>
+        <strong>🔍 Note Operative:</strong> [ANALISI DETTAGLIATA RISCHI SPECIFICI]
+    </div>
+</div>
+```
+
+#### STEP 2B: SCENARIO 2 - ZONE GEOGRAFICHE
+
+**ESTRAZIONE ZONE:**
+Identifica macro-aree coperte da polizza:
+- "Copertura Mondiale" → Tutti i corridoi principali
+- "EU ↔ USA/Canada" → Rotte transatlantiche
+- "EU ↔ Far East" → Rotte via Suez o Capo di Buona Speranza
+- "Italia ↔ Medio Oriente" → Mediterraneo + War Risk
+
+**IDENTIFICAZIONE CORRIDOI PRINCIPALI:**
+Invece di tratte puntuali, crea macro-corridoi con hub rappresentativi:
+
+**CORRIDOIO EU → NORD AMERICA:**
+- Hub Origine: Genova/Rotterdam/Amburgo
+- Hub Destinazione: New York/Los Angeles
+- Link Maps: https://www.google.com/maps/dir/Genoa,Italy/New+York,USA/
+
+**CORRIDOIO EU → FAR EAST:**
+- Hub Origine: Genova/Rotterdam
+- Hub Destinazione: Singapore/Shanghai/Hong Kong
+- Scali: Suez (verificare sicurezza), Colombo, Singapore
+- Link Maps: https://www.google.com/maps/dir/Genoa,Italy/Singapore/
+
+**CORRIDOIO EU → MEDIO ORIENTE:**
+- Hub Origine: Genova/Trieste
+- Hub Destinazione: Dubai/Haifa/Beirut
+- War Risk: OBBLIGATORIA per Israele, Libano (verificare JCC Listed Areas)
+- Link Maps: https://www.google.com/maps/dir/Genoa,Italy/Dubai,UAE/
+
+**OUTPUT JS (Semplificato):**
+```javascript
+const routesData = [
+    { 
+      origin: { name: "EU (Genova)", lat: 44.41, lng: 8.95 },
+      destination: { name: "USA (New York)", lat: 40.71, lng: -74.01 },
+      mode: "sea",
+      value: 0  // Non applicabile per corridoi
+    },
+    { 
+      origin: { name: "EU (Genova)", lat: 44.41, lng: 8.95 },
+      destination: { name: "Far East (Singapore)", lat: 1.26, lng: 103.82 },
+      mode: "sea",
+      value: 0
+    }
+];
+```
+
+**ROUTE CARDS:**
+Stessa struttura STEP 2A, ma:
+- Titolo: "🚢 CORRIDOIO EU → FAR EAST"
+- Note: "Questo corridoio rappresenta le rotte principali EU-Asia coperte dalla polizza. Tratte specifiche possono variare."
+- Scali: Elencare scali tipici del corridoio
+- Focus su RISCHI MACRO-AREA anziché tratta puntuale
+
+#### STEP 2C: SCENARIO 3 - STORICO SPEDIZIONI
+
+**ESTRAZIONE STORICO:**
+Cliente fornisce file Excel/CSV con storico ultimi 12 mesi:
+```
+Data       | Origine | Destinazione | Modalità | Valore   |
+-----------|---------|--------------|----------|----------|
+15/01/24   | Milano  | Berlino      | Strada   | €25,000  |
+03/02/24   | Genova  | New York     | Mare     | €150,000 |
+...
+```
+
+**AGGREGAZIONE DATI:**
+1. **Top Tratte per Frequenza:** Identifica le 5-10 tratte più ricorrenti
+2. **Top Tratte per Valore:** Identifica le tratte con valore cumulato maggiore
+3. **Distribuzione Geografica:** Calcola % per macro-area (EU: 60%, USA: 25%, Asia: 15%)
+
+**OUTPUT:**
+- Mappa con TUTTE le tratte storiche (può essere densa)
+- Route Cards solo per TOP 5-7 tratte
+- Tabella riepilogativa: "Distribuzione Traffico per Area Geografica"
+
+**ESEMPIO ROUTE CARD (con dato storico):**
+```html
+<div class="route-header">
+    <div><strong>🚛 MILANO → BERLINO</strong> (30% delle spedizioni anno)</div>
+    ...
+</div>
+<div class="route-notes">
+    <strong>📊 Storico:</strong> N° 45 spedizioni, valore cumulato €1.2M, valore medio €26k<br>
+    <strong>🔍 Pattern:</strong> Frequenza costante, nessun sinistro registrato, vettori affidabili.
+</div>
+```
+
+#### STEP 3: RISK ASSESSMENT (Per Ogni Tratta/Corridoio)
+
+**VALUTAZIONE RISCHIO GEOPOLITICO:**
+- **BASSO (badge risk-low):** EU intra-UE, USA-Canada, Australia-Nuova Zelanda
+- **MEDIO (badge risk-medium):** Nord Africa, Sud America, India, Indonesia
+- **ALTO (badge risk-high):** Medio Oriente (Israele, Libano, Iran), Russia, Ucraina, Myanmar, Venezuela
+
+**VALUTAZIONE PIRATERIA:**
+- **BASSA:** Mediterraneo, Atlantico Nord, Pacifico Nord, Intra-EU
+- **MEDIA:** Stretto di Malacca, Indonesia, Nigeria (Golfo di Guinea), Sud America (coste)
+- **ALTA:** Golfo di Aden, Somalia, Yemen, Bangladesh (Chittagong)
+
+**WAR RISK JC2021:**
+- **NON NECESSARIA:** Rotte EU-USA, Intra-EU, EU-Canada, EU-Australia
+- **RACCOMANDATA:** Sud America, Africa Sub-Sahariana, Asia Centrale
+- **OBBLIGATORIA (badge risk-high):** Qualsiasi tratta coinvolga:
+  - Israele, Gaza, Libano
+  - Mar Rosso (attacchi Houthi Q4 2024)
+  - Iran, Iraq, Siria
+  - Russia (sanzioni + conflitto)
+  - Ucraina (zona bellica)
+  - Afghanistan, Pakistan (zone tribali)
+  
+**LINK VERIFICA:** In Note Operative scrivi: "Verificare JCC Listed Areas aggiornate su [https://www.jccomarine.com](https://www.jccomarine.com)"
+
+**SANZIONI OFAC/EU:**
+- **NESSUNA (badge risk-low):** Paesi non sanzionati
+- **ATTENZIONE (badge risk-medium):** Verificare se merce è dual-use (tecnologia, elettronica, chimici) per destinazioni sensibili
+- **VIETATO (badge risk-high):** 
+  - Iran (totale)
+  - Nord Corea (totale)
+  - Russia (parziale, dipende da merce)
+  - Siria, Venezuela (parziale)
+  
+**LINK VERIFICA:** "Check OFAC Sanctions List: [https://sanctionssearch.ofac.treas.gov/](https://sanctionssearch.ofac.treas.gov/)"
+
+**CONDIZIONI METEOROLOGICHE:**
+- **FAVOREVOLI:** Mediterraneo primavera/estate, Atlantico Nord estate, Pacifico inverno
+- **VARIABILI:** Mediterraneo autunno/inverno (maestrale), Atlantico inverno (tempeste)
+- **CRITICHE:** 
+  - Oceano Indiano: Monsoni giugno-settembre
+  - Atlantico tropicale: Uragani agosto-ottobre (Caraibi, Golfo Messico)
+  - Pacifico tropicale: Tifoni luglio-novembre (Filippine, Giappone)
+
+#### STEP 4: ANALISI PORTI/HUB CRITICI (Tabella)
+
+Se polizza o storico evidenziano porti/hub ricorrenti, crea tabella:
+
+```
+| Porto/Hub     | Utilizzo          | Giacenza Media | Security Level (ISPS) | Criticità/Note                |
+|---------------|-------------------|----------------|----------------------|-------------------------------|
+| Rotterdam     | Hub EU principale | 5-7gg          | Level 1 (Sicuro)     | Efficiente, no criticità      |
+| Genova        | Partenza IT       | 3-5gg          | Level 1 (Sicuro)     | Porto principale Italia       |
+| Singapore     | Hub Far East      | 10-15gg        | Level 1 (Sicuro)     | Scalo obbligato EU-Asia       |
+| Port Said     | Scalo Suez        | 2-3gg          | Level 2 (Monitorare) | ⚠️ Zona Mar Rosso instabile   |
+| Haifa (IL)    | Destinazione      | 7-10gg         | Level 3 (Alto)       | 🚨 War Risk obbligatoria      |
+```
+
+**SECURITY LEVEL ISPS (International Ship and Port Facility Security):**
+- **Level 1:** Normale operatività, misure standard
+- **Level 2:** Incremento minaccia, controlli rafforzati
+- **Level 3:** Alto rischio, operatività ridotta
+
+**GIACENZA MEDIA:**
+Se >30gg → Nota: "Verificare operatività clausola Stocks & Stores per giacenze prolungate"
+
+#### STEP 5: ZONE AD ALTO RISCHIO - MONITORAGGIO ATTIVO (Alert-Box alert-high)
+
+Crea alert box riepilogativa per zone sensibili identificate:
+
+```html
+<div class="alert-box alert-high">
+    <div class="alert-header">
+        <span class="alert-icon">🌍</span>
+        <span>ZONE SENSIBILI IDENTIFICATE</span>
+    </div>
+    <div class="alert-body">
+        <p><strong>Canale di Suez / Mar Rosso:</strong> [DESCRIZIONE SITUAZIONE ATTUALE]</p>
+        <p><strong>Israele/Gaza:</strong> [DESCRIZIONE SITUAZIONE ATTUALE]</p>
+        <p><strong>Altre Zone:</strong> [SE APPLICABILE]</p>
+        <p><strong>Raccomandazione Broker:</strong> [AZIONE CONSIGLIATA]</p>
+    </div>
+</div>
+```
+
+**ESEMPIO COMPILAZIONE (Q4 2024):**
+- **Canale di Suez/Mar Rosso:** "Situazione instabile per attacchi Houthi dal Yemen contro navi commerciali. Molti armatori deviano rotta via Capo di Buona Speranza (+10-14 giorni transito, +15-20% costi nolo). War Risk fortemente raccomandata per qualsiasi transito Mar Rosso."
+- **Israele/Gaza:** "Conflitto attivo dall'ottobre 2023. Porto Haifa operativo ma con ritardi. Porto Ashdod parzialmente operativo. War Risk JC2021 obbligatoria. Verificare con compagnia copertura effettiva."
+- **Raccomandazione:** "Monitorare daily le advisory JCC e Lloyd's Market Association. Considerare rotte alternative per Far East (via Capo) o aumento franchigie War Risk per contenere premi."
+
+---
+
+### ==================================================
+### TAB 5: STORICO SINISTRI
+### ==================================================
+
+#### 5.1 REGISTRO SINISTRI (Tabella Ultimi 3 Anni)
+
+**CRITICAL - ESTRAZIONE LETTERALE:**
+Copia dati ESATTI da polizza/documentazione sinistri. NON arrotondare, NON stimare.
+
+```
+| Data       | Tratta           | Causa Sinistro      | Val. Richiesto | Franchigia | Indennizzo | S/P Impact | Note           |
+|------------|------------------|---------------------|----------------|------------|------------|------------|----------------|
+| 15/03/2024 | Genova→Miami     | Water Damage        | €15,234.50     | €1,000.00  | €14,234.50 | 2.37%      | Danno container|
+| 22/11/2023 | Milano→Dubai     | Theft in Transit    | €8,500.00      | €500.00    | €8,000.00  | 1.33%      | Furto parziale |
+| 08/06/2023 | Trieste→New York | Breakage (handling) | €3,200.00      | €500.00    | €2,700.00  | 0.45%      | Merce fragile  |
+```
+
+**COLONNA S/P IMPACT:**
+Calcola per ogni sinistro: (Indennizzo / Premio Annuo Polizza) × 100
+
+**Se nessun sinistro nei 3 anni:**
+```
+<tr>
+    <td colspan="8" style="text-align:center; font-style:italic; color:#64748b;">
+        Nessun sinistro registrato nel triennio 2022-2024
+    </td>
+</tr>
+```
+
+#### 5.2 ANALYTICS SINISTRALITÀ (Info-Grid)
+
+Calcola KPI:
+- **N° Sinistri Totali (3 anni):** Somma sinistri
+- **Totale Indennizzi Pagati:** Σ Indennizzi (formato € XX.XXX,XX)
+- **Totale Premi Incassati (3 anni):** Premio Annuo × 3 (o somma se variabile)
+- **S/P Ratio Triennale:** (Tot Indennizzi / Tot Premi) × 100
+  - <50%: Ottimo
+  - 50-80%: Buono
+  - 80-100%: Accettabile
+  - >100%: Critico
+- **Frequency (Sinistri/Anno):** N° Sinistri / 3
+- **Severity (Costo Medio):** Tot Indennizzi / N° Sinistri
+
+#### 5.3 GRAFICO ANDAMENTO (Chart.js)
+
+**OUTPUT JS:**
+```javascript
+const years = ['2022', '2023', '2024'];
+const premiums = [12000, 12500, 13000];  // Premi annui imponibili
+const claims = [0, 2700, 22234.50];      // Indennizzi pagati per anno
+```
+
+Grafico si genera automaticamente nel template.
+
+#### 5.4 PATTERN RECOGNITION & PREDICTIVE ALERTS (Alert-Box alert-medium)
+
+Analizza sinistri e identifica pattern:
+
+**PATTERN TIPICI:**
+- **Ricorrenza Tratta:** "3 sinistri su 4 riguardano rotta EU→USA → Indagare se problema vettore specifico o imballaggio"
+- **Ricorrenza Causa:** "Tutti i sinistri sono Water Damage → Valutare upgrade imballaggio waterproof"
+- **Ricorrenza Modalità:** "2 sinistri su 3 via mare, 0 via aereo → Trasporti marittimi più esposti"
+- **Stagionalità:** "Sinistri concentrati Q4 (ottobre-dicembre) → Possibile correlazione con meteo autunnale"
+
+**RACCOMANDAZIONI:**
+Basate sui pattern identificati:
+- "Consigliato audit procedure imballaggio con focus su protezione acqua"
+- "Valutare cambio vettore per rotta EU→USA se sinistri ricorrenti con stesso carrier"
+- "Implementare tracking GPS real-time per spedizioni alto valore (riduce TPND)"
+- "Formazione personale magazzino su handling merce fragile"
+
+**ESEMPIO COMPILAZIONE:**
+```html
+<div class="alert-box alert-medium">
+    <div class="alert-header">
+        <span class="alert-icon">📊</span>
+        <span>PATTERN IDENTIFICATI</span>
+    </div>
+    <div class="alert-body">
+        <p>Analisi triennale evidenzia:</p>
+        <ul>
+            <li><strong>Causa prevalente:</strong> Water Damage (67% dei sinistri)</li>
+            <li><strong>Tratta critica:</strong> 2 sinistri su 3 riguardano rotte transatlantiche</li>
+            <li><strong>Vettore ricorrente:</strong> Carrier X coinvolto in 2 sinistri</li>
+        </ul>
+        <p><strong>Raccomandazioni:</strong></p>
+        <ul>
+            <li>Upgrade imballaggio con protezione waterproof certificata per spedizioni marittime</li>
+            <li>Valutare vettori alternativi per rotte transatlantiche</li>
+            <li>Implementare clausola Survey Report obbligatorio pre-carico per spedizioni >€100k</li>
+        </ul>
+    </div>
+</div>
+```
+
+---
+
+### ==================================================
+### TAB 6: SEZIONE DIDATTICA
+### ==================================================
+
+**OBIETTIVO:** Cliente autonomo nella comprensione meccanismi assicurativi trasporti.
+
+**CRITICAL - USA ESATTAMENTE I TEMPLATE HTML FORNITI (edu-card, edu-grid, edu-example).**
+
+#### 6.1 GLOSSARIO OPERATIVO ESSENZIALE (Edu-Grid con 4 Cards)
+
+**CARD 1: INTERESSE ASSICURABILE**
+```html
+<div class="edu-card">
+    <div class="edu-header">💡 Interesse Assicurabile</div>
+    <div class="edu-body">
+        <p><strong>Definizione:</strong> Il valore economico che l'assicurato ha nella merce trasportata e che può perdere in caso di danno.</p>
+        <p><strong>Composizione tipica:</strong></p>
+        <ul>
+            <li>Costo merce (fattura commerciale)</li>
+            <li>+ Nolo (costo trasporto)</li>
+            <li>+ Assicurazione stessa</li>
+            <li>+ Margine atteso (10-20%)</li>
+        </ul>
+        <div class="edu-example">
+            <div class="edu-example-title">📋 Esempio Pratico</div>
+            <p>Merce venduta CIF Barcellona per €50,000<br>
+            • Valore merce: €45,000<br>
+            • Nolo: €3,000<br>
+            • Assicurazione: €500<br>
+            • Margine 10%: €4,500<br>
+            <strong>→ Interesse Assicurabile: €53,000</strong></p>
+            <p style="margin-top:10px; font-size:11px; color:#64748b;">
+            💡 Si assicura il valore totale (€53k) anche se fattura commerciale è €50k, 
+            perché in caso di perdita totale il danno economico include nolo pagato e margine perso.
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+**CARD 2: INCOTERMS 2020**
+```html
+<div class="edu-card">
+    <div class="edu-header">🌐 Incoterms 2020 - I 4 Principali</div>
+    <div class="edu-body">
+        <table style="font-size: 11px; margin-bottom: 0;">
+            <thead>
+                <tr>
+                    <th>Incoterm</th>
+                    <th>Responsabilità Venditore</th>
+                    <th>Chi Deve Assicurare</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>EXW</strong><br>(Ex Works)</td>
+                    <td>Fino a magazzino venditore</td>
+                    <td><strong>Acquirente</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>FOB</strong><br>(Free On Board)</td>
+                    <td>Fino a bordo nave</td>
+                    <td><strong>Acquirente</strong> (da nave in poi)</td>
+                </tr>
+                <tr>
+                    <td><strong>CIF</strong><br>(Cost Insurance Freight)</td>
+                    <td>Fino a porto destinazione</td>
+                    <td><strong>Venditore</strong> (obbligo minimo ICC(C))</td>
+                </tr>
+                <tr>
+                    <td><strong>DDP</strong><br>(Delivered Duty Paid)</td>
+                    <td>Fino a consegna finale sdoganata</td>
+                    <td><strong>Venditore</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="edu-example">
+            <div class="edu-example-title">⚠️ ATTENZIONE</div>
+            <p>Anche se l'Incoterm NON obbliga ad assicurare (es. FOB, FCA), <strong>l'acquirente ha SEMPRE interesse ad avere copertura cargo dal momento del carico</strong>.</p>
+            <p>CIF obbliga solo copertura minima ICC(C). Per merci di valore, <strong>acquirente dovrebbe richiedere ICC(A)</strong> o stipulare propria polizza integrativa.</p>
+        </div>
+    </div>
+</div>
+```
+
+**CARD 3: LMI (LIMIT MARINE INSURANCE)**
+```html
+<div class="edu-card">
+    <div class="edu-header">📊 LMI (Limit Marine Insurance)</div>
+    <div class="edu-body">
+        <p><strong>Cosa significa:</strong> Massimo valore assicurabile per singola spedizione senza dichiarazione preventiva.</p>
+        <p><strong>LMI di questa polizza:</strong> €[VALORE_LMI_POLIZZA]</p>
+        <p><strong>Differenze importanti:</strong></p>
+        <ul>
+            <li><strong>Per Spedizione:</strong> Limite su singolo viaggio/collo indipendente da altre spedizioni</li>
+            <li><strong>Per Evento:</strong> Limite su singolo sinistro (può coinvolgere più spedizioni stesso incidente)</li>
+            <li><strong>Per Veicolo:</strong> Limite su singolo mezzo (es. camion, container, aereo)</li>
+        </ul>
+        <div class="edu-example">
+            <div class="edu-example-title">🚨 Caso Critico</div>
+            <p>LMI polizza: €250,000 per spedizione<br>
+            Cliente spedisce merce da €400,000</p>
+            <p><strong>SENZA dichiarazione preventiva:</strong><br>
+            ❌ Coperto solo €250,000 → Scoperto €150,000 (37.5%)</p>
+            <p><strong>CON dichiarazione preventiva a compagnia:</strong><br>
+            ✅ Coperto intero valore €400,000 (con eventuale sovrapremio da concordare)</p>
+            <p style="margin-top:10px; color:#991b1b; font-weight:600;">
+            💡 REGOLA: Qualsiasi spedizione >LMI richiede dichiarazione PRIMA della partenza.
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+**CARD 4: ICC(A) vs ICC(B) vs ICC(C)**
+```html
+<div class="edu-card">
+    <div class="edu-header">📋 Differenze ICC(A) / ICC(B) / ICC(C)</div>
+    <div class="edu-body">
+        <p><strong>ICC(A) - All Risks (Massima Copertura):</strong></p>
+        <ul>
+            <li>✅ Copre TUTTI i rischi fisici (salvo esclusioni esplicite)</li>
+            <li>✅ Include: rotture, ammaccature, furti parziali, danni acqua, ossidazione</li>
+            <li>❌ Esclude sempre: vizi propri merce, imballaggio inadeguato, ritardi, dolo</li>
+        </ul>
+        <p><strong>ICC(B) - Named Perils Esteso:</strong></p>
+        <ul>
+            <li>✅ Copre eventi nominati: incendio, naufragio, collisione, scarico forzato, avaria comune</li>
+            <li>❌ NON copre rotture/ammaccature se non causate da evento nominato</li>
+            <li>❌ Esclude furto parziale, danni acqua non da eventi nominati</li>
+        </ul>
+        <p><strong>ICC(C) - Named Perils Limitato (Minima):</strong></p>
+        <ul>
+            <li>✅ Copre SOLO eventi gravissimi: naufragio totale, incendio totale, collisione grave</li>
+            <li>❌ Praticamente solo perdita totale o avaria comune</li>
+            <li>❌ Esclude quasi tutti i danni parziali</li>
+        </ul>
+        <div class="edu-example">
+            <div class="edu-example-title">💼 Regola Pratica di Scelta</div>
+            <p><strong>ICC(A):</strong> Merci finite, elettronica, fragili, alto valore unitario (>€100/kg)<br>
+            <strong>ICC(B):</strong> Merci semi-lavorate, componentistica, valore medio (€20-100/kg)<br>
+            <strong>ICC(C):</strong> Materie prime, rinfuse, commodities, basso valore (<€20/kg)</p>
+            <p style="margin-top:10px; color:#166534; font-weight:600;">
+            📌 Questa polizza copre: ICC([INSERIRE_A/B/C])
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+#### 6.2 MECCANISMI FRANCHIGIE & SCOPERTI (Edu-Card Singola Grande)
+
+```html
+<div class="edu-card" style="margin-bottom: 25px;">
+    <div class="edu-header">🧮 Come Funzionano Franchigie e Scoperti</div>
+    <div class="edu-body">
+        <p><strong>1. FRANCHIGIA FISSA (es. €500):</strong></p>
+        <p>L'assicurato paga sempre i primi €500 di ogni sinistro, indipendentemente dall'entità del danno.</p>
+        <div class="edu-example">
+            <div class="edu-example-title">Esempio</div>
+            <p>Danno totale: €3,000<br>
+            Franchigia fissa: €500<br>
+            <strong>→ Indennizzo compagnia: €2,500</strong></p>
+        </div>
+
+        <p style="margin-top:20px;"><strong>2. FRANCHIGIA PERCENTUALE con MINIMO (es. 10% con minimo €500):</strong></p>
+        <p>L'assicurato paga il 10% del danno, ma MAI meno di €500.</p>
+        <div class="edu-example">
+            <div class="edu-example-title">Esempio 1 - Danno Alto</div>
+            <p>Danno totale: €10,000<br>
+            Franchigia 10%: €10,000 × 10% = €1,000<br>
+            Confronto con minimo: €1,000 > €500 → Si applica €1,000<br>
+            <strong>→ Indennizzo: €10,000 - €1,000 = €9,000</strong></p>
+        </div>
+        <div class="edu-example">
+            <div class="edu-example-title">Esempio 2 - Danno Basso</div>
+            <p>Danno totale: €3,000<br>
+            Franchigia 10%: €3,000 × 10% = €300<br>
+            Confronto con minimo: €300 < €500 → Si applica €500 (minimo)<br>
+            <strong>→ Indennizzo: €3,000 - €500 = €2,500</strong></p>
+        </div>
+
+        <p style="margin-top:20px;"><strong>3. SCOPERTO (es. 10%):</strong></p>
+        <p><strong>ATTENZIONE: Diverso da franchigia!</strong> Lo scoperto è una percentuale che resta SEMPRE a carico dell'assicurato, indipendentemente dall'importo.</p>
+        <div class="edu-example">
+            <div class="edu-example-title">Esempio con Scoperto + Franchigia</div>
+            <p>Danno totale: €10,000<br>
+            Scoperto: 10%<br>
+            Franchigia: €500<br><br>
+            <strong>Calcolo Step-by-Step:</strong><br>
+            1. Applicazione scoperto: €10,000 × 90% = €9,000<br>
+            2. Sottrazione franchigia: €9,000 - €500 = <strong>€8,500</strong><br><br>
+            <strong>→ Indennizzo finale: €8,500</strong><br>
+            → Assicurato paga: €1,500 (10% scoperto + €500 franchigia)</p>
+        </div>
+
+        <p style="margin-top:20px;"><strong>4. FRANCHIGIA ASSOLUTA (rara nei trasporti):</strong></p>
+        <p>Se danno è INFERIORE alla franchigia, NON c'è indennizzo. Se SUPERIORE, si indennizza l'intero importo.</p>
+        <div class="edu-example">
+            <div class="edu-example-title">Esempio</div>
+            <p>Franchigia assoluta: €1,000<br>
+            Danno A: €800 → <strong>Indennizzo: €0</strong> (sotto franchigia)<br>
+            Danno B: €3,000 → <strong>Indennizzo: €3,000</strong> (intero, nessuna deduzione)</p>
+        </div>
+
+        <p style="margin-top:20px; padding:15px; background:#fef9c3; border-left:3px solid #f59e0b; font-weight:600;">
+        📌 FRANCHIGIE DI QUESTA POLIZZA:<br>
+        [ELENCARE QUI LE FRANCHIGIE EFFETTIVE DELLA POLIZZA CON ESEMPI NUMERICI]
+        </p>
+    </div>
+</div>
+```
+
+#### 6.3 RESPONSABILITÀ VETTORE vs. ASSICURAZIONE (Tabella + Alert-Box)
+
+**TABELLA:**
+```html
+<h3>Responsabilità Vettore vs. Assicurazione</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width:15%">Modalità</th>
+            <th style="width:25%">Limite Legale Vettore</th>
+            <th style="width:20%">Equivalente Indicativo</th>
+            <th>Gap Assicurativo Tipico</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>🚢 Mare</strong><br>(CMR/Hague Rules)</td>
+            <td>SDR 2/kg<br>(~€2.50/kg)</td>
+            <td>€2.50/kg</td>
+            <td>Merce €50/kg → <strong>95% scoperto</strong><br>Es: Elettronica, tessuti pregiati</td>
+        </tr>
+        <tr>
+            <td><strong>✈️ Aereo</strong><br>(Convenzione Montreal)</td>
+            <td>SDR 19/kg<br>(~€24/kg)</td>
+            <td>€24/kg</td>
+            <td>Merce €500/kg → <strong>95% scoperto</strong><br>Es: Smartphone, farmaci, gioielli</td>
+        </tr>
+        <tr>
+            <td><strong>🚛 Strada</strong><br>(CMR)</td>
+            <td>SDR 8.33/kg<br>(~€10/kg)</td>
+            <td>€10/kg</td>
+            <td>Merce €200/kg → <strong>95% scoperto</strong><br>Es: Componentistica, cosmetici</td>
+        </tr>
+        <tr>
+            <td><strong>🚂 Ferrovia</strong><br>(CIM)</td>
+            <td>SDR 17/kg<br>(~€21/kg)</td>
+            <td>€21/kg</td>
+            <td>Merce €100/kg → <strong>79% scoperto</strong><br>Es: Macchinari, componentistica auto</td>
+        </tr>
+    </tbody>
+</table>
+```
+
+**ALERT-BOX MESSAGGIO CHIAVE:**
+```html
+<div class="alert-box alert-high" style="margin-top: 20px;">
+    <div class="alert-header">
+        <span class="alert-icon">💰</span>
+        <span>MESSAGGIO CHIAVE PER IL CLIENTE</span>
+    </div>
+    <div class="alert-body">
+        <p><strong>SENZA assicurazione Cargo:</strong> In caso di danno durante trasporto, il recupero dal vettore è limitato ai valori sopra riportati (tipicamente <strong>5-10% del valore reale</strong> della merce).</p>
+        
+        <p><strong>CON assicurazione Cargo:</strong> Indennizzo al valore dichiarato (interesse assicurabile) meno franchigie contrattuali.</p>
+        
+        <p><strong>Il vettore NON è responsabile per:</strong></p>
+        <ul>
+            <li>❌ Eventi atmosferici (tempeste, fulmini, grandine)</li>
+            <li>❌ Vizi propri della merce (deterioramento naturale)</li>
+            <li>❌ Imballaggio inadeguato fornito dal mittente</li>
+            <li>❌ Ritardi (anche se causano perdita economica, es. merce deperibile)</li>
+            <li>❌ Furto con scasso se mezzo parcheggiato (salvo colpa grave)</li>
+        </ul>
+        
+        <p style="margin-top:15px; font-weight:700; color:#991b1b;">
+        💡 CONCLUSIONE: L'assicurazione Cargo è l'UNICA protezione reale del valore della merce. Il vettore copre solo una frazione minima in caso di danno.
+        </p>
+    </div>
+</div>
+```
+
+---
+
+### ==================================================
+### TAB 7: PROCEDURA SINISTRI STEP-BY-STEP
+### ==================================================
+
+**CRITICAL - USA ESATTAMENTE LA STRUTTURA TIMELINE CON 6 STEP.**
+
+**INTRODUZIONE:**
+```html
+<h3>Procedura Operativa Gestione Sinistri</h3>
+
+<p style="font-size: 14px; color: var(--text-muted); margin-bottom: 30px;">
+    Seguire rigorosamente questa timeline per evitare <strong>decadenze di diritti</strong> e garantire massima tutela assicurativa. I termini indicati sono IMPERATIVI.
+</p>
+```
+
+#### STEP 1: ENTRO 24 ORE (procedure-step)
+
+**TIMING:** `<span class="procedure-timing">⏰ ENTRO 24 ORE</span>`
+
+**TITLE:** `1. Azioni Immediate al Verificarsi del Danno`
+
+**CONTENT:**
+```html
+<p><strong>🚨 Se il danno è evidente alla consegna:</strong></p>
+<ul class="procedure-checklist">
+    <li>✅ <strong>Riserva scritta immediata</strong> su documento trasporto (CMR, AWB, Bill of Lading) con descrizione SPECIFICA del danno (non riserva generica tipo "controllare")</li>
+    <li>✅ <strong>Fotografie immediate</strong> (imballo esterno, sigilli, danni visibili) con timestamp</li>
+    <li>✅ <strong>Conservare imballaggio originale</strong> - NON smaltire prima di perizia</li>
+    <li>✅ <strong>Separare merce danneggiata</strong> da quella integra</li>
+</ul>
+
+<p><strong>📞 Comunicazioni obbligatorie entro 24h:</strong></p>
+<ul class="procedure-checklist">
+    <li>📧 Email a: <strong>[INSERIRE_EMAIL_COMPAGNIA]</strong></li>
+    <li>📧 CC a: <strong>[INSERIRE_EMAIL_BROKER]</strong></li>
+    <li>📞 Contatto telefonico (se sinistro rilevante >€50k): <strong>[INSERIRE_TELEFONO]</strong></li>
+</ul>
+
+<div class="clause-note">
+    <strong>📋 Template Email Denuncia Immediata (Copiare e Adattare):</strong><br><br>
+    <em style="font-size:11px;">
+    Oggetto: SINISTRO CARGO - Polizza N. [NUMERO] - [DATA]<br><br>
+    Spett.le Compagnia / Broker,<br>
+    si comunica sinistro cargo con i seguenti dati:<br><br>
+    • Polizza N.: [NUMERO]<br>
+    • Assicurato: [RAGIONE_SOCIALE]<br>
+    • Data sinistro: [GG/MM/AAAA]<br>
+    • Tratta: [ORIGINE] → [DESTINAZIONE]<br>
+    • Vettore: [NOME VETTORE]<br>
+    • CMR/AWB N.: [NUMERO_DOCUMENTO]<br>
+    • Natura danno: [ES: Danni da acqua, Furto parziale, Rottura, etc.]<br>
+    • Valore merce: € [IMPORTO_FATTURA]<br>
+    • Valore danno stimato: € [IMPORTO_STIMATO]<br>
+    • Riserva scritta effettuata: SÌ / NO<br>
+    • Allegati: foto, CMR con riserve, fattura commerciale<br><br>
+    Resto a disposizione per sopralluogo peritale.<br>
+    Cordiali saluti
+    </em>
+</div>
+```
+
+#### STEP 2: ENTRO 3 GIORNI LAVORATIVI
+
+**TIMING:** `<span class="procedure-timing">⏰ ENTRO 3 GIORNI LAVORATIVI</span>`
+
+**TITLE:** `2. Denuncia Formale & Gestione Danni Non Apparenti`
+
+**CONTENT:**
+```html
+<p><strong>🔍 Se il danno è scoperto DOPO la consegna (imballo apparentemente integro):</strong></p>
+<ul class="procedure-checklist">
+    <li>✅ <strong>Riserva scritta al vettore entro 3 giorni</strong> (raccomandata A/R o PEC) con descrizione danno</li>
+    <li>✅ <strong>Comunicazione immediata a Compagnia/Broker</strong> (stessa procedura Step 1)</li>
+    <li>✅ <strong>NON movimentare merce danneggiata</strong> fino a perizia</li>
+    <li>✅ <strong>Conservare TUTTO</strong> (imballo esterno + interno, merce, documentazione)</li>
+    <li>✅ <strong>Foto dettagliate</strong> al momento apertura (prima di ulteriore manipolazione)</li>
+</ul>
+
+<p><strong>📄 Documentazione da raccogliere ENTRO 3 giorni:</strong></p>
+<ul class="procedure-checklist">
+    <li>📋 Copia CMR/AWB/Bill of Lading (con riserve se effettuate)</li>
+    <li>📋 Fattura commerciale e packing list</li>
+    <li>📋 Certificato origine (se export extra-UE)</li>
+    <li>📋 Foto complete (imballo esterno + interno + merce danneggiata + merce integra per confronto)</li>
+    <li>📋 Certificato imballaggio (se presente)</li>
+    <li>📋 Tracking vettore con timestamp (se disponibile)</li>
+</ul>
+
+<div class="alert-box alert-high" style="margin-top: 15px;">
+    <div class="alert-header">
+        <span class="alert-icon">⚠️</span>
+        <span>DECADENZA DIRITTI CLAUSOLA DANNI NON APPARENTI</span>
+    </div>
+    <div class="alert-body">
+        <strong>ATTENZIONE CRITICA:</strong> Senza riserva scritta al vettore entro 3 giorni lavorativi su danni non apparenti, la clausola NON opera anche se attiva in polizza. Il diritto all'indennizzo decade automaticamente per legge (art. 1694 cod. civ.).
+    </div>
+</div>
+```
+
+#### STEP 3: ENTRO 7 GIORNI
+
+**TIMING:** `<span class="procedure-timing">⏰ ENTRO 7 GIORNI</span>`
+
+**TITLE:** `3. Invio Documentazione Completa & Richiesta Perizia`
+
+**CONTENT:**
+```html
+<p><strong>📦 Documentazione completa da inviare a Compagnia/Broker:</strong></p>
+<ul class="procedure-checklist">
+    <li>📄 Modulo denuncia sinistro compilato (fornito da Compagnia, richiedere se non disponibile)</li>
+    <li>📄 Copia polizza assicurativa (frontespizio + CGA)</li>
+    <li>📄 Fattura commerciale originale + Packing List</li>
+    <li>📄 Documento trasporto (CMR/AWB/BL) originale con riserve</li>
+    <li>📄 Certificati doganali (SAD import/export se applicabile)</li>
+    <li>📄 Certificato imballaggio (se disponibile - critico se danno potrebbe essere imputato a imballaggio)</li>
+    <li>📄 Preventivi riparazione o sostituzione (se applicabile)</li>
+    <li>📄 Foto complete alta risoluzione (min 10-15 foto da angolazioni diverse)</li>
+    <li>📄 Corrispondenza con vettore (riserve, email, PEC)</li>
+    <li>📄 Tracking completo spedizione (se disponibile)</li>
+</ul>
+
+<p><strong>🔍 Richiedere nomina perito:</strong></p>
+<ul class="procedure-checklist">
+    <li>Compagnia nominerà perito di parte (incluso in polizza)</li>
+    <li>Se sinistro rilevante (>€20k) o complesso, valutare nomina perito di parte assicurato (a vostro carico)</li>
+    <li>Concordare data sopralluogo garantendo vostra presenza o di vostro rappresentante</li>
+</ul>
+
+<p><strong>💰 Gestione Sue & Labour (Spese Straordinarie):</strong></p>
+<ul class="procedure-checklist">
+    <li>📞 <strong>Contattare PRIMA</strong> Compagnia/Liquidatore per autorizzazione spese straordinarie</li>
+    <li>💼 Spese coperte SOLO se "ragionevoli e necessarie" per evitare/ridurre danno</li>
+    <li>📸 Documentare TUTTE le spese (preventivi, email, fatture, foto situazione)</li>
+</ul>
+
+<div class="clause-note">
+    <strong>💡 ESEMPIO Sue & Labour:</strong> Merce deperibile bloccata in dogana per 5gg oltre previsto a causa danno container. Necessaria refrigerazione d'emergenza €2,000. 
+    <br><br>
+    <strong>PROCEDURA:</strong><br>
+    1. Contattare IMMEDIATAMENTE liquidatore via email/telefono<br>
+    2. Inviare preventivo refrigerazione + spiegazione necessità<br>
+    3. Ottenere autorizzazione scritta (anche email)<br>
+    4. Procedere con spesa documentando tutto<br>
+    5. Spesa coperta anche se merce poi risulta integra (Sue & Labour protegge investimento in salvataggio)
+</div>
+```
+
+#### STEP 4: FASE PERIZIA (7-30 GIORNI)
+
+**TIMING:** `<span class="procedure-timing">⏰ FASE PERIZIA (7-30 GIORNI)</span>`
+
+**TITLE:** `4. Gestione Perizia & Quantificazione Danno`
+
+**CONTENT:**
+```html
+<p><strong>👤 Il perito viene nominato da:</strong></p>
+<ul class="procedure-checklist">
+    <li>🏢 Compagnia assicurativa (perito di parte compagnia - costo incluso in polizza)</li>
+    <li>🤝 Eventuale vostro perito di parte (facoltativo, a vostro carico, consigliato se sinistro >€50k)</li>
+    <li>⚖️ Terzo perito (solo se disaccordo tra periti di parte)</li>
+</ul>
+
+<p><strong>📋 Durante il sopralluogo peritale:</strong></p>
+<ul class="procedure-checklist">
+    <li>✅ <strong>Essere presenti</strong> o farsi rappresentare da persona competente (es. responsabile magazzino)</li>
+    <li>✅ Fornire TUTTA la documentazione richiesta (non nascondere nulla)</li>
+    <li>✅ Mostrare merce danneggiata + imballaggi + eventuale merce integra per confronto</li>
+    <li>✅ Verificare che perito esamini ANCHE imballo (critico per escludere cattivo imballaggio)</li>
+    <li>✅ Richiedere copia verbale perizia (avete diritto)</li>
+    <li>✅ Se non d'accordo su valutazioni, verbalizzare obiezioni</li>
+</ul>
+
+<p><strong>⚖️ Punti critici valutazione perito:</strong></p>
+<ul class="procedure-checklist">
+    <li>🔍 <strong>Causa del danno:</strong> Coperta o esclusa da polizza? (es: acqua di mare=coperta; vizio proprio=esclusa)</li>
+    <li>🔍 <strong>Adeguatezza imballaggio:</strong> Certificato? Sufficiente per tipo merce? (se inadeguato → esclusione)</li>
+    <li>🔍 <strong>Momento danno:</strong> Durante trasporto coperto o prima/dopo? (verificare tracking, sigilli)</li>
+    <li>🔍 <strong>Valore merce:</strong> Congruo rispetto fattura? Interesse assicurabile corretto?</li>
+    <li>🔍 <strong>Entità danno:</strong> Perdita totale, parziale, riparabile?</li>
+    <li>🔍 <strong>Concorso colpa:</strong> Assicurato ha contribuito al danno? (es: ritardo denuncia, cattiva conservazione post-sinistro)</li>
+</ul>
+
+<div class="alert-box alert-medium" style="margin-top: 15px;">
+    <div class="alert-header">
+        <span class="alert-icon">💼</span>
+        <span>IN CASO DI DISACCORDO SU PERIZIA</span>
+    </div>
+    <div class="alert-body">
+        <p>Se non si condivide l'esito della perizia o la quantificazione del danno:</p>
+        <ol>
+            <li><strong>Fase 1:</strong> Nominare perito di parte assicurato e richiedere perizia contraddittoria</li>
+            <li><strong>Fase 2:</strong> Se persiste disaccordo, attivare clausola arbitrale (se presente in polizza - verificare CGA)</li>
+            <li><strong>Fase 3:</strong> Ultima istanza: azione legale (consigliato coinvolgere sempre Broker come mediatore prima di procedere)</li>
+        </ol>
+        <p style="margin-top:10px; font-weight:600;">
+        📞 RACCOMANDAZIONE: Contattare sempre Broker prima di intraprendere azioni legali. Spesso il Broker può mediare efficacemente con la Compagnia.
+        </p>
+    </div>
+</div>
+```
+
+#### STEP 5: FASE LIQUIDAZIONE (30-90 GIORNI)
+
+**TIMING:** `<span class="procedure-timing">⏰ FASE LIQUIDAZIONE (30-90 GIORNI)</span>`
+
+**TITLE:** `5. Liquidazione & Pagamento Indennizzo`
+
+**CONTENT:**
+```html
+<p><strong>🧮 Calcolo indennizzo (esempio):</strong></p>
+<ul class="procedure-checklist" style="font-family: 'JetBrains Mono', monospace; font-size:12px;">
+    <li>Valore danno accertato da perizia: € 10,000.00</li>
+    <li>- Franchigia contrattuale: € 500.00</li>
+    <li>- Eventuale scoperto 10%: € 950.00 (10% su residuo €9,500)</li>
+    <li>= <strong style="color:#166534; font-size:14px;">Indennizzo netto: € 8,550.00</strong></li>
+</ul>
+<p style="font-size:11px; color:#64748b; margin-top:10px;">
+💡 Verificare sempre come sono applicate franchigia e scoperto nella vostra polizza (vedi Tab Didattica per esempi calcolo).
+</p>
+
+<p><strong>💳 Modalità pagamento:</strong></p>
+<ul class="procedure-checklist">
+    <li>Bonifico bancario su IBAN comunicato in fase denuncia (o indicato in polizza)</li>
+    <li>Tempi medi: 30-45 giorni da accettazione perizia</li>
+    <li>Compagnia richiederà firma <strong>quietanza liberatoria</strong> prima di pagamento</li>
+</ul>
+
+<p><strong>📝 Quietanza Liberatoria:</strong></p>
+<ul class="procedure-checklist">
+    <li>⚠️ Documento che chiude definitivamente il sinistro</li>
+    <li>⚠️ Firmando, rinunciate ad ulteriori richieste per quel sinistro specifico</li>
+    <li>✅ <strong>VERIFICARE importo PRIMA di firmare</strong> - una volta firmata, non si torna indietro</li>
+    <li>✅ Se non d'accordo, NON firmare e contestare formalmente</li>
+</ul>
+
+<p><strong>🔄 Diritto di rivalsa su terzi responsabili:</strong></p>
+<ul class="procedure-checklist">
+    <li>Dopo pagamento indennizzo, Compagnia subentra nei vostri diritti vs. vettore/terzi</li>
+    <li>Compagnia può agire contro vettore per recuperare quanto pagato</li>
+    <li>Dovete collaborare fornendo documentazione utile a rivalsa (CMR, prove responsabilità vettore)</li>
+    <li>⚠️ Eventuale recupero da terzi NON riduce la franchigia già applicata (non avrete ulteriori rimborsi)</li>
+</ul>
+
+<div class="clause-note">
+    <strong>📌 IMPORTANTE - QUIETANZA LIBERATORIA:</strong><br>
+    Prima di firmare, verificare:<br>
+    1. Importo corrisponde a quanto concordato?<br>
+    2. Calcolo franchigie/scoperto è corretto?<br>
+    3. Eventuali Sue & Labour sono incluse?<br>
+    4. Se sinistro parziale, merce residua è recuperabile/vendibile?<br><br>
+    Se dubbi, chiedere chiarimenti scritti PRIMA di firmare. La quietanza è IRREVERSIBILE.
+</div>
+```
+
+#### STEP 6: POST-LIQUIDAZIONE
+
+**TIMING:** `<span class="procedure-timing">📊 POST-LIQUIDAZIONE</span>`
+
+**TITLE:** `6. Archiviazione & Impatto su Polizza`
+
+**CONTENT:**
+```html
+<p><strong>📁 Conservare per almeno 10 anni:</strong></p>
+<ul class="procedure-checklist">
+    <li>📄 Tutta la corrispondenza Compagnia/Broker (email, PEC, raccomandate)</li>
+    <li>📄 Perizia completa e verbali sopralluogo</li>
+    <li>📄 Documentazione trasporto (CMR, AWB, BL) e commerciale (fatture)</li>
+    <li>📄 Quietanza liberatoria firmata</li>
+    <li>📄 Bonifico pagamento indennizzo</li>
+</ul>
+<p style="font-size:11px; color:#64748b;">
+💡 Conservazione obbligatoria per legge. In caso di contestazioni future o controlli fiscali, la documentazione è essenziale.
+</p>
+
+<p><strong>📈 Impatto su rinnovo polizza:</strong></p>
+<ul class="procedure-checklist">
+    <li>✍️ Sinistro viene registrato nello storico della polizza</li>
+    <li>📊 Contribuisce al calcolo S/P Ratio (Sinistri/Premi)</li>
+    <li>💰 Se S/P Ratio >80% nel triennio → Possibile adeguamento premio a rinnovo</li>
+    <li>🔍 Compagnia valuterà: frequenza sinistri, cause, tratte/vettori ricorrenti</li>
+    <li>⚠️ Sinistri ripetuti stessa causa (es. 3 Water Damage consecutivi) → Possibile richiesta azioni correttive</li>
+</ul>
+
+<p><strong>🔍 Analisi post-sinistro (con Broker):</strong></p>
+<ul class="procedure-checklist">
+    <li>🎯 Identificare cause root: Imballaggio inadeguato? Vettore inaffidabile? Procedura interna carente?</li>
+    <li>✅ Implementare azioni correttive: Cambio imballaggio, certificazione, formazione personale, cambio vettore</li>
+    <li>📊 Valutare adeguamento coperture: Franchigie troppo alte? LMI insufficiente? Clausole mancanti?</li>
+    <li>💡 Documentare lesson learned per prevenire sinistri futuri</li>
+</ul>
+
+<div class="clause-note" style="background:#f0fdf4; border-left-color:#16a34a;">
+    <strong>✅ BEST PRACTICE:</strong> Programmare incontro annuale con Broker per analisi sinistralità e ottimizzazione coperture. Un sinistro ben gestito è anche un'opportunità di miglioramento dei processi aziendali.
+</div>
+```
+
+#### CONTATTI EMERGENZA SINISTRI (Info-Grid)
+
+```html
+<h3>Contatti Emergenza Sinistri</h3>
+
+<div class="info-grid">
+    <div class="info-item">
+        <span class="info-label">Compagnia - Email Sinistri</span>
+        <span class="info-value">[INSERIRE_EMAIL_SINISTRI_COMPAGNIA]</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Compagnia - Telefono H24</span>
+        <span class="info-value">[INSERIRE_TEL_H24_COMPAGNIA]</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Broker - Email</span>
+        <span class="info-value">[INSERIRE_EMAIL_BROKER]</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Broker - Telefono</span>
+        <span class="info-value">[INSERIRE_TEL_BROKER]</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Liquidatore Fiduciario (se nominato)</span>
+        <span class="info-value">[INSERIRE_NOME_LIQUIDATORE]</span>
+    </div>
+    <div class="info-item">
+        <span class="info-label">Liquidatore - Contatto</span>
+        <span class="info-value">[INSERIRE_CONTATTO_LIQUIDATORE]</span>
+    </div>
+</div>
+```
+
+---
+
+## SEZIONE OUTPUT FINALE: JS DATA & VALIDATION
+
+### OUTPUT JS OBBLIGATORI
+
+**1. ROUTE DATA (per Leaflet Map):**
+```javascript
+const routesData = [
+    { 
+      origin: { name: "Genova", lat: 44.41, lng: 8.95 },
+      destination: { name: "New York", lat: 40.71, lng: -74.01 },
+      mode: "sea",  // sea | air | road | rail
+      value: 500000
+    }
+    // Replica per ogni tratta
+];
+```
+
+**2. CLAIMS DATA (per Chart.js):**
+```javascript
+const years = ['2022', '2023', '2024'];
+const premiums = [12000, 12500, 13000];  // Premi annui imponibili
+const claims = [0, 2700, 22234.50];      // Indennizzi totali per anno
+```
+
+### VALIDATION CHECKLIST FINALE
+
+Prima di consegnare il report, verifica:
+
+**DATI NUMERICI:**
+- [ ] Tutti i premi hanno formato € XX.XXX,XX (centesimi inclusi)
+- [ ] Premio Totale ≈ Σ Premi Tratte (tolleranza <5%)
+- [ ] Tasso medio tra 0.5‰ e 15‰ (se fuori range, giustificare)
+- [ ] S/P Ratio calcolato correttamente se ci sono sinistri
+- [ ] Coordinate città stimate con precisione centro urbano
+
+**COMPLETEZZA:**
+- [ ] Tutte le 6 Clause Cards compilate (ICC, War Risk, TPND, Danni Non Apparenti, Cattivo Imballaggio, Sue & Labour)
+- [ ] Almeno 3 Route Cards (o corridoi) presenti in Tab Geo-Risk
+- [ ] Tutti i sinistri (se presenti) riportati letteralmente
+- [ ] Info-Grid completamente compilate (nessun campo [PLACEHOLDER])
+- [ ] Alert-Box presenti nei 3 livelli (Alta/Media/Bassa priorità) se applicabile
+
+**LINK E REFERENCES:**
+- [ ] Link Google Maps generati per ogni tratta/corridoio
+- [ ] Link JCC War Risk Map presente in note War Risk
+- [ ] Link OFAC Sanctions presente in valutazione sanzioni
+- [ ] Contatti emergenza compilati (email + telefoni)
+
+**COERENZA:**
+- [ ] Clausole dichiarate in Tab 2 coerenti con premi in Tab 3
+- [ ] Tratte/Zone in Tab 4 coerenti con breakdown premi Tab 3
+- [ ] Alert in Tab 1 coerenti con criticità identificate in Tab 2-4
+- [ ] Dati anagrafica Tab 1 coerenti in tutto il documento
+
+---
+
+## NOTE FINALI PER L'AI
+
+**TONE & LANGUAGE:**
+- Linguaggio tecnico ma comprensibile (PhD-level ma accessibile a manager senza background assicurativo)
+- Evitare gergalismi senza spiegarli
+- Esempi numerici SEMPRE presenti per concetti complessi
+- Nessuna ambiguità: "potrebbe", "forse", "probabilmente" → Sostituire con "si raccomanda verifica" o "secondo CGA art. X"
+
+**PRIORITÀ:**
+1. Accuratezza dati (non inventare mai)
+2. Completezza (meglio troppo che poco)
+3. Chiarezza didattica (cliente deve capire)
+4. Actionable insights (Alert devono portare ad azioni concrete)
+
+**SE DATI MANCANO:**
+- NON inventare
+- Scrivere esplicitamente: "[DATO NON DISPONIBILE IN POLIZZA - Richiedere a Compagnia]"
+- Suggerire dove trovare il dato mancante
+
+---
+
+## ESEMPIO MINI-COMPILAZIONE (per validazione logica)
+
+**Input fittizio:**
+- Polizza Open Cover
+- Fatturato prev: €1.5M
+- Copertura: "EU ↔ Worldwide"
+- LMI: €250k
+- ICC(A) + War Risk + TPND
+- 1 sinistro 2023: €15k Water Damage Genova→NY
+
+**Output atteso Tab 1 (Alert):**
+- 🟢 Conferma: Nessuna tratta OFAC-sanctioned
+- 🟡 Attenzione: Incremento traffico Far East richiede verifica transito Suez
+
+**Output atteso Tab 4 (Route Cards):**
+- Corridoio 1: EU → Nord America (link Google Maps Genova-NY)
+- Corridoio 2: EU → Far East (alert War Risk Suez)
+- Corridoio 3: Intra-EU (low risk)
+
+**Output atteso Tab 5:**
+- 1 riga sinistro con dati letterali
+- S/P Ratio: 15k / (13k×3) = 38% → BUONO
+- Pattern: Unico sinistro Water Damage → Non pattern critico
+
+---
+
+**FINE PROMPT MASTER v5.3**

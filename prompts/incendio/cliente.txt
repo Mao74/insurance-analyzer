@@ -1,0 +1,501 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: REPORT INCENDIO / PROPERTY ALL RISKS - VERSIONE CLIENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+Sei il massimo esperto mondiale in polizze Property/Incendio. Devi generare un report HTML professionale ma COMPRENSIBILE per il cliente (imprenditore, CFO, risk manager aziendale), partendo da:
+- Polizza Incendio/Property All Risks in formato .txt
+- Eventuali appendici
+- Eventuale statistica sinistri
+- Template HTML allegato (da usare ESATTAMENTE per struttura e stile)
+
+Livello di output richiesto: comprensibile a un non-tecnico assicurativo, con spiegazioni chiare e esempi pratici.
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA - VERSIONE CLIENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CHIAREZZA: Evita gergo tecnico. Quando necessario, spiega i termini.
+2. PRATICITÀ: Il cliente deve capire COSA È COPERTO e COSA NO.
+3. ESEMPI CONCRETI: Illustra le garanzie con scenari realistici.
+4. CRITICITÀ EVIDENTI: Segnala gap di copertura e rischi non assicurati.
+5. AZIONE: Indica sempre cosa fare in caso di sinistro.
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA TAB (7 TAB)
+═══════════════════════════════════════════════════════════════════════════════
+
+TAB 1: SINTESI CONTRATTUALE
+TAB 2: BENI ASSICURATI
+TAB 3: RISCHI CATASTROFALI
+TAB 4: GARANZIE & COPERTURE
+TAB 5: SINISTRI & PREMI
+TAB 6: ESEMPI PRATICI
+TAB 7: PROCEDURA SINISTRI
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: SINTESI CONTRATTUALE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DATI GENERALI E CONTRATTUALI (info-grid)
+   - Contraente
+   - Assicurato (se diverso)
+   - Broker
+   - Compagnia (e delegataria se coassicurazione)
+   - Numero Polizza
+   - Vigenza (decorrenza - scadenza)
+   - Premio Annuo Totale (evidenziato in blu, font large)
+   - Frazionamento
+
+2. RIEPILOGO VALORI ASSICURATI
+   Tabella aggregata con colonne: Categoria Beni | Somma Assicurata | % su Totale
+   
+   Categorie standard:
+   - Fabbricati
+   - Contenuto (Macchinari, Attrezzature, Impianti)
+   - Merci e Scorte
+   - Danni Indiretti (Business Interruption)
+   
+   Riga finale: TOTALE ASSICURATO (sfondo #e6f0ff)
+
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLA: Se più sedi, aggregare per CATEGORIA, non per sede              ║
+   ║ Il dettaglio per sede va nel TAB 2                                       ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+3. PUNTI DI ATTENZIONE (alert-box)
+   Segnalare in modo chiaro:
+   - Possibile sottoassicurazione (valori dichiarati vs valore reale stimato)
+   - Scoperture rilevanti (es. terremoto non coperto in zona sismica)
+   - Franchigie elevate che potrebbero sorprendere il cliente
+   - Obblighi contrattuali critici (es. mezzi di protezione furto)
+   - Scadenze imminenti
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: BENI ASSICURATI
+═══════════════════════════════════════════════════════════════════════════════
+
+1. MAPPA UBICAZIONI ASSICURATE
+   
+   Genera il codice JavaScript per la mappa Leaflet:
+   
+   const locationsData = [
+       { name: "[NOME_SEDE]", lat: [LAT], lng: [LNG], value: [VALORE_TOTALE], desc: "[ATTIVITÀ]" },
+       ...
+   ];
+
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLE CRITICHE PER LE COORDINATE                                        ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║ 1. Stima le coordinate dalla VIA/INDIRIZZO, NON dal centro città        ║
+   ║ 2. Se non trovi la via esatta, usa la Zona Industriale del comune       ║
+   ║ 3. NON inventare coordinate generiche                                    ║
+   ║ 4. Il campo "value" deve contenere il TOTALE assicurato della sede      ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+2. DETTAGLIO SEDI E VALORI
+   
+   Per OGNI sede/ubicazione, creare un blocco .location-block:
+
+   HEADER: 📍 [INDIRIZZO_COMPLETO] - [CITTÀ] | [TOTALE_SEDE]
+   
+   BODY:
+   - Attività dichiarata (in corsivo)
+   - Tabella con colonne: Partita | Somma Assicurata | Criterio Valutazione
+   
+   Partite tipiche da elencare (se presenti):
+   - Fabbricato
+   - Macchinari e Impianti
+   - Attrezzature
+   - Merci e Scorte
+   - Beni di Terzi
+   - Dati e Software
+   - Beni all'Aperto
+   
+   Criteri di valutazione tipici:
+   - Valore a Nuovo
+   - Valore allo Stato d'Uso
+   - Valore di Mercato
+   - Primo Rischio Assoluto
+
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLA CRITICA: NON ACCORPARE LE SEDI                                   ║
+   ║ Ogni ubicazione deve avere il proprio blocco separato                    ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+3. EDU-CARD ESPLICATIVA
+   Spiegare al cliente cos'è il "Valore a Nuovo" e perché è importante.
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: RISCHI CATASTROFALI
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ANALISI RISCHI NATURALI PER UBICAZIONE
+   
+   Alert-box info con FONTI DATI:
+   - Zona Sismica: Classificazione INGV/Protezione Civile
+   - Rischio Alluvione: Mappe PAI regionali e database ISPRA
+   - Rischio Frane: Inventario Fenomeni Franosi (IFFI) ISPRA
+
+   Per OGNI ubicazione, creare una risk-card:
+
+   HEADER: 📍 [CITTÀ] - [INDIRIZZO]
+   
+   BODY (risk-row per ogni rischio):
+   - Zona Sismica: [ZONA 1/2/3/4] con badge colorato
+   - Rischio Alluvione: [BASSO/MEDIO/ALTO]
+   - Rischio Frane: [BASSO/MEDIO/ALTO]
+   - Eventi Atmosferici: [BASSO/MEDIO/ALTO]
+   - Note tecniche (es. prossimità a corsi d'acqua, industrie RIR, aeroporti)
+
+   CLASSI CSS PER BADGE:
+   - risk-low: verde (Zona 4, Basso)
+   - risk-med: giallo (Zona 3, Medio)
+   - risk-high: rosso (Zona 1-2, Alto)
+
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ CLASSIFICAZIONE ZONE SISMICHE                                            ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║ Zona 1: Rischio ALTO (es. Abruzzo, Calabria, Sicilia orientale)         ║
+   ║ Zona 2: Rischio MEDIO-ALTO (es. Emilia, Marche, Umbria)                 ║
+   ║ Zona 3: Rischio MEDIO-BASSO (es. Lombardia, Piemonte, Veneto)           ║
+   ║ Zona 4: Rischio BASSO (es. Sardegna, parti di Piemonte)                 ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+2. COPERTURA CATASTROFALE IN POLIZZA
+   
+   Tabella con colonne: Evento | Coperto | Limite/Sottolimite | Franchigia | Note
+
+   Eventi da verificare:
+   - Terremoto
+   - Alluvione / Inondazione
+   - Eventi Atmosferici (vento, grandine)
+   - Grandine (se separata)
+   - Frana / Smottamento
+   - Maremoto / Tsunami
+
+   SE un evento NON è coperto o ha limite insufficiente rispetto all'esposizione:
+   Inserire alert-box alert-high "GAP DI COPERTURA RILEVATO"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: GARANZIE & COPERTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+Struttura per OGNI garanzia: clause-card con header + body + tabella limiti
+
+1. GARANZIE DANNI DIRETTI
+
+   GARANZIA BASE - INCENDIO (tag-fire):
+   - Cosa copre: descrizione in linguaggio semplice
+   - Tabella: Massimale | Franchigia
+   
+   ESTENSIONI TIPICHE (tag-nat per naturali, tag-theft per furto):
+   
+   a) Danni d'Acqua
+      - Cosa copre: rottura tubazioni, traboccamento, infiltrazioni
+      - Sottolimite + Franchigia
+   
+   b) Furto e Rapina
+      - Cosa copre: sottrazione con effrazione/scasso/rapina
+      - Sottolimite + Franchigia
+      - Box giallo con OBBLIGHI DI PROTEZIONE richiesti
+   
+   c) Fenomeno Elettrico / Guasti Macchine
+      - Cosa copre: cortocircuito, sovratensione, arco voltaico
+      - Sottolimite + Franchigia
+   
+   d) Atti Vandalici / Tumulti
+      - Cosa copre + limiti
+   
+   e) Rottura Vetri/Lastre
+      - Cosa copre + limiti
+   
+   f) Ricerca e Riparazione Guasto
+      - Cosa copre (spese per individuare l'origine del danno)
+   
+   [AI: Aggiungere TUTTE le garanzie presenti in polizza]
+
+2. GARANZIA DANNI INDIRETTI (BUSINESS INTERRUPTION)
+   
+   clause-card con badge tag-bi:
+   - Cosa copre: perdita di profitto/margine durante fermo attività
+   - Tabella con:
+     * Somma Assicurata BI
+     * Periodo di Indennizzo (mesi)
+     * Franchigia Temporale (giorni)
+   
+   edu-card: spiegare cos'è la "Franchigia Temporale"
+
+3. SPESE ACCESSORIE E MAGGIORI COSTI
+   
+   Tabella con colonne: Garanzia | Limite | Descrizione
+   
+   Voci tipiche:
+   - Spese di Demolizione e Sgombero
+   - Spese di Salvataggio
+   - Onorari Periti (perito di parte)
+   - Spese Ricostituzione Documenti
+   - Maggiori Costi per Straordinari
+   - Perdita Pigioni
+   - Spese di Trasferimento
+   - Danni da Contaminazione Merci
+
+4. ESCLUSIONI PRINCIPALI
+   
+   alert-box alert-high "COSA NON È COPERTO":
+   
+   Esclusioni tipiche:
+   - Danni da dolo dell'Assicurato
+   - Guerra, insurrezione, terrorismo (salvo estensione)
+   - Danni nucleari e contaminazione radioattiva
+   - Danni da vizio intrinseco o difetto preesistente
+   - Danni a beni all'aperto (salvo estensione)
+   - Cedimento del terreno (salvo terremoto)
+   - Furto senza effrazione
+   - Usura, corrosione, ossidazione graduale
+   - Danni estetici senza danno funzionale
+   - [Altre esclusioni rilevanti dalla polizza specifica]
+
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLA: Elencare SOLO le esclusioni più rilevanti per il cliente        ║
+   ║ (max 10-12 voci). Il dettaglio completo è nel report Compagnia.         ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: SINISTRI & PREMI
+═══════════════════════════════════════════════════════════════════════════════
+
+1. GRAFICO ANDAMENTO SINISTRI VS PREMI (Chart.js)
+   
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLE CRITICHE PER IL GRAFICO                                          ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║ 1. RANGE ANNI: Dal primo anno con dati fino all'anno corrente           ║
+   ║    - SEMPRE includere l'anno corrente anche se sinistri = 0             ║
+   ║                                                                          ║
+   ║ 2. ASSEGNAZIONE PREMI: Anno di COMPETENZA della polizza                 ║
+   ║    - Polizza 31/12/2024 → 31/12/2025 = premio assegnato a 2025         ║
+   ║    - NON duplicare premi su più anni                                    ║
+   ║                                                                          ║
+   ║ 3. ASSEGNAZIONE SINISTRI: Data di DENUNCIA                              ║
+   ║    - NON usare l'anno indicato nelle note                               ║
+   ║                                                                          ║
+   ║ 4. ANNI A ZERO: Inserire 0, non omettere l'anno                         ║
+   ║                                                                          ║
+   ║ 5. COERENZA: years.length === premiums.length === claims.length         ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+   Genera il codice JavaScript:
+   const years = ['2022', '2023', '2024', '2025'];
+   const premiums = [45000, 48000, 52000, 55000];
+   const claims = [12000, 0, 35000, 0];
+
+2. ANALYTICS SINISTRALITÀ (info-grid)
+   4 card KPI:
+   - Loss Ratio Complessivo (%)
+   - Totale Sinistri (numero)
+   - Importo Totale Liquidato (€)
+   - Riserve Aperte (€)
+
+3. DETTAGLIO SINISTRI
+   
+   SE non ci sono sinistri:
+   - alert-box alert-low "NESSUN SINISTRO REGISTRATO"
+   
+   SE ci sono sinistri:
+   - Tabella con colonne: Data Evento | Ubicazione | Causa/Descrizione | Riservato | Pagato | Stato
+   - Una riga per ogni sinistro
+   - Stato con badge (Aperto/Chiuso/In istruttoria)
+
+4. STORICO PREMI
+   Tabella con colonne: Annualità | Premio Imponibile | Premio Lordo | Note
+   Riga finale TOTALE PERIODO
+
+5. EDU-CARD
+   Spiegare cos'è il "Loss Ratio" e perché è importante per il rinnovo.
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: ESEMPI PRATICI
+═══════════════════════════════════════════════════════════════════════════════
+
+Creare 5 SCENARI realistici usando example-card.
+
+Per ogni scenario:
+- HEADER: Emoji + Titolo scenario
+- BODY:
+  * Situazione: descrizione del sinistro
+  * ✅ COPERTO: elenco puntato di cosa viene indennizzato
+  * ❌ NON COPERTO: elenco puntato di cosa resta escluso
+  * Eventuali box di attenzione (franchigie, obblighi, limiti)
+
+SCENARI OBBLIGATORI:
+
+1. 🔥 INCENDIO NEL MAGAZZINO/STABILIMENTO
+   - Causa tipica: cortocircuito, surriscaldamento
+   - Danni diretti + BI + spese accessorie
+   - Franchigie e scoperti applicabili
+
+2. 💧 ALLAGAMENTO DA ROTTURA TUBAZIONE
+   - Danni d'acqua accidentali
+   - Limiti del sottolimite specifico
+   - Esclusione riparazione tubazione stessa
+
+3. 🔓 FURTO CON SCASSO
+   - Effrazione, mezzi di protezione
+   - Limiti valori, contanti, cassaforte
+   - Esclusione furto senza effrazione
+
+4. 🌪️ DANNI DA EVENTO ATMOSFERICO
+   - Grandine, vento, tempesta
+   - Danni a coperture e infiltrazioni conseguenti
+   - Esclusione beni all'aperto
+
+5. 🌍 TERREMOTO (se coperto) o altro evento catastrofale
+   - Danni strutturali + BI
+   - Franchigia percentuale elevata
+   - Limiti aggregati
+
+CALCOLO PRATICO INDENNIZZO (edu-card):
+Esempio numerico che mostri:
+- Danno totale
+- Applicazione franchigia fissa
+- Applicazione scoperto con min/max
+- Indennizzo finale
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 7: PROCEDURA SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CONTATTI URGENTI (alert-box alert-info)
+   - Broker: nome, telefono, email
+   - Compagnia (ufficio sinistri): contatto
+   - Numero Verde (se disponibile)
+
+2. TIMELINE PROCEDURA (procedure-timeline)
+   6 step con icona numerata:
+
+   STEP 1: Messa in Sicurezza Immediata
+   - Chiamare soccorsi se necessario
+   - Mettere in sicurezza persone e beni
+   - Evitare aggravamento danno
+
+   STEP 2: Documenta il Danno
+   - Foto e video PRIMA di interventi
+   - Conservare beni danneggiati
+   - Raccogliere testimonianze
+
+   STEP 3: Denuncia alle Autorità
+   - Furto/rapina: denuncia entro 24h
+   - Incendio: richiedere rapporto VVF
+
+   STEP 4: Avvisa il Broker
+   - Termine massimo dalla polizza
+   - Informazioni da fornire (polizza, data, descrizione, stima)
+
+   STEP 5: Attendi il Perito
+   - Non procedere con riparazioni definitive
+   - Possibilità di nominare perito di parte
+
+   STEP 6: Liquidazione
+   - Tempi tipici (30 giorni dall'accordo)
+   - Procedura arbitrale in caso di disaccordo
+
+3. DOCUMENTI DA PREPARARE
+   Tabella con colonne: Documento | Obbligatorio | Note
+   
+   Documenti tipici:
+   - Denuncia sinistro compilata (Sì)
+   - Documentazione fotografica (Sì)
+   - Denuncia Autorità (Sì per furto/incendio)
+   - Rapporto Vigili del Fuoco (Sì se intervento)
+   - Fatture/preventivi riparazione (Sì)
+   - Fatture acquisto beni (Consigliato)
+   - Libro cespiti/inventario (Consigliato)
+   - Bilanci per BI (Sì se danni indiretti)
+
+4. TEMPISTICHE IMPORTANTI (alert-box alert-medium)
+   - Denuncia sinistro: [TERMINE] dalla conoscenza
+   - Denuncia furto: 24-48 ore
+   - Conservazione beni: fino ad autorizzazione perito
+   - Prescrizione: 2 anni dalla data sinistro
+
+5. CONSIGLIO PRATICO (edu-card)
+   Suggerire la nomina del perito di parte per sinistri importanti.
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE GENERALI DI COMPILAZIONE
+═══════════════════════════════════════════════════════════════════════════════
+
+FORMATTAZIONE VALORI:
+- Formato europeo: punto per migliaia, virgola per decimali
+- Simbolo € prima del numero
+- Es: € 1.500.000,00
+
+CLASSI CSS DA USARE:
+- info-grid / info-item: per dati anagrafici
+- alert-box + alert-high/medium/low/info: per segnalazioni
+- clause-card: per garanzie
+- example-card: per scenari
+- edu-card: per spiegazioni didattiche
+- location-block: per sedi
+- risk-card: per analisi Cat-Nat
+- procedure-timeline / procedure-step: per procedura
+
+BADGE:
+- tag-fire: garanzia incendio base
+- tag-theft: furto
+- tag-nat: eventi naturali/atmosferici
+- tag-bi: business interruption
+- tag-ok: stato positivo / coperto
+- tag-warn: attenzione
+- risk-low/risk-med/risk-high: livelli rischio Cat-Nat
+
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLIST FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Prima di consegnare il report, verifica:
+
+□ TAB 1 - SINTESI
+  □ Tutti i dati anagrafici compilati
+  □ Tabella valori aggregata per categoria (non per sede)
+  □ Punti di attenzione evidenziati
+
+□ TAB 2 - BENI
+  □ Mappa con coordinate corrette (via, non città)
+  □ Un blocco per OGNI sede (non accorpare)
+  □ Dettaglio partite per sede
+
+□ TAB 3 - CAT-NAT
+  □ Una risk-card per ogni ubicazione
+  □ Classificazione sismica corretta
+  □ Tabella coperture catastrofali
+  □ Gap di copertura segnalati
+
+□ TAB 4 - GARANZIE
+  □ Garanzia base + tutte le estensioni
+  □ Business Interruption con periodo e franchigia temporale
+  □ Spese accessorie elencate
+  □ Esclusioni principali (max 10-12)
+
+□ TAB 5 - SINISTRI
+  □ Grafico con anni corretti (competenza per premi)
+  □ KPI sinistralità
+  □ Dettaglio sinistri o messaggio "nessun sinistro"
+  □ Storico premi
+
+□ TAB 6 - ESEMPI
+  □ 5 scenari completi
+  □ Per ogni scenario: coperto + non coperto
+  □ Calcolo pratico indennizzo
+
+□ TAB 7 - PROCEDURA
+  □ Contatti broker/compagnia
+  □ Timeline 6 step
+  □ Documenti da preparare
+  □ Tempistiche
+
+□ JAVASCRIPT
+  □ Dati grafico (years, premiums, claims)
+  □ Dati mappa (locationsData con coordinate)
+
+═══════════════════════════════════════════════════════════════════════════════
