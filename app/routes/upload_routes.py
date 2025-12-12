@@ -1,82 +1,196 @@
 import os
 import uuid
-import shutil
 from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile, File, Form, Depends, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List, Optional
 from ..database import get_db
 from .. import models, ocr, llm_client
 from ..config import settings
-from typing import List
-import magic  # python-magic
+import magic
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
-@router.get("/upload", response_class=HTMLResponse)
-async def upload_page(request: Request):
-    return templates.TemplateResponse("upload.html", {"request": request, "user": request.session.get("user")})
+# Response Models
+class DocumentResponse(BaseModel):
+    id: int
+    filename: str
+    ramo: str
+    ocr_method: Optional[str]
+    token_count: int
+    uploaded_at: datetime
+    status: str  # "processing" | "ready" | "error"
 
-@router.post("/upload")
-async def handle_upload(
+    class Config:
+        from_attributes = True
+
+class DocumentTextResponse(BaseModel):
+    id: int
+    filename: str
+    text: str
+    token_count: int
+
+class UploadResponse(BaseModel):
+    status: str
+    document_ids: List[int]
+    message: str
+
+# Routes
+
+@router.get("/", response_model=List[DocumentResponse])
+async def list_documents(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """List all documents for the current user"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    documents = db.query(models.Document).filter(
+        models.Document.user_id == user_data["id"]
+    ).order_by(models.Document.uploaded_at.desc()).all()
+    
+    result = []
+    for doc in documents:
+        # Determine status
+        if doc.ocr_method == "processing":
+            status = "processing"
+        elif doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+            status = "ready"
+        else:
+            status = "error"
+        
+        result.append(DocumentResponse(
+            id=doc.id,
+            filename=doc.original_filename,
+            ramo=doc.ramo,
+            ocr_method=doc.ocr_method,
+            token_count=doc.token_count or 0,
+            uploaded_at=doc.uploaded_at,
+            status=status
+        ))
+    
+    return result
+
+@router.get("/{document_id}", response_model=DocumentResponse)
+async def get_document(
+    request: Request,
+    document_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get a specific document by ID"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    doc = db.query(models.Document).filter(
+        models.Document.id == document_id,
+        models.Document.user_id == user_data["id"]
+    ).first()
+    
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Determine status
+    if doc.ocr_method == "processing":
+        status = "processing"
+    elif doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+        status = "ready"
+    else:
+        status = "error"
+    
+    return DocumentResponse(
+        id=doc.id,
+        filename=doc.original_filename,
+        ramo=doc.ramo,
+        ocr_method=doc.ocr_method,
+        token_count=doc.token_count or 0,
+        uploaded_at=doc.uploaded_at,
+        status=status
+    )
+
+@router.get("/{document_id}/text", response_model=DocumentTextResponse)
+async def get_document_text(
+    request: Request,
+    document_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get the extracted text of a document"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    doc = db.query(models.Document).filter(
+        models.Document.id == document_id,
+        models.Document.user_id == user_data["id"]
+    ).first()
+    
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    if not doc.extracted_text_path or not os.path.exists(doc.extracted_text_path):
+        raise HTTPException(status_code=404, detail="Text not yet extracted")
+    
+    with open(doc.extracted_text_path, "r", encoding="utf-8") as f:
+        text = f.read()
+    
+    return DocumentTextResponse(
+        id=doc.id,
+        filename=doc.original_filename,
+        text=text,
+        token_count=doc.token_count or 0
+    )
+
+@router.post("/upload", response_model=UploadResponse)
+async def upload_documents(
     request: Request,
     background_tasks: BackgroundTasks,
     files: List[UploadFile] = File(...),
     ramo: str = Form("rc_generale"),
     db: Session = Depends(get_db)
 ):
+    """Upload one or more PDF documents"""
     user_data = request.session.get("user")
     if not user_data:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
-    print(f"DEBUG: Processing {len(files)} files")
     processed_docs = []
     
     for file in files:
-        print(f"DEBUG: Processing file {file.filename}")
-        # Validate file size
-        # UploadFile in FastAPI (Starlette) exposes async methods.
-        # But 'file.file' is a SpooledTemporaryFile (sync).
-        # We should use 'await file.read()' methods preferably.
-        # To check size without reading all, we might rely on content-length header or read.
-        # Let's trust content-length or just check size after save? 
-        # Actually file.size is not available directly.
-        # Let's skip seek/tell for now to avoid sync blocking issues if spooled to disk.
-        # Better: Read chunks and count size during save? 
-        # For MVP simplicity with 'await file.read' above, we are safe.
-        # Let's remove the sync seek/tell block.
-        
-        # Validate MIME type (Read small chunk)
+        # Validate MIME type
         await file.seek(0)
         header = await file.read(2048)
         mime = magic.from_buffer(header, mime=True)
         await file.seek(0)
         
         if mime != "application/pdf" and not mime.startswith("image/"):
-            print(f"Skipping unsupported file: {mime}")
             continue
-            
-        # Save file asynchronously
+        
+        # Save file
         file_id = str(uuid.uuid4())
         ext = os.path.splitext(file.filename)[1]
         stored_filename = f"{file_id}{ext}"
         upload_path = os.path.join("uploads", stored_filename)
         
-        # Async write to avoid blocking event loop
+        # Ensure uploads directory exists
+        os.makedirs("uploads", exist_ok=True)
+        
+        # Async write
         with open(upload_path, "wb") as buffer:
-            while content := await file.read(1024 * 1024): # 1MB chunks
-                 buffer.write(content)
-            
-        # Create DB record immediately (OCR pending)
+            while content := await file.read(1024 * 1024):
+                buffer.write(content)
+        
+        # Create DB record
         document = models.Document(
             user_id=user_data["id"],
             original_filename=file.filename,
             stored_filename=stored_filename,
             ramo=ramo,
-            ocr_method="processing", # temp status
-            extracted_text_path=None # pending
+            ocr_method="processing",
+            extracted_text_path=None
         )
         db.add(document)
         db.commit()
@@ -87,54 +201,87 @@ async def handle_upload(
         background_tasks.add_task(process_ocr_background, document.id, upload_path, mime)
     
     if not processed_docs:
-        raise HTTPException(status_code=400, detail="No valid files processed")
+        raise HTTPException(status_code=400, detail="No valid PDF files uploaded")
     
-    return JSONResponse({
-        "status": "success",
-        "document_ids": processed_docs,
-        "document_id": processed_docs[0] if processed_docs else None,
-        "message": f"{len(processed_docs)} files uploading. OCR in background."
-    })
+    return UploadResponse(
+        status="success",
+        document_ids=processed_docs,
+        message=f"{len(processed_docs)} file(s) uploaded. OCR processing in background."
+    )
 
+@router.delete("/{document_id}")
+async def delete_document(
+    request: Request,
+    document_id: int,
+    db: Session = Depends(get_db)
+):
+    """Delete a document"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    doc = db.query(models.Document).filter(
+        models.Document.id == document_id,
+        models.Document.user_id == user_data["id"]
+    ).first()
+    
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Delete files
+    if doc.stored_filename:
+        upload_path = os.path.join("uploads", doc.stored_filename)
+        if os.path.exists(upload_path):
+            os.remove(upload_path)
+    
+    if doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+        os.remove(doc.extracted_text_path)
+    
+    db.delete(doc)
+    db.commit()
+    
+    return {"message": "Document deleted successfully"}
+
+
+# Background task (unchanged logic)
 def process_ocr_background(document_id: int, file_path: str, mime_type: str):
     from ..database import SessionLocal
     
-    # 1. Verify existence (Quick Read)
     db = SessionLocal()
     try:
         doc = db.query(models.Document).filter(models.Document.id == document_id).first()
         if not doc:
             return
-        # Store necessary info locally
         original_filename = doc.original_filename
-        # We don't need to keep session open
     finally:
         db.close()
 
-    # 2. Process OCR (Long running, NO DB LOCK)
+    # Process OCR
     try:
         text, method = ocr.process_document(file_path, mime_type)
     except Exception as e:
         print(f"OCR Failed for {document_id}: {e}")
-        return 
+        return
     
-    # Save text to file (IO)
+    # Save text to file
     try:
+        os.makedirs("outputs", exist_ok=True)
         file_id = os.path.splitext(os.path.basename(file_path))[0]
         txt_filename = f"{file_id}.txt"
         txt_path = os.path.join("outputs", txt_filename)
+        
         with open(txt_path, "w", encoding="utf-8") as f:
             f.write(text)
-            
-        # Count tokens (API Call)
+        
+        # Count tokens
         tokens = 0
         try:
             client = llm_client.LLMClient()
             tokens = client.count_tokens(text)
         except:
             pass
-            
-        # 3. Update DB (Quick Write)
+        
+        # Update DB
         db = SessionLocal()
         try:
             doc = db.query(models.Document).filter(models.Document.id == document_id).first()

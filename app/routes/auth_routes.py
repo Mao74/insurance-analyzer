@@ -1,67 +1,74 @@
-from fastapi import APIRouter, Request, Form, Depends, HTTPException, status
-from fastapi.responses import RedirectResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import Optional
 from ..database import get_db
 from .. import models, auth
-from ..config import settings
-from typing import Optional
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
-@router.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    user = request.session.get("user")
-    if user:
-        return RedirectResponse(url="/dashboard", status_code=303)
-    return RedirectResponse(url="/login", status_code=303)
+# Request/Response Models
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
-@router.get("/login", response_class=HTMLResponse)
-async def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+class LoginResponse(BaseModel):
+    user_id: int
+    username: str
+    message: str
 
-@router.post("/login", response_class=HTMLResponse)
+class UserResponse(BaseModel):
+    user_id: int
+    username: str
+
+class MessageResponse(BaseModel):
+    message: str
+
+# Routes
+
+@router.post("/login", response_model=LoginResponse)
 async def login(
     request: Request,
-    username: str = Form(...),
-    password: str = Form(...),
+    credentials: LoginRequest,
     db: Session = Depends(get_db)
 ):
-    user = db.query(models.User).filter(models.User.username == username).first()
-    if not user or not auth.verify_password(password, user.password_hash):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Credenziali non valide"})
+    """Authenticate user and create session"""
+    user = db.query(models.User).filter(models.User.username == credentials.username).first()
     
-    # Set session
+    if not user or not auth.verify_password(credentials.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+    
+    # Set session cookie
     request.session["user"] = {"id": user.id, "username": user.username}
-    return RedirectResponse(url="/dashboard", status_code=303)
-
-@router.get("/logout")
-async def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse(url="/login", status_code=303)
-
-@router.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request, db: Session = Depends(get_db)):
-    user_data = request.session.get("user")
-    if not user_data:
-        return RedirectResponse(url="/login", status_code=303)
     
-    # Get Saved Analyses (Archived)
-    saved_analyses = db.query(models.Analysis).join(models.Document).\
-        filter(models.Document.user_id == user_data["id"]).\
-        filter(models.Analysis.is_saved == True).\
-        order_by(models.Analysis.last_updated.desc()).all()
+    return LoginResponse(
+        user_id=user.id,
+        username=user.username,
+        message="Login successful"
+    )
 
-    # Get Recent Analyses (Not Saved, last 10)
-    recent_analyses = db.query(models.Analysis).join(models.Document).\
-        filter(models.Document.user_id == user_data["id"]).\
-        filter(models.Analysis.is_saved == False).\
-        order_by(models.Analysis.created_at.desc()).limit(10).all()
-        
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request, 
-        "user": user_data,
-        "saved_analyses": saved_analyses,
-        "analyses": recent_analyses # Keep key 'analyses' for recent to minimize template breakage initially
-    })
+@router.post("/logout", response_model=MessageResponse)
+async def logout(request: Request):
+    """Clear session and logout user"""
+    request.session.clear()
+    return MessageResponse(message="Logout successful")
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user(request: Request):
+    """Get current authenticated user info"""
+    user_data = request.session.get("user")
+    
+    if not user_data:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+    
+    return UserResponse(
+        user_id=user_data["id"],
+        username=user_data["username"]
+    )

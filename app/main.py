@@ -1,57 +1,86 @@
-
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse
 from .config import settings
 from .database import engine, Base, init_db
 from .routes import auth_routes, upload_routes, analysis_routes
 import uvicorn
 
-# Initialize tables
-# Base.metadata.create_all(bind=engine) # moved to init_db command but good to have safety?
-# Let's rely on init_db() called manually or on startup.
-# We will call it on startup event for MVP simplicity.
+app = FastAPI(title="PoliSight API", version="2.0.0")
 
-app = FastAPI(title="PoliSight")
+# CORS Configuration
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+    "https://app.insurance-lab.ai",
+    "https://*.insurance-lab.ai",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Auth Middleware to protect routes
-@app.middleware("http")
-async def auth_middleware(request: Request, call_next):
-    # Public routes
-    public_routes = ["/login", "/static", "/docs", "/openapi.json"]
-    
-    path = request.url.path
-    if path == "/" or any(path.startswith(p) for p in public_routes):
-        response = await call_next(request)
-        return response
-        
-    # Check session
-    user = request.session.get("user")
-    if not user:
-        return RedirectResponse(url="/login")
-        
-    response = await call_next(request)
-    return response
-
-# Middleware (Session must be added LAST to be OUTERMOST/FIRST executed)
+# Session Middleware (must be added LAST to be executed FIRST)
 app.add_middleware(
     SessionMiddleware, 
     secret_key=settings.SECRET_KEY, 
     max_age=settings.SESSION_TIMEOUT_HOURS * 3600,
-    https_only=False, # Set True in production with SSL
-    same_site="strict"
+    https_only=False,  # Set True in production with SSL
+    same_site="lax"  # Changed from strict for cross-origin
 )
 
-# Include routers
-app.include_router(auth_routes.router)
-app.include_router(upload_routes.router)
-app.include_router(analysis_routes.router)
+# Static files (for uploaded files access if needed)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Health check endpoint
+@app.get("/api/health")
+async def health_check():
+    return {"status": "healthy", "version": "2.0.0", "message": "PoliSight API is running"}
+
+# Auth Middleware to protect API routes
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    # Public routes that don't require authentication
+    public_paths = [
+        "/api/health",
+        "/api/auth/login",
+        "/static",
+        "/docs",
+        "/openapi.json",
+        "/redoc"
+    ]
+    
+    path = request.url.path
+    
+    # Allow public paths
+    if any(path.startswith(p) for p in public_paths):
+        response = await call_next(request)
+        return response
+    
+    # Check session for protected routes
+    if path.startswith("/api/"):
+        user = request.session.get("user")
+        if not user:
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "Not authenticated"}
+            )
+    
+    response = await call_next(request)
+    return response
+
+# Include routers with /api prefix
+app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(upload_routes.router, prefix="/api/documents", tags=["Documents"])
+app.include_router(analysis_routes.router, prefix="/api/analysis", tags=["Analysis"])
 
 @app.on_event("startup")
 def on_startup():
