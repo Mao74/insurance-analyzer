@@ -14,9 +14,13 @@ app = FastAPI(title="PoliSight API", version="2.0.0")
 # CORS Configuration - MUST be added first (will be outermost)
 origins = [
     "http://localhost:3000",
+    "http://localhost:5173",  # Vite dev server
+    "http://localhost:5174",  # Vite alternate port
     "http://localhost:8000",
     "http://localhost:8001",
     "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8001",
     "https://app.insurance-lab.ai",
@@ -86,7 +90,7 @@ app.add_middleware(
     secret_key=settings.SECRET_KEY, 
     max_age=settings.SESSION_TIMEOUT_HOURS * 3600,
     https_only=False,  # Set True in production with SSL
-    same_site="lax"  # Changed from strict for cross-origin
+    same_site="lax"    # Revert to lax now that we use proxy (Same-Origin)
 )
 
 # Static files (for uploaded files access if needed)

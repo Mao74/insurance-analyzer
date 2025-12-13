@@ -16,12 +16,34 @@ router = APIRouter()
 # Request/Response Models
 
 class MaskingData(BaseModel):
+    # Accept both English (from new React frontend) and Italian field names
     numero_polizza: Optional[str] = ""
     contraente: Optional[str] = ""
     partita_iva: Optional[str] = ""
     codice_fiscale: Optional[str] = ""
     assicurato: Optional[str] = ""
     altri: Optional[str] = ""
+    
+    # Aliases to accept English field names from React frontend
+    policyNumber: Optional[str] = None
+    contractor: Optional[str] = None
+    vat: Optional[str] = None
+    fiscalCode: Optional[str] = None
+    insured: Optional[str] = None
+    other: Optional[str] = None
+    
+    def get_numero_polizza(self):
+        return self.policyNumber or self.numero_polizza or ""
+    def get_contraente(self):
+        return self.contractor or self.contraente or ""
+    def get_partita_iva(self):
+        return self.vat or self.partita_iva or ""
+    def get_codice_fiscale(self):
+        return self.fiscalCode or self.codice_fiscale or ""
+    def get_assicurato(self):
+        return self.insured or self.assicurato or ""
+    def get_altri(self):
+        return self.other or self.altri or ""
 
 class StartAnalysisRequest(BaseModel):
     document_ids: List[int]
@@ -39,6 +61,7 @@ class AnalysisResponse(BaseModel):
     created_at: datetime
     completed_at: Optional[datetime] = None
     report_html: Optional[str] = None
+    report_html_masked: Optional[str] = None  # CRITICAL: Was missing!
     error: Optional[str] = None
 
 class AnalysisListItem(BaseModel):
@@ -144,16 +167,18 @@ async def start_analysis(
     db.commit()
     db.refresh(analysis)
     
-    # Prepare masking data
+    # Prepare masking data (use getters to handle both EN/IT field names)
     sensitive_data = {}
     if payload.masking_data:
+        md = payload.masking_data
+        altri_raw = md.get_altri()
         sensitive_data = {
-            'numero_polizza': payload.masking_data.numero_polizza or '',
-            'contraente': payload.masking_data.contraente or '',
-            'partita_iva': payload.masking_data.partita_iva or '',
-            'codice_fiscale': payload.masking_data.codice_fiscale or '',
-            'assicurato': payload.masking_data.assicurato or '',
-            'altri': [x.strip() for x in (payload.masking_data.altri or '').split('\n') if x.strip()]
+            'numero_polizza': md.get_numero_polizza(),
+            'contraente': md.get_contraente(),
+            'partita_iva': md.get_partita_iva(),
+            'codice_fiscale': md.get_codice_fiscale(),
+            'assicurato': md.get_assicurato(),
+            'altri': [x.strip() for x in altri_raw.split('\n') if x.strip()] if altri_raw else []
         }
     
     # Run analysis in background
@@ -203,6 +228,7 @@ async def get_analysis(
         created_at=analysis.created_at,
         completed_at=analysis.completed_at,
         report_html=analysis.report_html_display,
+        report_html_masked=analysis.report_html_masked,
         error=analysis.error_message
     )
 
@@ -230,13 +256,14 @@ async def get_analysis_html(
         media_type="text/html"
     )
 
-@router.get("/{analysis_id}/pdf")
-def download_analysis_pdf(
+@router.get("/{analysis_id}/download-html")
+def download_analysis_html(
     request: Request,
     analysis_id: int,
+    type: str = "clear",  # "clear" or "masked"
     db: Session = Depends(get_db)
 ):
-    """Generate and download PDF report"""
+    """Download HTML report as file (clear or masked version)"""
     user_data = request.session.get("user")
     if not user_data:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -246,15 +273,62 @@ def download_analysis_pdf(
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found")
     
-    html_content = analysis.report_html_display or analysis.report_html_masked
+    # Select HTML content based on type
+    if type == "masked":
+        html_content = analysis.report_html_masked
+        suffix = "_mascherato"
+    else:
+        html_content = analysis.report_html_display
+        suffix = "_chiaro"
+    
     if not html_content:
         raise HTTPException(status_code=404, detail="Report content not ready")
     
     # Generate filename
-    filename = f"PoliSight_Report_{analysis_id}.pdf"
+    filename = f"PoliSight_Report_{analysis_id}{suffix}.html"
     if analysis.title:
         safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
-        filename = f"{safe_title}.pdf"
+        filename = f"{safe_title}{suffix}.html"
+    
+    return Response(
+        content=html_content,
+        media_type="text/html",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@router.get("/{analysis_id}/pdf")
+def download_analysis_pdf(
+    request: Request,
+    analysis_id: int,
+    type: str = "clear",  # "clear" or "masked"
+    db: Session = Depends(get_db)
+):
+    """Generate and download PDF report (clear or masked version)"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+    
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    # Select HTML content based on type
+    if type == "masked":
+        html_content = analysis.report_html_masked
+        suffix = "_mascherato"
+    else:
+        html_content = analysis.report_html_display
+        suffix = "_chiaro"
+    
+    if not html_content:
+        raise HTTPException(status_code=404, detail="Report content not ready")
+    
+    # Generate filename (include suffix for clear/masked)
+    filename = f"PoliSight_Report_{analysis_id}{suffix}.pdf"
+    if analysis.title:
+        safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
+        filename = f"{safe_title}{suffix}.pdf"
     
     base_url = str(request.base_url)
     
@@ -301,10 +375,14 @@ def download_analysis_pdf(
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+class UpdateAnalysisContentRequest(BaseModel):
+    html_content: str
+
 @router.post("/{analysis_id}/content")
 async def update_analysis_content(
     request: Request,
     analysis_id: int,
+    payload: UpdateAnalysisContentRequest,
     db: Session = Depends(get_db)
 ):
     """Update report HTML content (for user edits)"""
@@ -317,14 +395,11 @@ async def update_analysis_content(
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found")
     
-    # Read raw HTML from request body
-    body = await request.body()
-    new_html = body.decode("utf-8")
-    
-    if not new_html or len(new_html) < 100:
+    # Check if html_content is valid
+    if not payload.html_content or len(payload.html_content) < 100:
         raise HTTPException(status_code=400, detail="Invalid HTML content")
     
-    analysis.report_html_display = new_html
+    analysis.report_html_display = payload.html_content
     analysis.last_updated = datetime.utcnow()
     db.commit()
     

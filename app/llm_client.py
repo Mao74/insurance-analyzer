@@ -110,19 +110,29 @@ TEMPLATE HTML DA COMPILARE (riempi i placeholder):
         return report_masked, report_display
     
     def _strip_markdown_wrappers(self, text: str) -> str:
-        """Remove markdown code block wrappers from LLM response."""
+        """Remove markdown code block wrappers and any preamble text from LLM response."""
         text = text.strip()
         
-        # Remove ```html ... ``` or ``` ... ```
-        if text.startswith("```"):
-            # Find the end of the first line (language specifier)
-            first_newline = text.find("\n")
-            if first_newline != -1:
-                text = text[first_newline + 1:]
+        # If response contains ```html, extract only the HTML content
+        if "```html" in text:
+            start_idx = text.find("```html")
+            # Find the newline after ```html
+            newline_after = text.find("\n", start_idx)
+            if newline_after != -1:
+                text = text[newline_after + 1:]
             else:
-                text = text[3:]  # Just remove ```
+                text = text[start_idx + 7:]  # len("```html") = 7
+        elif "```" in text:
+            # Generic code block
+            start_idx = text.find("```")
+            newline_after = text.find("\n", start_idx)
+            if newline_after != -1:
+                text = text[newline_after + 1:]
+            else:
+                text = text[start_idx + 3:]
         
-        if text.endswith("```"):
-            text = text[:-3]
+        # Remove ending ```
+        if text.rstrip().endswith("```"):
+            text = text.rstrip()[:-3]
         
         return text.strip()

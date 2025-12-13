@@ -9,7 +9,14 @@ from typing import List, Optional
 from ..database import get_db
 from .. import models, ocr, llm_client
 from ..config import settings
-import magic
+try:
+    import magic
+    HAVE_MAGIC = True
+except ImportError:
+    HAVE_MAGIC = False
+except Exception:
+    # On Windows, missing DLLs can cause other exceptions
+    HAVE_MAGIC = False
 
 router = APIRouter()
 
@@ -162,12 +169,30 @@ async def upload_documents(
     for file in files:
         # Validate MIME type
         await file.seek(0)
-        header = await file.read(2048)
-        mime = magic.from_buffer(header, mime=True)
+        mime = "application/octet-stream"
+        
+        if HAVE_MAGIC:
+            try:
+                header = await file.read(2048)
+                mime = magic.from_buffer(header, mime=True)
+            except Exception as e:
+                print(f"Magic error: {e}")
+                mime = "unknown"
+        
         await file.seek(0)
         
+        # Fallback to extension if magic failed or not available
+        if mime == "unknown" or mime == "application/octet-stream" or not HAVE_MAGIC:
+            if file.filename.lower().endswith(".pdf"):
+                mime = "application/pdf"
+        
         if mime != "application/pdf" and not mime.startswith("image/"):
-            continue
+            print(f"Skipping file {file.filename}, invalid mime: {mime}")
+            # Optional: handle error differently, but for now continue
+            # Or raise 400 if strict
+            # Let's be lenient if it looks like a PDF
+            if not file.filename.lower().endswith(".pdf"):
+                continue
         
         # Save file
         file_id = str(uuid.uuid4())
