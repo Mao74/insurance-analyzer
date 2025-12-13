@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 from .config import settings
 from .database import engine, Base, init_db
@@ -10,7 +11,7 @@ import uvicorn
 
 app = FastAPI(title="PoliSight API", version="2.0.0")
 
-# CORS Configuration
+# CORS Configuration - MUST be added first (will be outermost)
 origins = [
     "http://localhost:3000",
     "http://localhost:8000",
@@ -28,7 +29,56 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Session Middleware (must be added LAST to be executed FIRST)
+
+# Custom Auth Middleware Class (to control execution order)
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Public routes that don't require authentication
+        public_paths = [
+            "/api/health",
+            "/api/auth/login",
+            "/static",
+            "/docs",
+            "/openapi.json",
+            "/redoc"
+        ]
+        
+        path = request.url.path
+        method = request.method
+        
+        # Allow OPTIONS requests (CORS preflight)
+        if method == "OPTIONS":
+            response = await call_next(request)
+            return response
+        
+        # Allow public paths
+        if any(path.startswith(p) for p in public_paths):
+            response = await call_next(request)
+            return response
+        
+        # Check session for protected /api/ routes
+        if path.startswith("/api/"):
+            user = request.session.get("user")
+            if not user:
+                return JSONResponse(
+                    status_code=401,
+                    content={"detail": "Not authenticated"}
+                )
+        
+        response = await call_next(request)
+        return response
+
+
+# MIDDLEWARE ORDER IS CRITICAL!
+# They execute in REVERSE order of addition:
+# 1. SessionMiddleware (added LAST, runs FIRST - sets up session)
+# 2. AuthMiddleware (added second-to-last, runs after session is available)
+# 3. CORSMiddleware (added first, runs last - handles CORS headers)
+
+# Add AuthMiddleware
+app.add_middleware(AuthMiddleware)
+
+# Session Middleware - MUST be added LAST to run FIRST
 app.add_middleware(
     SessionMiddleware, 
     secret_key=settings.SECRET_KEY, 
@@ -44,38 +94,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "version": "2.0.0", "message": "PoliSight API is running"}
-
-# Auth Middleware to protect API routes
-@app.middleware("http")
-async def auth_middleware(request: Request, call_next):
-    # Public routes that don't require authentication
-    public_paths = [
-        "/api/health",
-        "/api/auth/login",
-        "/static",
-        "/docs",
-        "/openapi.json",
-        "/redoc"
-    ]
-    
-    path = request.url.path
-    
-    # Allow public paths
-    if any(path.startswith(p) for p in public_paths):
-        response = await call_next(request)
-        return response
-    
-    # Check session for protected routes
-    if path.startswith("/api/"):
-        user = request.session.get("user")
-        if not user:
-            return JSONResponse(
-                status_code=401,
-                content={"detail": "Not authenticated"}
-            )
-    
-    response = await call_next(request)
-    return response
 
 # Include routers with /api prefix
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
