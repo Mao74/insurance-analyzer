@@ -15,8 +15,10 @@ app = FastAPI(title="PoliSight API", version="2.0.0")
 origins = [
     "http://localhost:3000",
     "http://localhost:8000",
+    "http://localhost:8001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:8000",
+    "http://127.0.0.1:8001",
     "https://app.insurance-lab.ai",
     "https://*.insurance-lab.ai",
 ]
