@@ -405,11 +405,14 @@ async def update_analysis_content(
     
     return {"status": "success", "message": "Report updated"}
 
+class SaveRequest(BaseModel):
+    title: Optional[str] = None
+
 @router.post("/{analysis_id}/save")
 async def save_analysis(
     request: Request,
     analysis_id: int,
-    title: Optional[str] = None,
+    payload: SaveRequest,
     db: Session = Depends(get_db)
 ):
     """Mark analysis as saved (archive)"""
@@ -423,8 +426,8 @@ async def save_analysis(
         raise HTTPException(status_code=404, detail="Analysis not found")
     
     analysis.is_saved = True
-    if title:
-        analysis.title = title
+    if payload.title:
+        analysis.title = payload.title
     analysis.last_updated = datetime.utcnow()
     db.commit()
     
@@ -525,18 +528,24 @@ def full_analysis_pipeline(
         if not safe_policy_type:
             safe_policy_type = "rc_generale"
         
-        prompt_path = f"prompts/{safe_policy_type}/{analysis_level}.txt"
+        # Se livello è "sinistro", usa cartella sinistri_{policy_type}
+        if analysis_level == "sinistro":
+            prompt_folder = f"sinistri_{safe_policy_type}"
+        else:
+            prompt_folder = safe_policy_type
+        
+        prompt_path = f"prompts/{prompt_folder}/{analysis_level}.txt"
         if not os.path.exists(prompt_path):
-            prompt_path = f"prompts/{safe_policy_type}/base.txt"
+            prompt_path = f"prompts/{prompt_folder}/base.txt"
         
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
         
-        template_path = f"prompts/{safe_policy_type}/template_{analysis_level}.html"
+        template_path = f"prompts/{prompt_folder}/template_{analysis_level}.html"
         if not os.path.exists(template_path):
-            template_path = f"prompts/{safe_policy_type}/template.html"
+            template_path = f"prompts/{prompt_folder}/template.html"
             if not os.path.exists(template_path):
-                template_path = f"prompts/{safe_policy_type}/Template.html"
+                template_path = f"prompts/{prompt_folder}/Template.html"
         
         print(f"DEBUG: Using prompt: {prompt_path}")
         print(f"DEBUG: Using template: {template_path}")

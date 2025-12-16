@@ -1,0 +1,3931 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Sinistro TRASPORTI - Report</title>
+    <style>
+        /* ===== RESET E BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .header-info {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .header-info-item {
+            text-align: center;
+        }
+        
+        .header-info-item .label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .header-info-item .value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        /* ===== NAVIGATION TABS ===== */
+        .tabs-nav {
+            background-color: #1565c0;
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 3px solid #0d47a1;
+        }
+        
+        .tab-button {
+            background-color: transparent;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+        
+        .tab-button:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .tab-button.active {
+            background-color: white;
+            color: #0d47a1;
+            border-bottom-color: #0d47a1;
+            font-weight: 600;
+        }
+        
+        /* ===== TAB CONTENT ===== */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0d47a1;
+            font-weight: 600;
+        }
+        
+        .subsection {
+            margin-bottom: 30px;
+        }
+        
+        .subsection-title {
+            font-size: 18px;
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        /* ===== ALERT BOXES ===== */
+        .alert-box {
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        
+        .alert-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        /* ===== TABLES ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background-color: #0d47a1;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table-striped tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        /* ===== INFO BOXES ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .info-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1565c0;
+        }
+        
+        .info-box .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .info-box .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .badge-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #0d47a1;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        /* ===== LISTS ===== */
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .font-weight-bold {
+            font-weight: 600;
+        }
+        
+        /* ===== COUNTDOWN / DEADLINE ===== */
+        .countdown-box {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .countdown-box.warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #333;
+        }
+        
+        .countdown-box.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .countdown-box .label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .countdown-box .value {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .countdown-box .description {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* ===== ROUTE DISPLAY ===== */
+        .route-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            border-radius: 8px;
+        }
+        
+        .route-point {
+            text-align: center;
+            flex: 0 0 200px;
+        }
+        
+        .route-point .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .route-point .value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        
+        .route-arrow {
+            font-size: 36px;
+            color: #1565c0;
+            flex: 0 0 50px;
+            text-align: center;
+        }
+        
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .tabs-nav {
+                display: none;
+            }
+            
+            .btn {
+                display: none;
+            }
+            
+            .tab-content {
+                display: block !important;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .header-info {
+                gap: 20px;
+            }
+            
+            .tab-content {
+                padding: 15px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .route-display {
+                flex-direction: column;
+            }
+            
+            .route-arrow {
+                transform: rotate(90deg);
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🚢 ANALISI SINISTRO TRASPORTI - REPORT TECNICO</h1>
+            <div class="subtitle">Analisi PhD+ - Livello Professionale Avanzato</div>
+            
+            <div class="header-info">
+                <div class="header-info-item">
+                    <div class="label">Numero Sinistro</div>
+                    <div class="value">XXXX/2025</div>
+                </div>
+                <div class="header-info-item">
+                    <div class="label">Data Evento</div>
+                    <div class="value">gg/mm/aaaa</div>
+                </div>
+                <div class="header-info-item">
+                    <div class="label">Importo Richiesto</div>
+                    <div class="value">€ XX.XXX,XX</div>
+                </div>
+                <div class="header-info-item">
+                    <div class="label">Tipo Trasporto</div>
+                    <div class="value">STRADA / AEREO / MARE / FERROVIA</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- NAVIGATION TABS -->
+        <div class="tabs-nav">
+            <button class="tab-button active" onclick="openTab(event, 'tab1')">📊 Sintesi Esecutiva</button>
+            <button class="tab-button" onclick="openTab(event, 'tab2')">📁 Documenti</button>
+            <button class="tab-button" onclick="openTab(event, 'tab3')">📜 Polizza</button>
+            <button class="tab-button" onclick="openTab(event, 'tab4')">⚖️ Responsabilità</button>
+            <button class="tab-button" onclick="openTab(event, 'tab5')">💰 Quantificazione</button>
+            <button class="tab-button" onclick="openTab(event, 'tab6')">🧮 Indennizzo</button>
+            <button class="tab-button" onclick="openTab(event, 'tab7')">📈 Riserva</button>
+            <button class="tab-button" onclick="openTab(event, 'tab8')">🎯 Strategia</button>
+            <button class="tab-button" onclick="openTab(event, 'tab9')">⚠️ Alert</button>
+            <button class="tab-button" onclick="openTab(event, 'tab10')">📚 Riferimenti</button>
+        </div>
+        
+        <!-- TAB 1: SINTESI ESECUTIVA -->
+        <div id="tab1" class="tab-content active">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Sintesi Esecutiva</button>
+            
+            <h2 class="section-title">📊 SINTESI ESECUTIVA</h2>
+            
+            <!-- Overview Sinistro -->
+            <div class="section">
+                <h3 class="subsection-title">Overview Sinistro</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Numero Sinistro</div>
+                        <div class="value">XXXX/2025</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Numero Polizza</div>
+                        <div class="value">YYYY/2024</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Data Evento</div>
+                        <div class="value">gg/mm/aaaa</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Tipo Trasporto</div>
+                        <div class="value">STRADA / AEREO / MARE / FERROVIA / INTERMODALE</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Tipologia Evento</div>
+                        <div class="value">INCIDENTE / FURTO / DANNO MERCE / AVARIA COMUNE / ALTRO</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Stato Istruttoria</div>
+                        <div class="value"><span class="badge badge-warning">IN CORSO</span></div>
+                    </div>
+                </div>
+                
+                <!-- Itinerario -->
+                <div class="route-display">
+                    <div class="route-point">
+                        <div class="label">Origine</div>
+                        <div class="value">Città, Paese</div>
+                    </div>
+                    <div class="route-arrow">→</div>
+                    <div class="route-point">
+                        <div class="label">Destinazione</div>
+                        <div class="value">Città, Paese</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Operatività Garanzie - VERDETTO -->
+            <div class="section">
+                <h3 class="subsection-title">Operatività Garanzie - Verdetto</h3>
+                
+                <div class="alert-box alert-success">
+                    <strong>✅ OPERATIVA</strong>
+                    La garanzia risulta pienamente operante. Il sinistro rientra nei rischi coperti dalla polizza. Non sono applicabili esclusioni. [OPPURE altra valutazione: ⚠️ OPERATIVA CON RISERVA / ❌ NON OPERATIVA / 🔍 DA APPROFONDIRE]
+                </div>
+                
+                <p><strong>Motivazione:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Valutazione Danno -->
+            <div class="section">
+                <h3 class="subsection-title">Valutazione Danno</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th style="text-align: right;">Importo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Danno Lordo Richiesto</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Danno Riconosciuto</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Deduzioni (franchigie/scoperti)</td>
+                            <td style="text-align: right;">- € X.XXX,XX</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Indennizzo Netto</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Recuperi Previsti (da vettore/terzi)</td>
+                            <td style="text-align: right;">- € X.XXX,XX</td>
+                        </tr>
+                        <tr style="background-color: #d4edda;">
+                            <td><strong>Indennizzo Netto a Carico Assicuratore</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Riserva Raccomandata -->
+            <div class="section">
+                <h3 class="subsection-title">Riserva Raccomandata</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Probabilità</th>
+                            <th style="text-align: right;">Importo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Riserva Minima (Best Case)</td>
+                            <td><span class="badge badge-success">20%</span></td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Riserva Media (Base Case)</td>
+                            <td><span class="badge badge-info">60%</span></td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Riserva Massima (Worst Case)</td>
+                            <td><span class="badge badge-danger">20%</span></td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="alert-box alert-info">
+                    <strong>💡 RISERVA OPERATIVA CONSIGLIATA</strong>
+                    Si raccomanda di stanziare una riserva di: <strong>€ XX.XXX,XX</strong> (livello MEDIA / MIN / MAX)
+                    <br><br>
+                    <strong>Motivazione:</strong> ...
+                </div>
+            </div>
+            
+            <!-- Top 3 Alert Critici -->
+            <div class="section">
+                <h3 class="subsection-title">Top 3 Alert Critici</h3>
+                
+                <div class="alert-box alert-danger">
+                    <strong>🚨 ALERT 1: [Titolo Alert]</strong>
+                    Descrizione dettagliata del primo alert critico (es. prescrizione imminente, riserve consegna mancanti, esclusione contestabile)
+                </div>
+                
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ ALERT 2: [Titolo Alert]</strong>
+                    Descrizione dettagliata del secondo alert
+                </div>
+                
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ ALERT 3: [Titolo Alert]</strong>
+                    Descrizione dettagliata del terzo alert
+                </div>
+            </div>
+            
+            <!-- Top 3 Azioni Immediate -->
+            <div class="section">
+                <h3 class="subsection-title">Top 3 Azioni Immediate</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Azione</th>
+                            <th>Responsabile</th>
+                            <th>Scadenza</th>
+                            <th>Criticità</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>[Azione prioritaria]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>[Seconda azione]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>[Terza azione]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-info">BASSA</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Strategia Raccomandata -->
+            <div class="section">
+                <h3 class="subsection-title">Strategia Raccomandata</h3>
+                
+                <div class="alert-box alert-info">
+                    <strong>🎯 STRATEGIA: [LIQUIDAZIONE / ISTRUTTORIA / NEGOZIAZIONE / DINIEGO / DIFESA]</strong>
+                    <p style="margin-top: 10px;">
+                        <strong>Descrizione:</strong> ...
+                    </p>
+                    <p style="margin-top: 10px;">
+                        <strong>Motivazione:</strong> ...
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Prossimi Step -->
+            <div class="section">
+                <h3 class="subsection-title">Prossimi Step</h3>
+                <ul>
+                    <li>...</li>
+                    <li>...</li>
+                    <li>...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 2: RICOGNIZIONE DOCUMENTALE -->
+        <div id="tab2" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Ricognizione Documentale</button>
+            
+            <h2 class="section-title">📁 RICOGNIZIONE DOCUMENTALE</h2>
+            
+            <!-- Documenti di Polizza -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Polizza</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Identificativo</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Polizza Base</td>
+                            <td>N. YYYY/2024</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Condizioni Generali</td>
+                            <td>Ed. 2024</td>
+                            <td>-</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Institute Cargo Clauses (A/B/C)</td>
+                            <td>ICC 2009</td>
+                            <td>-</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti di Sinistro - Amministrativa -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Sinistro - Categoria Amministrativa</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Data</th>
+                            <th>Mittente/Destinatario</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Denuncia di Sinistro</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>Assicurato</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti di Sinistro - Trasporto -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Sinistro - Categoria Trasporto</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Numero/ID</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CMR / Bill of Lading / AWB / CIM</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Packing List</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>N. colli: XX, Peso: XX kg</td>
+                        </tr>
+                        <tr>
+                            <td>Fattura Commerciale / Invoice</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>Valore: € XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Proof of Delivery / Ricevuta Consegna</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>Riserve: SÌ / NO</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti di Sinistro - Tecnica -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Sinistro - Categoria Tecnica</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Autore/Fornitore</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Foto/Video del Danno</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>N. allegati: XX</td>
+                        </tr>
+                        <tr>
+                            <td>Relazione Peritale (Surveyor)</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Container Survey Report</td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti di Sinistro - Incidentale -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Sinistro - Categoria Incidentale</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Autorità</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti di Sinistro - Giuridica -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti di Sinistro - Categoria Giuridica</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Tribunale/Parte</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Documenti Specifici Vettore -->
+            <div class="section">
+                <h3 class="subsection-title">Documenti Specifici Vettore</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Documento</th>
+                            <th>Vettore</th>
+                            <th>Data</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Contratto di Trasporto</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Polizza RCV del Vettore</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>Massimale: € XXX.XXX</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- GAP Documentali -->
+            <div class="section">
+                <h3 class="subsection-title">GAP Documentali</h3>
+                
+                <div class="alert-box alert-danger">
+                    <strong>⚠️ DOCUMENTI MANCANTI</strong>
+                    I seguenti documenti sono necessari per completare l'analisi:
+                </div>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Documento Mancante</th>
+                            <th>Criticità</th>
+                            <th>Motivo Necessità</th>
+                            <th>Richiesto a</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>...</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Matrice Completezza -->
+            <div class="section">
+                <h3 class="subsection-title">Matrice Completezza Documentazione</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Completezza</th>
+                            <th>Qualità</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Polizza</td>
+                            <td><span class="badge badge-success">COMPLETA</span></td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Documenti Trasporto</td>
+                            <td><span class="badge badge-warning">PARZIALE</span></td>
+                            <td>⭐⭐⭐</td>
+                            <td>Manca: ...</td>
+                        </tr>
+                        <tr>
+                            <td>Perizie Tecniche</td>
+                            <td><span class="badge badge-danger">INSUFFICIENTE</span></td>
+                            <td>⭐⭐</td>
+                            <td>Necessaria perizia completa</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- TAB 3: ANALISI POLIZZA -->
+        <div id="tab3" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Analisi Polizza</button>
+            
+            <h2 class="section-title">📜 ANALISI POLIZZA - OPERATIVITÀ GARANZIE</h2>
+            
+            <!-- Identificazione Tipo Polizza -->
+            <div class="section">
+                <h3 class="subsection-title">A) Identificazione Tipo di Polizza</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Tipo Polizza</div>
+                        <div class="value">CTM / RCV / RCS / ICC A/B/C</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Struttura Copertura</div>
+                        <div class="value">All Risks / Named Perils</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Modalità</div>
+                        <div class="value">Viaggio / Abbonamento / Dichiarazione</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Compagnia</div>
+                        <div class="value">Nome Compagnia</div>
+                    </div>
+                </div>
+                
+                <p><strong>Descrizione:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Operatività Temporale -->
+            <div class="section">
+                <h3 class="subsection-title">B) Verifica Operatività Temporale</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Data/Valore</th>
+                            <th>Esito</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data Inizio Trasporto</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Data Evento Sinistro</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Periodo Copertura Polizza</td>
+                            <td>gg/mm/aaaa - gg/mm/aaaa</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Evento nel periodo</td>
+                        </tr>
+                        <tr>
+                            <td>Warehouse to Warehouse Clause</td>
+                            <td>Applicabile: SÌ / NO</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Transit Clause (60 giorni)</td>
+                            <td>Rispettato: SÌ / NO</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Evento entro 60 giorni da sbarco</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Analisi Dettagliata:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Operatività Territoriale -->
+            <div class="section">
+                <h3 class="subsection-title">C) Verifica Operatività Territoriale</h3>
+                
+                <div class="route-display">
+                    <div class="route-point">
+                        <div class="label">Origine</div>
+                        <div class="value">Città, Paese</div>
+                    </div>
+                    <div class="route-arrow">→</div>
+                    <div class="route-point">
+                        <div class="label">Destinazione</div>
+                        <div class="value">Città, Paese</div>
+                    </div>
+                </div>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Valore</th>
+                            <th>Esito</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Validità Territoriale Polizza</td>
+                            <td>Italia / Europa / Mondiale</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Origine del Trasporto</td>
+                            <td>Città, Paese</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Coperta</td>
+                        </tr>
+                        <tr>
+                            <td>Destinazione del Trasporto</td>
+                            <td>Città, Paese</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Coperta</td>
+                        </tr>
+                        <tr>
+                            <td>Luogo Evento Sinistro</td>
+                            <td>Città, Paese</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Nel territorio coperto</td>
+                        </tr>
+                        <tr>
+                            <td>Deviazione Itinerario</td>
+                            <td>SÌ / NO</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Giustificata / Non applicabile</td>
+                        </tr>
+                        <tr>
+                            <td>Esclusioni Territoriali</td>
+                            <td>Zone guerra, sanzioni</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Nessuna esclusione applicabile</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Analisi Dettagliata:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Operatività Soggettiva -->
+            <div class="section">
+                <h3 class="subsection-title">D) Verifica Soggettiva</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Assicurato</div>
+                        <div class="value">Nome Assicurato</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Proprietario Merce</div>
+                        <div class="value">Nome Proprietario</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Interesse Assicurabile</div>
+                        <div class="value">✓ Confermato</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Beneficiario</div>
+                        <div class="value">Nome Beneficiario</div>
+                    </div>
+                </div>
+                
+                <p><strong>Analisi:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Operatività Oggettiva - Natura Merce -->
+            <div class="section">
+                <h3 class="subsection-title">E) Verifica Oggettiva - Natura della Merce</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Dettaglio</th>
+                            <th>Esito</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Descrizione Merce</td>
+                            <td>...</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Corrisponde a dichiarazione polizza</td>
+                        </tr>
+                        <tr>
+                            <td>Categoria Merceologica</td>
+                            <td>Elettronica / Alimentare / Macchinari / ...</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Valore Dichiarato</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Congruo</td>
+                        </tr>
+                        <tr>
+                            <td>Imballaggio</td>
+                            <td>Tipo: ... / Conforme: SÌ/NO</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Adeguato alla merce</td>
+                        </tr>
+                        <tr>
+                            <td>Condizioni Trasporto Speciali</td>
+                            <td>Refrigerato / ADR / ...</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Esclusioni per Tipo Merce</td>
+                            <td>Verifica merci escluse</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Nessuna esclusione applicabile</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Analisi:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Operatività Oggettiva - Modalità Trasporto -->
+            <div class="section">
+                <h3 class="subsection-title">F) Verifica Oggettiva - Modalità di Trasporto</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Dettaglio</th>
+                            <th>Esito</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mezzo di Trasporto</td>
+                            <td>Strada / Ferrovia / Aereo / Mare / Intermodale</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Coperto da polizza</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo Veicolo/Container</td>
+                            <td>...</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Idoneo</td>
+                        </tr>
+                        <tr>
+                            <td>Container FCL/LCL</td>
+                            <td>FCL / LCL</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Carico Completo/Parziale</td>
+                            <td>FTL / LTL / Groupage</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Operazioni Accessorie</td>
+                            <td>Carico/scarico/trasbordi</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td>Coperte</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Analisi:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Rischi Coperti -->
+            <div class="section">
+                <h3 class="subsection-title">G) Rischi Coperti</h3>
+                
+                <div class="alert-box alert-info">
+                    <strong>📋 CLAUSOLA APPLICATA: ICC (A) / ICC (B) / ICC (C) / Altro</strong>
+                    <p style="margin-top: 10px;">...</p>
+                </div>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Rischi Coperti dalla Clausola:</h4>
+                <ul>
+                    <li>...</li>
+                    <li>...</li>
+                    <li>...</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Estensioni Clausole Accessorie Sottoscritte:</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Clausola Accessoria</th>
+                            <th>Sottoscritta</th>
+                            <th>Applicabile al Caso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>War Risks</td>
+                            <td><span class="badge badge-success">SÌ</span></td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                        </tr>
+                        <tr>
+                            <td>Strikes, Riots and Civil Commotion (SRCC)</td>
+                            <td><span class="badge badge-success">SÌ</span></td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                        </tr>
+                        <tr>
+                            <td>Theft, Pilferage and Non-Delivery (TPND)</td>
+                            <td><span class="badge badge-success">SÌ</span></td>
+                            <td><span class="badge badge-warning">DA VERIFICARE</span></td>
+                        </tr>
+                        <tr>
+                            <td>Reefer Breakdown</td>
+                            <td><span class="badge badge-danger">NO</span></td>
+                            <td><span class="badge badge-secondary">N/A</span></td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Onere della Prova:</h4>
+                <p>...</p>
+            </div>
+            
+            <!-- Esclusioni Applicabili -->
+            <div class="section">
+                <h3 class="subsection-title">H) Esclusioni Applicabili</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Esclusione</th>
+                            <th>Riferimento</th>
+                            <th>Applicabile</th>
+                            <th>Motivazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Condotta dolosa assicurato</td>
+                            <td>ICC Clause 4.1</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                            <td>Nessun elemento di dolo</td>
+                        </tr>
+                        <tr>
+                            <td>Imballaggio inadeguato</td>
+                            <td>ICC Clause 4.3</td>
+                            <td><span class="badge badge-danger">SÌ / NO</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Vizio proprio della merce</td>
+                            <td>ICC Clause 4.4</td>
+                            <td><span class="badge badge-danger">SÌ / NO</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Ritardo (Delay)</td>
+                            <td>ICC Clause 4.5</td>
+                            <td><span class="badge badge-danger">SÌ / NO</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Inavigabilità/Inidoneità veicolo</td>
+                            <td>ICC Clause 5.2</td>
+                            <td><span class="badge badge-danger">SÌ / NO</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>War Risks (se non estesa)</td>
+                            <td>ICC Clause 6</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                            <td>Estensione sottoscritta</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Analisi Dettagliata Esclusioni:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Limiti di Indennizzo -->
+            <div class="section">
+                <h3 class="subsection-title">I) Limiti di Indennizzo</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Limite</th>
+                            <th>Valore</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Massimale per Sinistro</td>
+                            <td>€ XXX.XXX,XX</td>
+                            <td>Polizza</td>
+                        </tr>
+                        <tr>
+                            <td>Massimale per Veicolo/Container</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td>Se inferiore</td>
+                        </tr>
+                        <tr>
+                            <td>Sublimite per Categoria Merce</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td>Es. Elettronica</td>
+                        </tr>
+                        <tr>
+                            <td>Valore Assicurato</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td>CIF + 10%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limite Legale Vettore (se RCV)</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 30px;">CMR (Strada)</td>
+                            <td>8,33 DSP/kg ≈ €11,60/kg</td>
+                            <td>Art. 23 CMR</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 30px;">CIM (Ferrovia)</td>
+                            <td>17 DSP/kg ≈ €23,60/kg</td>
+                            <td>CIM Art. 30</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 30px;">Montreal (Aereo)</td>
+                            <td>22 DSP/kg ≈ €30,50/kg</td>
+                            <td>Art. 22 Montreal Convention</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 30px;">Hague-Visby (Mare)</td>
+                            <td>2 DSP/kg o 666,67 DSP/collo</td>
+                            <td>Il maggiore</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ SOTTOVALUTAZIONE (Underinsurance)</strong>
+                    Valore effettivo merce: € XXX.XXX,XX<br>
+                    Valore dichiarato in polizza: € XXX.XXX,XX<br>
+                    <strong>Rapporto: XX%</strong> - Regola proporzionale applicabile: SÌ / NO
+                </div>
+            </div>
+            
+            <!-- Franchigie e Scoperti -->
+            <div class="section">
+                <h3 class="subsection-title">J) Franchigie e Scoperti</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tipo Deduzione</th>
+                            <th>Valore</th>
+                            <th>Applicabilità</th>
+                            <th>Formula</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Franchigia Assoluta (TIPO A)</td>
+                            <td>€ X.XXX,XX</td>
+                            <td>Per sinistro</td>
+                            <td>Danno - Franchigia</td>
+                        </tr>
+                        <tr>
+                            <td>Scoperto Percentuale (TIPO B1)</td>
+                            <td>X%</td>
+                            <td>Per categoria merce</td>
+                            <td>Danno × (1 - %)</td>
+                        </tr>
+                        <tr>
+                            <td>Scoperto con Minimo (TIPO B2)</td>
+                            <td>X% min € XXX</td>
+                            <td>...</td>
+                            <td>Danno - MAX(Danno × %, Minimo)</td>
+                        </tr>
+                        <tr>
+                            <td>Scoperto con Massimo (TIPO B3)</td>
+                            <td>X% max € XXX</td>
+                            <td>...</td>
+                            <td>Danno - MIN(Danno × %, Massimo)</td>
+                        </tr>
+                        <tr>
+                            <td>Franchigia per Furto</td>
+                            <td>€ X.XXX,XX</td>
+                            <td>Solo eventi furto</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Scoperto Imballaggio Inadeguato</td>
+                            <td>XX%</td>
+                            <td>Se imballaggio difettoso</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Clausole Speciali -->
+            <div class="section">
+                <h3 class="subsection-title">K) Clausole Speciali e Condizioni Particolari</h3>
+                
+                <ul>
+                    <li><strong>Warehouse to Warehouse:</strong> ...</li>
+                    <li><strong>Transit Clause (60 giorni):</strong> ...</li>
+                    <li><strong>Sue and Labour:</strong> ...</li>
+                    <li><strong>Subrogation:</strong> ...</li>
+                    <li><strong>Notice of Claim:</strong> Termini per denuncia: ...</li>
+                    <li><strong>...</strong></li>
+                </ul>
+            </div>
+            
+            <!-- Conclusione Operatività -->
+            <div class="section">
+                <h3 class="subsection-title">L) Conclusione Operatività</h3>
+                
+                <div class="alert-box alert-success">
+                    <strong>✅ OPERATIVA</strong>
+                    La garanzia risulta pienamente operante per i seguenti motivi:
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        <li>...</li>
+                        <li>...</li>
+                        <li>...</li>
+                    </ul>
+                </div>
+                
+                <!-- OPPURE -->
+                <!--
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ OPERATIVA CON RISERVA</strong>
+                    La garanzia appare operante, ma con i seguenti elementi critici da approfondire:
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        <li>...</li>
+                    </ul>
+                </div>
+                -->
+                
+                <!-- OPPURE -->
+                <!--
+                <div class="alert-box alert-danger">
+                    <strong>❌ NON OPERATIVA</strong>
+                    La garanzia non risulta operante per i seguenti motivi:
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        <li>...</li>
+                    </ul>
+                </div>
+                -->
+                
+                <!-- OPPURE -->
+                <!--
+                <div class="alert-box alert-info">
+                    <strong>🔍 DA APPROFONDIRE</strong>
+                    Impossibile determinare operatività per documentazione insufficiente:
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        <li>...</li>
+                    </ul>
+                </div>
+                -->
+                
+                <h4 style="margin-top: 30px; margin-bottom: 15px; color: #1565c0;">Descrizione Narrativa Dettagliata:</h4>
+                <p>...</p>
+                
+                <h4 style="margin-top: 30px; margin-bottom: 15px; color: #1565c0;">Riferimenti Normativi e Contrattuali:</h4>
+                <ul>
+                    <li>Polizza N. YYYY/2024 - Art. X, Sezione Y</li>
+                    <li>ICC (A/B/C) 2009 - Clause X.X</li>
+                    <li>CMR Art. XX (se applicabile)</li>
+                    <li>...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 4: RESPONSABILITÀ E NESSO CAUSALE -->
+        <div id="tab4" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Analisi Responsabilità</button>
+            
+            <h2 class="section-title">⚖️ RESPONSABILITÀ E NESSO CAUSALE</h2>
+            
+            <!-- Determinazione Causa del Danno -->
+            <div class="section">
+                <h3 class="subsection-title">A) Determinazione della Causa del Danno</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Causa Prossima (Proximate Cause)</div>
+                        <div class="value">...</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Causa Remota</div>
+                        <div class="value">...</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Categoria Evento</div>
+                        <div class="value">Incidente / Furto / Danno Merce / ...</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Onere della Prova</div>
+                        <div class="value">Su Assicuratore / Su Assicurato</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Ricostruzione Sequenza Eventi:</h4>
+                <ol>
+                    <li>...</li>
+                    <li>...</li>
+                    <li>...</li>
+                </ol>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Analisi Concatenazione Causale:</h4>
+                <p>...</p>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Possibili Cause Identificate:</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Causa</th>
+                            <th>Probabilità</th>
+                            <th>Elementi a Supporto</th>
+                            <th>Elementi Contrari</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>...</td>
+                            <td><span class="badge badge-success">ALTA</span></td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td><span class="badge badge-secondary">BASSA</span></td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Responsabilità del Vettore -->
+            <div class="section">
+                <h3 class="subsection-title">B) Responsabilità del Vettore</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Vettore</div>
+                        <div class="value">Nome Vettore</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Convenzione Applicabile</div>
+                        <div class="value">CMR / CIM / Montreal / Hague-Visby / Nazionale</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Presunzione Responsabilità</div>
+                        <div class="value">SÌ / NO</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Limite Legale</div>
+                        <div class="value">X,XX DSP/kg ≈ € XX,XX/kg</div>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Analisi Responsabilità secondo [CONVENZIONE]:</h4>
+                
+                <!-- Per CMR -->
+                <div class="subsection">
+                    <p><strong>Convenzione CMR (Trasporto Strada):</strong></p>
+                    <ul>
+                        <li><strong>Presunzione responsabilità (Art. 17.1):</strong> Il vettore risponde per perdita o avaria tra presa in carico e riconsegna, salvo provi causa esimente</li>
+                        <li><strong>Cause esimenti (Art. 17.2):</strong>
+                            <ul>
+                                <li>Colpa dell'avente diritto (mittente/destinatario)</li>
+                                <li>Ordine dell'avente diritto estraneo a colpa vettore</li>
+                                <li>Vizio proprio della merce</li>
+                                <li>Circostanze inevitabili e non prevedibili</li>
+                            </ul>
+                        </li>
+                        <li><strong>Limite risarcimento (Art. 23):</strong> 8,33 DSP/kg ≈ €11,60/kg</li>
+                        <li><strong>NO limitazione se:</strong> Dolo o colpa grave (equiparabile al dolo)</li>
+                        <li><strong>Dichiarazione di valore (Art. 24):</strong> Risarcimento su valore dichiarato se presente</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Applicazione al Caso:</strong></p>
+                    <p>...</p>
+                </div>
+                
+                <!-- Tabella Riserve Consegna -->
+                <h4 style="margin-top: 30px; margin-bottom: 10px; color: #1565c0;">Verifica Riserve alla Consegna:</h4>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Requisito</th>
+                            <th>Stato</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data Consegna</td>
+                            <td>-</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo Danno</td>
+                            <td>-</td>
+                            <td>Apparente / Non Apparente</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Riserve Formulate</td>
+                            <td>Immediate (apparenti) / 7 giorni (non app.)</td>
+                            <td><span class="badge badge-success">SÌ</span> / <span class="badge badge-danger">NO</span></td>
+                            <td>Data riserve: gg/mm/aaaa</td>
+                        </tr>
+                        <tr>
+                            <td>Tempestività Riserve</td>
+                            <td>Nei termini</td>
+                            <td><span class="badge badge-success">✓ TEMPESTIVE</span> / <span class="badge badge-danger">✗ TARDIVE</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Conseguenza</td>
+                            <td>-</td>
+                            <td>Presunzione conformità: SÌ / NO</td>
+                            <td>Se NO riserve = merce conforme (Art. 30 CMR)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="alert-box alert-danger">
+                    <strong>🚨 ALERT RISERVE</strong>
+                    [Se riserve mancanti o tardive, evidenziare criticità]
+                    L'assenza di riserve tempestive alla consegna comporta presunzione di conformità della merce (Art. 30 CMR). Questo elemento è CRITICO per l'azione di rivalsa verso il vettore.
+                </div>
+                
+                <!-- Prescrizione -->
+                <h4 style="margin-top: 30px; margin-bottom: 10px; color: #1565c0;">Prescrizione Azione vs Vettore:</h4>
+                
+                <div class="countdown-box">
+                    <div class="label">Prescrizione CMR - Art. 32</div>
+                    <div class="value">XXX giorni</div>
+                    <div class="description">
+                        Data consegna: gg/mm/aaaa<br>
+                        Scadenza prescrizione: gg/mm/aaaa (1 anno)<br>
+                        <strong>Azione interruttiva necessaria entro: gg/mm/aaaa</strong>
+                    </div>
+                </div>
+                
+                <h4 style="margin-top: 30px; margin-bottom: 10px; color: #1565c0;">Valutazione Responsabilità Vettore:</h4>
+                <p>...</p>
+            </div>
+            
+            <!-- Responsabilità Spedizioniere -->
+            <div class="section">
+                <h3 class="subsection-title">C) Responsabilità dello Spedizioniere</h3>
+                
+                <p><strong>Contratto di Spedizione (Art. 1737 ss. C.C.):</strong></p>
+                <ul>
+                    <li>Obblighi: stipulare contratti trasporto, scegliere vettore idoneo, dare istruzioni conformi</li>
+                    <li>Responsabilità: per scelta vettore inadeguato (culpa in eligendo)</li>
+                    <li>NO responsabilità: se scelta vettore su indicazione vincolante committente</li>
+                    <li>Solidarietà: con vettore verso committente</li>
+                    <li>Prescrizione: 1 anno</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>Applicazione al Caso:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Responsabilità Altri Soggetti -->
+            <div class="section">
+                <h3 class="subsection-title">D) Responsabilità di Altri Soggetti</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Soggetto</th>
+                            <th>Ruolo</th>
+                            <th>Responsabilità Potenziale</th>
+                            <th>Base Normativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Subvettore</td>
+                            <td>...</td>
+                            <td>Solidale con vettore principale</td>
+                            <td>CMR Art. 34</td>
+                        </tr>
+                        <tr>
+                            <td>Mittente</td>
+                            <td>...</td>
+                            <td>Per imballaggio inadeguato / dichiarazioni false</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Terzo responsabile incidente</td>
+                            <td>...</td>
+                            <td>Per collisione / danno causato</td>
+                            <td>Art. 2043 C.C.</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Concorso di Responsabilità -->
+            <div class="section">
+                <h3 class="subsection-title">E) Concorso di Responsabilità</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Soggetto</th>
+                            <th>Responsabilità</th>
+                            <th>Percentuale Stimata</th>
+                            <th>Motivazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Vettore</td>
+                            <td>...</td>
+                            <td>XX%</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Mittente</td>
+                            <td>...</td>
+                            <td>XX%</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Terzo</td>
+                            <td>...</td>
+                            <td>XX%</td>
+                            <td>...</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>TOTALE</strong></td>
+                            <td><strong>-</strong></td>
+                            <td><strong>100%</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Elementi A Favore / Contro -->
+            <div class="section">
+                <h3 class="subsection-title">F) Elementi a Favore / Contro la Copertura</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h4 style="color: #28a745; margin-bottom: 15px;">✅ A FAVORE</h4>
+                        <ul>
+                            <li>...</li>
+                            <li>...</li>
+                            <li>...</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #dc3545; margin-bottom: 15px;">❌ CONTRO</h4>
+                        <ul>
+                            <li>...</li>
+                            <li>...</li>
+                            <li>...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conclusione Responsabilità -->
+            <div class="section">
+                <h3 class="subsection-title">Conclusione Analisi Responsabilità</h3>
+                
+                <div class="alert-box alert-info">
+                    <strong>📝 SINTESI</strong>
+                    <p style="margin-top: 10px;">...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 5: QUANTIFICAZIONE DANNO -->
+        <div id="tab5" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Quantificazione Danno</button>
+            
+            <h2 class="section-title">💰 QUANTIFICAZIONE DEL DANNO</h2>
+            
+            <!-- Classificazione Danno -->
+            <div class="section">
+                <h3 class="subsection-title">A) Classificazione del Danno</h3>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="label">Tipo Danno</div>
+                        <div class="value">TOTALE / PARZIALE / RITARDO</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Percentuale Danno</div>
+                        <div class="value">XX%</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Riparabilità</div>
+                        <div class="value">RIPARABILE / IRREPARABILE</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">Salvage Presente</div>
+                        <div class="value">SÌ / NO</div>
+                    </div>
+                </div>
+                
+                <p><strong>Descrizione:</strong></p>
+                <p>...</p>
+            </div>
+            
+            <!-- Determinazione Valore -->
+            <div class="section">
+                <h3 class="subsection-title">B) Determinazione del Valore</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Criterio Valutazione</th>
+                            <th>Formula/Base</th>
+                            <th>Valore</th>
+                            <th>Applicabile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Valore Assicurato (Polizza)</strong></td>
+                            <td>CIF + Mark-up 10%</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td><span class="badge badge-success">SÌ</span></td>
+                        </tr>
+                        <tr>
+                            <td>Valore di Mercato</td>
+                            <td>Prezzo destinazione</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                        </tr>
+                        <tr>
+                            <td>Valore di Sostituzione</td>
+                            <td>Costo rimpiazzo</td>
+                            <td>€ XX.XXX,XX</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                        </tr>
+                        <tr>
+                            <td>Valore Residuo (Salvage)</td>
+                            <td>Valore realizzo merce danneggiata</td>
+                            <td>€ X.XXX,XX</td>
+                            <td><span class="badge badge-success">SÌ - da dedurre</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limite Legale Vettore</strong></td>
+                            <td>CMR: 8,33 DSP/kg</td>
+                            <td>€ XX.XXX,XX (XXX kg × €11,60)</td>
+                            <td><span class="badge badge-warning">Per rivalsa</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Calcolo Valore Assicurato:</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th style="text-align: right;">Importo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Valore Merce (Fattura)</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Nolo / Trasporto</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Assicurazione</td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Dazi (se CIF/CIP)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                        </tr>
+                        <tr style="background-color: #f8f9fa;">
+                            <td><strong>SUBTOTALE CIF</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Mark-up 10% (utile sperato)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>VALORE ASSICURATO TOTALE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Voci di Danno - Materiale Diretto -->
+            <div class="section">
+                <h3 class="subsection-title">C) Voci di Danno - Danno Materiale Diretto</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th>Quantità</th>
+                            <th>Prezzo Unit.</th>
+                            <th style="text-align: right;">Totale</th>
+                            <th>Documentazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Merce Persa/Distrutta</td>
+                            <td>XX unità / XX kg</td>
+                            <td>€ XXX,XX</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Fattura, Packing List</td>
+                        </tr>
+                        <tr>
+                            <td>Merce Danneggiata</td>
+                            <td>XX unità / XX kg</td>
+                            <td>€ XXX,XX</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Perizia, Foto</td>
+                        </tr>
+                        <tr>
+                            <td>Ammanco (Shortage)</td>
+                            <td>XX kg</td>
+                            <td>€ XXX,XX/kg</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Packing List vs DDR</td>
+                        </tr>
+                        <tr>
+                            <td>Meno: Valore di Realizzo (Salvage)</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td style="text-align: right; color: #dc3545;">- € X.XXX,XX</td>
+                            <td>Offerta acquisto</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td colspan="3"><strong>SUBTOTALE DANNO MATERIALE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Voci di Danno - Spese Accessorie -->
+            <div class="section">
+                <h3 class="subsection-title">D) Voci di Danno - Spese Accessorie</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th style="text-align: right;">Importo</th>
+                            <th>Documentazione</th>
+                            <th>Copertura</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spese Perizia (Surveyor / Average Adjuster)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Fattura Surveyor</td>
+                            <td><span class="badge badge-success">✓ COPERTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Spese Salvataggio (Sue and Labour)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Ricevute</td>
+                            <td><span class="badge badge-success">✓ IN AGGIUNTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Avaria Comune (General Average)</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Average Statement</td>
+                            <td><span class="badge badge-success">✓ COPERTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Spese Legali</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Parcella avvocato</td>
+                            <td><span class="badge badge-warning">✓ SUBLIMITE</span></td>
+                        </tr>
+                        <tr>
+                            <td>Costi Smaltimento / Distruzione</td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>Fattura smaltimento</td>
+                            <td><span class="badge badge-success">✓ COPERTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Costi Stoccaggio Temporaneo</td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>Fattura magazzino</td>
+                            <td><span class="badge badge-success">✓ COPERTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dazi su Merce Danneggiata (Duty Clause)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Dogana</td>
+                            <td><span class="badge badge-warning">✓ SE CLAUSOLA</span></td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>SUBTOTALE SPESE ACCESSORIE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Spese Consequenziali (Escluse) -->
+            <div class="section">
+                <h3 class="subsection-title">E) Voci di Danno - Spese Consequenziali (di solito ESCLUSE)</h3>
+                
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ ATTENZIONE - SPESE CONSEQUENZIALI</strong>
+                    Le seguenti voci sono tipicamente ESCLUSE dalle polizze trasporto. Verificare clausole specifiche.
+                </div>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th style="text-align: right;">Importo Richiesto</th>
+                            <th>Copertura</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Perdita di Mercato / Mancato Guadagno</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td><span class="badge badge-danger">✗ ESCLUSA</span></td>
+                            <td>Salvo Special Interest</td>
+                        </tr>
+                        <tr>
+                            <td>Penali Contrattuali</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td><span class="badge badge-danger">✗ ESCLUSA</span></td>
+                            <td>Ritardo consegna</td>
+                        </tr>
+                        <tr>
+                            <td>Danni da Ritardo (Delay)</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td><span class="badge badge-danger">✗ ESCLUSA</span></td>
+                            <td>ICC Clause 4.5</td>
+                        </tr>
+                        <tr>
+                            <td>Costi Fermo Produzione</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td><span class="badge badge-danger">✗ ESCLUSA</span></td>
+                            <td>Consequential Loss</td>
+                        </tr>
+                        <tr style="background-color: #f8d7da;">
+                            <td><strong>SUBTOTALE ESCLUSE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>NON INDENNIZZABILI</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tabella Riepilogativa -->
+            <div class="section">
+                <h3 class="subsection-title">F) Tabella Riepilogativa Quantificazione</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce di Danno</th>
+                            <th style="text-align: right;">Importo Richiesto</th>
+                            <th>Documentazione</th>
+                            <th>Congruità</th>
+                            <th style="text-align: right;">Importo Riconosciuto</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Valore merce persa/distrutta</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Fattura, Invoice</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Congruo</td>
+                        </tr>
+                        <tr>
+                            <td>Valore merce danneggiata</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Perizia, Foto</td>
+                            <td><span class="badge badge-warning">⚠</span></td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td">Parzialmente documentato</td>
+                        </tr>
+                        <tr>
+                            <td>Ammanco</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Packing List, DDR</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Documentato</td>
+                        </tr>
+                        <tr>
+                            <td>Meno: Valore di realizzo (salvage)</td>
+                            <td style="text-align: right;">(€ X.XXX,XX)</td>
+                            <td>Offerta acquisto</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">(€ X.XXX,XX)</td>
+                            <td>Deduzione obbligatoria</td>
+                        </tr>
+                        <tr style="background-color: #f8f9fa;">
+                            <td><strong>SUBTOTALE DANNO MATERIALE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                            <td><strong>-</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Spese perizia</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Fattura Surveyor</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td>Tariffa standard</td>
+                        </tr>
+                        <tr>
+                            <td>Spese salvataggio</td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>Ricevute</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>Ragionevoli</td>
+                        </tr>
+                        <tr>
+                            <td>Altre spese</td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>...</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                            <td style="text-align: right;">€ XXX,XX</td>
+                            <td>...</td>
+                        </tr>
+                        <tr style="background-color: #f8f9fa;">
+                            <td><strong>SUBTOTALE SPESE</strong></td>
+                            <td style="text-align: right;"><strong>€ X.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                            <td><strong>-</strong></td>
+                            <td style="text-align: right;"><strong>€ X.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>TOTALE DANNO LORDO</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                            <td><strong>-</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Legenda Congruità:</strong></p>
+                <ul>
+                    <li><span class="badge badge-success">✓</span> = Congruo e documentato</li>
+                    <li><span class="badge badge-warning">⚠</span> = Parzialmente congruo o documentazione incompleta</li>
+                    <li><span class="badge badge-danger">✗</span> = Non congruo o non documentato</li>
+                </ul>
+            </div>
+            
+            <!-- Criteri Congruità -->
+            <div class="section">
+                <h3 class="subsection-title">G) Criteri di Valutazione Congruità</h3>
+                
+                <h4 style="margin-bottom: 10px; color: #1565c0;">Documentazione Analizzata:</h4>
+                <ul>
+                    <li>Fattura commerciale / Invoice internazionale</li>
+                    <li>Packing list dettagliata</li>
+                    <li>Certificati di qualità, origine</li>
+                    <li>Prezzi di mercato comparabili</li>
+                    <li>...</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Verifiche Effettuate:</h4>
+                <ul>
+                    <li>Prezzo unitario vs mercato: ...</li>
+                    <li>Peso dichiarato vs peso documentato: ...</li>
+                    <li>Valore vs tipologia merce: ...</li>
+                    <li>Valore di realizzo (salvage): ...</li>
+                    <li>...</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Segnalazioni Criticità:</h4>
+                <ul>
+                    <li>...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 6: CALCOLO INDENNIZZO -->
+        <div id="tab6" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Calcolo Indennizzo</button>
+            
+            <h2 class="section-title">🧮 CALCOLO INDENNIZZO E APPLICAZIONE DEDUZIONI</h2>
+            
+            <!-- Procedura di Calcolo -->
+            <div class="section">
+                <h3 class="subsection-title">A) Procedura di Calcolo (4 STEP)</h3>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; border-left: 4px solid #1565c0;">
+                    <p><strong>STEP 1: Danno Lordo Riconosciuto</strong></p>
+                    <p>Somma di tutte le voci di danno riconosciute (da Tab 5 - Quantificazione)</p>
+                    <p style="margin-top: 10px;"><strong>€ XX.XXX,XX</strong></p>
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; border-left: 4px solid #1565c0; margin-top: 20px;">
+                    <p><strong>STEP 2: Massimale Applicabile</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Massimale per sinistro: € XXX.XXX,XX</li>
+                        <li>Massimale per veicolo/container: € XX.XXX,XX</li>
+                        <li>Sublimite categoria merceologica: € XX.XXX,XX</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Massimale applicabile: € XX.XXX,XX</strong></p>
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; border-left: 4px solid #1565c0; margin-top: 20px;">
+                    <p><strong>STEP 3: Franchigia/Scoperto Applicabile</strong></p>
+                    <p>Tipo deduzione: <strong>A / B1 / B2 / B3</strong></p>
+                    <p>Valore: <strong>€ X.XXX,XX / X%</strong></p>
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; border-left: 4px solid #1565c0; margin-top: 20px;">
+                    <p><strong>STEP 4: Applicazione Formula</strong></p>
+                    <p>[Formula specifica in base al tipo di deduzione]</p>
+                </div>
+            </div>
+            
+            <!-- Tabella Calcolo Indennizzo -->
+            <div class="section">
+                <h3 class="subsection-title">B) Tabella Calcolo Indennizzo Dettagliata</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th style="text-align: right;">Importo</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DANNO LORDO RICONOSCIUTO</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td>Da Sezione 4 - Quantificazione</td>
+                        </tr>
+                        <tr>
+                            <td>Massimale applicabile</td>
+                            <td style="text-align: right;">€ XXX.XXX,XX</td>
+                            <td>Polizza / Sublimite</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Danno nei limiti di massimale</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td>MIN(Danno, Massimale)</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo deduzione</td>
+                            <td style="text-align: right;">-</td>
+                            <td><strong>A / B1 / B2 / B3</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Franchigia/Scoperto</td>
+                            <td style="text-align: right;">-</td>
+                            <td>€ X.XXX,XX / X%</td>
+                        </tr>
+                        <tr style="background-color: #fff3cd;">
+                            <td colspan="3"><strong>CALCOLO DETTAGLIATO:</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="padding: 15px;">
+                                <strong>Formula applicata:</strong><br>
+                                [Inserire qui TUTTI i passaggi del calcolo, passo dopo passo]<br>
+                                <br>
+                                Esempio TIPO B2 (Scoperto 10% min €2.000):<br>
+                                1. Danno nei limiti: €50.000<br>
+                                2. Calcolo scoperto: €50.000 × 10% = €5.000<br>
+                                3. Confronto con minimo: MAX(€5.000, €2.000) = €5.000<br>
+                                4. Indennizzo: €50.000 - €5.000 = €45.000
+                            </td>
+                        </tr>
+                        <tr style="background-color: #f8d7da;">
+                            <td><strong>DEDUZIONE APPLICATA</strong></td>
+                            <td style="text-align: right;"><strong>- € X.XXX,XX</strong></td>
+                            <td>Importo effettivamente dedotto</td>
+                        </tr>
+                        <tr style="background-color: #d4edda;">
+                            <td><strong>INDENNIZZO NETTO</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td>Importo liquidabile</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Esempio Calcolo Completo -->
+            <div class="section">
+                <h3 class="subsection-title">C) Esempio Calcolo Completo</h3>
+                
+                <div style="background-color: #e3f2fd; padding: 20px; border-radius: 5px;">
+                    <p><strong>Caso: [Descrizione breve]</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Danno lordo riconosciuto: € XX.XXX,XX</li>
+                        <li>Massimale polizza: € XXX.XXX,XX</li>
+                        <li>Massimale categoria: € XX.XXX,XX</li>
+                        <li>Scoperto: X% con minimo € X.XXX (TIPO B2)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Calcolo:</strong></p>
+                    <ol style="margin-top: 10px;">
+                        <li>Danno nei limiti massimale: MIN(€XX.XXX, €XX.XXX) = €XX.XXX</li>
+                        <li>Calcolo scoperto: €XX.XXX × X% = €X.XXX</li>
+                        <li>Confronto con minimo: MAX(€X.XXX, €X.XXX) = €X.XXX</li>
+                        <li>Indennizzo netto: €XX.XXX - €X.XXX = <strong>€XX.XXX</strong></li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Sottovalutazione -->
+            <div class="section">
+                <h3 class="subsection-title">D) Applicazione Sottovalutazione (Underinsurance)</h3>
+                
+                <div class="alert-box alert-danger">
+                    <strong>⚠️ SOTTOVALUTAZIONE RILEVATA</strong>
+                    Valore effettivo merce: € XXX.XXX,XX<br>
+                    Valore dichiarato in polizza: € XXX.XXX,XX<br>
+                    <strong>Rapporto: XX%</strong>
+                </div>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th style="text-align: right;">Valore</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Indennizzo calcolato (da STEP 4)</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Valore effettivo merce</td>
+                            <td style="text-align: right;">€ XXX.XXX,XX</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Valore dichiarato in polizza</td>
+                            <td style="text-align: right;">€ XXX.XXX,XX</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Coefficiente proporzionale</td>
+                            <td style="text-align: right;">0,XX</td>
+                            <td>(Dichiarato / Effettivo)</td>
+                        </tr>
+                        <tr style="background-color: #d4edda;">
+                            <td><strong>INDENNIZZO FINALE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td>Indennizzo × Coefficiente</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p style="margin-top: 15px;"><strong>Formula:</strong></p>
+                <p>Indennizzo finale = €XX.XXX × (€XXX.XXX / €XXX.XXX) = <strong>€XX.XXX</strong></p>
+            </div>
+            
+            <!-- Rivalsa/Recuperi -->
+            <div class="section">
+                <h3 class="subsection-title">E) Rivalsa / Recuperi (Subrogation)</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Soggetto Responsabile</th>
+                            <th>Base Legale</th>
+                            <th>Limite Recupero</th>
+                            <th style="text-align: right;">Importo Recuperabile</th>
+                            <th>Fattibilità</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Vettore</td>
+                            <td>CMR Art. 23</td>
+                            <td>8,33 DSP/kg ≈ €11,60/kg</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td><span class="badge badge-success">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Subvettore</td>
+                            <td>CMR Art. 34</td>
+                            <td>Come vettore principale</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Terzo responsabile (incidente)</td>
+                            <td>Art. 2043 C.C.</td>
+                            <td>Polizza RCA terzo</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td><span class="badge badge-success">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td>Imballatore</td>
+                            <td>Responsabilità contrattuale</td>
+                            <td>-</td>
+                            <td style="text-align: right;">€ X.XXX,XX</td>
+                            <td><span class="badge badge-secondary">BASSA</span></td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>TOTALE RECUPERI PREVISTI</strong></td>
+                            <td colspan="2"><strong>-</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Valutazione Fattibilità Recupero:</h4>
+                <ul>
+                    <li><strong>Solvibilità del soggetto:</strong> ...</li>
+                    <li><strong>Esistenza copertura assicurativa:</strong> ...</li>
+                    <li><strong>Costi legali vs importo recuperabile:</strong> ...</li>
+                    <li><strong>Prescrizione azione di regresso:</strong> gg/mm/aaaa</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Importo Netto a Carico Assicuratore:</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th style="text-align: right;">Importo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Indennizzo Netto</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                        </tr>
+                        <tr>
+                            <td>Meno: Recuperi Previsti</td>
+                            <td style="text-align: right;">- € XX.XXX,XX</td>
+                        </tr>
+                        <tr style="background-color: #d4edda;">
+                            <td><strong>IMPORTO NETTO A CARICO ASSICURATORE</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Riepilogo Finale -->
+            <div class="section">
+                <h3 class="subsection-title">Riepilogo Finale Calcolo Indennizzo</h3>
+                
+                <div style="background-color: #d4edda; padding: 25px; border-radius: 8px; border: 2px solid #28a745;">
+                    <h4 style="color: #155724; margin-bottom: 15px;">💰 IMPORTI FINALI</h4>
+                    <table style="width: 100%; border: none; box-shadow: none;">
+                        <tbody>
+                            <tr style="background: none;">
+                                <td style="border: none; font-size: 16px;"><strong>Danno Lordo Riconosciuto:</strong></td>
+                                <td style="border: none; text-align: right; font-size: 16px;"><strong>€ XX.XXX,XX</strong></td>
+                            </tr>
+                            <tr style="background: none;">
+                                <td style="border: none; font-size: 16px;">Deduzioni (franchigie/scoperti):</td>
+                                <td style="border: none; text-align: right; font-size: 16px; color: #dc3545;">- € X.XXX,XX</td>
+                            </tr>
+                            <tr style="background: none;">
+                                <td style="border: none; font-size: 18px; padding-top: 15px;"><strong>Indennizzo Netto:</strong></td>
+                                <td style="border: none; text-align: right; font-size: 18px; padding-top: 15px;"><strong>€ XX.XXX,XX</strong></td>
+                            </tr>
+                            <tr style="background: none;">
+                                <td style="border: none; font-size: 16px;">Recuperi Previsti:</td>
+                                <td style="border: none; text-align: right; font-size: 16px; color: #28a745;">- € XX.XXX,XX</td>
+                            </tr>
+                            <tr style="background: none; border-top: 2px solid #28a745;">
+                                <td style="border: none; font-size: 20px; padding-top: 15px;"><strong>IMPORTO NETTO A CARICO ASSICURATORE:</strong></td>
+                                <td style="border: none; text-align: right; font-size: 20px; padding-top: 15px; color: #155724;"><strong>€ XX.XXX,XX</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 7: RISERVA SINISTRI -->
+        <div id="tab7" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Valutazione Riserva</button>
+            
+            <h2 class="section-title">📈 VALUTAZIONE RISERVA SINISTRI</h2>
+            
+            <p class="mb-20">Formula riserva articolata su TRE livelli di probabilità + raccomandazione operativa:</p>
+            
+            <!-- Riserva Minima -->
+            <div class="section">
+                <h3 class="subsection-title">A) Riserva Minima (Best Case - 20% probabilità)</h3>
+                
+                <div style="background-color: #d4edda; padding: 20px; border-radius: 5px; border-left: 4px solid #28a745;">
+                    <p><strong>Scenario Ottimistico:</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Tutte le contestazioni accolte</li>
+                        <li>Documentazione si rivela favorevole</li>
+                        <li>Perizie confermano valori minimi</li>
+                        <li>Recuperi massimi da terzi responsabili (vettore, etc.)</li>
+                        <li>Esclusioni applicabili confermate</li>
+                        <li>...</li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px; font-size: 20px;"><strong>Importo: € XX.XXX,XX</strong></p>
+                </div>
+            </div>
+            
+            <!-- Riserva Media -->
+            <div class="section">
+                <h3 class="subsection-title">B) Riserva Media (Base Case - 60% probabilità)</h3>
+                
+                <div style="background-color: #d1ecf1; padding: 20px; border-radius: 5px; border-left: 4px solid #17a2b8;">
+                    <p><strong>Scenario Realistico/Probabile:</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Operatività garanzie confermata</li>
+                        <li>Valutazione mediana danno</li>
+                        <li>Recuperi parziali da vettore (entro limiti CMR)</li>
+                        <li>Negoziazione transattiva</li>
+                        <li>Costi perizie/legali medi</li>
+                        <li>...</li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px; font-size: 20px;"><strong>Importo: € XX.XXX,XX</strong></p>
+                </div>
+            </div>
+            
+            <!-- Riserva Massima -->
+            <div class="section">
+                <h3 class="subsection-title">C) Riserva Massima (Worst Case - 20% probabilità)</h3>
+                
+                <div style="background-color: #f8d7da; padding: 20px; border-radius: 5px; border-left: 4px solid #dc3545;">
+                    <p><strong>Scenario Pessimistico:</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li>Tutte le contestazioni respinte</li>
+                        <li>Valutazioni massime confermate</li>
+                        <li>Nessun recupero (vettore insolvente o non responsabile)</li>
+                        <li>Spese legali elevate</li>
+                        <li>Aggravamenti in corso giudizio</li>
+                        <li>Spese consequenziali riconosciute (eccezionale)</li>
+                        <li>...</li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px; font-size: 20px;"><strong>Importo: € XX.XXX,XX</strong></p>
+                </div>
+            </div>
+            
+            <!-- Raccomandazione Riserva -->
+            <div class="section">
+                <h3 class="subsection-title">D) Raccomandazione Riserva Operativa</h3>
+                
+                <div class="alert-box alert-info">
+                    <strong>💡 RISERVA OPERATIVA RACCOMANDATA</strong>
+                    <p style="margin-top: 10px;">In base a:</p>
+                    <ul style="margin-top: 10px;">
+                        <li>Completezza documentazione: <strong>ALTA / MEDIA / BASSA</strong></li>
+                        <li>Chiarezza operatività garanzie: <strong>CHIARA / INCERTA</strong></li>
+                        <li>Affidabilità valutazioni danno: <strong>ALTA / MEDIA / BASSA</strong></li>
+                        <li>Probabilità recuperi: <strong>ALTA / MEDIA / BASSA</strong></li>
+                        <li>Fase istruttoria: <strong>INIZIALE / AVANZATA / CONCLUSIVA</strong></li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px; font-size: 22px; padding: 15px; background-color: white; border-radius: 5px;">
+                        <strong>Si raccomanda di stanziare: € XX.XXX,XX</strong><br>
+                        <span style="font-size: 18px;">(livello MINIMA / MEDIA / MASSIMA)</span>
+                    </p>
+                    
+                    <p style="margin-top: 15px;"><strong>Motivazione:</strong></p>
+                    <p>...</p>
+                </div>
+            </div>
+            
+            <!-- Aggiornamento Riserva -->
+            <div class="section">
+                <h3 class="subsection-title">E) Aggiornamento Riserva</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th style="text-align: right;">Importo</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Riserva attuale (se esistente)</td>
+                            <td style="text-align: right;">€ XX.XXX,XX</td>
+                            <td>Precedente stanziamento</td>
+                        </tr>
+                        <tr>
+                            <td>Variazione proposta</td>
+                            <td style="text-align: right; color: #dc3545;">+/- € XX.XXX,XX</td>
+                            <td>Incremento / Riduzione</td>
+                        </tr>
+                        <tr style="background-color: #e3f2fd;">
+                            <td><strong>Nuova riserva raccomandata</strong></td>
+                            <td style="text-align: right;"><strong>€ XX.XXX,XX</strong></td>
+                            <td><strong>-</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 30px; margin-bottom: 10px; color: #1565c0;">Trigger per Aggiornamenti Futuri:</h4>
+                <ul>
+                    <li>Esito perizie tecniche</li>
+                    <li>Acquisizione documenti chiave (CMR con riserve, fatture, etc.)</li>
+                    <li>Sviluppi giudiziari</li>
+                    <li>Esito negoziazioni con vettore</li>
+                    <li>Conferma/smentita esclusioni applicabili</li>
+                    <li>Evoluzione recuperi da terzi</li>
+                    <li>...</li>
+                </ul>
+            </div>
+            
+            <!-- Grafico Riserve (Opzionale) -->
+            <div class="section">
+                <h3 class="subsection-title">Visualizzazione Riserve (3 Livelli)</h3>
+                
+                <div style="background-color: #f8f9fa; padding: 30px; border-radius: 5px; text-align: center;">
+                    <p style="margin-bottom: 20px;"><strong>Distribuzione Probabilistica Riserve</strong></p>
+                    <div style="display: flex; justify-content: space-around; align-items: flex-end; height: 200px;">
+                        <div style="text-align: center;">
+                            <div style="background-color: #28a745; width: 100px; height: 80px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; border-radius: 5px 5px 0 0;">
+                                20%
+                            </div>
+                            <div style="padding: 10px; background-color: #d4edda; border-radius: 0 0 5px 5px;">
+                                <strong>MIN</strong><br>
+                                € XX.XXX
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="background-color: #17a2b8; width: 100px; height: 160px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; border-radius: 5px 5px 0 0;">
+                                60%
+                            </div>
+                            <div style="padding: 10px; background-color: #d1ecf1; border-radius: 0 0 5px 5px;">
+                                <strong>MEDIA</strong><br>
+                                € XX.XXX
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="background-color: #dc3545; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; border-radius: 5px 5px 0 0;">
+                                20%
+                            </div>
+                            <div style="padding: 10px; background-color: #f8d7da; border-radius: 0 0 5px 5px;">
+                                <strong>MAX</strong><br>
+                                € XX.XXX
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB 8: STRATEGIA E PIANO D'AZIONE -->
+        <div id="tab8" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Strategia e Piano d'Azione</button>
+            
+            <h2 class="section-title">🎯 STRATEGIA GESTIONALE E PIANO D'AZIONE</h2>
+            
+            <!-- Strategia Raccomandata -->
+            <div class="section">
+                <h3 class="subsection-title">A) Strategia Raccomandata</h3>
+                
+                <div class="alert-box alert-info">
+                    <strong>🎯 STRATEGIA: [LIQUIDAZIONE / ISTRUTTORIA / NEGOZIAZIONE / DINIEGO / DIFESA]</strong>
+                    
+                    <p style="margin-top: 15px;"><strong>Descrizione:</strong></p>
+                    <p>...</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Motivazione:</strong></p>
+                    <p>...</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Vantaggi:</strong></p>
+                    <ul style="margin-top: 5px;">
+                        <li>...</li>
+                        <li>...</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Rischi:</strong></p>
+                    <ul style="margin-top: 5px;">
+                        <li>...</li>
+                        <li>...</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Piano d'Azione Prioritizzato -->
+            <div class="section">
+                <h3 class="subsection-title">B) Piano d'Azione Prioritizzato</h3>
+                
+                <h4 style="color: #dc3545; margin-bottom: 15px;">🚨 AZIONI IMMEDIATE (entro 7 giorni)</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Azione</th>
+                            <th>Responsabile</th>
+                            <th>Scadenza</th>
+                            <th>Criticità</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="color: #ffc107; margin-top: 30px; margin-bottom: 15px;">⏰ AZIONI A BREVE TERMINE (entro 30 giorni)</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Azione</th>
+                            <th>Responsabile</th>
+                            <th>Scadenza</th>
+                            <th>Criticità</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="color: #17a2b8; margin-top: 30px; margin-bottom: 15px;">📅 AZIONI A MEDIO TERMINE (entro 90 giorni)</h4>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Azione</th>
+                            <th>Responsabile</th>
+                            <th>Scadenza</th>
+                            <th>Criticità</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>[Azione specifica]</strong></td>
+                            <td>...</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-info">BASSA</span></td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Trigger Decisionali -->
+            <div class="section">
+                <h3 class="subsection-title">Trigger Decisionali</h3>
+                
+                <div style="background-color: #fff3cd; padding: 20px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                    <p><strong>🔀 Scenari "Se-Allora":</strong></p>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>SE</strong> perizia indica danno < € XX.XXX → <strong>ALLORA</strong> procedere con liquidazione rapida</li>
+                        <li><strong>SE</strong> entro gg/mm/aaaa non ricevuto CMR con riserve → <strong>ALLORA</strong> richiedere formalmente al destinatario</li>
+                        <li><strong>SE</strong> vettore contesta responsabilità → <strong>ALLORA</strong> attivare legale per rivalsa CMR</li>
+                        <li><strong>SE</strong> confermata esclusione imballaggio inadeguato → <strong>ALLORA</strong> rivalutare strategia verso diniego parziale</li>
+                        <li><strong>SE</strong> recupero da vettore > € XX.XXX → <strong>ALLORA</strong> ridurre riserva a livello minimo</li>
+                        <li>...</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Gestione Comunicazioni -->
+            <div class="section">
+                <h3 class="subsection-title">C) Gestione Comunicazioni</h3>
+                
+                <h4 style="margin-bottom: 10px; color: #1565c0;">Con Assicurato:</h4>
+                <ul>
+                    <li><strong>Frequenza aggiornamenti:</strong> Settimanale / Quindicinale / Al completamento step chiave</li>
+                    <li><strong>Canali:</strong> Email / Telefono / PEC</li>
+                    <li><strong>Contenuti:</strong> Stato istruttoria, documenti richiesti, previsioni temporali, aggiornamenti riserva</li>
+                    <li><strong>Prossimo aggiornamento previsto:</strong> gg/mm/aaaa</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Con Vettore (per Rivalsa):</h4>
+                <ul>
+                    <li><strong>Lettera di surroga (subrogation letter):</strong> Da inviare entro: gg/mm/aaaa</li>
+                    <li><strong>Richiesta documenti:</strong> CMR, Proof of Delivery, Report incidente</li>
+                    <li><strong>Negoziazione recupero:</strong> Target: € XX.XXX entro limiti CMR</li>
+                    <li><strong>Termini prescrizione:</strong> gg/mm/aaaa (1 anno da consegna)</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Con Periti/Consulenti:</h4>
+                <ul>
+                    <li><strong>Incarico Surveyor:</strong> Mandato chiaro con domande specifiche</li>
+                    <li><strong>Domande chiave:</strong> ...</li>
+                    <li><strong>Monitoraggio tempi perizia:</strong> Consegna prevista: gg/mm/aaaa</li>
+                    <li><strong>Validazione conclusioni:</strong> ...</li>
+                </ul>
+                
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1565c0;">Con Legali (se necessario):</h4>
+                <ul>
+                    <li><strong>Parere preventivo su esclusioni:</strong> Da richiedere entro: gg/mm/aaaa</li>
+                    <li><strong>Gestione contenzioso:</strong> ...</li>
+                    <li><strong>Atti interruttivi prescrizione:</strong> Necessari entro: gg/mm/aaaa</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- TAB 9: ALERT E SCADENZE -->
+        <div id="tab9" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Alert e Scadenze</button>
+            
+            <h2 class="section-title">⚠️ ALERT CRITICI E SCADENZE</h2>
+            
+            <!-- Termini Decadenziali / Prescrizione -->
+            <div class="section">
+                <h3 class="subsection-title">A) Termini Decadenziali / Prescrizione</h3>
+                
+                <h4 style="margin-bottom: 15px; color: #dc3545;">🚨 RISERVE ALLA CONSEGNA (CRITICISSIME PER RIVALSA)</h4>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Convenzione</th>
+                            <th>Danni Apparenti</th>
+                            <th>Danni Non Apparenti</th>
+                            <th>Data Consegna</th>
+                            <th>Scadenza</th>
+                            <th>Stato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CMR (Strada)</strong></td>
+                            <td>Immediate</td>
+                            <td>7 giorni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-success">✅ RISPETTATO</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CIM (Ferrovia)</strong></td>
+                            <td>Immediate</td>
+                            <td>7 giorni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-warning">⚠️ SCADENZA PROSSIMA</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Montreal (Aereo)</strong></td>
+                            <td>Immediate</td>
+                            <td>14 giorni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-danger">❌ DECADUTO</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Marittimo</strong></td>
+                            <td>Immediate</td>
+                            <td>3 giorni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nazionale Italia</strong></td>
+                            <td>-</td>
+                            <td>8 giorni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="alert-box alert-danger">
+                    <strong>🚨 CONSEGUENZE MANCATE RISERVE</strong>
+                    L'assenza di riserve tempestive alla consegna comporta presunzione di conformità della merce (Art. 30 CMR e simili). Questo rende MOLTO DIFFICILE o IMPOSSIBILE l'azione di rivalsa verso il vettore, con impatto diretto sulla riserva sinistri.
+                </div>
+                
+                <h4 style="margin-top: 40px; margin-bottom: 15px; color: #dc3545;">🚨 PRESCRIZIONE AZIONE VS VETTORE</h4>
+                
+                <!-- Countdown Box -->
+                <div class="countdown-box">
+                    <div class="label">PRESCRIZIONE AZIONE VETTORE - CMR ART. 32</div>
+                    <div class="value">XXX GIORNI</div>
+                    <div class="description">
+                        <strong>Data consegna:</strong> gg/mm/aaaa<br>
+                        <strong>Scadenza prescrizione (1 anno):</strong> gg/mm/aaaa<br>
+                        <strong>⚠️ Azione interruttiva necessaria entro:</strong> gg/mm/aaaa
+                    </div>
+                </div>
+                
+                <table class="table-striped" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Convenzione</th>
+                            <th>Termine Prescrizione</th>
+                            <th>Data Consegna</th>
+                            <th>Scadenza</th>
+                            <th>Giorni Residui</th>
+                            <th>Stato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CMR (Strada)</strong></td>
+                            <td>1 anno (3 se dolo)</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><strong>XXX gg</strong></td>
+                            <td><span class="badge badge-success">✅ OK</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CIM (Ferrovia)</strong></td>
+                            <td>1 anno</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><strong>XXX gg</strong></td>
+                            <td><span class="badge badge-warning">⚠️ URGENTE</span></td>
+                                    </tr>
+                        <tr>
+                            <td><strong>Montreal (Aereo)</strong></td>
+                            <td>2 anni</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><strong>XXX gg</strong></td>
+                            <td><span class="badge badge-success">✅ OK</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Marittimo (H-V)</strong></td>
+                            <td>1 anno</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><strong>XXX gg</strong></td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nazionale Italia</strong></td>
+                            <td>1 anno (Art. 2951 C.C.)</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><strong>XXX gg</strong></td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 40px; margin-bottom: 15px; color: #dc3545;">🚨 PRESCRIZIONE AZIONE VS ASSICURATORE</h4>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Valore</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Termine prescrizione</td>
+                            <td>1 anno (Art. 2952 C.C.) o 2 anni (se previsto)</td>
+                            <td>Verificare polizza</td>
+                        </tr>
+                        <tr>
+                            <td>Decorrenza</td>
+                            <td>Da sinistro o da diniego/liquidazione</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Data decorrenza</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Scadenza prescrizione</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Giorni residui</td>
+                            <td><strong>XXX giorni</strong></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 40px; margin-bottom: 15px; color: #ffc107;">⏰ TERMINI DENUNCIA SINISTRO</h4>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Requisito</th>
+                            <th>Effettivo</th>
+                            <th>Stato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Termine contrattuale denuncia</td>
+                            <td>X giorni da conoscenza</td>
+                            <td>-</td>
+                            <td>Verificare polizza</td>
+                        </tr>
+                        <tr>
+                            <td>Data evento</td>
+                            <td>-</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Data denuncia</td>
+                            <td>Entro: gg/mm/aaaa</td>
+                            <td>gg/mm/aaaa</td>
+                            <td><span class="badge badge-success">✅ NEI TERMINI</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Violazioni Obblighi Contrattuali -->
+            <div class="section">
+                <h3 class="subsection-title">B) Violazioni Obblighi Contrattuali</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Obbligo</th>
+                            <th>Rispettato</th>
+                            <th>Impatto</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Denuncia tempestiva</td>
+                            <td><span class="badge badge-success">✅ SÌ</span></td>
+                            <td>-</td>
+                            <td>Denunciato in data gg/mm/aaaa</td>
+                        </tr>
+                        <tr>
+                            <td>Riserve alla consegna</td>
+                            <td><span class="badge badge-danger">❌ NO</span></td>
+                            <td><span class="badge badge-danger">CRITICO</span></td>
+                            <td>Assenza riserve = presunzione conformità</td>
+                        </tr>
+                        <tr>
+                            <td>Collaborazione istruttoria</td>
+                            <td><span class="badge badge-success">✅ SÌ</span></td>
+                            <td>-</td>
+                            <td>Documenti forniti tempestivamente</td>
+                        </tr>
+                        <tr>
+                            <td>Sue and Labour (salvare merce)</td>
+                            <td><span class="badge badge-success">✅ SÌ</span></td>
+                            <td>-</td>
+                            <td>Misure adeguate adottate</td>
+                        </tr>
+                        <tr>
+                            <td>Non alterazione stato luoghi</td>
+                            <td><span class="badge badge-success">✅ SÌ</span></td>
+                            <td>-</td>
+                            <td>Merce conservata per perizia</td>
+                        </tr>
+                        <tr>
+                            <td>Nessun accordo senza autorizzazione</td>
+                            <td><span class="badge badge-success">✅ SÌ</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Elementi di Frode -->
+            <div class="section">
+                <h3 class="subsection-title">C) Elementi di Frode / Aggravamento</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Indicatore</th>
+                            <th>Riscontrato</th>
+                            <th>Gravità</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Documentazione falsa o alterata</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                            <td>-</td>
+                            <td>Documenti autentici</td>
+                        </tr>
+                        <tr>
+                            <td>Dichiarazioni contrastanti</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                            <td>-</td>
+                            <td>Coerenza nelle versioni</td>
+                        </tr>
+                        <tr>
+                            <td>Valore dichiarato incongruo</td>
+                            <td><span class="badge badge-warning">DA VERIFICARE</span></td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>Necessaria verifica prezzi mercato</td>
+                        </tr>
+                        <tr>
+                            <td>Precedenti sinistri sospetti</td>
+                            <td><span class="badge badge-secondary">NO</span></td>
+                            <td>-</td>
+                            <td>Primo sinistro o storico normale</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Criticità Tecniche -->
+            <div class="section">
+                <h3 class="subsection-title">D) Criticità Tecniche</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Criticità</th>
+                            <th>Presente</th>
+                            <th>Impatto</th>
+                            <th>Azione Richiesta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mancanza CMR / Bill of Lading</td>
+                            <td>...</td>
+                            <td><span class="badge badge-danger">CRITICO</span></td>
+                            <td>Richiesta formale immediata</td>
+                        </tr>
+                        <tr>
+                            <td>Assenza riserve alla consegna</td>
+                            <td>...</td>
+                            <td><span class="badge badge-danger">CRITICO</span></td>
+                            <td>Rivalsa vettore compromessa</td>
+                        </tr>
+                        <tr>
+                            <td>Imballaggio inadeguato</td>
+                            <td>...</td>
+                            <td><span class="badge badge-warning">ALTO</span></td>
+                            <td>Possibile esclusione</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Criticità Legali -->
+            <div class="section">
+                <h3 class="subsection-title">E) Criticità Legali</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Criticità</th>
+                            <th>Presente</th>
+                            <th>Impatto</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Esclusione applicabile ma contestata</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Interpretazione clausola ambigua</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>Conflitto tra convenzioni</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tabella Scadenze -->
+            <div class="section">
+                <h3 class="subsection-title">Tabella Riepilogativa Scadenze</h3>
+                
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Scadenza</th>
+                            <th>Data</th>
+                            <th>Giorni Residui</th>
+                            <th>Priorità</th>
+                            <th>Azione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Riserve consegna (CMR)</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>XXX gg</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                            <td>Formulare riserve immediate</td>
+                        </tr>
+                        <tr>
+                            <td>Prescrizione vs vettore</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>XXX gg</td>
+                            <td><span class="badge badge-danger">ALTA</span></td>
+                            <td>Atto interruttivo</td>
+                        </tr>
+                        <tr>
+                            <td>Perizia tecnica</td>
+                            <td>gg/mm/aaaa</td>
+                            <td>XXX gg</td>
+                            <td><span class="badge badge-warning">MEDIA</span></td>
+                            <td>Conferma incarico Surveyor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- TAB 10: RIFERIMENTI E DOCUMENTAZIONE -->
+        <div id="tab10" class="tab-content">
+            <button class="btn" onclick="printActiveTab()">🖨 Stampa Riferimenti</button>
+            
+            <h2 class="section-title">📚 RIFERIMENTI E DOCUMENTAZIONE</h2>
+            
+            <!-- Normativa Nazionale -->
+            <div class="section">
+                <h3 class="subsection-title">A) Normativa Nazionale</h3>
+                <ul>
+                    <li><strong>Codice Civile - Artt. 1693-1702:</strong> Contratto di trasporto</li>
+                    <li><strong>Codice Civile - Artt. 1737-1741:</strong> Contratto di spedizione</li>
+                    <li><strong>Codice Civile - Artt. 1882-1932:</strong> Contratto di assicurazione</li>
+                    <li><strong>Codice della Navigazione - Artt. 423-432:</strong> Trasporto marittimo</li>
+                    <li><strong>Codice della Navigazione - Artt. 941-955:</strong> Trasporto aereo</li>
+                    <li><strong>D.Lgs. 286/2005:</strong> Codice delle Assicurazioni Private</li>
+                    <li>...</li>
+                </ul>
+            </div>
+            
+            <!-- Convenzioni Internazionali -->
+            <div class="section">
+                <h3 class="subsection-title">B) Convenzioni Internazionali</h3>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">CMR (Trasporto Strada)</h4>
+                    <p><strong>Convention relative au contrat de transport international de marchandises par route</strong> - Ginevra 1956</p>
+                    <ul>
+                        <li>Art. 17: Presunzione responsabilità vettore</li>
+                        <li>Art. 23: Limite risarcimento 8,33 DSP/kg</li>
+                        <li>Art. 30: Riserve alla consegna</li>
+                        <li>Art. 32: Prescrizione 1 anno</li>
+                    </ul>
+                </div>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">CIM (Trasporto Ferrovia)</h4>
+                    <p><strong>Règles uniformes concernant le contrat de transport international ferroviaire des marchandises</strong> - COTIF</p>
+                    <ul>
+                        <li>Limite: 17 DSP/kg</li>
+                        <li>Riserve: 7 giorni</li>
+                        <li>Prescrizione: 1 anno</li>
+                    </ul>
+                </div>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">Montreal Convention (Trasporto Aereo)</h4>
+                    <p><strong>Convention for the Unification of Certain Rules for International Carriage by Air</strong> - 1999</p>
+                    <ul>
+                        <li>Art. 22: Limite risarcimento 22 DSP/kg</li>
+                        <li>Riserve: immediate o 14 giorni</li>
+                        <li>Prescrizione: 2 anni</li>
+                    </ul>
+                </div>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">Hague-Visby Rules (Trasporto Marittimo)</h4>
+                    <p><strong>International Convention for the Unification of Certain Rules of Law relating to Bills of Lading</strong> - 1968/1979</p>
+                    <ul>
+                        <li>Limite: 2 DSP/kg o 666,67 DSP/collo (il maggiore)</li>
+                        <li>Riserve: 3 giorni</li>
+                        <li>Prescrizione: 1 anno</li>
+                    </ul>
+                </div>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">Altre Convenzioni</h4>
+                    <ul>
+                        <li><strong>Hamburg Rules 1978:</strong> Trasporto marittimo (se applicabili)</li>
+                        <li><strong>York-Antwerp Rules:</strong> Avaria Comune (General Average)</li>
+                        <li><strong>Incoterms 2020:</strong> ICC - International Chamber of Commerce</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Clausole Assicurative -->
+            <div class="section">
+                <h3 class="subsection-title">C) Clausole Assicurative Internazionali (ICC)</h3>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">Institute Cargo Clauses (ICC) 2009</h4>
+                    <ul>
+                        <li><strong>ICC (A) - All Risks:</strong> Copertura tutti i rischi salvo esclusioni - Onere prova su assicuratore</li>
+                        <li><strong>ICC (B) - Named Perils:</strong> Rischi nominati ampi - Onere prova su assicurato</li>
+                        <li><strong>ICC (C) - Restricted Cover:</strong> Rischi nominati ristretti - Onere prova su assicurato</li>
+                    </ul>
+                </div>
+                
+                <div class="subsection">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">Clausole Accessorie</h4>
+                    <ul>
+                        <li><strong>Institute War Clauses (Cargo) 2009</strong></li>
+                        <li><strong>Institute Strikes Clauses (Cargo) 2009</strong></li>
+                        <li><strong>Institute Theft, Pilferage and Non-Delivery Clause 2009</strong></li>
+                        <li><strong>Institute Replacement Clause 1995</strong></li>
+                        <li>...</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Giurisprudenza -->
+            <div class="section">
+                <h3 class="subsection-title">D) Giurisprudenza Citata</h3>
+                <ul>
+                    <li><strong>Cassazione n. XXXX del gg/mm/aaaa:</strong> [Massima]</li>
+                    <li><strong>Corte di Giustizia UE n. XXXX del gg/mm/aaaa:</strong> [Massima]</li>
+                    <li>...</li>
+                </ul>
+            </div>
+            
+            <!-- Prassi e Standard -->
+            <div class="section">
+                <h3 class="subsection-title">E) Prassi e Standard Tecnici</h3>
+                <ul>
+                    <li><strong>FIATA:</strong> International Federation of Freight Forwarders Associations</li>
+                    <li><strong>IMO - IMDG Code:</strong> International Maritime Dangerous Goods Code</li>
+                    <li><strong>IATA - DGR:</strong> Dangerous Goods Regulations (trasporto aereo)</li>
+                    <li><strong>ADR:</strong> Accord européen relatif au transport des marchandises Dangereuses par Route</li>
+                    <li><strong>ATP:</strong> Accord relatif aux transports internationaux de denrées périssables</li>
+                    <li><strong>ISO 668:</strong> Container dimensions and ratings</li>
+                    <li><strong>ISO 1496:</strong> Container testing</li>
+                    <li>...</li>
+                </ul>
+            </div>
+            
+            <!-- Consulenti Coinvolti -->
+            <div class="section">
+                <h3 class="subsection-title">F) Consulenti / Periti Coinvolti</h3>
+                <table class="table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Specializzazione</th>
+                            <th>Incarico</th>
+                            <th>Società</th>
+                            <th>Contatti</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>...</td>
+                            <td>Surveyor trasporti</td>
+                            <td>Perizia merce danneggiata</td>
+                            <td>...</td>
+                            <td>email@example.com<br>+39 XXX XXXXXXX</td>
+                            <td>Lloyd's Agent</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>Average Adjuster</td>
+                            <td>Avaria comune</td>
+                            <td>...</td>
+                            <td>email@example.com</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>Legale trasporti</td>
+                            <td>Parere su responsabilità CMR</td>
+                            <td>Studio ...</td>
+                            <td>email@example.com</td>
+                            <td>Specialista CMR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Note Analista -->
+            <div class="section">
+                <h3 class="subsection-title">G) Note Analista</h3>
+                <p><strong>Analista:</strong> ...</p>
+                <p><strong>Data analisi:</strong> gg/mm/aaaa</p>
+                <p><strong>Versione report:</strong> 1.0</p>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-top: 20px;">
+                    <p><strong>Note e Osservazioni:</strong></p>
+                    <p>...</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- JAVASCRIPT -->
+    <script>
+        // Funzione per cambiare tab
+        function openTab(evt, tabName) {
+            // Nascondi tutti i contenuti delle tab
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // Rimuovi la classe active da tutti i pulsanti
+            var tabButtons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Mostra il contenuto della tab corrente e attiva il pulsante
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        // Funzione per stampare solo la tab attiva
+        function printActiveTab() {
+            // Trova la tab attiva
+            var activeTab = document.querySelector('.tab-content.active');
+            var activeTabButton = document.querySelector('.tab-button.active');
+            
+            if (!activeTab) {
+                alert('Nessuna tab selezionata');
+                return;
+            }
+            
+            // Crea una finestra temporanea per la stampa
+            var printWindow = window.open('', '_blank');
+            
+            // Prepara il contenuto per la stampa
+            var printContent = `
+                <!DOCTYPE html>
+                <html lang="it">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Stampa Report - ${activeTabButton.textContent}</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            font-size: 12pt;
+                            line-height: 1.6;
+                            color: #333;
+                            padding: 20px;
+                        }
+                        h1, h2, h3, h4 {
+                            color: #0d47a1;
+                            margin-top: 20px;
+                            margin-bottom: 10px;
+                        }
+                        h1 { font-size: 24pt; }
+                        h2 { font-size: 20pt; border-bottom: 2px solid #0d47a1; padding-bottom: 5px; }
+                        h3 { font-size: 16pt; color: #1565c0; }
+                        h4 { font-size: 14pt; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 15px 0;
+                            page-break-inside: avoid;
+                        }
+                        th {
+                            background-color: #0d47a1;
+                            color: white;
+                            padding: 10px;
+                            text-align: left;
+                            font-size: 11pt;
+                        }
+                        td {
+                            padding: 8px;
+                            border-bottom: 1px solid #ddd;
+                            font-size: 11pt;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f8f9fa;
+                        }
+                        .alert-box {
+                            padding: 10px 15px;
+                            margin: 10px 0;
+                            border-radius: 5px;
+                            border-left: 4px solid;
+                            page-break-inside: avoid;
+                        }
+                        .alert-success {
+                            background-color: #d4edda;
+                            border-color: #28a745;
+                            color: #155724;
+                        }
+                        .alert-warning {
+                            background-color: #fff3cd;
+                            border-color: #ffc107;
+                            color: #856404;
+                        }
+                        .alert-danger {
+                            background-color: #f8d7da;
+                            border-color: #dc3545;
+                            color: #721c24;
+                        }
+                        .alert-info {
+                            background-color: #d1ecf1;
+                            border-color: #17a2b8;
+                            color: #0c5460;
+                        }
+                        .badge {
+                            display: inline-block;
+                            padding: 3px 8px;
+                            border-radius: 10px;
+                            font-size: 10pt;
+                            font-weight: 600;
+                        }
+                        .badge-success { background-color: #28a745; color: white; }
+                        .badge-warning { background-color: #ffc107; color: #333; }
+                        .badge-danger { background-color: #dc3545; color: white; }
+                        .badge-info { background-color: #17a2b8; color: white; }
+                        .badge-secondary { background-color: #6c757d; color: white; }
+                        .header {
+                            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+                            color: white;
+                            padding: 20px;
+                            text-align: center;
+                            margin-bottom: 30px;
+                            border-radius: 5px;
+                        }
+                        .header h1 {
+                            color: white;
+                            margin: 0;
+                        }
+                        ul, ol {
+                            margin: 10px 0;
+                            padding-left: 25px;
+                        }
+                        li {
+                            margin: 5px 0;
+                        }
+                        .btn { display: none; }
+                        @page {
+                            margin: 2cm;
+                        }
+                        .info-grid {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 15px;
+                            margin: 15px 0;
+                        }
+                        .info-box {
+                            background-color: #f8f9fa;
+                            padding: 10px;
+                            border-radius: 5px;
+                            border-left: 4px solid #1565c0;
+                        }
+                        .route-display {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 20px;
+                            margin: 20px 0;
+                            padding: 15px;
+                            background: #e3f2fd;
+                            border-radius: 5px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>🚢 ANALISI SINISTRO TRASPORTI - ${activeTabButton.textContent}</h1>
+                        <p>Data stampa: ${new Date().toLocaleDateString('it-IT')}</p>
+                    </div>
+                    ${activeTab.innerHTML}
+                </body>
+                </html>
+            `;
+            
+            // Scrivi il contenuto nella nuova finestra
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            // Attendi che il contenuto sia caricato e poi stampa
+            printWindow.onload = function() {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            };
+        }
+    </script>
+</body>
+</html> 

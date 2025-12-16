@@ -15,10 +15,8 @@ Scarica da: https://git-scm.com/download/win
 - Durante installazione: usa le opzioni di default
 - Dopo installazione, apri CMD e verifica: `git --version`
 
-### 3. API Key Gemini
-1. Vai su https://aistudio.google.com/app/apikey
-2. Clicca "Create API Key"
-3. Copia la chiave
+### 4. Microsoft Word (Opzionale)
+Per la conversione ottimale di file `.docx` e `.doc` in PDF nel modulo Sinistri. Senza Word installato, il sistema userà metodi di fallback (estrazione testo semplice).
 
 ---
 
@@ -44,12 +42,21 @@ source venv/bin/activate
 
 # 4. Installa dipendenze
 pip install -r requirements.txt
+# (Per Sinistri: pandas, docx2pdf, extract-msg, openpyxl, pillow)
 
 # 5. Crea file .env
 # Copia .env.example in .env e inserisci la tua API key
 copy .env.example .env
 # Modifica .env con un editor di testo
 ```
+...
+├── prompts/
+│   ├── rc_generale/
+│   └── sinistri/         # [NUOVO] Modulo Sinistri
+│       ├── base.txt
+│       └── template_sinistro.html
+├── static/               # CSS, JS
+...
 
 ### File .env (esempio)
 ```
