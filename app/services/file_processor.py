@@ -5,7 +5,14 @@ import logging
 import extract_msg
 import email
 from email import policy
-import docx2pdf
+
+# docx2pdf requires Microsoft Word - make it optional for Linux/Docker
+try:
+    import docx2pdf
+    HAS_DOCX2PDF = True
+except ImportError:
+    HAS_DOCX2PDF = False
+
 from docx import Document as DocxDocument
 import pandas as pd
 from openpyxl import load_workbook
@@ -148,23 +155,45 @@ def process_file_recursive(file_path, output_dir, visited=None):
     # 3. WORD Processing (.docx)
     elif ext == '.docx':
         try:
-            # Requires Word installed on Windows for docx2pdf
-            # Fallback if failed?
             pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
-            try:
-                docx2pdf.convert(file_path, pdf_path)
+            converted = False
+            
+            # Try docx2pdf if available (requires Microsoft Word)
+            if HAS_DOCX2PDF:
+                try:
+                    docx2pdf.convert(file_path, pdf_path)
+                    converted = True
+                except Exception as e:
+                    logger.warning(f"docx2pdf failed: {e}. Using text extraction fallback.")
+            
+            if converted:
                 processed_files.append({
                     'path': pdf_path,
                     'original_name': filename,
                     'type': 'application/pdf'
                 })
-            except Exception as e:
-                logger.warning(f"docx2pdf failed: {e}. Trying simple text extraction.")
-                # Fallback: Extract text
-                # ...
-                pass
+            else:
+                # Fallback: Extract text from docx and create simple PDF
+                logger.info("Using text extraction fallback for .docx")
+                try:
+                    doc = DocxDocument(file_path)
+                    c = canvas.Canvas(pdf_path, pagesize=letter)
+                    textobject = c.beginText(40, 750)
+                    textobject.setFont("Helvetica", 10)
+                    for para in doc.paragraphs:
+                        for line in para.text.split('\n'):
+                            textobject.textLine(line[:100])
+                    c.drawText(textobject)
+                    c.save()
+                    processed_files.append({
+                        'path': pdf_path,
+                        'original_name': filename,
+                        'type': 'application/pdf'
+                    })
+                except Exception as fallback_e:
+                    logger.error(f"Fallback text extraction also failed: {fallback_e}")
         except Exception as e:
-             logger.error(f"Error processing .docx {file_path}: {e}")
+            logger.error(f"Error processing .docx {file_path}: {e}")
 
     # 4. EXCEL Processing (.xlsx)
     elif ext == '.xlsx':
