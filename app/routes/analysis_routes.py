@@ -51,7 +51,7 @@ class StartAnalysisRequest(BaseModel):
     analysis_level: str = "cliente"  # cliente | compagnia
     masking_data: Optional[MaskingData] = None
     skip_masking: bool = False
-    llm_model: str = "gemini-2.5-flash"
+    llm_model: str = "gemini-3-flash-preview"
 
 class AnalysisResponse(BaseModel):
     analysis_id: int
@@ -78,6 +78,25 @@ class StartAnalysisResponse(BaseModel):
     analysis_id: int
     status: str
     message: str
+
+class CorrectionRequest(BaseModel):
+    correction_message: str
+
+# Section dependency mapping - when a section is corrected, which sections need regeneration
+SECTION_DEPENDENCIES = {
+    "indirizzo": ["ubicazioni", "mappa", "cat-nat"],
+    "ubicazione": ["ubicazioni", "mappa", "cat-nat"],
+    "location": ["ubicazioni", "mappa", "cat-nat"],
+    "somma": ["partite", "garanzie", "premio"],
+    "capitale": ["partite", "garanzie", "premio"],
+    "massimale": ["garanzie", "premio"],
+    "polizza": ["anagrafica"],
+    "contraente": ["anagrafica"],
+    "copertura": ["garanzie", "esclusioni"],
+    "esclusione": ["esclusioni"],
+    "franchigia": ["garanzie"],
+    "data": ["anagrafica"],
+}
 
 
 # Routes
@@ -585,3 +604,130 @@ def full_analysis_pipeline(
     finally:
         db.close()
         print(f"DEBUG: Background Analysis Task Finished. ID={analysis_id}")
+
+
+@router.post("/{analysis_id}/correct")
+async def correct_analysis(
+    analysis_id: int,
+    correction: CorrectionRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Apply a correction to an analysis and regenerate affected sections"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Get the analysis
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    # Get original extracted text from documents
+    # Documents can be from document_id (single) or source_document_ids (JSON array)
+    doc_ids = []
+    if analysis.source_document_ids:
+        try:
+            doc_ids = json.loads(analysis.source_document_ids)
+        except:
+            pass
+    if analysis.document_id and analysis.document_id not in doc_ids:
+        doc_ids.append(analysis.document_id)
+    
+    original_text = ""
+    if doc_ids:
+        documents = db.query(models.Document).filter(models.Document.id.in_(doc_ids)).all()
+        
+        # Load text from extracted_text_path files
+        for doc in documents:
+            if doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+                try:
+                    with open(doc.extracted_text_path, 'r', encoding='utf-8') as f:
+                        original_text += f.read() + "\n\n"
+                except Exception as e:
+                    print(f"Error loading text from {doc.extracted_text_path}: {e}")
+    
+    current_html = analysis.report_html_display or ""
+    
+    # Identify which sections need regeneration based on keywords in correction message
+    correction_lower = correction.correction_message.lower()
+    sections_to_update = set()
+    
+    for keyword, sections in SECTION_DEPENDENCIES.items():
+        if keyword in correction_lower:
+            sections_to_update.update(sections)
+    
+    # If no specific sections identified, regenerate all
+    if not sections_to_update:
+        sections_to_update = {"all"}
+    
+    sections_list = list(sections_to_update)
+    
+    # Build correction prompt
+    correction_prompt = f"""
+L'utente ha segnalato il seguente errore nel report generato:
+"{correction.correction_message}"
+
+TESTO ORIGINALE ESTRATTO DAL DOCUMENTO:
+{original_text[:15000]}  
+
+REPORT HTML ATTUALE:
+{current_html[:20000] if len(current_html) > 20000 else current_html}
+
+ISTRUZIONI:
+1. Analizza la correzione richiesta dall'utente
+2. Cerca nel testo originale le informazioni corrette
+3. Rigenera SOLO le sezioni interessate: {', '.join(sections_list) if 'all' not in sections_list else 'tutte le sezioni'}
+4. Restituisci il report HTML completo aggiornato
+
+IMPORTANTE: 
+- Mantieni la stessa struttura HTML e CSS del report originale
+- Aggiorna le sezioni interessate con i dati corretti
+- Se la correzione riguarda un indirizzo, aggiorna anche le coordinate della mappa e i dati catastrofali
+- Restituisci SOLO l'HTML completo, senza spiegazioni
+"""
+    
+    try:
+        # Create LLM client and call Gemini to regenerate
+        from ..llm_client import LLMClient
+        client = LLMClient(model_name=analysis.llm_model or "gemini-3-flash-preview")
+        
+        # Use generate_content directly for correction
+        import google.generativeai as genai
+        generation_config = genai.GenerationConfig(
+            temperature=0.3,
+            max_output_tokens=65536,
+        )
+        
+        response = client.model.generate_content(
+            correction_prompt,
+            generation_config=generation_config,
+            stream=True
+        )
+        
+        # Collect streamed response
+        updated_html = ""
+        for chunk in response:
+            if chunk.text:
+                updated_html += chunk.text
+        
+        # Clean up the response (remove markdown code blocks if present)
+        updated_html = client._strip_markdown_wrappers(updated_html)
+        
+        # Update the analysis in database
+        analysis.report_html_display = updated_html
+        db.commit()
+        
+        return {
+            "success": True,
+            "message": f"Correzione applicata. Sezioni aggiornate: {', '.join(sections_list)}",
+            "updated_sections": sections_list,
+            "updated_html": updated_html
+        }
+        
+    except Exception as e:
+        print(f"Error applying correction: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Errore nell'applicare la correzione: {str(e)}")
+

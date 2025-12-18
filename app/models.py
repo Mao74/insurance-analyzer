@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Enum, Boolean
+from sqlalchemy import Column, Integer, BigInteger, String, DateTime, Text, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
@@ -15,8 +15,19 @@ class AnalysisStatus(enum.Enum):
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)  # Email as username
+    username = Column(String(50), unique=True, nullable=True, index=True)  # Legacy, keep for compatibility
     password_hash = Column(String(255), nullable=False)
+    
+    # User management fields
+    is_admin = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    access_expires_at = Column(DateTime, nullable=True)  # NULL = never expires
+    last_login = Column(DateTime, nullable=True)
+    
+    # Token tracking
+    total_tokens_used = Column(BigInteger, default=0)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     documents = relationship("Document", back_populates="user")
 

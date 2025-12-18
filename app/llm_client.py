@@ -6,8 +6,8 @@ class LLMClient:
     def __init__(self, api_key: str = None, model_name: str = None):
         key = api_key or settings.GEMINI_API_KEY
         genai.configure(api_key=key)
-        # User requested gemini-2.5-flash
-        self.model_name = model_name or 'gemini-2.5-flash'
+        # User requested gemini-3-flash-preview
+        self.model_name = model_name or 'gemini-3-flash-preview'
         self.model = genai.GenerativeModel(self.model_name)
 
     def count_tokens(self, text: str) -> int:

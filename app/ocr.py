@@ -124,31 +124,141 @@ def extract_with_doctr(file_path: str) -> str:
 def word_count(text: str) -> int:
     return len(text.split())
 
+def get_page_word_counts(file_path: str) -> list[tuple[int, str]]:
+    """Returns list of (word_count, text) for each page."""
+    page_data = []
+    try:
+        with fitz.open(file_path) as doc:
+            for page in doc:
+                text = page.get_text()
+                page_data.append((word_count(text), text))
+    except Exception as e:
+        print(f"Error getting page word counts: {e}")
+    return page_data
+
+def extract_images_from_page_ocr(page, page_num: int) -> str:
+    """Extract images from a page and run OCR on them using Tesseract."""
+    from PIL import Image
+    text_parts = []
+    
+    try:
+        images = page.get_images()
+        for img_index, img in enumerate(images):
+            xref = img[0]
+            # Get image dimensions - skip small images (logos, icons)
+            width = img[2]
+            height = img[3]
+            if width < 500 or height < 500:
+                continue
+                
+            try:
+                base_image = page.parent.extract_image(xref)
+                image_bytes = base_image["image"]
+                
+                # Convert to PIL Image
+                import io
+                pil_image = Image.open(io.BytesIO(image_bytes))
+                
+                # Convert to RGB if needed
+                if pil_image.mode != 'RGB':
+                    pil_image = pil_image.convert('RGB')
+                
+                # Run Tesseract OCR on the image
+                ocr_text = pytesseract.image_to_string(pil_image, lang='ita')
+                if ocr_text.strip():
+                    text_parts.append(ocr_text)
+                    
+            except Exception as e:
+                print(f"Error extracting image {img_index} from page {page_num}: {e}")
+                continue
+                
+    except Exception as e:
+        print(f"Error processing images on page {page_num}: {e}")
+    
+    return "\n".join(text_parts)
+
 def process_pdf(file_path: str) -> tuple[str, str]:
     """
     Ritorna (testo_estratto, metodo_usato)
-    metodo_usato: 'nativo' | 'ocr_doctr' | 'ocr_tesseract'
+    metodo_usato: 'nativo' | 'ibrido' | 'ocr_doctr' | 'ocr_tesseract'
+    
+    Logica migliorata:
+    1. Estrae testo nativo e conta parole per pagina
+    2. Se media parole/pagina >= 50: PDF nativo
+    3. Se media < 50: approccio ibrido (testo nativo + OCR su pagine povere)
     """
-    # Step 1: Prova estrazione nativa con PyMuPDF
-    text = extract_native_text(file_path)
+    MIN_WORDS_PER_PAGE = 50  # Soglia per considerare una pagina "ricca" di testo
     
-    # Se il testo estratto ha più di 100 parole, è un PDF nativo
-    if word_count(text) > 100:
-        return text, 'nativo'
+    # Step 1: Analizza ogni pagina
+    page_data = get_page_word_counts(file_path)
     
-    # Step 2: PDF scansionato, usa doctr
+    if not page_data:
+        # Fallback a Tesseract se non riusciamo a leggere il PDF
+        print("Could not read PDF pages, falling back to Tesseract...")
+        text_tess = extract_with_tesseract(file_path)
+        return text_tess, 'ocr_tesseract'
+    
+    total_words = sum(wc for wc, _ in page_data)
+    num_pages = len(page_data)
+    avg_words_per_page = total_words / num_pages if num_pages > 0 else 0
+    
+    print(f"PDF Analysis: {num_pages} pages, {total_words} total words, {avg_words_per_page:.1f} avg words/page")
+    
+    # Count pages with low text content
+    low_text_pages = [i for i, (wc, _) in enumerate(page_data) if wc < MIN_WORDS_PER_PAGE]
+    
+    # Step 2: Decide strategy
+    if avg_words_per_page >= MIN_WORDS_PER_PAGE and len(low_text_pages) < num_pages * 0.3:
+        # PDF nativo - più del 70% delle pagine ha testo sufficiente
+        full_text = "\n".join(text for _, text in page_data)
+        print(f"PDF classified as NATIVE ({len(low_text_pages)} low-text pages out of {num_pages})")
+        return full_text, 'nativo'
+    
+    # Step 3: Approccio ibrido - estrai testo + OCR sulle pagine con poco testo
+    print(f"PDF classified as HYBRID - {len(low_text_pages)} pages need OCR out of {num_pages}")
+    
+    combined_text = []
+    
     try:
-        text_doctr = extract_with_doctr(file_path)
-        # Check simple heuristic logic if doctr returned something valid
-        if text_doctr and word_count(text_doctr) > 10:
-             return text_doctr, 'ocr_doctr'
-    except Exception as e:
-        print(f"Doctr failed (falling back to Tesseract): {e}")
+        with fitz.open(file_path) as doc:
+            for page_num, (wc, native_text) in enumerate(page_data):
+                if wc >= MIN_WORDS_PER_PAGE:
+                    # Pagina con testo sufficiente - usa testo nativo
+                    combined_text.append(native_text)
+                else:
+                    # Pagina con poco testo - prova OCR su immagini embedded
+                    page = doc[page_num]
+                    ocr_text = extract_images_from_page_ocr(page, page_num)
+                    
+                    if word_count(ocr_text) > word_count(native_text):
+                        # OCR ha estratto più testo
+                        combined_text.append(ocr_text)
+                        print(f"  Page {page_num + 1}: OCR extracted {word_count(ocr_text)} words (native had {wc})")
+                    else:
+                        # Fallback: renderizza intera pagina e OCR
+                        mat = fitz.Matrix(2.0, 2.0)  # 2x zoom
+                        pix = page.get_pixmap(matrix=mat)
+                        from PIL import Image
+                        mode = "RGB" if pix.alpha == 0 else "RGBA"
+                        img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
+                        if img.mode != 'RGB':
+                            img = img.convert('RGB')
+                        full_page_ocr = pytesseract.image_to_string(img, lang='ita')
+                        
+                        if word_count(full_page_ocr) > wc:
+                            combined_text.append(full_page_ocr)
+                            print(f"  Page {page_num + 1}: Full-page OCR extracted {word_count(full_page_ocr)} words")
+                        else:
+                            combined_text.append(native_text)
+                            print(f"  Page {page_num + 1}: Kept native text ({wc} words)")
     
-    # Step 3: Fallback Tesseract
-    print("Falling back to Tesseract...")
-    text_tess = extract_with_tesseract(file_path)
-    return text_tess, 'ocr_tesseract'
+    except Exception as e:
+        print(f"Error in hybrid processing: {e}")
+        # Fallback completo a Tesseract
+        text_tess = extract_with_tesseract(file_path)
+        return text_tess, 'ocr_tesseract'
+    
+    return "\n".join(combined_text), 'ibrido'
 
 def extract_image_with_doctr(file_path: str) -> str:
     """OCR an image file using Doctr."""
