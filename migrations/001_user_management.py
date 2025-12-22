@@ -72,7 +72,7 @@ def run_migration():
         admin = db.query(models.User).filter(models.User.username == "admin").first()
         
         admin_email = "molinari.maurizio@gmail.com"
-        admin_password = "MonteRosa74$"
+        admin_password = "MonteRosa74"
         
         if admin:
             # Update existing admin

@@ -1,612 +1,989 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analisi Sinistro Property - Report Broker</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg-body: #f1f5f9;
-    --bg-paper: #ffffff;
-    --primary-dark: #0f172a;
-    --primary-main: #334155;
-    --accent-blue: #2563eb;
-    --accent-green: #16a34a;
-    --accent-amber: #d97706;
-    --accent-red: #dc2626;
-    --accent-purple: #7c3aed;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --border-subtle: #e2e8f0;
-    --border-strong: #cbd5e1;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Sinistro Property - Report Broker</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-paper: #ffffff;
+            --primary-dark: #0f172a;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --accent-green: #16a34a;
+            --accent-amber: #d97706;
+            --accent-red: #dc2626;
+            --accent-purple: #7c3aed;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
 
-* { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 20px;
-    background: var(--bg-body);
-    color: var(--text-main);
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-body);
+            color: var(--text-main);
+        }
 
-.report-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: var(--bg-paper);
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-}
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-/* --- HEADER --- */
-.header {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    color: white;
-    padding: 20px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.header-left h1 { font-size: 18px; font-weight: 700; margin: 0; }
-.header-left p { font-size: 10px; color: rgba(255,255,255,0.7); margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 1px; }
-.header-right { text-align: right; }
-.header-right .claim-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #f87171; }
-.header-right .policy-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #60a5fa; margin-top: 3px; }
-.header-right .date { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+        /* --- HEADER --- */
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* --- TABS --- */
-.tabs { background: #1e293b; display: flex; overflow-x: auto; border-bottom: 1px solid #334155; }
-.tab-link {
-    background: transparent; color: rgba(255,255,255,0.6); border: none;
-    padding: 10px 16px; cursor: pointer; font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
-    border-bottom: 2px solid transparent; transition: all 0.2s;
-}
-.tab-link:hover { color: white; background: rgba(255,255,255,0.05); }
-.tab-link.active { color: #f87171; border-bottom-color: #f87171; background: rgba(248,113,113,0.1); }
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
 
-/* --- CONTENT --- */
-.tab-content { display: none; padding: 20px 25px; }
-.tab-content.active { display: block; }
+        .header-left p {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 4px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-/* --- SECTION HEADERS --- */
-.section-header {
-    background: linear-gradient(90deg, #334155, #475569);
-    color: white; padding: 8px 15px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin: 20px 0 10px 0; border-radius: 4px;
-}
-.section-header:first-child { margin-top: 0; }
+        .header-right {
+            text-align: right;
+        }
 
-.section-header.alert {
-    background: linear-gradient(90deg, #dc2626, #ef4444);
-}
-.section-header.action {
-    background: linear-gradient(90deg, #2563eb, #3b82f6);
-}
-.section-header.success {
-    background: linear-gradient(90deg, #16a34a, #22c55e);
-}
+        .header-right .claim-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #f87171;
+        }
 
-/* --- TABLES --- */
-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10px; }
-th {
-    background: #f1f5f9; color: var(--primary-dark); font-weight: 700;
-    padding: 8px 10px; text-align: left; border: 1px solid var(--border-strong);
-    font-size: 9px; text-transform: uppercase;
-}
-td { padding: 6px 10px; border: 1px solid var(--border-subtle); vertical-align: top; }
-tr:nth-child(even) { background: #f8fafc; }
-.col-label { background: #f1f5f9; font-weight: 600; width: 22%; }
-.col-curr { text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
-.col-center { text-align: center; }
-.note-cell { font-size: 9px; color: var(--text-muted); font-style: italic; }
+        .header-right .policy-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #60a5fa;
+            margin-top: 3px;
+        }
 
-/* --- EXECUTIVE SUMMARY --- */
-.exec-summary {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
-.exec-summary h2 { margin: 0 0 15px 0; font-size: 14px; font-weight: 700; }
-.exec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-.exec-card {
-    background: rgba(255,255,255,0.1);
-    padding: 12px;
-    border-radius: 6px;
-    text-align: center;
-}
-.exec-card .value { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; }
-.exec-card .label { font-size: 9px; opacity: 0.8; margin-top: 4px; text-transform: uppercase; }
-.exec-card.danger .value { color: #f87171; }
-.exec-card.warning .value { color: #fbbf24; }
-.exec-card.success .value { color: #4ade80; }
-.exec-card.info .value { color: #60a5fa; }
+        .header-right .date {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 3px;
+        }
 
-/* --- BADGES --- */
-.badge { display: inline-block; padding: 3px 10px; border-radius: 3px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.tag-ok { background: #dcfce7; color: #166534; }
-.tag-warn { background: #fef3c7; color: #92400e; }
-.tag-error { background: #fee2e2; color: #991b1b; }
-.tag-info { background: #dbeafe; color: #1e40af; }
-.tag-purple { background: #f3e8ff; color: #6b21a8; }
+        /* --- TABS --- */
+        .tabs {
+            background: #1e293b;
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid #334155;
+        }
 
-/* --- ALERT BOXES --- */
-.alert-box {
-    border-radius: 6px;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border-left: 4px solid;
-}
-.alert-box.critical { background: #fef2f2; border-color: #dc2626; }
-.alert-box.warning { background: #fffbeb; border-color: #d97706; }
-.alert-box.info { background: #eff6ff; border-color: #2563eb; }
-.alert-box.success { background: #f0fdf4; border-color: #16a34a; }
-.alert-box .alert-title { font-weight: 700; font-size: 11px; margin-bottom: 5px; }
-.alert-box .alert-content { font-size: 10px; }
+        .tab-link {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
 
-/* --- TIMELINE --- */
-.timeline { position: relative; padding-left: 25px; margin: 15px 0; }
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--border-strong);
-}
-.timeline-item {
-    position: relative;
-    padding-bottom: 15px;
-}
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -21px;
-    top: 4px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent-blue);
-    border: 2px solid white;
-    box-shadow: 0 0 0 2px var(--accent-blue);
-}
-.timeline-item.critical::before { background: var(--accent-red); box-shadow: 0 0 0 2px var(--accent-red); }
-.timeline-item.done::before { background: var(--accent-green); box-shadow: 0 0 0 2px var(--accent-green); }
-.timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); }
-.timeline-title { font-weight: 600; font-size: 11px; margin: 2px 0; }
-.timeline-desc { font-size: 10px; color: var(--text-muted); }
+        .tab-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
 
-/* --- CHECKLIST --- */
-.checklist { margin: 10px 0; }
-.checklist-item {
-    display: flex;
-    align-items: flex-start;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border: 1px solid var(--border-subtle);
-    border-radius: 4px;
-    margin-bottom: 6px;
-}
-.checklist-item.done { background: #f0fdf4; border-color: #86efac; }
-.checklist-item.pending { background: #fffbeb; border-color: #fcd34d; }
-.checklist-item.missing { background: #fef2f2; border-color: #fca5a5; }
-.checklist-icon { width: 20px; margin-right: 10px; font-size: 14px; }
-.checklist-text { flex: 1; }
-.checklist-text strong { font-size: 10px; display: block; }
-.checklist-text span { font-size: 9px; color: var(--text-muted); }
+        .tab-link.active {
+            color: #f87171;
+            border-bottom-color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
 
-/* --- ACTION CARDS --- */
-.action-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 15px 0; }
-.action-card {
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    padding: 12px;
-    background: white;
-}
-.action-card.urgent { border-left: 4px solid var(--accent-red); }
-.action-card.normal { border-left: 4px solid var(--accent-blue); }
-.action-card.optional { border-left: 4px solid var(--accent-amber); }
-.action-card .action-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.action-card .action-title { font-weight: 700; font-size: 11px; }
-.action-card .action-deadline { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent-red); }
-.action-card .action-desc { font-size: 10px; color: var(--text-muted); }
+        /* --- CONTENT --- */
+        .tab-content {
+            display: none;
+            padding: 20px 25px;
+        }
 
-/* --- KPI CARDS --- */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 15px 0; }
-.kpi-card {
-    background: #f8fafc;
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 15px;
-    text-align: center;
-}
-.kpi-card .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
-.kpi-card .kpi-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; }
-.kpi-card.positive .kpi-value { color: var(--accent-green); }
-.kpi-card.negative .kpi-value { color: var(--accent-red); }
-.kpi-card.neutral .kpi-value { color: var(--accent-blue); }
+        .tab-content.active {
+            display: block;
+        }
 
-/* --- COVERAGE MATRIX --- */
-.coverage-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 12px;
-    border: 1px solid var(--border-subtle);
-    border-radius: 4px;
-    margin-bottom: 6px;
-    background: white;
-}
-.coverage-row.covered { border-left: 4px solid var(--accent-green); }
-.coverage-row.excluded { border-left: 4px solid var(--accent-red); background: #fef2f2; }
-.coverage-row.partial { border-left: 4px solid var(--accent-amber); background: #fffbeb; }
-.coverage-row .coverage-name { flex: 1; font-weight: 600; font-size: 11px; }
-.coverage-row .coverage-detail { font-size: 10px; color: var(--text-muted); margin-right: 15px; }
+        /* --- SECTION HEADERS --- */
+        .section-header {
+            background: linear-gradient(90deg, #334155, #475569);
+            color: white;
+            padding: 8px 15px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 10px 0;
+            border-radius: 4px;
+        }
 
-/* --- NEGOTIATION STRATEGY --- */
-.strategy-box {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-    color: white;
-    padding: 15px;
-    border-radius: 6px;
-    margin: 15px 0;
-}
-.strategy-box h3 { margin: 0 0 10px 0; font-size: 12px; }
-.strategy-box ul { margin: 0; padding-left: 20px; font-size: 10px; }
-.strategy-box li { margin-bottom: 5px; }
+        .section-header:first-child {
+            margin-top: 0;
+        }
 
-/* --- PRINT --- */
-@media print {
-    body { padding: 0; background: white; font-size: 9px; }
-    .report-container { border: none; box-shadow: none; }
-    .tabs { display: none; }
-    .tab-content { display: block !important; page-break-inside: avoid; }
-}
-</style>
+        .section-header.alert {
+            background: linear-gradient(90deg, #334155, #475569);
+        }
+
+        .section-header.action {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+        }
+
+        .section-header.success {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+        }
+
+        /* --- TABLES --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 10px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 700;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 6px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .col-label {
+            background: #f1f5f9;
+            font-weight: 600;
+            width: 22%;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        .note-cell {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* --- EXECUTIVE SUMMARY --- */
+        .exec-summary {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .exec-summary h2 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .exec-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .exec-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .exec-card .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .exec-card .label {
+            font-size: 9px;
+            opacity: 0.8;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .exec-card.danger .value {
+            color: #f87171;
+        }
+
+        .exec-card.warning .value {
+            color: #fbbf24;
+        }
+
+        .exec-card.success .value {
+            color: #4ade80;
+        }
+
+        .exec-card.info .value {
+            color: #60a5fa;
+        }
+
+        /* --- BADGES --- */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tag-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag-warn {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .tag-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tag-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tag-purple {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        /* --- ALERT BOXES --- */
+        .alert-box {
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+        }
+
+        .alert-box.critical {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-color: #d97706;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .alert-box.success {
+            background: #f0fdf4;
+            border-color: #16a34a;
+        }
+
+        .alert-box .alert-title {
+            font-weight: 700;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .alert-box .alert-content {
+            font-size: 10px;
+        }
+
+        /* --- TIMELINE --- */
+        .timeline {
+            position: relative;
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-strong);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--accent-blue);
+        }
+
+        .timeline-item.critical::before {
+            background: var(--accent-red);
+            box-shadow: 0 0 0 2px var(--accent-red);
+        }
+
+        .timeline-item.done::before {
+            background: var(--accent-green);
+            box-shadow: 0 0 0 2px var(--accent-green);
+        }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 11px;
+            margin: 2px 0;
+        }
+
+        .timeline-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* --- CHECKLIST --- */
+        .checklist {
+            margin: 10px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .checklist-item.done {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .checklist-item.pending {
+            background: #fffbeb;
+            border-color: #fcd34d;
+        }
+
+        .checklist-item.missing {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        .checklist-icon {
+            width: 20px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .checklist-text {
+            flex: 1;
+        }
+
+        .checklist-text strong {
+            font-size: 10px;
+            display: block;
+        }
+
+        .checklist-text span {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        /* --- ACTION CARDS --- */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .action-card {
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            padding: 12px;
+            background: white;
+        }
+
+        .action-card.urgent {
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .action-card.normal {
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .action-card.optional {
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        .action-card .action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .action-card .action-title {
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .action-card .action-deadline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: var(--accent-red);
+        }
+
+        .action-card .action-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* --- KPI CARDS --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .kpi-card .kpi-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .kpi-card .kpi-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .kpi-card.positive .kpi-value {
+            color: var(--accent-green);
+        }
+
+        .kpi-card.negative .kpi-value {
+            color: var(--accent-red);
+        }
+
+        .kpi-card.neutral .kpi-value {
+            color: var(--accent-blue);
+        }
+
+        /* --- COVERAGE MATRIX --- */
+        .coverage-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            margin-bottom: 6px;
+            background: white;
+        }
+
+        .coverage-row.covered {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .coverage-row.excluded {
+            border-left: 4px solid var(--accent-red);
+            background: #fef2f2;
+        }
+
+        .coverage-row.partial {
+            border-left: 4px solid var(--accent-amber);
+            background: #fffbeb;
+        }
+
+        .coverage-row .coverage-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .coverage-row .coverage-detail {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-right: 15px;
+        }
+
+        /* --- NEGOTIATION STRATEGY --- */
+        .strategy-box {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .strategy-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+        }
+
+        .strategy-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 10px;
+        }
+
+        .strategy-box li {
+            margin-bottom: 5px;
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+                font-size: 9px;
+            }
+
+            .report-container {
+                border: none;
+                box-shadow: none;
+            }
+
+            .tabs {
+                display: none;
+            }
+
+            .tab-content {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="report-container">
+    <div class="report-container">
 
-    <!-- ================================================================ -->
-    <!-- HEADER -->
-    <!-- ================================================================ -->
-    <div class="header">
-        <div class="header-left">
-            <h1>📋 Analisi Sinistro Property</h1>
-            <p>Report Gestione Broker • Analisi Copertura • Strategia Negoziale</p>
+        <!-- ================================================================ -->
+        <!-- HEADER -->
+        <!-- ================================================================ -->
+        <div class="header">
+            <div class="header-left">
+                <h1>📋 Analisi Sinistro Property</h1>
+                <p>Report Gestione Broker • Analisi Copertura • Strategia Negoziale</p>
+            </div>
+            <div class="header-right">
+                <div class="claim-num">SIN. [NUMERO_SINISTRO]</div>
+                <div class="policy-num">Pol. [NUMERO_POLIZZA]</div>
+                <div class="date">Evento: [DATA_EVENTO] • Denuncia: [DATA_DENUNCIA]</div>
+            </div>
         </div>
-        <div class="header-right">
-            <div class="claim-num">SIN. [NUMERO_SINISTRO]</div>
-            <div class="policy-num">Pol. [NUMERO_POLIZZA]</div>
-            <div class="date">Evento: [DATA_EVENTO] • Denuncia: [DATA_DENUNCIA]</div>
+
+        <!-- ================================================================ -->
+        <!-- TABS -->
+        <!-- ================================================================ -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab('Summary')">1. Sintesi</button>
+            <button class="tab-link" onclick="openTab('Copertura')">2. Copertura</button>
+            <button class="tab-link" onclick="openTab('Ricostruzione')">3. Ricostruzione</button>
+            <button class="tab-link" onclick="openTab('Documenti')">4. Documenti</button>
+            <button class="tab-link" onclick="openTab('Quantificazione')">5. Quantificazione</button>
+            <button class="tab-link" onclick="openTab('Alert')">6. Alert & Criticità</button>
+            <button class="tab-link" onclick="openTab('Strategia')">7. Strategia</button>
+            <button class="tab-link" onclick="openTab('Azioni')">8. Azioni Broker</button>
         </div>
-    </div>
 
-    <!-- ================================================================ -->
-    <!-- TABS -->
-    <!-- ================================================================ -->
-    <div class="tabs">
-        <button class="tab-link active" onclick="openTab('Summary')">1. Sintesi</button>
-        <button class="tab-link" onclick="openTab('Copertura')">2. Copertura</button>
-        <button class="tab-link" onclick="openTab('Ricostruzione')">3. Ricostruzione</button>
-        <button class="tab-link" onclick="openTab('Documenti')">4. Documenti</button>
-        <button class="tab-link" onclick="openTab('Quantificazione')">5. Quantificazione</button>
-        <button class="tab-link" onclick="openTab('Alert')">6. Alert & Criticità</button>
-        <button class="tab-link" onclick="openTab('Strategia')">7. Strategia</button>
-        <button class="tab-link" onclick="openTab('Azioni')">8. Azioni Broker</button>
-    </div>
+        <!-- ================================================================ -->
+        <!-- TAB 1: SINTESI ESECUTIVA -->
+        <!-- ================================================================ -->
+        <div id="Summary" class="tab-content active">
 
-    <!-- ================================================================ -->
-    <!-- TAB 1: SINTESI ESECUTIVA -->
-    <!-- ================================================================ -->
-    <div id="Summary" class="tab-content active">
-
-        <div class="exec-summary">
-            <h2>Executive Summary</h2>
-            <div class="exec-grid">
-                <div class="exec-card info">
-                    <div class="value">[IMPORTO_RICHIESTO]</div>
-                    <div class="label">Richiesto Cliente</div>
+            <div class="exec-summary">
+                <h2>Executive Summary</h2>
+                <div class="exec-grid">
+                    <div class="exec-card info">
+                        <div class="value">[IMPORTO_RICHIESTO]</div>
+                        <div class="label">Richiesto Cliente</div>
+                    </div>
+                    <div class="exec-card success">
+                        <div class="value">[IMPORTO_STIMATO]</div>
+                        <div class="label">Stima Indennizzo</div>
+                    </div>
+                    <div class="exec-card warning">
+                        <div class="value">[PROBABILITA]%</div>
+                        <div class="label">Prob. Liquidazione</div>
+                    </div>
+                    <div class="exec-card danger">
+                        <div class="value">[N_CRITICITA]</div>
+                        <div class="label">Criticità Rilevate</div>
+                    </div>
                 </div>
-                <div class="exec-card success">
-                    <div class="value">[IMPORTO_STIMATO]</div>
-                    <div class="label">Stima Indennizzo</div>
+            </div>
+
+            <div class="section-header">Dati Identificativi</div>
+            <table>
+                <tr>
+                    <td class="col-label">Contraente / Assicurato</td>
+                    <td>[CONTRAENTE]</td>
+                    <td class="col-label">P.IVA</td>
+                    <td style="font-family: 'JetBrains Mono', monospace;">[PARTITA_IVA]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Polizza N°</td>
+                    <td style="font-family: 'JetBrains Mono', monospace;">[NUMERO_POLIZZA]</td>
+                    <td class="col-label">Compagnia</td>
+                    <td>[COMPAGNIA]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Validità Polizza</td>
+                    <td>[DECORRENZA] - [SCADENZA]</td>
+                    <td class="col-label">Sinistro N°</td>
+                    <td style="font-family: 'JetBrains Mono', monospace; color: var(--accent-red);">[NUMERO_SINISTRO]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">Data Evento</td>
+                    <td>[DATA_EVENTO]</td>
+                    <td class="col-label">Data Denuncia</td>
+                    <td>[DATA_DENUNCIA]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Luogo Sinistro</td>
+                    <td colspan="3">[INDIRIZZO_SINISTRO]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Garanzia Attivata</td>
+                    <td><span class="badge tag-purple">[GARANZIA_PRINCIPALE]</span></td>
+                    <td class="col-label">Liquidatore</td>
+                    <td>[LIQUIDATORE_ASSEGNATO]</td>
+                </tr>
+            </table>
+
+            <div class="section-header">Sintesi Evento</div>
+            <div class="alert-box info">
+                <div class="alert-content">
+                    [AI: Descrizione sintetica dell'evento in 3-4 righe. Cosa è successo, quando, dove, entità apparente
+                    dei danni.]
                 </div>
-                <div class="exec-card warning">
-                    <div class="value">[PROBABILITA]%</div>
-                    <div class="label">Prob. Liquidazione</div>
+            </div>
+
+            <div class="section-header">Valutazione Preliminare Copertura</div>
+            <div class="kpi-grid">
+                <div class="kpi-card [positive/negative/neutral]">
+                    <div class="kpi-value">[SI/NO/PARZIALE]</div>
+                    <div class="kpi-label">Garanzia Opera</div>
                 </div>
-                <div class="exec-card danger">
-                    <div class="value">[N_CRITICITA]</div>
-                    <div class="label">Criticità Rilevate</div>
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[MASSIMALE]</div>
+                    <div class="kpi-label">Massimale Disponibile</div>
+                </div>
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[FRANCHIGIA]</div>
+                    <div class="kpi-label">Franchigia Applicabile</div>
+                </div>
+                <div class="kpi-card [positive/negative]">
+                    <div class="kpi-value">[SI/NO]</div>
+                    <div class="kpi-label">Esclusioni Rilevanti</div>
                 </div>
             </div>
-        </div>
 
-        <div class="section-header">Dati Identificativi</div>
-        <table>
-            <tr>
-                <td class="col-label">Contraente / Assicurato</td>
-                <td>[CONTRAENTE]</td>
-                <td class="col-label">P.IVA</td>
-                <td style="font-family: 'JetBrains Mono', monospace;">[PARTITA_IVA]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Polizza N°</td>
-                <td style="font-family: 'JetBrains Mono', monospace;">[NUMERO_POLIZZA]</td>
-                <td class="col-label">Compagnia</td>
-                <td>[COMPAGNIA]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Validità Polizza</td>
-                <td>[DECORRENZA] - [SCADENZA]</td>
-                <td class="col-label">Sinistro N°</td>
-                <td style="font-family: 'JetBrains Mono', monospace; color: var(--accent-red);">[NUMERO_SINISTRO]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Data Evento</td>
-                <td>[DATA_EVENTO]</td>
-                <td class="col-label">Data Denuncia</td>
-                <td>[DATA_DENUNCIA]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Luogo Sinistro</td>
-                <td colspan="3">[INDIRIZZO_SINISTRO]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Garanzia Attivata</td>
-                <td><span class="badge tag-purple">[GARANZIA_PRINCIPALE]</span></td>
-                <td class="col-label">Liquidatore</td>
-                <td>[LIQUIDATORE_ASSEGNATO]</td>
-            </tr>
-        </table>
-
-        <div class="section-header">Sintesi Evento</div>
-        <div class="alert-box info">
-            <div class="alert-content">
-                [AI: Descrizione sintetica dell'evento in 3-4 righe. Cosa è successo, quando, dove, entità apparente dei danni.]
+            <div class="section-header alert">⚠️ Principali Criticità</div>
+            <!-- [AI: ELENCARE LE 3-5 CRITICITÀ PRINCIPALI] -->
+            <div class="alert-box critical">
+                <div class="alert-title">1. [TITOLO_CRITICITÀ]</div>
+                <div class="alert-content">[Descrizione breve e impatto sulla liquidazione]</div>
             </div>
-        </div>
-
-        <div class="section-header">Valutazione Preliminare Copertura</div>
-        <div class="kpi-grid">
-            <div class="kpi-card [positive/negative/neutral]">
-                <div class="kpi-value">[SI/NO/PARZIALE]</div>
-                <div class="kpi-label">Garanzia Opera</div>
+            <div class="alert-box warning">
+                <div class="alert-title">2. [TITOLO_CRITICITÀ]</div>
+                <div class="alert-content">[Descrizione breve e impatto sulla liquidazione]</div>
             </div>
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[MASSIMALE]</div>
-                <div class="kpi-label">Massimale Disponibile</div>
+
+            <div class="section-header action">🎯 Azione Prioritaria</div>
+            <div class="alert-box info">
+                <div class="alert-title">DA FARE SUBITO</div>
+                <div class="alert-content">
+                    [AI: Indicare l'azione più urgente che il broker deve compiere. Es: "Richiedere al cliente
+                    documentazione fotografica aggiuntiva entro 48h per evitare contestazioni sulla preesistenza dei
+                    danni."]
+                </div>
             </div>
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[FRANCHIGIA]</div>
-                <div class="kpi-label">Franchigia Applicabile</div>
-            </div>
-            <div class="kpi-card [positive/negative]">
-                <div class="kpi-value">[SI/NO]</div>
-                <div class="kpi-label">Esclusioni Rilevanti</div>
-            </div>
+
         </div>
 
-        <div class="section-header alert">⚠️ Principali Criticità</div>
-        <!-- [AI: ELENCARE LE 3-5 CRITICITÀ PRINCIPALI] -->
-        <div class="alert-box critical">
-            <div class="alert-title">1. [TITOLO_CRITICITÀ]</div>
-            <div class="alert-content">[Descrizione breve e impatto sulla liquidazione]</div>
-        </div>
-        <div class="alert-box warning">
-            <div class="alert-title">2. [TITOLO_CRITICITÀ]</div>
-            <div class="alert-content">[Descrizione breve e impatto sulla liquidazione]</div>
-        </div>
+        <!-- ================================================================ -->
+        <!-- TAB 2: ANALISI COPERTURA -->
+        <!-- ================================================================ -->
+        <div id="Copertura" class="tab-content">
 
-        <div class="section-header action">🎯 Azione Prioritaria</div>
-        <div class="alert-box info">
-            <div class="alert-title">DA FARE SUBITO</div>
-            <div class="alert-content">
-                [AI: Indicare l'azione più urgente che il broker deve compiere. Es: "Richiedere al cliente documentazione fotografica aggiuntiva entro 48h per evitare contestazioni sulla preesistenza dei danni."]
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- TAB 2: ANALISI COPERTURA -->
-    <!-- ================================================================ -->
-    <div id="Copertura" class="tab-content">
-
-        <div class="section-header">Garanzia Principale Attivata</div>
-        <table>
-            <tr>
-                <td class="col-label">Garanzia</td>
-                <td><strong>[NOME_GARANZIA]</strong></td>
-                <td class="col-label">Riferimento</td>
-                <td class="note-cell">[ART. X CGA / CP]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Massimale</td>
-                <td class="col-curr">[MASSIMALE]</td>
-                <td class="col-label">Sottolimite</td>
-                <td class="col-curr">[SOTTOLIMITE]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Franchigia</td>
-                <td class="col-curr">[FRANCHIGIA]</td>
-                <td class="col-label">Scoperto</td>
-                <td>[SCOPERTO]% (min [MIN] / max [MAX])</td>
-            </tr>
-        </table>
-
-        <div class="section-header">Verifica Operatività</div>
-        
-        <!-- [AI: CREARE UNA RIGA PER OGNI VERIFICA] -->
-        <div class="coverage-row covered">
-            <span class="coverage-name">✅ Evento in vigenza di polizza</span>
-            <span class="coverage-detail">Evento [DATA] - Polizza valida fino [SCADENZA]</span>
-            <span class="badge tag-ok">OK</span>
-        </div>
-        <div class="coverage-row covered">
-            <span class="coverage-name">✅ Ubicazione coperta</span>
-            <span class="coverage-detail">[INDIRIZZO] presente in polizza</span>
-            <span class="badge tag-ok">OK</span>
-        </div>
-        <div class="coverage-row covered">
-            <span class="coverage-name">✅ Tipologia evento coperta</span>
-            <span class="coverage-detail">[TIPO_EVENTO] rientra nella garanzia [GARANZIA]</span>
-            <span class="badge tag-ok">OK</span>
-        </div>
-        <div class="coverage-row partial">
-            <span class="coverage-name">⚠️ Denuncia nei termini</span>
-            <span class="coverage-detail">Denuncia a [GG] giorni vs [GG_LIMITE] previsti</span>
-            <span class="badge tag-warn">VERIFICARE</span>
-        </div>
-        <div class="coverage-row excluded">
-            <span class="coverage-name">❌ [ELEMENTO ESCLUSO]</span>
-            <span class="coverage-detail">[Motivo esclusione]</span>
-            <span class="badge tag-error">ESCLUSO</span>
-        </div>
-
-        <div class="section-header">Esclusioni Potenzialmente Applicabili</div>
-        <table>
-            <thead>
+            <div class="section-header">Garanzia Principale Attivata</div>
+            <table>
                 <tr>
-                    <th style="width:30%">Esclusione</th>
-                    <th style="width:40%">Testo Clausola</th>
-                    <th style="width:15%">Applicabile?</th>
-                    <th style="width:15%">Rischio</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- [AI: ELENCARE ESCLUSIONI RILEVANTI PER IL CASO] -->
-                <tr>
-                    <td>[NOME_ESCLUSIONE]</td>
-                    <td class="note-cell">"[ESTRATTO_CLAUSOLA]" - Art. [X]</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[NO/FORSE/SI]</span></td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[BASSO/MEDIO/ALTO]</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">Obblighi Contrattuali Assicurato</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:30%">Obbligo</th>
-                    <th style="width:40%">Requisito Polizza</th>
-                    <th style="width:15%">Rispettato?</th>
-                    <th style="width:15%">Impatto</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Denuncia tempestiva</td>
-                    <td>Entro [GG] giorni dalla conoscenza</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span></td>
-                    <td class="col-center">[IMPATTO]</td>
+                    <td class="col-label">Garanzia</td>
+                    <td><strong>[NOME_GARANZIA]</strong></td>
+                    <td class="col-label">Riferimento</td>
+                    <td class="note-cell">[ART. X CGA / CP]</td>
                 </tr>
                 <tr>
-                    <td>Misure di salvataggio</td>
-                    <td>Adozione misure per limitare i danni</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span></td>
-                    <td class="col-center">[IMPATTO]</td>
+                    <td class="col-label">Massimale</td>
+                    <td class="col-curr">[MASSIMALE]</td>
+                    <td class="col-label">Sottolimite</td>
+                    <td class="col-curr">[SOTTOLIMITE]</td>
                 </tr>
                 <tr>
-                    <td>Conservazione stato luoghi</td>
-                    <td>Non modificare senza consenso</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span></td>
-                    <td class="col-center">[IMPATTO]</td>
+                    <td class="col-label">Franchigia</td>
+                    <td class="col-curr">[FRANCHIGIA]</td>
+                    <td class="col-label">Scoperto</td>
+                    <td>[SCOPERTO]% (min [MIN] / max [MAX])</td>
+                </tr>
+            </table>
+
+            <div class="section-header">Verifica Operatività</div>
+
+            <!-- [AI: CREARE UNA RIGA PER OGNI VERIFICA] -->
+            <div class="coverage-row covered">
+                <span class="coverage-name">✅ Evento in vigenza di polizza</span>
+                <span class="coverage-detail">Evento [DATA] - Polizza valida fino [SCADENZA]</span>
+                <span class="badge tag-ok">OK</span>
+            </div>
+            <div class="coverage-row covered">
+                <span class="coverage-name">✅ Ubicazione coperta</span>
+                <span class="coverage-detail">[INDIRIZZO] presente in polizza</span>
+                <span class="badge tag-ok">OK</span>
+            </div>
+            <div class="coverage-row covered">
+                <span class="coverage-name">✅ Tipologia evento coperta</span>
+                <span class="coverage-detail">[TIPO_EVENTO] rientra nella garanzia [GARANZIA]</span>
+                <span class="badge tag-ok">OK</span>
+            </div>
+            <div class="coverage-row partial">
+                <span class="coverage-name">⚠️ Denuncia nei termini</span>
+                <span class="coverage-detail">Denuncia a [GG] giorni vs [GG_LIMITE] previsti</span>
+                <span class="badge tag-warn">VERIFICARE</span>
+            </div>
+            <div class="coverage-row excluded">
+                <span class="coverage-name">❌ [ELEMENTO ESCLUSO]</span>
+                <span class="coverage-detail">[Motivo esclusione]</span>
+                <span class="badge tag-error">ESCLUSO</span>
+            </div>
+
+            <div class="section-header">Esclusioni Potenzialmente Applicabili</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Esclusione</th>
+                        <th style="width:40%">Testo Clausola</th>
+                        <th style="width:15%">Applicabile?</th>
+                        <th style="width:15%">Rischio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- [AI: ELENCARE ESCLUSIONI RILEVANTI PER IL CASO] -->
+                    <tr>
+                        <td>[NOME_ESCLUSIONE]</td>
+                        <td class="note-cell">"[ESTRATTO_CLAUSOLA]" - Art. [X]</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[NO/FORSE/SI]</span></td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[BASSO/MEDIO/ALTO]</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Obblighi Contrattuali Assicurato</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Obbligo</th>
+                        <th style="width:40%">Requisito Polizza</th>
+                        <th style="width:15%">Rispettato?</th>
+                        <th style="width:15%">Impatto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Denuncia tempestiva</td>
+                        <td>Entro [GG] giorni dalla conoscenza</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span>
+                        </td>
+                        <td class="col-center">[IMPATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Misure di salvataggio</td>
+                        <td>Adozione misure per limitare i danni</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span>
+                        </td>
+                        <td class="col-center">[IMPATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Conservazione stato luoghi</td>
+                        <td>Non modificare senza consenso</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span>
+                        </td>
+                        <td class="col-center">[IMPATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Mezzi di protezione</td>
+                        <td>[REQUISITI_SPECIFICI_POLIZZA]</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span>
+                        </td>
+                        <td class="col-center">[IMPATTO]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Garanzie Accessorie Potenzialmente Attivabili</div>
+            <!-- [AI: SE CI SONO ALTRE GARANZIE CHE POTREBBERO OPERARE] -->
+            <div class="alert-box info">
+                <div class="alert-title">💡 Verifica Estensione Copertura</div>
+                <div class="alert-content">
+                    [AI: Indicare eventuali garanzie accessorie che potrebbero essere attivate per massimizzare
+                    l'indennizzo.
+                    Es: "Spese di demolizione e sgombero (Art. X) - Limite € Y - Da richiedere separatamente"]
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 3: RICOSTRUZIONE EVENTO -->
+        <!-- ================================================================ -->
+        <div id="Ricostruzione" class="tab-content">
+
+            <div class="section-header">Timeline Cronologica</div>
+            <div class="timeline">
+                <!-- [AI: RICOSTRUIRE LA TIMELINE DELL'EVENTO] -->
+                <div class="timeline-item done">
+                    <div class="timeline-date">[DATA_ORA]</div>
+                    <div class="timeline-title">[TITOLO_EVENTO]</div>
+                    <div class="timeline-desc">[Descrizione dettagliata]</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">[DATA_ORA]</div>
+                    <div class="timeline-title">[TITOLO_EVENTO]</div>
+                    <div class="timeline-desc">[Descrizione dettagliata]</div>
+                </div>
+                <div class="timeline-item critical">
+                    <div class="timeline-date">[DATA_ORA]</div>
+                    <div class="timeline-title">⚠️ [EVENTO_CRITICO]</div>
+                    <div class="timeline-desc">[Descrizione - Elemento che potrebbe essere contestato]</div>
+                </div>
+            </div>
+
+            <div class="section-header">Dinamica dell'Evento</div>
+            <table>
+                <tr>
+                    <td class="col-label">Causa Prossima</td>
+                    <td>[AI: Identificare la causa diretta del danno secondo il principio della proximate cause]</td>
                 </tr>
                 <tr>
-                    <td>Mezzi di protezione</td>
-                    <td>[REQUISITI_SPECIFICI_POLIZZA]</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[SI/PARZIALE/NO]</span></td>
-                    <td class="col-center">[IMPATTO]</td>
+                    <td class="col-label">Origine</td>
+                    <td>[AI: Dove/come è iniziato l'evento]</td>
                 </tr>
-            </tbody>
-        </table>
+                <tr>
+                    <td class="col-label">Sviluppo</td>
+                    <td>[AI: Come si è propagato/sviluppato]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Intervento</td>
+                    <td>[AI: Azioni intraprese per limitare i danni]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Entità Danni</td>
+                    <td>[AI: Descrizione sintetica dei danni subiti]</td>
+                </tr>
+            </table>
 
-        <div class="section-header">Garanzie Accessorie Potenzialmente Attivabili</div>
-        <!-- [AI: SE CI SONO ALTRE GARANZIE CHE POTREBBERO OPERARE] -->
-        <div class="alert-box info">
-            <div class="alert-title">💡 Verifica Estensione Copertura</div>
-            <div class="alert-content">
-                [AI: Indicare eventuali garanzie accessorie che potrebbero essere attivate per massimizzare l'indennizzo. 
-                Es: "Spese di demolizione e sgombero (Art. X) - Limite € Y - Da richiedere separatamente"]
-            </div>
-        </div>
+            <div class="section-header">Analisi Tecnica per Tipologia</div>
+            <!-- [AI: SEZIONE SPECIFICA PER TIPO DI SINISTRO - INCENDIO/ACQUA/FURTO/ETC] -->
 
-    </div>
+            <table>
+                <tr>
+                    <td class="col-label">Tipologia Sinistro</td>
+                    <td><span class="badge tag-purple">[INCENDIO / ACQUA / FURTO / FENOMENO ELETTRICO / ETC]</span></td>
+                </tr>
+            </table>
 
-    <!-- ================================================================ -->
-    <!-- TAB 3: RICOSTRUZIONE EVENTO -->
-    <!-- ================================================================ -->
-    <div id="Ricostruzione" class="tab-content">
-
-        <div class="section-header">Timeline Cronologica</div>
-        <div class="timeline">
-            <!-- [AI: RICOSTRUIRE LA TIMELINE DELL'EVENTO] -->
-            <div class="timeline-item done">
-                <div class="timeline-date">[DATA_ORA]</div>
-                <div class="timeline-title">[TITOLO_EVENTO]</div>
-                <div class="timeline-desc">[Descrizione dettagliata]</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-date">[DATA_ORA]</div>
-                <div class="timeline-title">[TITOLO_EVENTO]</div>
-                <div class="timeline-desc">[Descrizione dettagliata]</div>
-            </div>
-            <div class="timeline-item critical">
-                <div class="timeline-date">[DATA_ORA]</div>
-                <div class="timeline-title">⚠️ [EVENTO_CRITICO]</div>
-                <div class="timeline-desc">[Descrizione - Elemento che potrebbe essere contestato]</div>
-            </div>
-        </div>
-
-        <div class="section-header">Dinamica dell'Evento</div>
-        <table>
-            <tr>
-                <td class="col-label">Causa Prossima</td>
-                <td>[AI: Identificare la causa diretta del danno secondo il principio della proximate cause]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Origine</td>
-                <td>[AI: Dove/come è iniziato l'evento]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Sviluppo</td>
-                <td>[AI: Come si è propagato/sviluppato]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Intervento</td>
-                <td>[AI: Azioni intraprese per limitare i danni]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Entità Danni</td>
-                <td>[AI: Descrizione sintetica dei danni subiti]</td>
-            </tr>
-        </table>
-
-        <div class="section-header">Analisi Tecnica per Tipologia</div>
-        <!-- [AI: SEZIONE SPECIFICA PER TIPO DI SINISTRO - INCENDIO/ACQUA/FURTO/ETC] -->
-        
-        <table>
-            <tr>
-                <td class="col-label">Tipologia Sinistro</td>
-                <td><span class="badge tag-purple">[INCENDIO / ACQUA / FURTO / FENOMENO ELETTRICO / ETC]</span></td>
-            </tr>
-        </table>
-
-        <!-- ESEMPIO PER INCENDIO -->
-        <!--
+            <!-- ESEMPIO PER INCENDIO -->
+            <!--
         <table>
             <tr>
                 <td class="col-label">Origine Incendio</td>
@@ -631,684 +1008,688 @@ tr:nth-child(even) { background: #f8fafc; }
         </table>
         -->
 
-        <div class="section-header">Coerenza Ricostruzione</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:25%">Fonte</th>
-                    <th style="width:50%">Versione</th>
-                    <th style="width:25%">Coerenza</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Denuncia Assicurato</td>
-                    <td class="note-cell">[Sintesi versione]</td>
-                    <td class="col-center"><span class="badge tag-ok">COERENTE</span></td>
-                </tr>
-                <tr>
-                    <td>Verbale Autorità</td>
-                    <td class="note-cell">[Sintesi versione]</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn]">[COERENTE/DISCORDANZE]</span></td>
-                </tr>
-                <tr>
-                    <td>Documentazione Foto</td>
-                    <td class="note-cell">[Sintesi]</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn]">[COERENTE/DISCORDANZE]</span></td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="section-header">Coerenza Ricostruzione</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Fonte</th>
+                        <th style="width:50%">Versione</th>
+                        <th style="width:25%">Coerenza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Denuncia Assicurato</td>
+                        <td class="note-cell">[Sintesi versione]</td>
+                        <td class="col-center"><span class="badge tag-ok">COERENTE</span></td>
+                    </tr>
+                    <tr>
+                        <td>Verbale Autorità</td>
+                        <td class="note-cell">[Sintesi versione]</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn]">[COERENTE/DISCORDANZE]</span></td>
+                    </tr>
+                    <tr>
+                        <td>Documentazione Foto</td>
+                        <td class="note-cell">[Sintesi]</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn]">[COERENTE/DISCORDANZE]</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <!-- [AI: SE CI SONO INCONGRUENZE] -->
-        <div class="alert-box warning">
-            <div class="alert-title">⚠️ Incongruenze Rilevate</div>
-            <div class="alert-content">
-                [AI: Descrivere eventuali discordanze tra le varie fonti e il potenziale impatto sulla liquidazione]
+            <!-- [AI: SE CI SONO INCONGRUENZE] -->
+            <div class="alert-box warning">
+                <div class="alert-title">⚠️ Incongruenze Rilevate</div>
+                <div class="alert-content">
+                    [AI: Descrivere eventuali discordanze tra le varie fonti e il potenziale impatto sulla liquidazione]
+                </div>
             </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 4: DOCUMENTI -->
+        <!-- ================================================================ -->
+        <div id="Documenti" class="tab-content">
+
+            <div class="section-header">Checklist Documentale</div>
+
+            <div class="checklist">
+                <!-- [AI: COMPILARE CON DOCUMENTI RICEVUTI/MANCANTI] -->
+                <div class="checklist-item done">
+                    <div class="checklist-icon">✅</div>
+                    <div class="checklist-text">
+                        <strong>Denuncia di sinistro</strong>
+                        <span>Ricevuta il [DATA] - Completa</span>
+                    </div>
+                </div>
+                <div class="checklist-item done">
+                    <div class="checklist-icon">✅</div>
+                    <div class="checklist-text">
+                        <strong>Documentazione fotografica</strong>
+                        <span>[N] foto ricevute - [Valutazione qualità]</span>
+                    </div>
+                </div>
+                <div class="checklist-item pending">
+                    <div class="checklist-icon">⏳</div>
+                    <div class="checklist-text">
+                        <strong>Preventivi/Fatture riparazione</strong>
+                        <span>Richiesti il [DATA] - In attesa</span>
+                    </div>
+                </div>
+                <div class="checklist-item missing">
+                    <div class="checklist-icon">❌</div>
+                    <div class="checklist-text">
+                        <strong>Verbale Vigili del Fuoco</strong>
+                        <span>DA RICHIEDERE - Necessario per confermare dinamica</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">Inventario Documenti Ricevuti</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Documento</th>
+                        <th style="width:15%">Data</th>
+                        <th style="width:35%">Note</th>
+                        <th style="width:20%">Valutazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[NOME_DOCUMENTO]</td>
+                        <td class="col-center">[DATA]</td>
+                        <td class="note-cell">[Note qualità/completezza]</td>
+                        <td class="col-center"><span
+                                class="badge [tag-ok/tag-warn/tag-error]">[ADEGUATO/INCOMPLETO/INSUFFICIENTE]</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header alert">📋 Documenti da Richiedere al Cliente</div>
+            <div class="action-grid">
+                <div class="action-card urgent">
+                    <div class="action-header">
+                        <span class="action-title">🔴 [DOCUMENTO]</span>
+                        <span class="action-deadline">Entro [DATA]</span>
+                    </div>
+                    <div class="action-desc">[Motivo per cui serve e conseguenze se manca]</div>
+                </div>
+                <div class="action-card normal">
+                    <div class="action-header">
+                        <span class="action-title">🔵 [DOCUMENTO]</span>
+                        <span class="action-deadline">Entro [DATA]</span>
+                    </div>
+                    <div class="action-desc">[Motivo per cui serve]</div>
+                </div>
+            </div>
+
+            <div class="section-header">Valutazione Documentazione Probatoria</div>
+            <table>
+                <tr>
+                    <td class="col-label">Completezza</td>
+                    <td>
+                        <span class="badge [tag-ok/tag-warn/tag-error]">[COMPLETA/PARZIALE/INSUFFICIENTE]</span>
+                        <span class="note-cell" style="margin-left:10px;">[Commento]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">Qualità</td>
+                    <td>
+                        <span class="badge [tag-ok/tag-warn/tag-error]">[BUONA/SUFFICIENTE/SCARSA]</span>
+                        <span class="note-cell" style="margin-left:10px;">[Commento]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">Coerenza</td>
+                    <td>
+                        <span class="badge [tag-ok/tag-warn/tag-error]">[COERENTE/DISCORDANZE/CONTRADDITTORIA]</span>
+                        <span class="note-cell" style="margin-left:10px;">[Commento]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-label">Attendibilità Complessiva</td>
+                    <td>
+                        <span class="badge [tag-ok/tag-warn/tag-error]">[ALTA/MEDIA/BASSA]</span>
+                        <span class="note-cell" style="margin-left:10px;">[Commento]</span>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 5: QUANTIFICAZIONE -->
+        <!-- ================================================================ -->
+        <div id="Quantificazione" class="tab-content">
+
+            <div class="section-header">Confronto Richiesta vs Stima</div>
+            <div class="kpi-grid">
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[IMPORTO]</div>
+                    <div class="kpi-label">Richiesta Cliente</div>
+                </div>
+                <div class="kpi-card positive">
+                    <div class="kpi-value">[IMPORTO]</div>
+                    <div class="kpi-label">Stima Indennizzo MAX</div>
+                </div>
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[IMPORTO]</div>
+                    <div class="kpi-label">Stima Indennizzo MIN</div>
+                </div>
+                <div class="kpi-card negative">
+                    <div class="kpi-value">[IMPORTO]</div>
+                    <div class="kpi-label">Delta Richiesta/Stima</div>
+                </div>
+            </div>
+
+            <div class="section-header">Dettaglio Voci di Danno</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Voce di Danno</th>
+                        <th class="col-curr" style="width:17%">Richiesto</th>
+                        <th class="col-curr" style="width:17%">Stima MIN</th>
+                        <th class="col-curr" style="width:17%">Stima MAX</th>
+                        <th style="width:19%">Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- DANNI MATERIALI DIRETTI -->
+                    <tr style="background:#f1f5f9;">
+                        <td colspan="5"><strong>DANNI MATERIALI DIRETTI</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Danni a Fabbricato</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                    <tr>
+                        <td>Danni a Macchinari/Impianti</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                    <tr>
+                        <td>Danni a Merci/Scorte</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                    <tr>
+                        <td>Danni a Contenuto/Arredi</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+
+                    <!-- SPESE ACCESSORIE -->
+                    <tr style="background:#e6f0ff;">
+                        <td colspan="5"><strong>SPESE ACCESSORIE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Demolizione/Sgombero</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Salvataggio</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese Ricerca Guasto</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Note]</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td>TOTALE DANNO LORDO</td>
+                        <td class="col-curr">[TOT_RICHIESTO]</td>
+                        <td class="col-curr">[TOT_MIN]</td>
+                        <td class="col-curr">[TOT_MAX]</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="section-header">Calcolo Indennizzo</div>
+            <table>
+                <tr>
+                    <td class="col-label">Danno Accertato (stima)</td>
+                    <td class="col-curr" style="width:25%">[€_MIN] - [€_MAX]</td>
+                    <td class="note-cell">[Note]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Verifica Massimale</td>
+                    <td class="col-curr">[MASSIMALE] - <span class="badge tag-ok">CAPIENTE</span></td>
+                    <td class="note-cell">Danno entro massimale</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Regola Proporzionale (art. 1907 CC)</td>
+                    <td class="col-curr">[APPLICABILE / NON APPLICABILE]</td>
+                    <td class="note-cell">[Se applicabile: SA [€] vs Valore [€] = [%]]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Franchigia</td>
+                    <td class="col-curr">- [€_FRANCHIGIA]</td>
+                    <td class="note-cell">[Tipo franchigia]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Scoperto [%]</td>
+                    <td class="col-curr">- [€_SCOPERTO]</td>
+                    <td class="note-cell">[%] - Min [€] Max [€]</td>
+                </tr>
+                <tr style="font-weight:700; background:#dcfce7;">
+                    <td class="col-label"><strong>INDENNIZZO STIMATO</strong></td>
+                    <td class="col-curr" style="font-size:14px;"><strong>[€_MIN] - [€_MAX]</strong></td>
+                    <td class="note-cell">Range liquidazione attesa</td>
+                </tr>
+            </table>
+
+            <div class="section-header">Note sulla Quantificazione</div>
+            <div class="alert-box info">
+                <div class="alert-content">
+                    [AI: Commenti sulla metodologia di valutazione, eventuali criticità sui valori dichiarati,
+                    necessità di perizia, elementi che potrebbero modificare la stima]
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 6: ALERT & CRITICITÀ -->
+        <!-- ================================================================ -->
+        <div id="Alert" class="tab-content">
+
+            <div class="section-header alert">🚨 Criticità che la Compagnia Potrebbe Contestare</div>
+
+            <!-- [AI: ELENCARE TUTTE LE CRITICITÀ CON LIVELLO DI RISCHIO] -->
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:5%">#</th>
+                        <th style="width:25%">Criticità</th>
+                        <th style="width:35%">Descrizione</th>
+                        <th style="width:15%">Impatto</th>
+                        <th style="width:20%">Come Prevenire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">1</td>
+                        <td><span class="badge tag-error">ALTA</span> [TITOLO]</td>
+                        <td>[Descrizione della criticità e base giuridica/contrattuale]</td>
+                        <td class="col-center">[Riduzione X% / Rifiuto]</td>
+                        <td class="note-cell">[Azione preventiva]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center">2</td>
+                        <td><span class="badge tag-warn">MEDIA</span> [TITOLO]</td>
+                        <td>[Descrizione]</td>
+                        <td class="col-center">[Impatto]</td>
+                        <td class="note-cell">[Azione]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center">3</td>
+                        <td><span class="badge tag-info">BASSA</span> [TITOLO]</td>
+                        <td>[Descrizione]</td>
+                        <td class="col-center">[Impatto]</td>
+                        <td class="note-cell">[Azione]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Esclusioni Potenzialmente Invocabili</div>
+            <!-- [AI: ANALISI DETTAGLIATA ESCLUSIONI RILEVANTI] -->
+            <div class="alert-box critical">
+                <div class="alert-title">❌ [NOME_ESCLUSIONE] - Art. [X] CGA</div>
+                <div class="alert-content">
+                    <strong>Testo:</strong> "[Estratto clausola]"<br>
+                    <strong>Applicabilità:</strong> [Analisi se applicabile al caso]<br>
+                    <strong>Difesa:</strong> [Come argomentare per evitarla]
+                </div>
+            </div>
+
+            <div class="section-header">Violazioni Obblighi Contrattuali</div>
+            <!-- [AI: SE CI SONO VIOLAZIONI DELL'ASSICURATO] -->
+            <div class="alert-box warning">
+                <div class="alert-title">⚠️ [TIPO_VIOLAZIONE]</div>
+                <div class="alert-content">
+                    <strong>Obbligo violato:</strong> [Descrizione]<br>
+                    <strong>Conseguenza contrattuale:</strong> [Art. X - Effetto]<br>
+                    <strong>Mitigazione:</strong> [Come ridurre l'impatto]
+                </div>
+            </div>
+
+            <div class="section-header">Red Flags</div>
+            <!-- [AI: ELEMENTI SOSPETTI O CHE RICHIEDONO ATTENZIONE] -->
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Elemento</th>
+                        <th style="width:50%">Osservazione</th>
+                        <th style="width:20%">Azione Suggerita</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[ELEMENTO]</td>
+                        <td class="note-cell">[Descrizione anomalia/incongruenza]</td>
+                        <td>[Verifica/Approfondimento]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Giurisprudenza Rilevante</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Sentenza</th>
+                        <th style="width:55%">Principio</th>
+                        <th style="width:20%">Applicazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cass. [N/ANNO]</td>
+                        <td class="note-cell">[Principio giuridico affermato]</td>
+                        <td><span class="badge [tag-ok/tag-warn]">[FAVOREVOLE/CONTRARIA]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 7: STRATEGIA NEGOZIALE -->
+        <!-- ================================================================ -->
+        <div id="Strategia" class="tab-content">
+
+            <div class="section-header">Valutazione Posizione Negoziale</div>
+            <div class="kpi-grid">
+                <div class="kpi-card [positive/neutral/negative]">
+                    <div class="kpi-value">[FORTE/MEDIA/DEBOLE]</div>
+                    <div class="kpi-label">Forza Posizione Cliente</div>
+                </div>
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[%]</div>
+                    <div class="kpi-label">Prob. Liquidazione Totale</div>
+                </div>
+                <div class="kpi-card neutral">
+                    <div class="kpi-value">[%]</div>
+                    <div class="kpi-label">Prob. Liquidazione Parziale</div>
+                </div>
+                <div class="kpi-card negative">
+                    <div class="kpi-value">[%]</div>
+                    <div class="kpi-label">Rischio Rifiuto</div>
+                </div>
+            </div>
+
+            <div class="strategy-box">
+                <h3>🎯 Strategia Consigliata</h3>
+                <ul>
+                    <li><strong>Obiettivo primario:</strong> [Es: Ottenere liquidazione totale di € X]</li>
+                    <li><strong>Obiettivo secondario:</strong> [Es: In subordine, transazione a € Y]</li>
+                    <li><strong>Linea rossa:</strong> [Es: Non accettare meno di € Z]</li>
+                </ul>
+            </div>
+
+            <div class="section-header">Punti di Forza da Valorizzare</div>
+            <div class="checklist">
+                <div class="checklist-item done">
+                    <div class="checklist-icon">💪</div>
+                    <div class="checklist-text">
+                        <strong>[PUNTO_FORZA_1]</strong>
+                        <span>[Come utilizzarlo nella negoziazione]</span>
+                    </div>
+                </div>
+                <div class="checklist-item done">
+                    <div class="checklist-icon">💪</div>
+                    <div class="checklist-text">
+                        <strong>[PUNTO_FORZA_2]</strong>
+                        <span>[Come utilizzarlo]</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">Punti di Debolezza da Gestire</div>
+            <div class="checklist">
+                <div class="checklist-item missing">
+                    <div class="checklist-icon">⚠️</div>
+                    <div class="checklist-text">
+                        <strong>[PUNTO_DEBOLE_1]</strong>
+                        <span>[Come mitigarlo/gestirlo]</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">Argomentazioni per la Negoziazione</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Se la Compagnia contesta...</th>
+                        <th style="width:70%">Rispondere con...</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[CONTESTAZIONE_1]</td>
+                        <td>[Argomentazione di risposta con riferimenti normativi/contrattuali]</td>
+                    </tr>
+                    <tr>
+                        <td>[CONTESTAZIONE_2]</td>
+                        <td>[Argomentazione]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Scenari di Chiusura</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Scenario</th>
+                        <th style="width:15%">Probabilità</th>
+                        <th class="col-curr" style="width:20%">Importo</th>
+                        <th style="width:25%">Condizioni</th>
+                        <th style="width:20%">Raccomandazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#f0fdf4;">
+                        <td><strong>Best Case</strong></td>
+                        <td class="col-center">[%]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Condizioni necessarie]</td>
+                        <td><span class="badge tag-ok">PUNTARE</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Base Case</strong></td>
+                        <td class="col-center">[%]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Condizioni]</td>
+                        <td><span class="badge tag-info">REALISTICO</span></td>
+                    </tr>
+                    <tr style="background:#fef2f2;">
+                        <td><strong>Worst Case</strong></td>
+                        <td class="col-center">[%]</td>
+                        <td class="col-curr">[€]</td>
+                        <td class="note-cell">[Condizioni]</td>
+                        <td><span class="badge tag-error">EVITARE</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">Valutazione Contenzioso</div>
+            <table>
+                <tr>
+                    <td class="col-label">Opportunità Contenzioso</td>
+                    <td><span class="badge [tag-ok/tag-warn/tag-error]">[SI/VALUTARE/NO]</span></td>
+                </tr>
+                <tr>
+                    <td class="col-label">Probabilità Successo</td>
+                    <td>[%] - [Motivazione]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Costi Stimati</td>
+                    <td class="col-curr">[€_MIN] - [€_MAX]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Tempi Stimati</td>
+                    <td>[MESI/ANNI]</td>
+                </tr>
+                <tr>
+                    <td class="col-label">Raccomandazione</td>
+                    <td>[AI: Valutazione se conviene o meno procedere legalmente]</td>
+                </tr>
+            </table>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- TAB 8: AZIONI BROKER -->
+        <!-- ================================================================ -->
+        <div id="Azioni" class="tab-content">
+
+            <div class="section-header action">🎯 Azioni Immediate (entro 48h)</div>
+            <div class="action-grid">
+                <div class="action-card urgent">
+                    <div class="action-header">
+                        <span class="action-title">🔴 [AZIONE_1]</span>
+                        <span class="action-deadline">Entro [DATA]</span>
+                    </div>
+                    <div class="action-desc">[Descrizione dettagliata cosa fare e perché]</div>
+                </div>
+                <div class="action-card urgent">
+                    <div class="action-header">
+                        <span class="action-title">🔴 [AZIONE_2]</span>
+                        <span class="action-deadline">Entro [DATA]</span>
+                    </div>
+                    <div class="action-desc">[Descrizione]</div>
+                </div>
+            </div>
+
+            <div class="section-header">📋 Azioni a Breve Termine (entro 1 settimana)</div>
+            <div class="action-grid">
+                <div class="action-card normal">
+                    <div class="action-header">
+                        <span class="action-title">🔵 [AZIONE]</span>
+                        <span class="action-deadline">Entro [DATA]</span>
+                    </div>
+                    <div class="action-desc">[Descrizione]</div>
+                </div>
+            </div>
+
+            <div class="section-header">📅 Scadenze da Monitorare</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Scadenza</th>
+                        <th style="width:15%">Data</th>
+                        <th style="width:40%">Conseguenza se Mancata</th>
+                        <th style="width:20%">Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Termine denuncia</td>
+                        <td class="col-center">[DATA]</td>
+                        <td class="note-cell">Possibile decadenza dal diritto all'indennizzo</td>
+                        <td class="col-center"><span class="badge tag-ok">RISPETTATO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Prescrizione biennale</td>
+                        <td class="col-center">[DATA]</td>
+                        <td class="note-cell">Prescrizione diritto all'indennizzo (art. 2952 CC)</td>
+                        <td class="col-center"><span class="badge tag-warn">MONITORARE</span></td>
+                    </tr>
+                    <tr>
+                        <td>Risposta a richiesta documenti</td>
+                        <td class="col-center">[DATA]</td>
+                        <td class="note-cell">Rallentamento pratica, possibile rifiuto</td>
+                        <td class="col-center"><span class="badge [tag-ok/tag-warn]">[STATO]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">📧 Comunicazioni da Inviare</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">A Chi</th>
+                        <th style="width:20%">Oggetto</th>
+                        <th style="width:45%">Contenuto Chiave</th>
+                        <th style="width:20%">Priorità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cliente</td>
+                        <td>[OGGETTO]</td>
+                        <td class="note-cell">[Punti chiave da comunicare]</td>
+                        <td class="col-center"><span class="badge tag-error">URGENTE</span></td>
+                    </tr>
+                    <tr>
+                        <td>Liquidatore</td>
+                        <td>[OGGETTO]</td>
+                        <td class="note-cell">[Punti chiave]</td>
+                        <td class="col-center"><span class="badge tag-warn">NORMALE</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-header">📝 Note per il Fascicolo</div>
+            <div class="alert-box info">
+                <div class="alert-content">
+                    [AI: Eventuali note interne per il broker, promemoria, elementi da tenere presente per il follow-up]
+                </div>
+            </div>
+
+            <div class="section-header success">✅ Conclusione e Prossimi Passi</div>
+            <div class="alert-box success">
+                <div class="alert-title">Riepilogo Situazione</div>
+                <div class="alert-content">
+                    [AI: Sintesi finale della situazione, outlook sulla liquidazione, principali azioni da
+                    intraprendere]
+                </div>
+            </div>
+
         </div>
 
     </div>
 
     <!-- ================================================================ -->
-    <!-- TAB 4: DOCUMENTI -->
+    <!-- JAVASCRIPT -->
     <!-- ================================================================ -->
-    <div id="Documenti" class="tab-content">
-
-        <div class="section-header">Checklist Documentale</div>
-        
-        <div class="checklist">
-            <!-- [AI: COMPILARE CON DOCUMENTI RICEVUTI/MANCANTI] -->
-            <div class="checklist-item done">
-                <div class="checklist-icon">✅</div>
-                <div class="checklist-text">
-                    <strong>Denuncia di sinistro</strong>
-                    <span>Ricevuta il [DATA] - Completa</span>
-                </div>
-            </div>
-            <div class="checklist-item done">
-                <div class="checklist-icon">✅</div>
-                <div class="checklist-text">
-                    <strong>Documentazione fotografica</strong>
-                    <span>[N] foto ricevute - [Valutazione qualità]</span>
-                </div>
-            </div>
-            <div class="checklist-item pending">
-                <div class="checklist-icon">⏳</div>
-                <div class="checklist-text">
-                    <strong>Preventivi/Fatture riparazione</strong>
-                    <span>Richiesti il [DATA] - In attesa</span>
-                </div>
-            </div>
-            <div class="checklist-item missing">
-                <div class="checklist-icon">❌</div>
-                <div class="checklist-text">
-                    <strong>Verbale Vigili del Fuoco</strong>
-                    <span>DA RICHIEDERE - Necessario per confermare dinamica</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Inventario Documenti Ricevuti</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:30%">Documento</th>
-                    <th style="width:15%">Data</th>
-                    <th style="width:35%">Note</th>
-                    <th style="width:20%">Valutazione</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>[NOME_DOCUMENTO]</td>
-                    <td class="col-center">[DATA]</td>
-                    <td class="note-cell">[Note qualità/completezza]</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn/tag-error]">[ADEGUATO/INCOMPLETO/INSUFFICIENTE]</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header alert">📋 Documenti da Richiedere al Cliente</div>
-        <div class="action-grid">
-            <div class="action-card urgent">
-                <div class="action-header">
-                    <span class="action-title">🔴 [DOCUMENTO]</span>
-                    <span class="action-deadline">Entro [DATA]</span>
-                </div>
-                <div class="action-desc">[Motivo per cui serve e conseguenze se manca]</div>
-            </div>
-            <div class="action-card normal">
-                <div class="action-header">
-                    <span class="action-title">🔵 [DOCUMENTO]</span>
-                    <span class="action-deadline">Entro [DATA]</span>
-                </div>
-                <div class="action-desc">[Motivo per cui serve]</div>
-            </div>
-        </div>
-
-        <div class="section-header">Valutazione Documentazione Probatoria</div>
-        <table>
-            <tr>
-                <td class="col-label">Completezza</td>
-                <td>
-                    <span class="badge [tag-ok/tag-warn/tag-error]">[COMPLETA/PARZIALE/INSUFFICIENTE]</span>
-                    <span class="note-cell" style="margin-left:10px;">[Commento]</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-label">Qualità</td>
-                <td>
-                    <span class="badge [tag-ok/tag-warn/tag-error]">[BUONA/SUFFICIENTE/SCARSA]</span>
-                    <span class="note-cell" style="margin-left:10px;">[Commento]</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-label">Coerenza</td>
-                <td>
-                    <span class="badge [tag-ok/tag-warn/tag-error]">[COERENTE/DISCORDANZE/CONTRADDITTORIA]</span>
-                    <span class="note-cell" style="margin-left:10px;">[Commento]</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-label">Attendibilità Complessiva</td>
-                <td>
-                    <span class="badge [tag-ok/tag-warn/tag-error]">[ALTA/MEDIA/BASSA]</span>
-                    <span class="note-cell" style="margin-left:10px;">[Commento]</span>
-                </td>
-            </tr>
-        </table>
-
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- TAB 5: QUANTIFICAZIONE -->
-    <!-- ================================================================ -->
-    <div id="Quantificazione" class="tab-content">
-
-        <div class="section-header">Confronto Richiesta vs Stima</div>
-        <div class="kpi-grid">
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[IMPORTO]</div>
-                <div class="kpi-label">Richiesta Cliente</div>
-            </div>
-            <div class="kpi-card positive">
-                <div class="kpi-value">[IMPORTO]</div>
-                <div class="kpi-label">Stima Indennizzo MAX</div>
-            </div>
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[IMPORTO]</div>
-                <div class="kpi-label">Stima Indennizzo MIN</div>
-            </div>
-            <div class="kpi-card negative">
-                <div class="kpi-value">[IMPORTO]</div>
-                <div class="kpi-label">Delta Richiesta/Stima</div>
-            </div>
-        </div>
-
-        <div class="section-header">Dettaglio Voci di Danno</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:30%">Voce di Danno</th>
-                    <th class="col-curr" style="width:17%">Richiesto</th>
-                    <th class="col-curr" style="width:17%">Stima MIN</th>
-                    <th class="col-curr" style="width:17%">Stima MAX</th>
-                    <th style="width:19%">Note</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- DANNI MATERIALI DIRETTI -->
-                <tr style="background:#f1f5f9;">
-                    <td colspan="5"><strong>DANNI MATERIALI DIRETTI</strong></td>
-                </tr>
-                <tr>
-                    <td>Danni a Fabbricato</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                <tr>
-                    <td>Danni a Macchinari/Impianti</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                <tr>
-                    <td>Danni a Merci/Scorte</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                <tr>
-                    <td>Danni a Contenuto/Arredi</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                
-                <!-- SPESE ACCESSORIE -->
-                <tr style="background:#e6f0ff;">
-                    <td colspan="5"><strong>SPESE ACCESSORIE</strong></td>
-                </tr>
-                <tr>
-                    <td>Spese di Demolizione/Sgombero</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                <tr>
-                    <td>Spese di Salvataggio</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-                <tr>
-                    <td>Spese Ricerca Guasto</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Note]</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr style="font-weight:700; background:#f1f5f9;">
-                    <td>TOTALE DANNO LORDO</td>
-                    <td class="col-curr">[TOT_RICHIESTO]</td>
-                    <td class="col-curr">[TOT_MIN]</td>
-                    <td class="col-curr">[TOT_MAX]</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <div class="section-header">Calcolo Indennizzo</div>
-        <table>
-            <tr>
-                <td class="col-label">Danno Accertato (stima)</td>
-                <td class="col-curr" style="width:25%">[€_MIN] - [€_MAX]</td>
-                <td class="note-cell">[Note]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Verifica Massimale</td>
-                <td class="col-curr">[MASSIMALE] - <span class="badge tag-ok">CAPIENTE</span></td>
-                <td class="note-cell">Danno entro massimale</td>
-            </tr>
-            <tr>
-                <td class="col-label">Regola Proporzionale (art. 1907 CC)</td>
-                <td class="col-curr">[APPLICABILE / NON APPLICABILE]</td>
-                <td class="note-cell">[Se applicabile: SA [€] vs Valore [€] = [%]]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Franchigia</td>
-                <td class="col-curr">- [€_FRANCHIGIA]</td>
-                <td class="note-cell">[Tipo franchigia]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Scoperto [%]</td>
-                <td class="col-curr">- [€_SCOPERTO]</td>
-                <td class="note-cell">[%] - Min [€] Max [€]</td>
-            </tr>
-            <tr style="font-weight:700; background:#dcfce7;">
-                <td class="col-label"><strong>INDENNIZZO STIMATO</strong></td>
-                <td class="col-curr" style="font-size:14px;"><strong>[€_MIN] - [€_MAX]</strong></td>
-                <td class="note-cell">Range liquidazione attesa</td>
-            </tr>
-        </table>
-
-        <div class="section-header">Note sulla Quantificazione</div>
-        <div class="alert-box info">
-            <div class="alert-content">
-                [AI: Commenti sulla metodologia di valutazione, eventuali criticità sui valori dichiarati, 
-                necessità di perizia, elementi che potrebbero modificare la stima]
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- TAB 6: ALERT & CRITICITÀ -->
-    <!-- ================================================================ -->
-    <div id="Alert" class="tab-content">
-
-        <div class="section-header alert">🚨 Criticità che la Compagnia Potrebbe Contestare</div>
-        
-        <!-- [AI: ELENCARE TUTTE LE CRITICITÀ CON LIVELLO DI RISCHIO] -->
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:5%">#</th>
-                    <th style="width:25%">Criticità</th>
-                    <th style="width:35%">Descrizione</th>
-                    <th style="width:15%">Impatto</th>
-                    <th style="width:20%">Come Prevenire</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="col-center">1</td>
-                    <td><span class="badge tag-error">ALTA</span> [TITOLO]</td>
-                    <td>[Descrizione della criticità e base giuridica/contrattuale]</td>
-                    <td class="col-center">[Riduzione X% / Rifiuto]</td>
-                    <td class="note-cell">[Azione preventiva]</td>
-                </tr>
-                <tr>
-                    <td class="col-center">2</td>
-                    <td><span class="badge tag-warn">MEDIA</span> [TITOLO]</td>
-                    <td>[Descrizione]</td>
-                    <td class="col-center">[Impatto]</td>
-                    <td class="note-cell">[Azione]</td>
-                </tr>
-                <tr>
-                    <td class="col-center">3</td>
-                    <td><span class="badge tag-info">BASSA</span> [TITOLO]</td>
-                    <td>[Descrizione]</td>
-                    <td class="col-center">[Impatto]</td>
-                    <td class="note-cell">[Azione]</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">Esclusioni Potenzialmente Invocabili</div>
-        <!-- [AI: ANALISI DETTAGLIATA ESCLUSIONI RILEVANTI] -->
-        <div class="alert-box critical">
-            <div class="alert-title">❌ [NOME_ESCLUSIONE] - Art. [X] CGA</div>
-            <div class="alert-content">
-                <strong>Testo:</strong> "[Estratto clausola]"<br>
-                <strong>Applicabilità:</strong> [Analisi se applicabile al caso]<br>
-                <strong>Difesa:</strong> [Come argomentare per evitarla]
-            </div>
-        </div>
-
-        <div class="section-header">Violazioni Obblighi Contrattuali</div>
-        <!-- [AI: SE CI SONO VIOLAZIONI DELL'ASSICURATO] -->
-        <div class="alert-box warning">
-            <div class="alert-title">⚠️ [TIPO_VIOLAZIONE]</div>
-            <div class="alert-content">
-                <strong>Obbligo violato:</strong> [Descrizione]<br>
-                <strong>Conseguenza contrattuale:</strong> [Art. X - Effetto]<br>
-                <strong>Mitigazione:</strong> [Come ridurre l'impatto]
-            </div>
-        </div>
-
-        <div class="section-header">Red Flags</div>
-        <!-- [AI: ELEMENTI SOSPETTI O CHE RICHIEDONO ATTENZIONE] -->
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:30%">Elemento</th>
-                    <th style="width:50%">Osservazione</th>
-                    <th style="width:20%">Azione Suggerita</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>[ELEMENTO]</td>
-                    <td class="note-cell">[Descrizione anomalia/incongruenza]</td>
-                    <td>[Verifica/Approfondimento]</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">Giurisprudenza Rilevante</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:25%">Sentenza</th>
-                    <th style="width:55%">Principio</th>
-                    <th style="width:20%">Applicazione</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Cass. [N/ANNO]</td>
-                    <td class="note-cell">[Principio giuridico affermato]</td>
-                    <td><span class="badge [tag-ok/tag-warn]">[FAVOREVOLE/CONTRARIA]</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- TAB 7: STRATEGIA NEGOZIALE -->
-    <!-- ================================================================ -->
-    <div id="Strategia" class="tab-content">
-
-        <div class="section-header">Valutazione Posizione Negoziale</div>
-        <div class="kpi-grid">
-            <div class="kpi-card [positive/neutral/negative]">
-                <div class="kpi-value">[FORTE/MEDIA/DEBOLE]</div>
-                <div class="kpi-label">Forza Posizione Cliente</div>
-            </div>
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[%]</div>
-                <div class="kpi-label">Prob. Liquidazione Totale</div>
-            </div>
-            <div class="kpi-card neutral">
-                <div class="kpi-value">[%]</div>
-                <div class="kpi-label">Prob. Liquidazione Parziale</div>
-            </div>
-            <div class="kpi-card negative">
-                <div class="kpi-value">[%]</div>
-                <div class="kpi-label">Rischio Rifiuto</div>
-            </div>
-        </div>
-
-        <div class="strategy-box">
-            <h3>🎯 Strategia Consigliata</h3>
-            <ul>
-                <li><strong>Obiettivo primario:</strong> [Es: Ottenere liquidazione totale di € X]</li>
-                <li><strong>Obiettivo secondario:</strong> [Es: In subordine, transazione a € Y]</li>
-                <li><strong>Linea rossa:</strong> [Es: Non accettare meno di € Z]</li>
-            </ul>
-        </div>
-
-        <div class="section-header">Punti di Forza da Valorizzare</div>
-        <div class="checklist">
-            <div class="checklist-item done">
-                <div class="checklist-icon">💪</div>
-                <div class="checklist-text">
-                    <strong>[PUNTO_FORZA_1]</strong>
-                    <span>[Come utilizzarlo nella negoziazione]</span>
-                </div>
-            </div>
-            <div class="checklist-item done">
-                <div class="checklist-icon">💪</div>
-                <div class="checklist-text">
-                    <strong>[PUNTO_FORZA_2]</strong>
-                    <span>[Come utilizzarlo]</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Punti di Debolezza da Gestire</div>
-        <div class="checklist">
-            <div class="checklist-item missing">
-                <div class="checklist-icon">⚠️</div>
-                <div class="checklist-text">
-                    <strong>[PUNTO_DEBOLE_1]</strong>
-                    <span>[Come mitigarlo/gestirlo]</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Argomentazioni per la Negoziazione</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:30%">Se la Compagnia contesta...</th>
-                    <th style="width:70%">Rispondere con...</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>[CONTESTAZIONE_1]</td>
-                    <td>[Argomentazione di risposta con riferimenti normativi/contrattuali]</td>
-                </tr>
-                <tr>
-                    <td>[CONTESTAZIONE_2]</td>
-                    <td>[Argomentazione]</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">Scenari di Chiusura</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:20%">Scenario</th>
-                    <th style="width:15%">Probabilità</th>
-                    <th class="col-curr" style="width:20%">Importo</th>
-                    <th style="width:25%">Condizioni</th>
-                    <th style="width:20%">Raccomandazione</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="background:#f0fdf4;">
-                    <td><strong>Best Case</strong></td>
-                    <td class="col-center">[%]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Condizioni necessarie]</td>
-                    <td><span class="badge tag-ok">PUNTARE</span></td>
-                </tr>
-                <tr>
-                    <td><strong>Base Case</strong></td>
-                    <td class="col-center">[%]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Condizioni]</td>
-                    <td><span class="badge tag-info">REALISTICO</span></td>
-                </tr>
-                <tr style="background:#fef2f2;">
-                    <td><strong>Worst Case</strong></td>
-                    <td class="col-center">[%]</td>
-                    <td class="col-curr">[€]</td>
-                    <td class="note-cell">[Condizioni]</td>
-                    <td><span class="badge tag-error">EVITARE</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">Valutazione Contenzioso</div>
-        <table>
-            <tr>
-                <td class="col-label">Opportunità Contenzioso</td>
-                <td><span class="badge [tag-ok/tag-warn/tag-error]">[SI/VALUTARE/NO]</span></td>
-            </tr>
-            <tr>
-                <td class="col-label">Probabilità Successo</td>
-                <td>[%] - [Motivazione]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Costi Stimati</td>
-                <td class="col-curr">[€_MIN] - [€_MAX]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Tempi Stimati</td>
-                <td>[MESI/ANNI]</td>
-            </tr>
-            <tr>
-                <td class="col-label">Raccomandazione</td>
-                <td>[AI: Valutazione se conviene o meno procedere legalmente]</td>
-            </tr>
-        </table>
-
-    </div>
-
-    <!-- ================================================================ -->
-    <!-- TAB 8: AZIONI BROKER -->
-    <!-- ================================================================ -->
-    <div id="Azioni" class="tab-content">
-
-        <div class="section-header action">🎯 Azioni Immediate (entro 48h)</div>
-        <div class="action-grid">
-            <div class="action-card urgent">
-                <div class="action-header">
-                    <span class="action-title">🔴 [AZIONE_1]</span>
-                    <span class="action-deadline">Entro [DATA]</span>
-                </div>
-                <div class="action-desc">[Descrizione dettagliata cosa fare e perché]</div>
-            </div>
-            <div class="action-card urgent">
-                <div class="action-header">
-                    <span class="action-title">🔴 [AZIONE_2]</span>
-                    <span class="action-deadline">Entro [DATA]</span>
-                </div>
-                <div class="action-desc">[Descrizione]</div>
-            </div>
-        </div>
-
-        <div class="section-header">📋 Azioni a Breve Termine (entro 1 settimana)</div>
-        <div class="action-grid">
-            <div class="action-card normal">
-                <div class="action-header">
-                    <span class="action-title">🔵 [AZIONE]</span>
-                    <span class="action-deadline">Entro [DATA]</span>
-                </div>
-                <div class="action-desc">[Descrizione]</div>
-            </div>
-        </div>
-
-        <div class="section-header">📅 Scadenze da Monitorare</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:25%">Scadenza</th>
-                    <th style="width:15%">Data</th>
-                    <th style="width:40%">Conseguenza se Mancata</th>
-                    <th style="width:20%">Stato</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Termine denuncia</td>
-                    <td class="col-center">[DATA]</td>
-                    <td class="note-cell">Possibile decadenza dal diritto all'indennizzo</td>
-                    <td class="col-center"><span class="badge tag-ok">RISPETTATO</span></td>
-                </tr>
-                <tr>
-                    <td>Prescrizione biennale</td>
-                    <td class="col-center">[DATA]</td>
-                    <td class="note-cell">Prescrizione diritto all'indennizzo (art. 2952 CC)</td>
-                    <td class="col-center"><span class="badge tag-warn">MONITORARE</span></td>
-                </tr>
-                <tr>
-                    <td>Risposta a richiesta documenti</td>
-                    <td class="col-center">[DATA]</td>
-                    <td class="note-cell">Rallentamento pratica, possibile rifiuto</td>
-                    <td class="col-center"><span class="badge [tag-ok/tag-warn]">[STATO]</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">📧 Comunicazioni da Inviare</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:15%">A Chi</th>
-                    <th style="width:20%">Oggetto</th>
-                    <th style="width:45%">Contenuto Chiave</th>
-                    <th style="width:20%">Priorità</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Cliente</td>
-                    <td>[OGGETTO]</td>
-                    <td class="note-cell">[Punti chiave da comunicare]</td>
-                    <td class="col-center"><span class="badge tag-error">URGENTE</span></td>
-                </tr>
-                <tr>
-                    <td>Liquidatore</td>
-                    <td>[OGGETTO]</td>
-                    <td class="note-cell">[Punti chiave]</td>
-                    <td class="col-center"><span class="badge tag-warn">NORMALE</span></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="section-header">📝 Note per il Fascicolo</div>
-        <div class="alert-box info">
-            <div class="alert-content">
-                [AI: Eventuali note interne per il broker, promemoria, elementi da tenere presente per il follow-up]
-            </div>
-        </div>
-
-        <div class="section-header success">✅ Conclusione e Prossimi Passi</div>
-        <div class="alert-box success">
-            <div class="alert-title">Riepilogo Situazione</div>
-            <div class="alert-content">
-                [AI: Sintesi finale della situazione, outlook sulla liquidazione, principali azioni da intraprendere]
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ================================================================ -->
-<!-- JAVASCRIPT -->
-<!-- ================================================================ -->
-<script>
-function openTab(tabName) {
-    var i, x, tablinks;
-    x = document.getElementsByClassName("tab-content");
-    for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tab-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    event.currentTarget.className += " active";
-}
-</script>
+    <script>
+        function openTab(tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+    </script>
 
 </body>
+
 </html>
