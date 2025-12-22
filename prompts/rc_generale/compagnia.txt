@@ -22,7 +22,7 @@ PRINCIPI GUIDA - VERSIONE COMPAGNIA
 6. SEGNALAZIONI: Evidenziare conflitti, ambiguità, gap di copertura
 
 ═══════════════════════════════════════════════════════════════════════════════
-STRUTTURA TAB (10 TAB)
+STRUTTURA TAB (11 TAB)
 ═══════════════════════════════════════════════════════════════════════════════
 
 TAB 1: ANAGRAFICA
@@ -34,7 +34,8 @@ TAB 6: GARANZIE RCP
 TAB 7: ESCLUSIONI
 TAB 8: CALCOLO PREMIO
 TAB 9: SINISTRI
-TAB 10: APPENDICI
+TAB 11: APPENDICI
+TAB 10: PROCEDURA SINISTRI
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 1: ANAGRAFICA
@@ -55,12 +56,18 @@ SEZIONE "Validità e Durata":
 - Termini Disdetta
 
 SEZIONE "Premio":
-- Premio Annuo Lordo
-- Premio Imponibile
-- Imposte (importo + aliquota %)
-- Frazionamento
-- Tipo Regolazione (Deposito+Conguaglio / Fisso)
-- Base Calcolo Premio (Fatturato / Retribuzioni / Fisso)
+- Premio Imponibile: € [VALORE]
+- Imposte e Accessori (dettaglio completo):
+  * SSN (Servizio Sanitario Nazionale): € [VALORE] ([ALIQUOTA%])
+  * Contributo SSN: € [VALORE] ([ALIQUOTA%])
+  * Imposta sulle Assicurazioni: € [VALORE] ([ALIQUOTA%])
+  * [Altri accessori se presenti]: € [VALORE]
+- Premio Annuo Lordo: € [VALORE]
+- Frazionamento: [annuale/semestrale/trimestrale/mensile]
+- Tipo Regolazione: [Deposito+Conguaglio / Fisso]
+- Base Calcolo Premio: [Fatturato / Retribuzioni / Fisso]
+
+NOTA: Indicare TUTTE le voci che compongono la differenza tra imponibile e lordo.
 
 SEZIONE "Coassicurazione":
 - Polizza Coassicurata: SI/NO
@@ -127,9 +134,57 @@ SEZIONE "Franchigie RCP per Area Geografica":
 Tabella con colonne: Area Geografica | Franchigia Base | Franchigia Recall | Scoperto | Note
 Righe: Italia, Europa, ROW, USA/Canada Occulta, USA/Canada Diretta
 
+SEZIONE "Esposizione Teorica Massima" (calcolo automatico):
+
+FORMULA:
+Esposizione Max Annua = Massimale per Sinistro + (Aggregato Annuo - Massimale)
+
+ESEMPIO:
+- Massimale per sinistro: € 5.000.000
+- Aggregato annuo: € 10.000.000
+- Esposizione teorica massima: € 5M + (10M - 5M) = € 10.000.000
+
+NOTA TECNICA: 
+Se Aggregato = 2× Massimale, l'assicurato può avere:
+• Scenario A: 2 sinistri da 5M → totale 10M (aggregato esaurito)
+• Scenario B: 1 sinistro da 5M + 10 sinistri da 0,5M → totale 10M
+
+⚠️ ATTENZIONE UNDERWRITING: 
+Con sinistralità elevata, aggregato può esaurirsi prima di fine annualità 
+lasciando scoperti nuovi sinistri. Valutare:
+- Rapporto Aggregato/Massimale (minimo consigliato: 2x)
+- Storico sinistralità (frequenza e costo medio)
+- Meccanismo ricostituzione aggregato (automatica/a pagamento)
+
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: GARANZIE RCT
 ═══════════════════════════════════════════════════════════════════════════════
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCT (VERSIONE TECNICA)                 ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
+║ 2. Identificare ogni garanzia, anche secondaria                            ║
+║ 3. Estrarre per OGNI garanzia:                                              ║
+║    • Limite per sinistro                                                     ║
+║    • Limite aggregato annuo (se diverso)                                    ║
+║    • Franchigia                                                              ║
+║    • Scoperto                                                                ║
+║    • Articolo di riferimento in polizza                                     ║
+║    • Eventuale decorrenza/scadenza specifica                                ║
+║    • Condizioni particolari                                                  ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ MINIMO:                                                    ║
+║ • TAB 4 (RCT): minimo 10-20 garanzie (polizze complesse)                   ║
+║                                                                              ║
+║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
+║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
 
 SEZIONE "Garanzia Base RCT":
 - Oggetto della Garanzia
@@ -399,7 +454,7 @@ SEZIONE "Note sulla Sinistralità":
 Osservazioni rilevanti: trend, concentrazioni, sinistri significativi, impatto su aggregato
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 10: APPENDICI
+TAB 11: APPENDICI
 ═══════════════════════════════════════════════════════════════════════════════
 
 SEZIONE "Elenco Appendici":

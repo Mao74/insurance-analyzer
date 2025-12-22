@@ -159,74 +159,53 @@ async def upload_documents(
     ramo: str = Form("rc_generale"),
     db: Session = Depends(get_db)
 ):
-    """Upload one or more PDF documents"""
+    """Upload one or more documents (PDF, DOCX, XLSX, images, emails)"""
     user_data = request.session.get("user")
     if not user_data:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
+    # Import file processor for multi-format support
+    from ..services.file_processor import process_file_recursive
+    import shutil
+    
     processed_docs = []
     
+    # Create batch upload directory
+    upload_batch_id = str(uuid.uuid4())
+    upload_dir = os.path.join("uploads", "policy", upload_batch_id)
+    os.makedirs(upload_dir, exist_ok=True)
+    
     for file in files:
-        # Validate MIME type
-        await file.seek(0)
-        mime = "application/octet-stream"
+        # Save original file temporarily
+        file_path = os.path.join(upload_dir, file.filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
         
-        if HAVE_MAGIC:
-            try:
-                header = await file.read(2048)
-                mime = magic.from_buffer(header, mime=True)
-            except Exception as e:
-                print(f"Magic error: {e}")
-                mime = "unknown"
+        # Process recursively (converts XLSX, DOC, images to PDF, extracts email attachments)
+        results = process_file_recursive(file_path, upload_dir)
         
-        await file.seek(0)
-        
-        # Fallback to extension if magic failed or not available
-        if mime == "unknown" or mime == "application/octet-stream" or not HAVE_MAGIC:
-            if file.filename.lower().endswith(".pdf"):
-                mime = "application/pdf"
-        
-        if mime != "application/pdf" and not mime.startswith("image/"):
-            print(f"Skipping file {file.filename}, invalid mime: {mime}")
-            # Optional: handle error differently, but for now continue
-            # Or raise 400 if strict
-            # Let's be lenient if it looks like a PDF
-            if not file.filename.lower().endswith(".pdf"):
-                continue
-        
-        # Save file
-        file_id = str(uuid.uuid4())
-        ext = os.path.splitext(file.filename)[1]
-        stored_filename = f"{file_id}{ext}"
-        upload_path = os.path.join("uploads", stored_filename)
-        
-        # Ensure uploads directory exists
-        os.makedirs("uploads", exist_ok=True)
-        
-        # Async write
-        with open(upload_path, "wb") as buffer:
-            while content := await file.read(1024 * 1024):
-                buffer.write(content)
-        
-        # Create DB record
-        document = models.Document(
-            user_id=user_data["id"],
-            original_filename=file.filename,
-            stored_filename=stored_filename,
-            ramo=ramo,
-            ocr_method="processing",
-            extracted_text_path=None
-        )
-        db.add(document)
-        db.commit()
-        db.refresh(document)
-        processed_docs.append(document.id)
-        
-        # Schedule OCR in background
-        background_tasks.add_task(process_ocr_background, document.id, upload_path, mime)
+        for res in results:
+            stored_filename = os.path.basename(res['path'])
+            
+            # Create DB record
+            document = models.Document(
+                user_id=user_data["id"],
+                original_filename=res['original_name'],
+                stored_filename=stored_filename,
+                ramo=ramo,
+                ocr_method="processing",
+                extracted_text_path=None
+            )
+            db.add(document)
+            db.commit()
+            db.refresh(document)
+            processed_docs.append(document.id)
+            
+            # Schedule OCR in background (all files are now PDF)
+            background_tasks.add_task(process_ocr_background, document.id, res['path'], 'application/pdf')
     
     if not processed_docs:
-        raise HTTPException(status_code=400, detail="No valid PDF files uploaded")
+        raise HTTPException(status_code=400, detail="No valid files could be processed")
     
     return UploadResponse(
         status="success",
