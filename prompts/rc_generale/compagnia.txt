@@ -22,7 +22,7 @@ PRINCIPI GUIDA - VERSIONE COMPAGNIA
 6. SEGNALAZIONI: Evidenziare conflitti, ambiguità, gap di copertura
 
 ═══════════════════════════════════════════════════════════════════════════════
-STRUTTURA TAB (11 TAB)
+STRUTTURA TAB (10 TAB)
 ═══════════════════════════════════════════════════════════════════════════════
 
 TAB 1: ANAGRAFICA
@@ -30,12 +30,102 @@ TAB 2: ENTITÀ ASSICURATE
 TAB 3: MASSIMALI
 TAB 4: GARANZIE RCT
 TAB 5: GARANZIE RCO
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCT (VERSIONE TECNICA)                 ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
+║ 2. Identificare ogni garanzia, anche secondaria                            ║
+║ 3. Estrarre per OGNI garanzia:                                              ║
+║    • Limite per sinistro                                                     ║
+║    • Limite aggregato annuo (se diverso)                                    ║
+║    • Franchigia                                                              ║
+║    • Scoperto                                                                ║
+║    • Articolo di riferimento in polizza                                     ║
+║    • Eventuale decorrenza/scadenza specifica                                ║
+║    • Condizioni particolari                                                  ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ MINIMO:                                                    ║
+║ • TAB 4 (RCT): minimo 10-20 garanzie (polizze complesse)                   ║
+║                                                                              ║
+║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
+║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 TAB 6: GARANZIE RCP
 TAB 7: ESCLUSIONI
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCP (VERSIONE TECNICA)                 ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
+║ 2. Identificare ogni garanzia, anche secondaria                            ║
+║ 3. Estrarre per OGNI garanzia:                                              ║
+║    • Limite per sinistro                                                     ║
+║    • Limite aggregato annuo (se diverso)                                    ║
+║    • Franchigia                                                              ║
+║    • Scoperto                                                                ║
+║    • Articolo di riferimento in polizza                                     ║
+║    • Eventuale decorrenza/scadenza specifica                                ║
+║    • Condizioni particolari                                                  ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ MINIMO:                                                    ║
+║ • TAB 6 (RCP): minimo 6-12 garanzie                                        ║
+║                                                                              ║
+║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
+║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 TAB 8: CALCOLO PREMIO
 TAB 9: SINISTRI
-TAB 11: APPENDICI
-TAB 10: PROCEDURA SINISTRI
+TAB 10: APPENDICI
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLE CRITICHE PER GESTIONE DATI SINISTRI                                  ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ PRINCIPIO FONDAMENTALE:                                                     ║
+║ Utilizzare ESCLUSIVAMENTE dati certi estratti dalla documentazione fornita. ║
+║ È VIETATO generare esempi, interpolazioni, o dati sintetici.                ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Identificare fonte dati (Excel, PDF, tabelle in polizza)                 ║
+║ 2. Estrarre TUTTI i campi disponibili per ogni sinistro:                    ║
+║    • Data accadimento/denuncia                                              ║
+║    • Importo riservato/pagato                                               ║
+║    • Stato (aperto/chiuso/riservato)                                        ║
+║    • Sezione (RCT/RCO/RCP)                                                  ║
+║    • Descrizione/causale                                                    ║
+║    • Numero sinistro                                                         ║
+║    • Qualsiasi altro dato presente                                          ║
+║                                                                              ║
+║ 3. GESTIONE ASSENZA DATI:                                                   ║
+║    SE non presenti dati certi:                                              ║
+║    • Mostrare "Nessun dato storico sinistri disponibile"                   ║
+║    • NON creare grafici                                                      ║
+║    • NON generare tabelle con esempi                                        ║
+║    • NON inventare KPI                                                       ║
+║    • VIETATO generare esempi, interpolazioni, dati sintetici               ║
+║                                                                              ║
+║ 4. CALCOLI STATISTICI: SOLO se dati certi disponibili                      ║
+║                                                                              ║
+║ 5. COERENZA TEMPORALE:                                                      ║
+║    • Anno sinistro = data denuncia (non accadimento)                        ║
+║    • Anno premio = anno vigenza polizza                                      ║
+║    • Verificare coerenza con vigenza                                        ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 1: ANAGRAFICA
@@ -134,6 +224,7 @@ SEZIONE "Franchigie RCP per Area Geografica":
 Tabella con colonne: Area Geografica | Franchigia Base | Franchigia Recall | Scoperto | Note
 Righe: Italia, Europa, ROW, USA/Canada Occulta, USA/Canada Diretta
 
+
 SEZIONE "Esposizione Teorica Massima" (calcolo automatico):
 
 FORMULA:
@@ -144,13 +235,13 @@ ESEMPIO:
 - Aggregato annuo: € 10.000.000
 - Esposizione teorica massima: € 5M + (10M - 5M) = € 10.000.000
 
-NOTA TECNICA: 
+NOTA TECNICA:
 Se Aggregato = 2× Massimale, l'assicurato può avere:
 • Scenario A: 2 sinistri da 5M → totale 10M (aggregato esaurito)
 • Scenario B: 1 sinistro da 5M + 10 sinistri da 0,5M → totale 10M
 
-⚠️ ATTENZIONE UNDERWRITING: 
-Con sinistralità elevata, aggregato può esaurirsi prima di fine annualità 
+⚠️ ATTENZIONE UNDERWRITING:
+Con sinistralità elevata, aggregato può esaurirsi prima di fine annualità
 lasciando scoperti nuovi sinistri. Valutare:
 - Rapporto Aggregato/Massimale (minimo consigliato: 2x)
 - Storico sinistralità (frequenza e costo medio)
@@ -186,6 +277,7 @@ TAB 4: GARANZIE RCT
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
+
 SEZIONE "Garanzia Base RCT":
 - Oggetto della Garanzia
 - Massimale per Sinistro
@@ -219,6 +311,33 @@ Tabella con colonne: Codice | Descrizione | Limite | Franchigia | Note
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 5: GARANZIE RCO
 ═══════════════════════════════════════════════════════════════════════════════
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCO (VERSIONE TECNICA)                 ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
+║ 2. Identificare ogni garanzia, anche secondaria                            ║
+║ 3. Estrarre per OGNI garanzia:                                              ║
+║    • Limite per sinistro                                                     ║
+║    • Limite aggregato annuo (se diverso)                                    ║
+║    • Franchigia                                                              ║
+║    • Scoperto                                                                ║
+║    • Articolo di riferimento in polizza                                     ║
+║    • Eventuale decorrenza/scadenza specifica                                ║
+║    • Condizioni particolari                                                  ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ MINIMO:                                                    ║
+║ • TAB 5 (RCO): minimo 5-10 garanzie                                        ║
+║                                                                              ║
+║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
+║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 
 SEZIONE "Garanzia Base RCO":
 - Oggetto della Garanzia
@@ -264,6 +383,33 @@ SEZIONE "Validità Territoriale RCO":
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 6: GARANZIE RCP
 ═══════════════════════════════════════════════════════════════════════════════
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCP (VERSIONE TECNICA)                 ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
+║ 2. Identificare ogni garanzia, anche secondaria                            ║
+║ 3. Estrarre per OGNI garanzia:                                              ║
+║    • Limite per sinistro                                                     ║
+║    • Limite aggregato annuo (se diverso)                                    ║
+║    • Franchigia                                                              ║
+║    • Scoperto                                                                ║
+║    • Articolo di riferimento in polizza                                     ║
+║    • Eventuale decorrenza/scadenza specifica                                ║
+║    • Condizioni particolari                                                  ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ MINIMO:                                                    ║
+║ • TAB 6 (RCP): minimo 6-12 garanzie                                        ║
+║                                                                              ║
+║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
+║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 
 SEZIONE "Garanzia Base RCP":
 - Oggetto della Garanzia
@@ -418,6 +564,43 @@ SEZIONE "Verifica Coerenza":
 TAB 9: SINISTRI
 ═══════════════════════════════════════════════════════════════════════════════
 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ REGOLE CRITICHE PER GESTIONE DATI SINISTRI                                  ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║ PRINCIPIO FONDAMENTALE:                                                     ║
+║ Utilizzare ESCLUSIVAMENTE dati certi estratti dalla documentazione fornita. ║
+║ È VIETATO generare esempi, interpolazioni, o dati sintetici.                ║
+║                                                                              ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Identificare fonte dati (Excel, PDF, tabelle in polizza)                 ║
+║ 2. Estrarre TUTTI i campi disponibili per ogni sinistro:                    ║
+║    • Data accadimento/denuncia                                              ║
+║    • Importo riservato/pagato                                               ║
+║    • Stato (aperto/chiuso/riservato)                                        ║
+║    • Sezione (RCT/RCO/RCP)                                                  ║
+║    • Descrizione/causale                                                    ║
+║    • Numero sinistro                                                         ║
+║    • Qualsiasi altro dato presente                                          ║
+║                                                                              ║
+║ 3. GESTIONE ASSENZA DATI:                                                   ║
+║    SE non presenti dati certi:                                              ║
+║    • Mostrare "Nessun dato storico sinistri disponibile"                   ║
+║    • NON creare grafici                                                      ║
+║    • NON generare tabelle con esempi                                        ║
+║    • NON inventare KPI                                                       ║
+║    • VIETATO generare esempi, interpolazioni, dati sintetici               ║
+║                                                                              ║
+║ 4. CALCOLI STATISTICI: SOLO se dati certi disponibili                      ║
+║                                                                              ║
+║ 5. COERENZA TEMPORALE:                                                      ║
+║    • Anno sinistro = data denuncia (non accadimento)                        ║
+║    • Anno premio = anno vigenza polizza                                      ║
+║    • Verificare coerenza con vigenza                                        ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
 SEZIONE "Andamento Premi vs Sinistri":
 Grafico Chart.js a barre (Premi blu, Sinistri rosso)
 
@@ -433,12 +616,56 @@ Grafico Chart.js a barre (Premi blu, Sinistri rosso)
 ║ 5. COERENZA: years.length === premiums.length === claims.length             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
+SEZIONE "Dettaglio Calcolo":
+Per ogni società assicurata, tabella dettagliata con colonne:
+| Società | Fatturato USA/CAN | Tasso ‰ USA/CAN | Premio USA/CAN |
+| Fatturato ROW | Tasso ‰ ROW | Premio ROW | Premio Totale Imponibile |
+
+FORMULA ESPLICITA DI CALCOLO:
+Premio = (Fatturato × Tasso‰) / 1000
+
+NOTA CRITICA SUL TASSO:
+Il tasso è espresso in "per mille" (‰), quindi:
+- Tasso 1,720 ‰ = 1,720 / 1000 = 0,001720 (coefficiente decimale)
+- Tasso 0,450 ‰ = 0,450 / 1000 = 0,000450 (coefficiente decimale)
+- ATTENZIONE: NON confondere ‰ (per mille) con % (percentuale)
+
+ESEMPIO CALCOLO COMPLETO:
+Società: FIN-OMET S.R.L
+Fatturato USA/CAN: €13.000.000 × Tasso 1,720‰
+= €13.000.000 × (1,720/1000)
+= €13.000.000 × 0,001720
+= €22.360
+
+Fatturato ROW: €90.000.000 × Tasso 0,450‰
+= €90.000.000 × (0,450/1000)
+= €90.000.000 × 0,000450
+= €40.500
+
+Premio Totale Società: €22.360 + €40.500 = €62.860
+
+
 SEZIONE "KPI Sinistralità":
-4 card KPI: Loss Ratio | N° Sinistri | Totale Liquidato | Riserve Aperte
+5 card KPI:
+- Loss Ratio PAGATO: (Totale Pagato / Totale Premi) × 100
+  (sinistri effettivamente liquidati)
+- Loss Ratio COMPLESSIVO: (Totale Pagato + Riserve Aperte) / Totale Premi × 100
+  (include anche sinistri aperti con riserva)
+- N° Sinistri Totali
+- Totale Liquidato
+- Riserve Aperte
+
+NOTA: Se disponibili riserve aperte, mostrare entrambi i loss ratio.
+Il Loss Ratio COMPLESSIVO è più indicativo della sinistralità reale per underwriting.
 
 SEZIONE "Loss Experience per Anno":
-Tabella con colonne: Anno | Premio | N° Sin. | Riservato | Pagato | Totale (R+P) | Loss Ratio | Freq.
+Tabella con colonne: Anno | Premio | N° Sin. | Riservato | Pagato | Totale (R+P) |
+Loss Ratio Pagato | Loss Ratio Complessivo | Freq.
 + Riga TOTALE
+
+NOTA TECNICA:
+- Loss Ratio Pagato = (Pagato / Premio) × 100
+- Loss Ratio Complessivo = ((Pagato + Riservato) / Premio) × 100
 
 SEZIONE "Distribuzione per Sezione":
 Tabella con colonne: Sezione | N° Sinistri | % N° | Importo Totale | % Importo | Media Sinistro | Sinistro Max
@@ -454,7 +681,7 @@ SEZIONE "Note sulla Sinistralità":
 Osservazioni rilevanti: trend, concentrazioni, sinistri significativi, impatto su aggregato
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 11: APPENDICI
+TAB 10: APPENDICI
 ═══════════════════════════════════════════════════════════════════════════════
 
 SEZIONE "Elenco Appendici":

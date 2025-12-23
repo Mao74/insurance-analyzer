@@ -195,10 +195,72 @@ def process_file_recursive(file_path, output_dir, visited=None):
         except Exception as e:
             logger.error(f"Error processing .docx {file_path}: {e}")
 
-    # 4. EXCEL Processing (.xlsx)
-    elif ext == '.xlsx':
-        # TODO: Implement Excel handling (maybe text dump)
-        pass
+    # 4. EXCEL Processing (.xlsx, .xls)
+    elif ext in ['.xlsx', '.xls']:
+        try:
+            pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
+            
+            # Read all sheets from Excel file
+            xl = pd.ExcelFile(file_path)
+            all_text_lines = []
+            
+            for sheet_name in xl.sheet_names:
+                df = pd.read_excel(file_path, sheet_name=sheet_name)
+                all_text_lines.append(f"=== Foglio: {sheet_name} ===")
+                all_text_lines.append("")
+                # Convert DataFrame to string representation
+                table_str = df.to_string(index=False)
+                all_text_lines.extend(table_str.split('\n'))
+                all_text_lines.append("")
+                all_text_lines.append("")
+            
+            # Create PDF with extracted text
+            c = canvas.Canvas(pdf_path, pagesize=letter)
+            width, height = letter
+            y_position = height - 40
+            line_height = 10
+            
+            textobject = c.beginText(40, y_position)
+            textobject.setFont("Courier", 7)  # Monospace for table alignment
+            
+            for line in all_text_lines:
+                # Handle very long lines by wrapping
+                max_chars = 120
+                while len(line) > max_chars:
+                    textobject.textLine(line[:max_chars])
+                    line = line[max_chars:]
+                    y_position -= line_height
+                    # Check if we need a new page
+                    if y_position < 40:
+                        c.drawText(textobject)
+                        c.showPage()
+                        y_position = height - 40
+                        textobject = c.beginText(40, y_position)
+                        textobject.setFont("Courier", 7)
+                
+                textobject.textLine(line)
+                y_position -= line_height
+                
+                # Check if we need a new page
+                if y_position < 40:
+                    c.drawText(textobject)
+                    c.showPage()
+                    y_position = height - 40
+                    textobject = c.beginText(40, y_position)
+                    textobject.setFont("Courier", 7)
+            
+            c.drawText(textobject)
+            c.save()
+            
+            logger.info(f"Converted Excel to PDF: {pdf_path}")
+            
+            processed_files.append({
+                'path': pdf_path,
+                'original_name': filename,
+                'type': 'application/pdf'
+            })
+        except Exception as e:
+            logger.error(f"Error processing Excel file {file_path}: {e}")
 
     # 5. IMAGE Processing
     elif ext in ['.jpg', '.jpeg', '.png', '.bmp']:

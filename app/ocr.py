@@ -124,14 +124,67 @@ def extract_with_doctr(file_path: str) -> str:
 def word_count(text: str) -> int:
     return len(text.split())
 
-def get_page_word_counts(file_path: str) -> list[tuple[int, str]]:
-    """Returns list of (word_count, text) for each page."""
+def is_text_quality_good(text: str) -> bool:
+    """
+    Check if extracted text is readable (not garbled from rotation issues).
+    Returns False if text appears to be from a rotated page.
+    """
+    if not text or len(text.strip()) < 20:
+        return False
+    
+    # Count alphanumeric vs special characters
+    alnum_count = sum(1 for c in text if c.isalnum())
+    total_chars = len(text.replace(" ", "").replace("\n", ""))
+    
+    if total_chars == 0:
+        return False
+    
+    alnum_ratio = alnum_count / total_chars
+    
+    # If less than 60% alphanumeric, likely garbled
+    if alnum_ratio < 0.60:
+        print(f"  Text quality check: low alnum ratio {alnum_ratio:.2f}")
+        return False
+    
+    # Check for too many non-Italian/non-English characters
+    # Garbled text often has lots of unusual character sequences
+    words = text.split()
+    if len(words) > 10:
+        # Check if most "words" are very short (1-2 chars) - sign of garbled text
+        short_words = sum(1 for w in words if len(w) <= 2)
+        short_ratio = short_words / len(words)
+        if short_ratio > 0.5:
+            print(f"  Text quality check: too many short words {short_ratio:.2f}")
+            return False
+        
+        # Check for repeated unusual patterns
+        unusual_chars = sum(1 for c in text if c in "°''""«»§←→↑↓∈∉∪∩")
+        if unusual_chars > len(text) * 0.05:
+            print(f"  Text quality check: too many unusual chars")
+            return False
+    
+    return True
+
+def get_page_word_counts(file_path: str) -> list[tuple[int, str, int, bool]]:
+    """
+    Returns list of (word_count, text, rotation, is_quality_good) for each page.
+    rotation: page rotation in degrees (0, 90, 180, 270)
+    is_quality_good: True if text appears readable, False if likely garbled
+    """
     page_data = []
     try:
         with fitz.open(file_path) as doc:
-            for page in doc:
+            for page_num, page in enumerate(doc):
                 text = page.get_text()
-                page_data.append((word_count(text), text))
+                rotation = page.rotation  # 0, 90, 180, or 270
+                quality_good = is_text_quality_good(text)
+                
+                if rotation != 0:
+                    print(f"  Page {page_num + 1}: Detected rotation metadata: {rotation}°")
+                if not quality_good:
+                    print(f"  Page {page_num + 1}: Text quality check FAILED - will use OCR")
+                
+                page_data.append((word_count(text), text, rotation, quality_good))
     except Exception as e:
         print(f"Error getting page word counts: {e}")
     return page_data
@@ -163,6 +216,21 @@ def extract_images_from_page_ocr(page, page_num: int) -> str:
                 if pil_image.mode != 'RGB':
                     pil_image = pil_image.convert('RGB')
                 
+                # OSD Rotation Detection for embedded images
+                try:
+                    osd = pytesseract.image_to_osd(pil_image)
+                    rotation = 0
+                    for line in osd.split("\n"):
+                        if "Rotate:" in line:
+                            rotation = int(line.split(":")[1].strip())
+                            break
+                    if rotation != 0:
+                        print(f"  Image {img_index} on page {page_num}: Detected rotation {rotation}°, correcting...")
+                        pil_image = pil_image.rotate(-rotation, expand=True)
+                except Exception as e:
+                    # OSD can fail on images with little text
+                    pass
+                
                 # Run Tesseract OCR on the image
                 ocr_text = pytesseract.image_to_string(pil_image, lang='ita')
                 if ocr_text.strip():
@@ -184,12 +252,13 @@ def process_pdf(file_path: str) -> tuple[str, str]:
     
     Logica migliorata:
     1. Estrae testo nativo e conta parole per pagina
-    2. Se media parole/pagina >= 50: PDF nativo
-    3. Se media < 50: approccio ibrido (testo nativo + OCR su pagine povere)
+    2. Verifica qualità testo e rotazione pagine
+    3. Se media parole/pagina >= 50 E tutte le pagine hanno buona qualità: PDF nativo
+    4. Altrimenti: approccio ibrido (testo nativo + OCR su pagine problematiche)
     """
     MIN_WORDS_PER_PAGE = 50  # Soglia per considerare una pagina "ricca" di testo
     
-    # Step 1: Analizza ogni pagina
+    # Step 1: Analizza ogni pagina (ora restituisce 4 elementi)
     page_data = get_page_word_counts(file_path)
     
     if not page_data:
@@ -198,59 +267,99 @@ def process_pdf(file_path: str) -> tuple[str, str]:
         text_tess = extract_with_tesseract(file_path)
         return text_tess, 'ocr_tesseract'
     
-    total_words = sum(wc for wc, _ in page_data)
+    total_words = sum(wc for wc, _, _, _ in page_data)
     num_pages = len(page_data)
     avg_words_per_page = total_words / num_pages if num_pages > 0 else 0
     
     print(f"PDF Analysis: {num_pages} pages, {total_words} total words, {avg_words_per_page:.1f} avg words/page")
     
-    # Count pages with low text content
-    low_text_pages = [i for i, (wc, _) in enumerate(page_data) if wc < MIN_WORDS_PER_PAGE]
+    # Count pages that need OCR (low text OR poor quality OR rotated)
+    pages_needing_ocr = []
+    for i, (wc, _, rotation, quality_good) in enumerate(page_data):
+        needs_ocr = False
+        reasons = []
+        
+        if wc < MIN_WORDS_PER_PAGE:
+            needs_ocr = True
+            reasons.append(f"low words ({wc})")
+        if not quality_good:
+            needs_ocr = True
+            reasons.append("poor quality")
+        if rotation != 0:
+            needs_ocr = True
+            reasons.append(f"rotated {rotation}°")
+        
+        if needs_ocr:
+            pages_needing_ocr.append(i)
+            print(f"  Page {i + 1} needs OCR: {', '.join(reasons)}")
     
     # Step 2: Decide strategy
-    if avg_words_per_page >= MIN_WORDS_PER_PAGE and len(low_text_pages) < num_pages * 0.3:
-        # PDF nativo - più del 70% delle pagine ha testo sufficiente
-        full_text = "\n".join(text for _, text in page_data)
-        print(f"PDF classified as NATIVE ({len(low_text_pages)} low-text pages out of {num_pages})")
+    if len(pages_needing_ocr) == 0 and avg_words_per_page >= MIN_WORDS_PER_PAGE:
+        # PDF nativo - tutte le pagine sono OK
+        full_text = "\n".join(text for _, text, _, _ in page_data)
+        print(f"PDF classified as NATIVE (all pages OK)")
         return full_text, 'nativo'
     
-    # Step 3: Approccio ibrido - estrai testo + OCR sulle pagine con poco testo
-    print(f"PDF classified as HYBRID - {len(low_text_pages)} pages need OCR out of {num_pages}")
+    # Step 3: Approccio ibrido - estrai testo + OCR sulle pagine problematiche
+    print(f"PDF classified as HYBRID - {len(pages_needing_ocr)} pages need OCR out of {num_pages}")
     
     combined_text = []
     
     try:
         with fitz.open(file_path) as doc:
-            for page_num, (wc, native_text) in enumerate(page_data):
-                if wc >= MIN_WORDS_PER_PAGE:
-                    # Pagina con testo sufficiente - usa testo nativo
+            for page_num, (wc, native_text, rotation, quality_good) in enumerate(page_data):
+                # Usa testo nativo solo se OK
+                if page_num not in pages_needing_ocr:
                     combined_text.append(native_text)
+                    continue
+                
+                # Pagina problematica - usa OCR con rotation detection
+                page = doc[page_num]
+                
+                # Prima prova su immagini embedded
+                ocr_text = extract_images_from_page_ocr(page, page_num)
+                
+                if word_count(ocr_text) > wc and is_text_quality_good(ocr_text):
+                    # OCR ha estratto più testo di buona qualità
+                    combined_text.append(ocr_text)
+                    print(f"  Page {page_num + 1}: Embedded image OCR extracted {word_count(ocr_text)} words")
                 else:
-                    # Pagina con poco testo - prova OCR su immagini embedded
-                    page = doc[page_num]
-                    ocr_text = extract_images_from_page_ocr(page, page_num)
+                    # Fallback: renderizza intera pagina e OCR con rotation detection
+                    mat = fitz.Matrix(3.0, 3.0)  # 3x zoom for better quality
+                    pix = page.get_pixmap(matrix=mat)
+                    from PIL import Image
+                    mode = "RGB" if pix.alpha == 0 else "RGBA"
+                    img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
+                    if img.mode != 'RGB':
+                        img = img.convert('RGB')
                     
-                    if word_count(ocr_text) > word_count(native_text):
-                        # OCR ha estratto più testo
-                        combined_text.append(ocr_text)
-                        print(f"  Page {page_num + 1}: OCR extracted {word_count(ocr_text)} words (native had {wc})")
+                    # OSD Rotation Detection - ALWAYS try for problematic pages
+                    detected_rotation = 0
+                    try:
+                        osd = pytesseract.image_to_osd(img)
+                        for line in osd.split("\n"):
+                            if "Rotate:" in line:
+                                detected_rotation = int(line.split(":")[1].strip())
+                                break
+                        if detected_rotation != 0:
+                            print(f"  Page {page_num + 1}: OSD detected rotation {detected_rotation}°, correcting...")
+                            img = img.rotate(-detected_rotation, expand=True)
+                    except Exception as e:
+                        print(f"  Page {page_num + 1}: OSD failed: {e}")
+                        # If OSD fails and page has rotation metadata, try that
+                        if rotation != 0:
+                            print(f"  Page {page_num + 1}: Using PDF rotation metadata ({rotation}°)")
+                            img = img.rotate(-rotation, expand=True)
+                    
+                    full_page_ocr = pytesseract.image_to_string(img, lang='ita')
+                    
+                    # Use OCR result if it's better quality
+                    if word_count(full_page_ocr) > wc or is_text_quality_good(full_page_ocr):
+                        combined_text.append(full_page_ocr)
+                        print(f"  Page {page_num + 1}: Full-page OCR extracted {word_count(full_page_ocr)} words")
                     else:
-                        # Fallback: renderizza intera pagina e OCR
-                        mat = fitz.Matrix(2.0, 2.0)  # 2x zoom
-                        pix = page.get_pixmap(matrix=mat)
-                        from PIL import Image
-                        mode = "RGB" if pix.alpha == 0 else "RGBA"
-                        img = Image.frombytes(mode, [pix.width, pix.height], pix.samples)
-                        if img.mode != 'RGB':
-                            img = img.convert('RGB')
-                        full_page_ocr = pytesseract.image_to_string(img, lang='ita')
-                        
-                        if word_count(full_page_ocr) > wc:
-                            combined_text.append(full_page_ocr)
-                            print(f"  Page {page_num + 1}: Full-page OCR extracted {word_count(full_page_ocr)} words")
-                        else:
-                            combined_text.append(native_text)
-                            print(f"  Page {page_num + 1}: Kept native text ({wc} words)")
+                        combined_text.append(native_text)
+                        print(f"  Page {page_num + 1}: Kept native text ({wc} words) - OCR didn't improve")
     
     except Exception as e:
         print(f"Error in hybrid processing: {e}")
