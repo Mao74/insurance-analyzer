@@ -90,3 +90,17 @@ class Analysis(Base):
     last_updated = Column(DateTime, default=datetime.utcnow) # Track edits
     document = relationship("Document", back_populates="analyses")
 
+
+class SystemSettings(Base):
+    """System-wide settings (singleton table)"""
+    __tablename__ = 'system_settings'
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # LLM Model configuration
+    llm_model_name = Column(String(100), default="gemini-2.5-flash-preview-05-20")
+    
+    # Token pricing (per million tokens)
+    input_cost_per_million = Column(String(20), default="0.50")  # USD
+    output_cost_per_million = Column(String(20), default="3.00")  # USD
+    
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

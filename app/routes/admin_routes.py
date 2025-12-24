@@ -212,3 +212,72 @@ async def delete_user(
     db.commit()
     
     return {"message": "Utente eliminato"}
+
+
+# System Settings Routes
+
+class SettingsResponse(BaseModel):
+    llm_model_name: str
+    input_cost_per_million: str
+    output_cost_per_million: str
+
+class SettingsUpdate(BaseModel):
+    llm_model_name: Optional[str] = None
+    input_cost_per_million: Optional[str] = None
+    output_cost_per_million: Optional[str] = None
+
+@router.get("/settings", response_model=SettingsResponse)
+async def get_settings(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Get system settings (admin only)"""
+    require_admin(request, db)
+    
+    # Get or create singleton settings
+    settings = db.query(models.SystemSettings).first()
+    if not settings:
+        settings = models.SystemSettings()
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
+    
+    return SettingsResponse(
+        llm_model_name=settings.llm_model_name,
+        input_cost_per_million=settings.input_cost_per_million,
+        output_cost_per_million=settings.output_cost_per_million
+    )
+
+@router.put("/settings", response_model=SettingsResponse)
+async def update_settings(
+    request: Request,
+    payload: SettingsUpdate,
+    db: Session = Depends(get_db)
+):
+    """Update system settings (admin only)"""
+    require_admin(request, db)
+    
+    # Get or create singleton settings
+    settings = db.query(models.SystemSettings).first()
+    if not settings:
+        settings = models.SystemSettings()
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
+    
+    # Update fields if provided
+    if payload.llm_model_name is not None:
+        settings.llm_model_name = payload.llm_model_name
+    if payload.input_cost_per_million is not None:
+        settings.input_cost_per_million = payload.input_cost_per_million
+    if payload.output_cost_per_million is not None:
+        settings.output_cost_per_million = payload.output_cost_per_million
+    
+    db.commit()
+    db.refresh(settings)
+    
+    return SettingsResponse(
+        llm_model_name=settings.llm_model_name,
+        input_cost_per_million=settings.input_cost_per_million,
+        output_cost_per_million=settings.output_cost_per_million
+    )
