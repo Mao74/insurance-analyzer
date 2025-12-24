@@ -121,6 +121,12 @@ async def create_user(
     db.commit()
     db.refresh(user)
     
+    # Send welcome email
+    from ..email_service import send_welcome_email
+    email_sent = send_welcome_email(to_email=user.email, user_name=user.username)
+    if email_sent:
+        print(f"[ADMIN] Welcome email sent to {user.email}")
+    
     return UserListItem(
         id=user.id,
         email=user.email,
