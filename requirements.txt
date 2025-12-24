@@ -15,3 +15,4 @@ python-magic==0.4.27
 pydantic-settings
 psycopg2-binary==2.9.9
 resend==2.0.0
+playwright==1.40.0
