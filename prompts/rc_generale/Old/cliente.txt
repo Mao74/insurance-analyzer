@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════════════════════════════════════════
-PROMPT: REPORT RC (RCT/RCO/RCP) - VERSIONE CLIENTE V4 UNIVERSALE
+PROMPT: REPORT RC (RCT/RCO/RCP) - VERSIONE CLIENTE
 ═══════════════════════════════════════════════════════════════════════════════
 
 Sei un esperto analista assicurativo. Devi generare un report HTML chiaro e operativo per il CLIENTE (imprenditore, CFO, risk manager), partendo da:
@@ -10,52 +10,6 @@ Sei un esperto analista assicurativo. Devi generare un report HTML chiaro e oper
 ═══════════════════════════════════════════════════════════════════════════════
 PRINCIPI GUIDA - VERSIONE CLIENTE
 ═══════════════════════════════════════════════════════════════════════════════
-
-═══════════════════════════════════════════════════════════════════════════════
-LOGICA ADATTIVA: RILEVAMENTO TIPO POLIZZA
-═══════════════════════════════════════════════════════════════════════════════
-
-IMPORTANTE: Prima di generare il report, analizzare la polizza per identificarne
-il tipo e adattare la struttura di conseguenza.
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TIPO A: POLIZZA STANDARD (PMI, singola società)                             ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ INDICATORI:                                                                  ║
-║ • Una sola società assicurata (Contraente = Assicurato)                     ║
-║ • Premio unico (non suddiviso per entità)                                   ║
-║ • Territorio: Italia, UE, Europa                                             ║
-║ • Condizioni particolari standard: RCT.XX, RCO.XX, RCP.XX                   ║
-║ • NO clausole coordinamento (BCI, DIC/DIL, Follow Form)                     ║
-║                                                                              ║
-║ ADATTAMENTI:                                                                 ║
-║ • TAB 1: Sezione entità = singola società                                   ║
-║ • TAB 2: Estensioni = condizioni particolari RCT/RCO/RCP sintetiche        ║
-║ • TAB 3: Calcolo premio = formato lineare unico                             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TIPO B: POLIZZA MASTER (gruppi, programmi internazionali)                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ INDICATORI:                                                                  ║
-║ • Multiple entità assicurate (5-20+ società del gruppo)                     ║
-║ • Presenza sezione "Entità Assicurate" con elenco società                   ║
-║ • Premio suddiviso per entità                                                ║
-║ • Territorio: Worldwide, ROW, USA/Canada separati                            ║
-║ • Clausole coordinamento: BCI, DIC/DIL, Follow Form, Admitted/Non-Admitted  ║
-║                                                                              ║
-║ ADATTAMENTI:                                                                 ║
-║ • TAB 1: Sezione entità = tabella con tutte le società                      ║
-║ • TAB 2: Estensioni = clausole coordinamento (BCI, DIC/DIL)                 ║
-║ • TAB 3: Calcolo premio = tabella per entità + totale                       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-REGOLA: Se presenza indicatori misti → trattare come TIPO B (Master).
-
 
 1. CHIAREZZA: Linguaggio accessibile, no gergo tecnico senza spiegazione
 2. OPERATIVITÀ: Focus su "cosa devo sapere per gestire i rischi"
@@ -73,7 +27,7 @@ TAB 2: GARANZIE & COPERTURE
 TAB 3: CALCOLO PREMIO
 TAB 4: SINISTRI & PREMI
 TAB 5: PROCEDURA SINISTRI
-TAB 7: APPROFONDIMENTI
+TAB 6: APPROFONDIMENTI
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 1: SINTESI CONTRATTUALE
@@ -85,22 +39,6 @@ TAB 1: SINTESI CONTRATTUALE
    - Vigenza (decorrenza - scadenza)
    - Premio Annuo Totale → MOSTRARE PREMIO LORDO (non imponibile)
    - Forma di Copertura (tag: Claims Made / Loss Occurrence)
-   
-   DATI OPERATIVI (NUOVO):
-   - Termini di Disdetta: [estrarre da art. "Durata" o "Rinnovo"]
-     Esempio: "60 giorni prima della scadenza tramite raccomandata"
-     Se non specificato: "Rinnovo tacito (verificare condizioni generali)"
-   
-   - Giorni di Mora: [estrarre da art. "Pagamento premio" o rif. art. 1901 CC]
-     Esempio: "15 giorni" o "30 giorni"
-     Se non specificato: "30 giorni (art. 1901 C.C.)"
-   
-   - Frazionamento: [Annuale / Semestrale / Trimestrale / Mensile]
-     Se con sovrapprezzo: indicare "Semestrale (+2%)" o simile
-   
-   - Regolazione Premio: [Sì/No]
-     Se Sì: "Premio deposito + conguaglio su fatturato/salari"
-     Se No: "Premio fisso"
 
    ╔══════════════════════════════════════════════════════════════════════════╗
    ║ REGOLA CRITICA: PREMIO LORDO                                             ║
@@ -115,53 +53,7 @@ TAB 1: SINTESI CONTRATTUALE
    ║                                                                          ║
    ╚══════════════════════════════════════════════════════════════════════════╝
 
-
-2. ENTITÀ ASSICURATE (logica adattiva)
-
-   IF POLIZZA TIPO A (Standard - singola società):
-       Mostrare semplicemente:
-       
-       <div class="info-item">
-           <div class="info-label">ASSICURATO</div>
-           <div class="info-value">[RAGIONE_SOCIALE]</div>
-       </div>
-   
-   IF POLIZZA TIPO B (Master - multiple entità):
-       Creare sezione dedicata con tabella:
-       
-       <h3>Entità Assicurate</h3>
-       
-       <table>
-           <thead>
-               <tr>
-                   <th>Società</th>
-                   <th>P.IVA</th>
-                   <th>Sede</th>
-                   <th>Tipo Copertura</th>
-               </tr>
-           </thead>
-           <tbody>
-               <tr>
-                   <td>[SOCIETÀ_1]</td>
-                   <td>[PIVA]</td>
-                   <td>[SEDE]</td>
-                   <td><span class="badge">[FULL / BCI / DIC]</span></td>
-               </tr>
-               <!-- Ripetere per ogni entità -->
-           </tbody>
-       </table>
-       
-       Note:
-       - FULL = Copertura completa
-       - BCI = Solo Business Continuity Interest (filiali estere non direttamente assicurabili)
-       - DIC/DIL = Difference in Conditions/Limits
-   
-   Estrarre TUTTE le società dalla sezione "Entità Assicurate" o "Assicurati" della polizza.
-   NON omettere nessuna società presente.
-
-3. TERRITORIO (sempre presente)
-
-4. MASSIMALI PRINCIPALI (info-grid con classe "large")
+2. MASSIMALI PRINCIPALI (info-grid con classe "large")
    4 card grandi:
    - Massimale Unico RCT/RCO/RCP: valore massimo indennizzabile per sinistro
    - Limite Aggregato Annuo: tetto massimo nell'anno
@@ -221,259 +113,308 @@ TAB 1: SINTESI CONTRATTUALE
 TAB 2: GARANZIE & COPERTURE
 ═══════════════════════════════════════════════════════════════════════════════
 
-PRINCIPIO: Focus su numeri, massimali, franchigie. Elenchi sintetici per estensioni.
-NO testo integrale clausole (cliente ha polizza originale).
-
-1. MASSIMALI (tabella)
-
-   Presentare in formato tabella chiara:
-   
-   ┌────────────────────────┬──────────────────┬──────────────────┬──────────────────┐
-   │ Sezione                │ Per Sinistro     │ Per Persona      │ Aggregato Annuo  │
-   ├────────────────────────┼──────────────────┼──────────────────┼──────────────────┤
-   │ RCT (Terzi)            │ €X.XXX.XXX       │ €X.XXX.XXX       │ €XX.XXX.XXX      │
-   │ RCO (Operai)           │ €X.XXX.XXX       │ €X.XXX.XXX       │ Incluso RCT      │
-   │ RCP (Prodotti)         │ €X.XXX.XXX       │ €X.XXX.XXX       │ Incluso Generale │
-   └────────────────────────┴──────────────────┴──────────────────┴──────────────────┘
-   
-   Note:
-   - Se RCO/RCP hanno aggregato separato: indicarlo
-   - Se massimale cose separato: aggiungere colonna
-   - Evidenziare se aggregato generale (RCT+RCO+RCP combinati)
-
-2. FORMA DI COPERTURA (per sezione)
-
-   <div class="info-grid">
-       <div class="info-item">
-           <div class="info-label">RCT/RCO</div>
-           <div class="info-value"><span class="badge tag-lo">Loss Occurrence</span></div>
-       </div>
-       <div class="info-item">
-           <div class="info-label">RCP</div>
-           <div class="info-value"><span class="badge tag-cm">Claims Made</span></div>
-       </div>
-   </div>
-   
-   Se Claims Made per RCP:
-   - Retroattività: [DATE per ogni società se diverse]
-   - Ultrattività/Postuma: [durata se presente, es. "18 mesi"]
-
-3. FRANCHIGIE E SCOPERTI (tabella)
-
-   ┌────────────┬──────────────────────────────────────────────────────────┐
-   │ Sezione    │ Franchigia / Scoperto                                    │
-   ├────────────┼──────────────────────────────────────────────────────────┤
-   │ RCT        │ [Dettaglio: es. "€500 per danni a cose, nessuna per persone"] │
-   │ RCO        │ [Dettaglio]                                              │
-   │ RCP        │ [Dettaglio + territorio se diverso: ROW vs USA/Can]      │
-   └────────────┴──────────────────────────────────────────────────────────┘
-
-4. ESTENSIONI DI GARANZIA (logica adattiva)
-
-   ╔══════════════════════════════════════════════════════════════════════════╗
-   ║ LOGICA ADATTIVA: TIPO A (Standard) vs TIPO B (Master)                   ║
-   ╠══════════════════════════════════════════════════════════════════════════╣
-   ║                                                                          ║
-   ║ IF POLIZZA TIPO A (Standard):                                           ║
-   ║                                                                          ║
-   ║    Elencare condizioni particolari RCT/RCO/RCP in formato sintetico:    ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Terzi (RCT)</h4>                                   ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCT.05:</strong> Danni a cose in custodia            ║
-   ║            (limite €X, scoperto Y%)</li>                                 ║
-   ║        <li><strong>RCT.11:</strong> Installazione/manutenzione          ║
-   ║            (postuma 12 mesi, limite €X)</li>                             ║
-   ║        <!-- Altre condizioni particolari presenti -->                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Operai (RCO)</h4>                                  ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCO.01:</strong> Malattie professionali              ║
-   ║            (retroattività [data])</li>                                   ║
-   ║        <!-- Altre -->                                                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Prodotti (RCP)</h4>                                ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCP.01:</strong> Ritiro Prodotti (Recall)            ║
-   ║            (limite €X, scoperto Y%/Z%)</li>                              ║
-   ║        <li><strong>RCP.02:</strong> Danni Patrimoniali Puri             ║
-   ║            (sottolimite €X)</li>                                         ║
-   ║        <!-- Altre -->                                                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    FORMATO: 1 riga per estensione con info essenziali                   ║
-   ║    (limite, scoperto, durata se rilevanti)                               ║
-   ║                                                                          ║
-   ║ ─────────────────────────────────────────────────────────────────────── ║
-   ║                                                                          ║
-   ║ IF POLIZZA TIPO B (Master con coordinamento):                           ║
-   ║                                                                          ║
-   ║    Sezione A - Clausole Coordinamento Programma Internazionale:         ║
-   ║                                                                          ║
-   ║    <h4>Clausole di Coordinamento</h4>                                   ║
-   ║    <div class="coordination-box">                                        ║
-   ║        <h5>BCI - Business Continuity Interest</h5>                       ║
-   ║        <p>Copre la perdita pecuniaria della Capogruppo derivante        ║
-   ║        da sinistri alle filiali estere non direttamente assicurabili    ║
-   ║        ("Non-Admitted" countries).</p>                                   ║
-   ║        <p><strong>Società coperte in BCI:</strong> [elenco]</p>         ║
-   ║    </div>                                                                ║
-   ║                                                                          ║
-   ║    <div class="coordination-box">                                        ║
-   ║        <h5>DIC/DIL - Difference in Conditions/Limits</h5>               ║
-   ║        <p>Interviene per coprire differenze di condizioni o limiti      ║
-   ║        superiori rispetto alle polizze locali esistenti.</p>            ║
-   ║    </div>                                                                ║
-   ║                                                                          ║
-   ║    <!-- Se presenti altre clausole master: Follow Form, ecc. -->        ║
-   ║                                                                          ║
-   ║    Sezione B - Estensioni Standard (se presenti):                       ║
-   ║    [Elenco condizioni particolari come TIPO A]                          ║
-   ║                                                                          ║
-   ╚══════════════════════════════════════════════════════════════════════════╝
-   
-   IMPORTANTE:
-   - Riportare SOLO estensioni effettivamente presenti in polizza
-   - Formato sintetico: 1 riga per estensione
-   - Focus su: codice, titolo, limite/sottolimite, scoperto, durata
-   - NO testo integrale, NO spese dettagliate
-
-5. ESCLUSIONI PRINCIPALI (top 5-7)
-
-   Elencare le esclusioni PIÙ CRITICHE che il cliente deve conoscere:
-   
-   <h4>Esclusioni Principali</h4>
-   <ul class="exclusion-list">
-       <li><strong>Cyber Risk:</strong> Esclusi danni da attacchi informatici, 
-           perdita dati, violazione privacy</li>
-       <li><strong>PFAS:</strong> Sostanze perfluorurate e polifluorurate</li>
-       <li><strong>Amianto:</strong> Danni da esposizione all'amianto</li>
-       <li><strong>Nucleare:</strong> Energia nucleare e radiazioni ionizzanti</li>
-       <li><strong>Inquinamento graduale:</strong> Solo inquinamento accidentale coperto</li>
-       <!-- Altre esclusioni rilevanti per specifica polizza -->
-   </ul>
-   
-   Focus su esclusioni che potrebbero sorprendere il cliente o che sono 
-   particolarmente rilevanti per la sua attività.
-
-
-═══════════════════════════════════════════════════════════════════════════════
-TAB 3: CALCOLO PREMIO (ADATTIVO)
-═══════════════════════════════════════════════════════════════════════════════
-
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ LOGICA ADATTIVA: Formato varia in base al tipo polizza                      ║
+║ REGOLA CRITICA: COMPLETEZZA GARANZIE                                        ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║ IF POLIZZA TIPO A (Standard - premio unico):                                ║
-║    → Formato LINEARE                                                         ║
+║ Questo TAB deve riportare TUTTE le garanzie presenti in polizza, non solo   ║
+║ quelle principali.                                                           ║
 ║                                                                              ║
-║ IF POLIZZA TIPO B (Master - premi per entità):                              ║
-║    → Formato TABELLA PER ENTITÀ                                             ║
+║ PROCEDURA DI ESTRAZIONE:                                                     ║
+║ 1. Leggere INTERO testo polizza                                             ║
+║ 2. Identificare tutte le estensioni di garanzia                            ║
+║ 3. Verificare appendici e clausole aggiuntive                              ║
+║ 4. Estrarre sottolimiti, franchigie e scoperti per OGNI garanzia          ║
+║                                                                              ║
+║ CONTROLLO QUALITÀ:                                                           ║
+║ Prima di finalizzare il report, verificare di aver inserito ALMENO:        ║
+║ • RCT: 8-15 garanzie (secondo complessità polizza)                         ║
+║ • RCO: 4-8 garanzie                                                         ║
+║ • RCP: 5-10 garanzie                                                        ║
+║                                                                              ║
+║ Se il numero è inferiore, RICONTROLLARE la polizza per garanzie mancanti.  ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
-FORMATO A: PREMIO UNICO (Polizza Standard)
-───────────────────────────────────────────────────────────────────────────────
+Per ogni sezione (RCT, RCO, RCP):
 
-<div class="premio-calculation">
-    <table class="calculation-table">
-        <tr>
-            <td>Premio Imponibile</td>
-            <td class="col-curr">€ XX.XXX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Contributo SSN (X%)</td>
-            <td class="col-curr">€ XXX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Contributo Addizionale SSN</td>
-            <td class="col-curr">€ XX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Imposta Assicurazioni (XX,X%)</td>
-            <td class="col-curr">€ X.XXX,XX</td>
-        </tr>
-        <tr class="total-row">
-            <td><strong>PREMIO LORDO ANNUO</strong></td>
-            <td class="col-curr"><strong>€ XX.XXX,XX</strong></td>
-        </tr>
-    </table>
-</div>
+1. BOX INFO "COSA COPRE" (alert-box alert-info)
+   2-3 righe di spiegazione semplice
 
-Se frazionamento con sovrapprezzo:
-<p class="note">Frazionamento semestrale con sovrapprezzo +2%: 
-€ XX.XXX,XX × 2 rate = € XX.XXX,XX</p>
+2. TABELLA GARANZIE COMPLETA
+   Colonne: Garanzia | Limite | Franchigia | Scoperto | Note
+   
+   GARANZIE RCT TIPICHE (da verificare in polizza):
+   - Garanzia Base RCT (massimale generale)
+   - Franchigia fissa RCT danni a cose
+   - Danni ai veicoli in sosta (Parcheggio)
+   - Danni a mezzi sotto carico e scarico
+   - Danni da interruzione o sospensione di attività
+   - Danni alle cose in consegna e custodia
+   - Danni a cose nell'ambito dei lavori
+   - Danni alle cose sulle quali si eseguono i lavori
+   - Danni Incendio o esplosione
+   - Danni da Furto agevolato da impalcature e ponteggi
+   - Danni a condutture e impianti sotterranei
+   - Danni a cose di terzi traslate, sollevate, rimorchiate e simili
+   - Danni da installazione, riparazione, manutenzione (Postuma X mesi)
+   - Danni da inquinamento accidentale
+   - Danni da errato trattamento dei dati personali (GDPR)
+   - RC Committenza (art. 26 D.Lgs 81/08)
+   - Responsabilità personale dipendenti
+   - Danni da fulmine
+   - Danni da spargimento, caduta, dispersione merci
+   - Danni da vibrazioni, cedimenti, franamento
+   - Danni derivanti da lavori in appalto
+   - Danni estetici
+   - [Qualsiasi altra garanzia presente in polizza]
 
-FORMATO B: TABELLA PER ENTITÀ (Polizza Master)
-───────────────────────────────────────────────────────────────────────────────
+   GARANZIE RCO TIPICHE:
+   - Garanzia Base RCO
+   - Malattie professionali (con data retroattività)
+   - Lavoratori somministrati / interinali
+   - Lavoratori distaccati
+   - Lavoratori occasionali / stagionali
+   - Danno biologico / differenziale
+   - Infortuni in itinere
+   - Garanzia Infortuni INAIL (se prevista)
+   - [Qualsiasi altra garanzia presente in polizza]
 
-<h3>Dettaglio Premio per Entità</h3>
+   GARANZIE RCP TIPICHE:
+   - Garanzia Base RCP
+   - Prodotto difettoso incorporato (Sisterhood)
+   - Ritiro prodotti (Recall / Product Withdrawal)
+   - Danni patrimoniali puri
+   - Garanzia di fornitura (Vendor's Liability)
+   - Garanzia USA/Canada (se territorio esteso)
+   - Danni da interruzione di attività di terzi
+   - Danni da perdita d'uso
+   - Danni conseguenti a ritardo nelle consegne
+   - Spese di rimpiazzo prodotto difettoso
+   - Danni da contaminazione prodotti
+   - RC derivante da operazioni di assistenza tecnica
+   - [Qualsiasi altra garanzia presente in polizza]
 
-<table class="entity-premium-table">
-    <thead>
-        <tr>
-            <th>Società</th>
-            <th>Premio Imponibile</th>
-            <th>Accessori*</th>
-            <th>Premio Lordo</th>
-            <th>Note</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>[SOCIETÀ_1]</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td class="col-curr">€ X.XXX</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td>[FULL / BCI]</td>
-        </tr>
-        <tr>
-            <td>[SOCIETÀ_2]</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td class="col-curr">€ X.XXX</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td>[FULL / BCI]</td>
-        </tr>
-        <!-- Riga per OGNI entità -->
-        <tr class="total-row">
-            <td><strong>TOTALE</strong></td>
-            <td class="col-curr"><strong>€ XXX.XXX</strong></td>
-            <td class="col-curr"><strong>€ XX.XXX</strong></td>
-            <td class="col-curr"><strong>€ XXX.XXX</strong></td>
-            <td></td>
-        </tr>
-    </tbody>
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ IMPORTANTE: ESTRAZIONE COMPLETA                                          ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║                                                                          ║
+   ║ Le liste sopra sono INDICATIVE. Ogni polizza è diversa.                 ║
+   ║                                                                          ║
+   ║ DEVI estrarre e riportare TUTTE le garanzie effettivamente presenti    ║
+   ║ nel documento, anche se non sono elencate sopra.                        ║
+   ║                                                                          ║
+   ║ Cerca sezioni come:                                                      ║
+   ║ • "Estensioni di garanzia"                                              ║
+   ║ • "Garanzie accessorie"                                                  ║
+   ║ • "Clausole aggiuntive"                                                  ║
+   ║ • "Appendici contrattuali"                                              ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+3. PRESTATORI DI LAVORO COPERTI (solo per RCO)
+   Elenco puntato di TUTTE le categorie coperte indicate in polizza
+
+4. ESCLUSIONI PRINCIPALI (alert-box alert-high)
+   Le esclusioni più rilevanti per il cliente (max 10-12 voci)
+   Estrarre da sezioni "Esclusioni", "Rischi esclusi", "Limitazioni"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: CALCOLO PREMIO
+═══════════════════════════════════════════════════════════════════════════════
+
+TAB COMPLETAMENTE RIVISTO - Calcolo analitico per società con split geografico
+
+1. TABELLA CALCOLO PREMIO PER SOCIETÀ
+   
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ REGOLA CRITICA: CALCOLO ANALITICO PER SOCIETÀ                           ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║                                                                          ║
+   ║ OGNI società assicurata deve avere la propria riga con calcolo          ║
+   ║ dettagliato del premio.                                                  ║
+   ║                                                                          ║
+   ║ STRUTTURA TABELLA ESPLICITA:                                             ║
+   ║                                                                          ║
+   ║ Colonne (8 colonne totali):                                              ║
+   ║ | Società | Fatturato USA/CAN | Tasso ‰ USA/CAN | Premio USA/CAN |     ║
+   ║ | Fatturato ROW | Tasso ‰ ROW | Premio ROW | Premio Totale Società |   ║
+   ║                                                                          ║
+   ║ FORMULE DI CALCOLO (da mostrare esplicitamente):                        ║
+   ║ Premio USA/CAN = (Fatturato USA/CAN × Tasso‰ USA/CAN) / 1000           ║
+   ║ Premio ROW = (Fatturato ROW × Tasso‰ ROW) / 1000                       ║
+   ║ Premio Totale Società = Premio USA/CAN + Premio ROW                     ║
+   ║                                                                          ║
+   ║ NOTA IMPORTANTE SUL TASSO:                                               ║
+   ║ Il tasso è espresso in "per mille" (‰), quindi:                         ║
+   ║ - Tasso 1,720 ‰ = 1,720 / 1000 = 0,001720 (coefficiente decimale)      ║
+   ║ - Tasso 0,450 ‰ = 0,450 / 1000 = 0,000450 (coefficiente decimale)      ║
+   ║                                                                          ║
+   ║ ESEMPIO CALCOLO:                                                         ║
+   ║ Fatturato €13.000.000 × Tasso 1,720‰                                    ║
+   ║ = €13.000.000 × (1,720/1000) = €13.000.000 × 0,001720 = €22.360        ║
+   ║                                                                          ║
+   ║ GESTIONE CASI SPECIALI:                                                  ║
+   ║ - Se società opera solo in una area → altra area a 0 (non N/A)          ║
+   ║ - Se tassi USA/CAN e ROW sono uguali → indicarli comunque separati     ║
+   ║ - Tassi USA/Canada sono GENERALMENTE DIVERSI da tassi Resto Mondo      ║
+   ║                                                                          ║
+   ║ ULTIMA RIGA: TOTALE POLIZZA                                             ║
+   ║ - Sfondo: #e6f0ff                                                        ║
+   ║ - Font: bold                                                             ║
+   ║ - Premio Totale Polizza = Σ (Premi Totali tutte le Società)            ║
+   ║                                                                          ║
+   ║ ⚠️ ERRORI DA EVITARE (VIETATO):                                          ║
+   ║ ✗ Accorpare società in "TOTAL ITALY"                                    ║
+   ║ ✗ Raggruppare in "ALTRE (OT Lucca, Ribes, Ellebi)"                     ║
+   ║ ✗ Aggregare filiali estere                                              ║
+   ║                                                                          ║
+   ║ ✓ CORRETTO: Una riga DISTINTA per OGNI società                          ║
+   ║   Esempi:                                                                ║
+   ║   - FIN-OMET S.R.L                                                      ║
+   ║   - O-PAC S.R.L                                                         ║
+   ║   - PIERREBI INNOVATION                                                  ║
+   ║   - OT LUCCA (riga separata)                                            ║
+   ║   - RIBES (riga separata)                                               ║
+   ║   - ELLEBI (riga separata)                                              ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+   ESTRAZIONE DATI DA POLIZZA:
+   - Tassi: cercare in tabelle tariffarie, sezioni premio, appendici contrattuali
+   - Fatturati: cercare dichiarazioni preventive, sezione assicurati
+   - Split geografico: verificare se indicato "USA/Canada" vs "Resto del Mondo"
+   - Se tassi non esplicitamente divisi per area, possono essere unici
+
+2. NOTA METODOLOGICA (box info)
+   
+   Spiegazione contenente:
+   - Formula di calcolo utilizzata
+   - Significato di "tasso per mille" (‰)
+   - Indicazione che i fatturati sono "a preventivo" 
+   - Nota: "Il premio lordo include le imposte. Il dettaglio fiscale è disponibile nella documentazione contrattuale."
+
+3. MODALITÀ DI REGOLAZIONE PREMIO (se presente in polizza)
+   
+   Box informativo con:
+   - Meccanismo di regolazione (es. conguaglio a fine annualità)
+   - Base di calcolo (es. fatturato effettivo vs preventivo)
+   - Tempistiche dichiarazioni
+
+4. VERIFICA COERENZA (alert automatico)
+   
+   ╔══════════════════════════════════════════════════════════════════════════╗
+   ║ CONTROLLO AUTOMATICO                                                     ║
+   ╠══════════════════════════════════════════════════════════════════════════╣
+   ║                                                                          ║
+   ║ SE (Totale Calcolato ≠ Premio indicato in polizza):                    ║
+   ║   → Mostrare alert-box giallo:                                          ║
+   ║                                                                          ║
+   ║   "⚠ ATTENZIONE: Il totale calcolato (€XXX) differisce dal premio     ║
+   ║    indicato in polizza (€YYY). Possibili cause: premi forfettari,     ║
+   ║    minimi di polizza, sconti commerciali non dettagliati."             ║
+   ║                                                                          ║
+   ║ SE (Totale Calcolato ≈ Premio indicato in polizza):                    ║
+   ║   → Nessun alert                                                         ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝
+
+5. ESEMPIO FORMATO TABELLA HTML (STRUTTURA ESPLICITA)
+
+```html
+<table class="detail-table">
+<thead>
+    <tr>
+        <th>Società Assicurata</th>
+        <th>Fatturato USA/CAN</th>
+        <th>Tasso ‰ USA/CAN</th>
+        <th>Premio USA/CAN</th>
+        <th>Fatturato ROW</th>
+        <th>Tasso ‰ ROW</th>
+        <th>Premio ROW</th>
+        <th>Premio Totale</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>FIN-OMET S.R.L</td>
+        <td class="col-curr">€ 13.000.000</td>
+        <td class="col-curr">1,720</td>
+        <td class="col-curr">€ 22.360</td>
+        <td class="col-curr">€ 90.000.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 40.500</td>
+        <td class="col-curr"><strong>€ 62.860</strong></td>
+    </tr>
+    <tr>
+        <td>O-PAC S.R.L</td>
+        <td class="col-curr">€ 20.000.000</td>
+        <td class="col-curr">1,720</td>
+        <td class="col-curr">€ 34.400</td>
+        <td class="col-curr">€ 23.000.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 10.350</td>
+        <td class="col-curr"><strong>€ 44.750</strong></td>
+    </tr>
+    <tr>
+        <td>PIERREBI INNOVATION</td>
+        <td class="col-curr">€ 150.000</td>
+        <td class="col-curr">1,720</td>
+        <td class="col-curr">€ 258</td>
+        <td class="col-curr">€ 2.500.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 1.125</td>
+        <td class="col-curr"><strong>€ 1.383</strong></td>
+    </tr>
+    <tr>
+        <td>OT LUCCA</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">-</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">€ 50.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 22,50</td>
+        <td class="col-curr"><strong>€ 22,50</strong></td>
+    </tr>
+    <tr>
+        <td>RIBES</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">-</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">€ 45.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 20,25</td>
+        <td class="col-curr"><strong>€ 20,25</strong></td>
+    </tr>
+    <tr>
+        <td>ELLEBI</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">-</td>
+        <td class="col-curr">€ 0</td>
+        <td class="col-curr">€ 45.000</td>
+        <td class="col-curr">0,450</td>
+        <td class="col-curr">€ 20,25</td>
+        <td class="col-curr"><strong>€ 20,25</strong></td>
+    </tr>
+    <tr style="background-color: #e6f0ff; font-weight: bold;">
+        <td>TOTALE POLIZZA</td>
+        <td class="col-curr">€ 33.150.000</td>
+        <td></td>
+        <td class="col-curr">€ 57.018</td>
+        <td class="col-curr">€ 115.640.000</td>
+        <td></td>
+        <td class="col-curr">€ 52.038</td>
+        <td class="col-curr"><strong>€ 109.056</strong></td>
+    </tr>
+</tbody>
 </table>
+```
 
-<p class="note">* Accessori: SSN + Contributo SSN + Imposta Assicurazioni</p>
-
-<h4>Dettaglio Accessori</h4>
-<ul>
-    <li>Contributo SSN (X%): € XX.XXX,XX</li>
-    <li>Contributo Addizionale SSN: € XXX,XX</li>
-    <li>Imposta Assicurazioni (XX,X%): € XX.XXX,XX</li>
-</ul>
-
-REGOLE CRITICHE:
-───────────────────────────────────────────────────────────────────────────────
-
-1. INCLUDERE TUTTE LE SOCIETÀ
-   Se polizza Master con N società → creare N righe nella tabella
-   NON omettere nessuna entità presente in polizza
-   
-2. COERENZA TOTALE
-   Somma premi singoli = Premio lordo totale indicato in polizza
-   Se discrepanza → verificare e segnalare
-   
-3. NOTE OPERATIVE
-   Indicare per ogni società se copertura è:
-   - FULL: Copertura completa RCT/RCO/RCP
-   - BCI: Solo Business Continuity Interest
-   - DIC/DIL: Difference in Conditions/Limits
-
+IMPORTANTE: 
+- Ogni società ha la sua riga separata
+- Le colonne Premio USA/CAN e Premio ROW mostrano i calcoli parziali
+- La colonna Premio Totale somma i due premi
+- La riga TOTALE aggrega tutti i premi delle società
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: SINISTRI & PREMI
@@ -548,37 +489,15 @@ STRUTTURA TAB (SE DATI DISPONIBILI):
    ╠══════════════════════════════════════════════════════════════════════════╣
    ║                                                                          ║
    ║ 1. ANNO COMPETENZA PREMI:                                                ║
-   ║    - Attribuire il premio all'anno di INIZIO VIGENZA                    ║
-   ║    - REGOLA: Premio va all'anno in cui inizia la copertura             ║
+   ║    - Usare l'anno di VIGENZA della polizza                              ║
+   ║    - NON l'anno di emissione/firma                                       ║
+   ║    Esempio: Polizza 01/07/2023 - 30/06/2024 → anno 2023                ║
    ║                                                                          ║
-   ║    ESEMPI:                                                               ║
-   ║    • Polizza 31/12/2024 - 31/12/2025 → Premio 2025 (inizia 31/12/24)   ║
-   ║    • Polizza 01/01/2024 - 31/12/2024 → Premio 2024                      ║
-   ║    • Polizza 01/07/2023 - 30/06/2024 → Premio 2023 (inizia 01/07/23)   ║
-   ║                                                                          ║
-   ║    ATTENZIONE CASI LIMITE:                                               ║
-   ║    • Polizza 31/12/2024 ore 24:00 - 31/12/2025 ore 24:00                ║
-   ║      → Considera SOLO anno 2025 (competenza economica)                  ║
-   ║      → NON attribuire premio a 2024                                      ║
-   ║                                                                          ║
-   ║ 2. VERIFICARE VIGENZA PRIMA DI CREARE GRAFICO:                          ║
-   ║    - Se polizza vigenza = UN SOLO anno → mostrare SOLO quell'anno      ║
-   ║    - Se polizza vigenza = più anni → mostrare tutti gli anni            ║
-   ║                                                                          ║
-   ║    ESEMPIO POLIZZA ANNUALE 31/12/2024-31/12/2025:                       ║
-   ║    years = ['2025']                     // SOLO 2025                    ║
-   ║    premiums = [88119]                   // Premio unico anno 2025       ║
-   ║    claims = [7000]                      // Sinistri anno 2025           ║
-   ║                                                                          ║
-   ║    ❌ ERRORE DA EVITARE:                                                 ║
-   ║    years = ['2024', '2025']             // SBAGLIATO!                   ║
-   ║    premiums = [88119, 88119]            // Premio duplicato!            ║
-   ║                                                                          ║
-   ║ 3. ANNO COMPETENZA SINISTRI:                                             ║
+   ║ 2. ANNO COMPETENZA SINISTRI:                                             ║
    ║    - Usare l'anno di DENUNCIA del sinistro                              ║
    ║    - NON l'anno di accadimento                                           ║
    ║                                                                          ║
-   ║ 4. NO DUPLICAZIONI PREMI:                                                ║
+   ║ 3. NO DUPLICAZIONI PREMI:                                                ║
    ║    - Ogni premio va attribuito a UN SOLO anno                           ║
    ║    - ERRORE: duplicare premio su più anni consecutivi                   ║
    ║                                                                          ║

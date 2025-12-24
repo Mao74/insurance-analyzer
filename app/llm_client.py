@@ -36,8 +36,26 @@ DOCUMENTO DA ANALIZZARE:
 {document_text}
 ---
 
-TEMPLATE HTML DA COMPILARE (riempi i placeholder):
+TEMPLATE HTML DA COMPILARE:
 {html_template}
+
+═══════════════════════════════════════════════════════════════════════════════
+ISTRUZIONI CRITICHE PER IL TEMPLATE:
+═══════════════════════════════════════════════════════════════════════════════
+
+1. NON MODIFICARE LA STRUTTURA del template HTML in alcun modo
+2. NON aggiungere, rimuovere o riordinare i TAB
+3. NON cambiare il titolo, sottotitolo o intestazioni principali
+4. COMPILARE SOLO i placeholder tra parentesi quadre [PLACEHOLDER]
+5. Mantenere TUTTI gli elementi esistenti (tab, sezioni, tabelle)
+6. Restituire il template HTML compilato INTEGRALMENTE
+
+ERRORI DA EVITARE:
+✗ Rimuovere tab esistenti
+✗ Cambiare l'ordine dei tab
+✗ Modificare titoli e intestazioni fisse
+✗ Aggiungere nuove sezioni non presenti nel template
+
 """
         # Count input tokens for debugging
         try:

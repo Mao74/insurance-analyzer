@@ -183,11 +183,13 @@ tr:nth-child(even) { background-color: #f8fafc; }
     <!-- TABS -->
     <!-- ========================================= -->
     <div class="tabs">
-        <button class="tab-link active" onclick="openTab('Sintesi')">1. Sintesi</button>
-        <button class="tab-link" onclick="openTab('Garanzie')">2. Garanzie</button>
-        <button class="tab-link" onclick="openTab('Premio')">3. Premio</button>
-        <button class="tab-link" onclick="openTab('Sinistri')">4. Sinistri</button>
-        <button class="tab-link" onclick="openTab('Procedura')">5. Procedura</button>
+        <button class="tab-link active" onclick="openTab('Sintesi')">1. Sintesi Contrattuale</button>
+        <button class="tab-link" onclick="openTab('Garanzie')">2. Garanzie & Coperture</button>
+        <button class="tab-link" onclick="openTab('Premio')">3. Calcolo Premio</button>
+        <button class="tab-link" onclick="openTab('Sinistri')">4. Sinistri & Premi</button>
+        <button class="tab-link" onclick="openTab('Esempi')">5. Esempi Pratici</button>
+        <button class="tab-link" onclick="openTab('Approfondimenti')">6. Approfondimenti</button>
+        <button class="tab-link" onclick="openTab('Procedura')">7. Procedura Sinistri</button>
 </div>
 
     <!-- ========================================= -->
@@ -821,9 +823,156 @@ tr:nth-child(even) { background-color: #f8fafc; }
     </div>
 
     <!-- ========================================= -->
-    
+    <!-- TAB 5: ESEMPI PRATICI -->
     <!-- ========================================= -->
-    <div id="ApprofondimentiOLD_REMOVED" class="tab-content">
+    <div id="Esempi" class="tab-content">
+        
+        <h3>Esempi Pratici di Sinistro</h3>
+        
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">
+            Scenari realistici basati sulle garanzie della polizza e sull'attività dell'assicurato. Ogni esempio mostra come la copertura risponderebbe.
+        </p>
+
+        <!-- ESEMPIO 1: RCT -->
+        <div class="example-card">
+            <div class="example-header rct">
+                <span>📋 Esempio 1: Danno a Terzi durante Attività</span>
+                <span class="badge tag-rct">RCT</span>
+            </div>
+            <div class="example-body">
+                <div class="example-section">
+                    <div class="example-section-title">Scenario</div>
+                    <p>[SCENARIO_RCT: es. Durante lavori di manutenzione presso un cliente, un tecnico urta accidentalmente uno scaffale che cade danneggiando merce del cliente per €15.000 e ferendo un dipendente del cliente che riporta 20 giorni di prognosi.]</p>
+                </div>
+                
+                <div class="example-section">
+                    <div class="example-section-title">Analisi Copertura</div>
+                    <p>[ANALISI_RCT: es. Il danno rientra nella garanzia base RCT per danni a terzi durante l'attività lavorativa. La franchigia di €500 per danni a cose viene applicata. Le lesioni personali sono coperte integralmente.]</p>
+                </div>
+                
+                <div class="example-result">
+                    <div class="example-section-title">Esito</div>
+                    <p><span class="covered">✓ COPERTO</span></p>
+                    <p>[ESITO_RCT: es. Danno cose: €15.000 - €500 franchigia = €14.500 indennizzato. Lesioni personali: coperte integralmente entro sottolimite persona di €1.500.000.]</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESEMPIO 2: RCO -->
+        <div class="example-card">
+            <div class="example-header rco">
+                <span>🏭 Esempio 2: Infortunio sul Lavoro</span>
+                <span class="badge tag-rco">RCO</span>
+            </div>
+            <div class="example-body">
+                <div class="example-section">
+                    <div class="example-section-title">Scenario</div>
+                    <p>[SCENARIO_RCO: es. Un operaio scivola su pavimento bagnato in reparto produzione. Riporta frattura femore con 90 giorni di inabilità temporanea e invalidità permanente del 12%. L'INAIL riconosce l'infortunio e indennizza €45.000. Il dipendente chiede risarcimento danni differenziali per €80.000.]</p>
+                </div>
+                
+                <div class="example-section">
+                    <div class="example-section-title">Analisi Copertura</div>
+                    <p>[ANALISI_RCO: es. La RCO copre la quota di danno eccedente le prestazioni INAIL (danno differenziale). La responsabilità del datore è configurabile per mancata segnaletica pavimento bagnato.]</p>
+                </div>
+                
+                <div class="example-result">
+                    <div class="example-section-title">Esito</div>
+                    <p><span class="covered">✓ COPERTO</span></p>
+                    <p>[ESITO_RCO: es. Danno differenziale €80.000 - €45.000 INAIL = €35.000 a carico polizza, meno franchigia €1.000 = €34.000 indennizzato.]</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESEMPIO 3: RCP SEMPLICE -->
+        <div class="example-card">
+            <div class="example-header rcp">
+                <span>📦 Esempio 3: Prodotto Difettoso - Danno Semplice</span>
+                <span class="badge tag-rcp">RCP</span>
+            </div>
+            <div class="example-body">
+                <div class="example-section">
+                    <div class="example-section-title">Scenario</div>
+                    <p>[SCENARIO_RCP_1: es. Un componente meccanico venduto si rompe durante l'uso, causando danni alla macchina del cliente per €25.000. Il difetto è riconducibile a un vizio di fabbricazione.]</p>
+                </div>
+                
+                <div class="example-section">
+                    <div class="example-section-title">Analisi Copertura</div>
+                    <p>[ANALISI_RCP_1: es. Rientra nella garanzia base RCP. Il danno è alla cosa in cui il prodotto è incorporato (clausola Sisterhood). NON sono coperti i costi di sostituzione del componente difettoso stesso.]</p>
+                </div>
+                
+                <div class="example-result">
+                    <div class="example-section-title">Esito</div>
+                    <p><span class="partial">⚠ PARZIALMENTE COPERTO</span></p>
+                    <p>[ESITO_RCP_1: es. Danni alla macchina €25.000 coperti (meno scoperto 10% min €2.500 = €22.500). Costo componente difettoso €3.000 ESCLUSO (è il prodotto stesso).]</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESEMPIO 4: RCP MEDIO (RECALL) -->
+        <div class="example-card">
+            <div class="example-header rcp">
+                <span>🔄 Esempio 4: Ritiro Prodotti (Recall)</span>
+                <span class="badge tag-rcp">RCP</span>
+            </div>
+            <div class="example-body">
+                <div class="example-section">
+                    <div class="example-section-title">Scenario</div>
+                    <p>[SCENARIO_RCP_2: es. Viene scoperto un difetto di sicurezza su un lotto di 500 prodotti già distribuiti. È necessario un ritiro dal mercato. Costi: notifica clienti €5.000, trasporto rientro €15.000, ispezione e riparazione €30.000, sostituzione prodotti irreparabili €20.000.]</p>
+                </div>
+                
+                <div class="example-section">
+                    <div class="example-section-title">Analisi Copertura</div>
+                    <p>[ANALISI_RCP_2: es. La garanzia Recall copre i costi di ritiro con sottolimite €100.000. Le spese di sostituzione prodotto sono tipicamente escluse (è il costo del prodotto stesso).]</p>
+                </div>
+                
+                <div class="example-result">
+                    <div class="example-section-title">Esito</div>
+                    <p><span class="partial">⚠ PARZIALMENTE COPERTO</span></p>
+                    <p>[ESITO_RCP_2: es. Notifica + trasporto + ispezione = €50.000 coperti. Sostituzione prodotti €20.000 ESCLUSA. Totale indennizzo: €50.000 meno franchigia €5.000 = €45.000.]</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESEMPIO 5: RCP COMPLESSO (PATRIMONIALI PURI) -->
+        <div class="example-card">
+            <div class="example-header rcp">
+                <span>💰 Esempio 5: Danno Patrimoniale Puro</span>
+                <span class="badge tag-rcp">RCP</span>
+            </div>
+            <div class="example-body">
+                <div class="example-section">
+                    <div class="example-section-title">Scenario</div>
+                    <p>[SCENARIO_RCP_3: es. Un software di gestione produzione fornito dall'assicurato presenta un bug che causa errori nei calcoli di magazzino. Il cliente non subisce danni fisici a cose o persone, ma perde ordini per €200.000 a causa di ritardi nelle consegne dovuti alle giacenze errate. Chiede risarcimento per lucro cessante.]</p>
+                </div>
+                
+                <div class="example-section">
+                    <div class="example-section-title">Analisi Copertura</div>
+                    <p>[ANALISI_RCP_3: es. Si tratta di danno patrimoniale puro (nessun danno materiale a cose o persone, solo perdita economica). La copertura dipende dalla presenza della garanzia specifica "Danni Patrimoniali Puri" in polizza.]</p>
+                </div>
+                
+                <div class="example-result">
+                    <div class="example-section-title">Esito</div>
+                    <p><span class="covered">✓ COPERTO</span> oppure <span class="not-covered">✗ NON COPERTO</span></p>
+                    <p>[ESITO_RCP_3: SE garanzia presente → Lucro cessante €200.000 coperto entro sottolimite €150.000 meno scoperto 15%. SE garanzia assente → Danno interamente ESCLUSO perché i danni patrimoniali puri senza danno materiale non sono coperti dalla RCP base.]</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-box alert-medium" style="margin-top: 30px;">
+            <div class="alert-header">
+                <span class="alert-icon">💡</span>
+                <span>NOTA IMPORTANTE</span>
+            </div>
+            <div class="alert-body">
+                Gli esempi illustrano situazioni tipiche. La copertura effettiva dipende dalle condizioni specifiche della polizza. Per ogni dubbio, consulta il broker o verifica il testo di polizza.
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- TAB 6: APPROFONDIMENTI -->
+    <!-- ========================================= -->
+    <div id="Approfondimenti" class="tab-content">
         
         <h3>Claims Made vs Loss Occurrence</h3>
         
