@@ -26,8 +26,11 @@ class User(Base):
     access_expires_at = Column(DateTime, nullable=True)  # NULL = never expires
     last_login = Column(DateTime, nullable=True)
     
-    # Token tracking
-    total_tokens_used = Column(BigInteger, default=0)
+    # Token tracking (separate for cost calculation)
+    # Gemini 3 Flash: $0.50/M input, $3.00/M output
+    total_input_tokens = Column(BigInteger, default=0)
+    total_output_tokens = Column(BigInteger, default=0)
+    total_tokens_used = Column(BigInteger, default=0)  # Legacy, sum of both
     
     # Rate limiting for login
     login_attempts = Column(Integer, default=0)

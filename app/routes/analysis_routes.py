@@ -575,7 +575,7 @@ def full_analysis_pipeline(
             html_template = f.read()
         
         client = llm_client.LLMClient(model_name=llm_model)
-        report_masked, report_display, tokens_used = client.analyze(
+        report_masked, report_display, input_tokens, output_tokens = client.analyze(
             document_text=masked_text,
             prompt_template=prompt_template,
             html_template=html_template,
@@ -587,17 +587,26 @@ def full_analysis_pipeline(
         analysis.report_html_display = report_display
         analysis.status = models.AnalysisStatus.COMPLETED
         analysis.completed_at = datetime.utcnow()
-        analysis.total_tokens = tokens_used  # Update analysis tokens
+        analysis.total_tokens = input_tokens + output_tokens  # Total for analysis
         
-        # 6. Update user's total tokens
+        # 6. Update user's token counters (separate for cost calculation)
         user = db.query(models.User).filter(models.User.id == user_id).first()
         if user:
-            user.total_tokens_used = (user.total_tokens_used or 0) + tokens_used
-            print(f"DEBUG: Updated user {user_id} tokens: +{tokens_used}, total: {user.total_tokens_used}")
+            user.total_input_tokens = (user.total_input_tokens or 0) + input_tokens
+            user.total_output_tokens = (user.total_output_tokens or 0) + output_tokens
+            user.total_tokens_used = (user.total_tokens_used or 0) + input_tokens + output_tokens
+            
+            # Calculate cost for logging
+            input_cost = (input_tokens / 1_000_000) * 0.50
+            output_cost = (output_tokens / 1_000_000) * 3.00
+            total_cost = input_cost + output_cost
+            
+            print(f"DEBUG: Updated user {user_id} tokens: input +{input_tokens}, output +{output_tokens}")
+            print(f"DEBUG: This analysis cost: ${total_cost:.4f} (input: ${input_cost:.4f}, output: ${output_cost:.4f})")
         
         db.commit()
         
-        print(f"DEBUG: Analysis {analysis_id} completed. Report size: {len(report_display or '')} chars. Tokens: {tokens_used}")
+        print(f"DEBUG: Analysis {analysis_id} completed. Report size: {len(report_display or '')} chars. Tokens: {input_tokens}+{output_tokens}")
         
     except Exception as e:
         print(f"Analysis Pipeline Error: {e}")

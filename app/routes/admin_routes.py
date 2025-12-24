@@ -44,6 +44,8 @@ class UserListItem(BaseModel):
     access_expires_at: Optional[datetime]
     last_login: Optional[datetime]
     total_tokens_used: int
+    total_input_tokens: int = 0
+    total_output_tokens: int = 0
     created_at: datetime
 
 class UserListResponse(BaseModel):
@@ -73,6 +75,8 @@ async def list_users(
                 access_expires_at=u.access_expires_at,
                 last_login=u.last_login,
                 total_tokens_used=u.total_tokens_used or 0,
+                total_input_tokens=u.total_input_tokens or 0,
+                total_output_tokens=u.total_output_tokens or 0,
                 created_at=u.created_at
             )
             for u in users
@@ -126,6 +130,8 @@ async def create_user(
         access_expires_at=user.access_expires_at,
         last_login=user.last_login,
         total_tokens_used=user.total_tokens_used or 0,
+        total_input_tokens=user.total_input_tokens or 0,
+        total_output_tokens=user.total_output_tokens or 0,
         created_at=user.created_at
     )
 
@@ -180,6 +186,8 @@ async def update_user(
         access_expires_at=user.access_expires_at,
         last_login=user.last_login,
         total_tokens_used=user.total_tokens_used or 0,
+        total_input_tokens=user.total_input_tokens or 0,
+        total_output_tokens=user.total_output_tokens or 0,
         created_at=user.created_at
     )
 

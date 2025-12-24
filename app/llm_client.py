@@ -23,9 +23,10 @@ class LLMClient:
         prompt_template: str, 
         html_template: str,
         reverse_mapping: dict = None
-    ) -> tuple[str, str, int]:
+    ) -> tuple[str, str, int, int]:
         """
         Costruisce il prompt finale e chiama l'API.
+        Returns: (report_masked, report_display, input_tokens, output_tokens)
         """
         full_prompt = f"""
 {prompt_template}
@@ -98,6 +99,14 @@ ERRORI DA EVITARE:
             
             print(f"DEBUG: Received {chunk_count} chunks, total length: {len(report_masked)} chars")
             
+            # Count output tokens
+            try:
+                output_tokens = self.model.count_tokens(report_masked).total_tokens
+                print(f"DEBUG: Output tokens: {output_tokens}")
+            except Exception as e:
+                print(f"DEBUG: Could not count output tokens: {e}")
+                output_tokens = 0
+            
             # Check if response was empty
             if not report_masked:
                 print("DEBUG: Empty response received from LLM")
@@ -118,6 +127,7 @@ ERRORI DA EVITARE:
             import traceback
             traceback.print_exc()
             report_masked = f"<p>Error generating analysis: {str(e)}</p>"
+            output_tokens = 0
         
         # Ripopola con dati originali per visualizzazione
         if reverse_mapping:
@@ -125,7 +135,7 @@ ERRORI DA EVITARE:
         else:
             report_display = report_masked
         
-        return report_masked, report_display, input_tokens
+        return report_masked, report_display, input_tokens, output_tokens
     
     def _strip_markdown_wrappers(self, text: str) -> str:
         """Remove markdown code block wrappers and any preamble text from LLM response."""
