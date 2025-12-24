@@ -1,13 +1,18 @@
 from fastapi import APIRouter, Request, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
+import secrets
 from ..database import get_db
 from .. import models, auth
 
 router = APIRouter()
+
+# Rate limiting settings
+MAX_LOGIN_ATTEMPTS = 5
+LOCKOUT_DURATION_MINUTES = 15
 
 # Request/Response Models
 class LoginRequest(BaseModel):
@@ -34,6 +39,14 @@ class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
 # Routes
 
 @router.post("/login", response_model=LoginResponse)
@@ -42,18 +55,51 @@ async def login(
     credentials: LoginRequest,
     db: Session = Depends(get_db)
 ):
-    """Authenticate user and create session"""
+    """Authenticate user and create session with rate limiting"""
     # Try to find user by email or username
     user = db.query(models.User).filter(
         (models.User.email == credentials.username) | 
         (models.User.username == credentials.username)
     ).first()
     
+    # Check if account is locked (rate limiting)
+    if user and user.locked_until and user.locked_until > datetime.utcnow():
+        remaining_seconds = (user.locked_until - datetime.utcnow()).total_seconds()
+        remaining_minutes = int(remaining_seconds / 60) + 1
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Account bloccato per troppi tentativi. Riprova tra {remaining_minutes} minuti."
+        )
+    
     if not user or not auth.verify_password(credentials.password, user.password_hash):
+        # Increment login attempts for existing user
+        if user:
+            user.login_attempts = (user.login_attempts or 0) + 1
+            
+            # Lock account if max attempts reached
+            if user.login_attempts >= MAX_LOGIN_ATTEMPTS:
+                user.locked_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+                db.commit()
+                raise HTTPException(
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                    detail=f"Account bloccato per troppi tentativi. Riprova tra {LOCKOUT_DURATION_MINUTES} minuti."
+                )
+            
+            db.commit()
+            remaining_attempts = MAX_LOGIN_ATTEMPTS - user.login_attempts
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Credenziali non valide. {remaining_attempts} tentativi rimasti."
+            )
+        
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenziali non valide"
         )
+    
+    # Successful login - reset login attempts
+    user.login_attempts = 0
+    user.locked_until = None
     
     # Check if user is active
     if not user.is_active:
@@ -179,3 +225,102 @@ async def change_password(
     
     return MessageResponse(message="Password aggiornata con successo")
 
+
+# Password Reset Routes
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    """Request password reset - generates token and would send email"""
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    
+    # Always return success to prevent email enumeration attacks
+    if not user:
+        return MessageResponse(message="Se l'email esiste nel sistema, riceverai le istruzioni per il reset.")
+    
+    # Invalidate any existing tokens for this user
+    db.query(models.PasswordResetToken).filter(
+        models.PasswordResetToken.user_id == user.id,
+        models.PasswordResetToken.used == False
+    ).update({"used": True})
+    
+    # Generate new token (URL-safe, 32 bytes = 43 chars base64)
+    token = secrets.token_urlsafe(32)
+    
+    # Token expires in 1 hour
+    reset_token = models.PasswordResetToken(
+        user_id=user.id,
+        token=token,
+        expires_at=datetime.utcnow() + timedelta(hours=1)
+    )
+    db.add(reset_token)
+    db.commit()
+    
+    # TODO: Send email with reset link
+    # For now, log the token (in production, send email)
+    reset_link = f"https://app.insurance-lab.ai/reset-password?token={token}"
+    print(f"PASSWORD RESET REQUEST for {user.email}")
+    print(f"Reset Link: {reset_link}")
+    print(f"Token: {token}")
+    
+    # In development, return the token for testing
+    # In production, this should ONLY return a generic success message
+    return MessageResponse(
+        message=f"Se l'email esiste nel sistema, riceverai le istruzioni per il reset. [DEV: token={token}]"
+    )
+
+@router.post("/reset-password", response_model=MessageResponse)
+async def reset_password(
+    payload: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    """Reset password using token from forgot-password email"""
+    # Find the token
+    reset_token = db.query(models.PasswordResetToken).filter(
+        models.PasswordResetToken.token == payload.token,
+        models.PasswordResetToken.used == False
+    ).first()
+    
+    if not reset_token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Token non valido o già utilizzato"
+        )
+    
+    # Check if token has expired
+    if reset_token.expires_at < datetime.utcnow():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Token scaduto. Richiedi un nuovo reset password."
+        )
+    
+    # Validate new password
+    if len(payload.new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La nuova password deve avere almeno 8 caratteri"
+        )
+    
+    # Get user and update password
+    user = db.query(models.User).filter(models.User.id == reset_token.user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Utente non trovato"
+        )
+    
+    # Update password
+    user.password_hash = auth.get_password_hash(payload.new_password)
+    
+    # Reset login attempts and unlock account
+    user.login_attempts = 0
+    user.locked_until = None
+    
+    # Mark token as used
+    reset_token.used = True
+    
+    db.commit()
+    
+    return MessageResponse(message="Password reimpostata con successo. Ora puoi effettuare il login.")

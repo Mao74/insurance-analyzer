@@ -22,14 +22,31 @@ class User(Base):
     # User management fields
     is_admin = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
+    email_verified = Column(Boolean, default=False)  # For email verification
     access_expires_at = Column(DateTime, nullable=True)  # NULL = never expires
     last_login = Column(DateTime, nullable=True)
     
     # Token tracking
     total_tokens_used = Column(BigInteger, default=0)
     
+    # Rate limiting for login
+    login_attempts = Column(Integer, default=0)
+    locked_until = Column(DateTime, nullable=True)  # NULL = not locked
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     documents = relationship("Document", back_populates="user")
+
+class PasswordResetToken(Base):
+    """Token for password reset requests"""
+    __tablename__ = 'password_reset_tokens'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    token = Column(String(255), unique=True, nullable=False, index=True)
+    expires_at = Column(DateTime, nullable=False)
+    used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    user = relationship("User")
 
 class Document(Base):
     __tablename__ = 'documents'
@@ -69,3 +86,4 @@ class Analysis(Base):
     is_saved = Column(Boolean, default=False)  # If True, shows in "Archivio"
     last_updated = Column(DateTime, default=datetime.utcnow) # Track edits
     document = relationship("Document", back_populates="analyses")
+

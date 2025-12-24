@@ -1,1402 +1,690 @@
 ═══════════════════════════════════════════════════════════════════════════════
-PROMPT: REPORT RC (RCT/RCO/RCP) - VERSIONE CLIENTE V4 UNIVERSALE
+PROMPT: REPORT RC CLIENTE - VERSIONE FINALE V5
 ═══════════════════════════════════════════════════════════════════════════════
 
-Sei un esperto analista assicurativo. Devi generare un report HTML chiaro e operativo per il CLIENTE (imprenditore, CFO, risk manager), partendo da:
-- Polizza RC (RCT/RCO/RCP) in formato .txt
-- Eventuale statistica sinistri
-- Template HTML allegato (da usare ESATTAMENTE per struttura e stile)
+OBIETTIVO: Generare report HTML per CLIENTE finale basato su polizza RC 
+(Responsabilità Civile Terzi, Operai, Prodotti).
+
+TEMPLATE: template_rc_cliente_finale.html (973 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da polizza
 
 ═══════════════════════════════════════════════════════════════════════════════
-PRINCIPI GUIDA - VERSIONE CLIENTE
+PRINCIPI GUIDA
 ═══════════════════════════════════════════════════════════════════════════════
 
-═══════════════════════════════════════════════════════════════════════════════
-LOGICA ADATTIVA: RILEVAMENTO TIPO POLIZZA
-═══════════════════════════════════════════════════════════════════════════════
+1. COMPLETEZZA ASSOLUTA
+   - TUTTE le società assicurate devono essere riportate
+   - TUTTE le garanzie/condizioni particolari devono essere riportate
+   - TUTTI i sinistri storici devono essere riportati
+   - MAI omettere informazioni presenti in polizza
 
-IMPORTANTE: Prima di generare il report, analizzare la polizza per identificarne
-il tipo e adattare la struttura di conseguenza.
+2. DATI OGGETTIVI
+   - Zero interpretazioni soggettive
+   - Zero giudizi di valore
+   - Zero alert operativi
+   - Solo fatti estratti da documenti
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TIPO A: POLIZZA STANDARD (PMI, singola società)                             ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ INDICATORI:                                                                  ║
-║ • Una sola società assicurata (Contraente = Assicurato)                     ║
-║ • Premio unico (non suddiviso per entità)                                   ║
-║ • Territorio: Italia, UE, Europa                                             ║
-║ • Condizioni particolari standard: RCT.XX, RCO.XX, RCP.XX                   ║
-║ • NO clausole coordinamento (BCI, DIC/DIL, Follow Form)                     ║
-║                                                                              ║
-║ ADATTAMENTI:                                                                 ║
-║ • TAB 1: Sezione entità = singola società                                   ║
-║ • TAB 2: Estensioni = condizioni particolari RCT/RCO/RCP sintetiche        ║
-║ • TAB 3: Calcolo premio = formato lineare unico                             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+3. FORMATO TABELLARE
+   - Privilegiare tabelle a liste bullet
+   - Colonne allineate e coerenti
+   - Mai celle vuote (usare "-" se dato assente)
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TIPO B: POLIZZA MASTER (gruppi, programmi internazionali)                   ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ INDICATORI:                                                                  ║
-║ • Multiple entità assicurate (5-20+ società del gruppo)                     ║
-║ • Presenza sezione "Entità Assicurate" con elenco società                   ║
-║ • Premio suddiviso per entità                                                ║
-║ • Territorio: Worldwide, ROW, USA/Canada separati                            ║
-║ • Clausole coordinamento: BCI, DIC/DIL, Follow Form, Admitted/Non-Admitted  ║
-║                                                                              ║
-║ ADATTAMENTI:                                                                 ║
-║ • TAB 1: Sezione entità = tabella con tutte le società                      ║
-║ • TAB 2: Estensioni = clausole coordinamento (BCI, DIC/DIL)                 ║
-║ • TAB 3: Calcolo premio = tabella per entità + totale                       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-REGOLA: Se presenza indicatori misti → trattare come TIPO B (Master).
-
-
-1. CHIAREZZA: Linguaggio accessibile, no gergo tecnico senza spiegazione
-2. OPERATIVITÀ: Focus su "cosa devo sapere per gestire i rischi"
-3. VALORI CONSOLIDATI: Mostra SOLO i valori finali (no tracciabilità appendici)
-4. ALERT VISIVI: Evidenzia criticità e punti di attenzione
-5. ESEMPI CONCRETI: Calibrati sull'attività specifica del cliente
-6. CONCISIONE: Niente "muri di testo", max 4-5 righe per concetto
+4. LOGICA ADATTIVA
+   - Template si adatta a tipo polizza (Standard vs Master)
+   - Sezioni presenti solo se applicabili
+   - HTML generato dinamicamente per liste variabili
 
 ═══════════════════════════════════════════════════════════════════════════════
-STRUTTURA TAB (6 TAB)
+STRUTTURA REPORT (5 TAB)
 ═══════════════════════════════════════════════════════════════════════════════
 
 TAB 1: SINTESI CONTRATTUALE
-TAB 2: GARANZIE & COPERTURE  
+TAB 2: GARANZIE & COPERTURE
 TAB 3: CALCOLO PREMIO
 TAB 4: SINISTRI & PREMI
 TAB 5: PROCEDURA SINISTRI
-TAB 7: APPROFONDIMENTI
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 1: SINTESI CONTRATTUALE
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. DATI GENERALI (info-grid)
-   - Contraente, Assicurato, Broker, Compagnia
-   - Numero Polizza
-   - Vigenza (decorrenza - scadenza)
-   - Premio Annuo Totale → MOSTRARE PREMIO LORDO (non imponibile)
-   - Forma di Copertura (tag: Claims Made / Loss Occurrence)
-   
-   DATI OPERATIVI (NUOVO):
-   - Termini di Disdetta: [estrarre da art. "Durata" o "Rinnovo"]
-     Esempio: "60 giorni prima della scadenza tramite raccomandata"
-     Se non specificato: "Rinnovo tacito (verificare condizioni generali)"
-   
-   - Giorni di Mora: [estrarre da art. "Pagamento premio" o rif. art. 1901 CC]
-     Esempio: "15 giorni" o "30 giorni"
-     Se non specificato: "30 giorni (art. 1901 C.C.)"
-   
-   - Frazionamento: [Annuale / Semestrale / Trimestrale / Mensile]
-     Se con sovrapprezzo: indicare "Semestrale (+2%)" o simile
-   
-   - Regolazione Premio: [Sì/No]
-     Se Sì: "Premio deposito + conguaglio su fatturato/salari"
-     Se No: "Premio fisso"
+SEZIONE 1: DATI GENERALI
+───────────────────────────────────────────────────────────────────────────────
 
-   ╔══════════════════════════════════════════════════════════════════════════╗
-   ║ REGOLA CRITICA: PREMIO LORDO                                             ║
-   ╠══════════════════════════════════════════════════════════════════════════╣
-   ║                                                                          ║
-   ║ In questa sezione deve essere indicato il PREMIO LORDO, non             ║
-   ║ l'imponibile.                                                            ║
-   ║                                                                          ║
-   ║ Premio Lordo = Premio Imponibile + Imposte e Accessori                  ║
-   ║                                                                          ║
-   ║ Mostrare SOLO il valore finale complessivo, senza dettagli accessori.   ║
-   ║                                                                          ║
-   ╚══════════════════════════════════════════════════════════════════════════╝
+Estrarre e compilare:
 
+[CONTRAENTE]
+Ragione sociale contraente (chi paga il premio)
 
-2. ENTITÀ ASSICURATE (logica adattiva)
+[ASSICURATO]
+Ragione sociale assicurato (può essere = contraente o diverso)
 
-   IF POLIZZA TIPO A (Standard - singola società):
-       Mostrare semplicemente:
-       
-       <div class="info-item">
-           <div class="info-label">ASSICURATO</div>
-           <div class="info-value">[RAGIONE_SOCIALE]</div>
-       </div>
-   
-   IF POLIZZA TIPO B (Master - multiple entità):
-       Creare sezione dedicata con tabella:
-       
-       <h3>Entità Assicurate</h3>
-       
-       <table>
-           <thead>
-               <tr>
-                   <th>Società</th>
-                   <th>P.IVA</th>
-                   <th>Sede</th>
-                   <th>Tipo Copertura</th>
-               </tr>
-           </thead>
-           <tbody>
-               <tr>
-                   <td>[SOCIETÀ_1]</td>
-                   <td>[PIVA]</td>
-                   <td>[SEDE]</td>
-                   <td><span class="badge">[FULL / BCI / DIC]</span></td>
-               </tr>
-               <!-- Ripetere per ogni entità -->
-           </tbody>
-       </table>
-       
-       Note:
-       - FULL = Copertura completa
-       - BCI = Solo Business Continuity Interest (filiali estere non direttamente assicurabili)
-       - DIC/DIL = Difference in Conditions/Limits
-   
-   Estrarre TUTTE le società dalla sezione "Entità Assicurate" o "Assicurati" della polizza.
-   NON omettere nessuna società presente.
+[ATTIVITA]
+Attività economica svolta (es. "Produzione macchinari stampa flessografica")
+Estrarre da: oggetto assicurazione, descrizione attività, ATECO
+Essere SPECIFICI (non solo "industria" ma "produzione componenti meccanici")
 
-3. TERRITORIO (sempre presente)
+[BROKER]
+Nome broker (es. "Eramo & Associati S.r.l.")
 
-4. MASSIMALI PRINCIPALI (info-grid con classe "large")
-   4 card grandi:
-   - Massimale Unico RCT/RCO/RCP: valore massimo indennizzabile per sinistro
-   - Limite Aggregato Annuo: tetto massimo nell'anno
-   - Sottolimite per Persona (RCO): SE presente, altrimenti omettere
-   - Rapporto Aggregato/Massimale: es. 2x, 3x
+[COMPAGNIA]
+Compagnia assicuratrice completa (es. "AXA XL Insurance Company SE")
 
-3. RIEPILOGO PER SEZIONE (tabella semplificata)
-   Colonne: Sezione | Massimale | Validità Territoriale
-   
-   NOTA CRITICA: 
-   - NON includere franchigie e scoperti in questa tabella (sono troppo variabili per garanzia)
-   - Il sottolimite per persona va indicato SOLO se presente per quella sezione
-   - Righe: RCT (tag blu), RCO (tag verde), RCP (tag ambra)
+[NUMERO_POLIZZA]
+Numero polizza alfanumerico
 
-4. VALIDITÀ TEMPORALE (tabella)
-   Colonne: Parametro | RCT | RCO | RCP
-   Righe:
-   - Forma di Copertura (Claims Made / Loss Occurrence)
-   - Data Retroattività (se Claims Made)
-   - Postuma Inclusa (SI/NO + durata)
-   
-   ╔══════════════════════════════════════════════════════════════════════════╗
-   ║ ALERT AUTOMATICO: POSTUMA INSUFFICIENTE                                 ║
-   ╠══════════════════════════════════════════════════════════════════════════╣
-   ║                                                                          ║
-   ║ SE polizza è Claims Made E postuma < 24 mesi:                           ║
-   ║ → Mostrare alert giallo sotto la tabella:                               ║
-   ║                                                                          ║
-   ║ "⚠️ ATTENZIONE: Postuma di [X mesi] potrebbe essere insufficiente per  ║
-   ║ polizza Claims Made. Richieste pervenute oltre questo periodo non       ║
-   ║ saranno coperte anche se relative a fatti avvenuti durante la vigenza.  ║
-   ║ Si consiglia estensione minima 24-36 mesi per adeguata protezione."     ║
-   ║                                                                          ║
-   ║ SE postuma >= 24 mesi O polizza Loss Occurrence:                        ║
-   ║ → Nessun alert                                                           ║
-   ║                                                                          ║
-   ╚══════════════════════════════════════════════════════════════════════════╝
+[DECORRENZA]
+Data decorrenza formato gg/mm/aaaa
 
-5. ATTIVITÀ ASSICURATA
-   
-   REGOLA CRITICA PER POLIZZE MULTI-SOCIETÀ:
-   Se la polizza copre più società/entità, elencarle TUTTE con formato:
-   
-   • [SOCIETÀ 1]: [descrizione attività specifica]
-   • [SOCIETÀ 2]: [descrizione attività specifica]
-   • [SOCIETÀ 3]: [descrizione attività specifica]
-   
-   NON aggregare le attività in un'unica descrizione generica.
-   Ogni società deve essere chiaramente identificata con la propria attività.
+[SCADENZA]
+Data scadenza formato gg/mm/aaaa
 
-6. ALERT OPERATIVI (3 box)
-   - 🔴 ALTA PRIORITÀ: criticità che richiedono azione (esclusioni territoriali, retroattività limitate, gap copertura)
-   - 🟡 ATTENZIONE: punti da monitorare (scoperti elevati, sottolimiti bassi)
-   - 🟢 CONFERME: elementi positivi della copertura
+[PREMIO_LORDO]
+Premio lordo annuo totale formato "€ XX.XXX,XX"
+IMPORTANTE: Mostrare LORDO (non imponibile)
+
+[FRAZIONAMENTO]
+Modalità pagamento: Annuale / Semestrale / Trimestrale / Mensile
+Se presente sovrapprezzo indicare: "Semestrale (+2%)"
+
+[TERMINI_DISDETTA]
+Estrarre da art. "Durata" o "Rinnovo"
+Formato: "60 giorni prima scadenza tramite raccomandata A/R"
+Se non specificato: "Rinnovo tacito (verificare condizioni generali)"
+
+[TERMINI_MORA]
+Estrarre da art. "Pagamento premio" o riferimento art. 1901 C.C.
+Formato: "15 giorni" o "30 giorni"
+Se non specificato: "30 giorni (art. 1901 C.C.)"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: ENTITÀ ASSICURATE
+───────────────────────────────────────────────────────────────────────────────
+
+LOGICA ADATTIVA:
+
+IF numero società = 1:
+    OMETTERE completamente questa sezione
+    (già presente campo Assicurato + Attività in Dati Generali)
+
+IF numero società >= 2:
+    MOSTRARE tabella con TUTTE le società
+    
+FORMATO TABELLA (3 colonne):
+
+<table>
+    <tr>
+        <td>[SOCIETA_1]</td>
+        <td>[SEDE_1]</td>
+        <td>[ATTIVITA_1]</td>
+    </tr>
+    <tr>
+        <td>[SOCIETA_2]</td>
+        <td>[SEDE_2]</td>
+        <td>[ATTIVITA_2]</td>
+    </tr>
+    <!-- Ripetere per OGNI società -->
+</table>
+
+REGOLA CRITICA: MAI omettere società. Se polizza elenca 7 società, generare 7 righe.
+
+PLACEHOLDER:
+[SOCIETA_N]   Ragione sociale completa (es. "OMET S.r.l.")
+[SEDE_N]      Città e provincia (es. "Lecco (LC)")
+[ATTIVITA_N]  Attività specifica società (es. "Assemblaggio componenti")
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: MASSIMALI PRINCIPALI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 3 righe (RCT, RCO, RCP) × 3 colonne (Per Sinistro, Per Persona, Aggregato)
+
+[MASSIMALE_RCT_SINISTRO]    Formato "€ X.XXX.XXX"
+[MASSIMALE_RCT_PERSONA]     Formato "€ X.XXX.XXX" (se presente, altrimenti "-")
+[MASSIMALE_RCT_AGGREGATO]   Formato "€ XX.XXX.XXX" o "Illimitato"
+
+[MASSIMALE_RCO_SINISTRO]    
+[MASSIMALE_RCO_PERSONA]     
+[MASSIMALE_RCO_AGGREGATO]   Spesso "Incluso RCT" o "Incluso in aggregato generale"
+
+[MASSIMALE_RCP_SINISTRO]    
+[MASSIMALE_RCP_PERSONA]     Spesso "-" (non applicabile a prodotti)
+[MASSIMALE_RCP_AGGREGATO]   
+
+NOTE IMPORTANTI:
+- Se aggregato generale RCT+RCO+RCP combinato: indicarlo chiaramente
+- Se sottolimite per cose separato: indicarlo in nota sotto tabella
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 4: VALIDITÀ TERRITORIALE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 3 righe × 4 colonne (Sezione, Territorio, Forma Copertura, Trigger)
+
+[TERRITORIO_RCT]
+Estrarre ambito geografico (es. "Mondo Intero escluso USA/Canada" o "Italia + UE")
+
+[FORMA_RCT]
+"Loss Occurrence" o "Claims Made"
+Badge: <span class="badge badge-lo">Loss Occurrence</span>
+
+[TRIGGER_RCT]
+Quando scatta copertura (es. "Momento evento dannoso")
+
+Ripetere per RCO e RCP.
+
+NOTA RCP: 
+- Spesso territorio diviso: ROW vs USA/Canada con limiti diversi
+- Indicare se presenti limitazioni territoriali specifiche
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 5: RETROATTIVITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+LOGICA ADATTIVA:
+
+IF RCP è Loss Occurrence AND RCO non ha malattie professionali Claims Made:
+    OMETTERE completamente questa sezione
+
+IF RCP è Claims Made OR malattie professionali Claims Made:
+    MOSTRARE tabella
+    
+FORMATO TABELLA (3 colonne):
+
+<table>
+    <tr>
+        <td>[SOCIETA_1]</td>
+        <td>[DATA_RETROATTIVITA_RCP_1]</td>
+        <td>[DATA_RETROATTIVITA_MP_1]</td>
+    </tr>
+    <!-- Ripetere per ogni società -->
+</table>
+
+PLACEHOLDER:
+[SOCIETA_N]                   Nome società
+[DATA_RETROATTIVITA_RCP_N]    Data formato "gg/mm/aaaa" se Claims Made
+                              "-" se Loss Occurrence o non applicabile
+[DATA_RETROATTIVITA_MP_N]     Data se malattie professionali Claims Made
+                              "-" se Loss Occurrence o non applicabile
+
+REGOLA: Se polizza non menziona malattie professionali, compilare con "-"
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 2: GARANZIE & COPERTURE
 ═══════════════════════════════════════════════════════════════════════════════
 
-PRINCIPIO: Focus su numeri, massimali, franchigie. Elenchi sintetici per estensioni.
-NO testo integrale clausole (cliente ha polizza originale).
+STRUTTURA:
+- 3 tabelle principali (RCT, RCO, RCP)
+- 1 tabella clausole Master (solo se presenti)
 
-1. MASSIMALI (tabella)
+FORMATO IDENTICO PER TUTTE (5 colonne):
+┌─────────┬──────────┬─────────┬───────────┬──────────┐
+│ Codice  │ Garanzia │ Limite  │ Franchigia│ Scoperto │
+└─────────┴──────────┴─────────┴───────────┴──────────┘
 
-   Presentare in formato tabella chiara:
-   
-   ┌────────────────────────┬──────────────────┬──────────────────┬──────────────────┐
-   │ Sezione                │ Per Sinistro     │ Per Persona      │ Aggregato Annuo  │
-   ├────────────────────────┼──────────────────┼──────────────────┼──────────────────┤
-   │ RCT (Terzi)            │ €X.XXX.XXX       │ €X.XXX.XXX       │ €XX.XXX.XXX      │
-   │ RCO (Operai)           │ €X.XXX.XXX       │ €X.XXX.XXX       │ Incluso RCT      │
-   │ RCP (Prodotti)         │ €X.XXX.XXX       │ €X.XXX.XXX       │ Incluso Generale │
-   └────────────────────────┴──────────────────┴──────────────────┴──────────────────┘
-   
-   Note:
-   - Se RCO/RCP hanno aggregato separato: indicarlo
-   - Se massimale cose separato: aggiungere colonna
-   - Evidenziare se aggregato generale (RCT+RCO+RCP combinati)
-
-2. FORMA DI COPERTURA (per sezione)
-
-   <div class="info-grid">
-       <div class="info-item">
-           <div class="info-label">RCT/RCO</div>
-           <div class="info-value"><span class="badge tag-lo">Loss Occurrence</span></div>
-       </div>
-       <div class="info-item">
-           <div class="info-label">RCP</div>
-           <div class="info-value"><span class="badge tag-cm">Claims Made</span></div>
-       </div>
-   </div>
-   
-   Se Claims Made per RCP:
-   - Retroattività: [DATE per ogni società se diverse]
-   - Ultrattività/Postuma: [durata se presente, es. "18 mesi"]
-
-3. FRANCHIGIE E SCOPERTI (tabella)
-
-   ┌────────────┬──────────────────────────────────────────────────────────┐
-   │ Sezione    │ Franchigia / Scoperto                                    │
-   ├────────────┼──────────────────────────────────────────────────────────┤
-   │ RCT        │ [Dettaglio: es. "€500 per danni a cose, nessuna per persone"] │
-   │ RCO        │ [Dettaglio]                                              │
-   │ RCP        │ [Dettaglio + territorio se diverso: ROW vs USA/Can]      │
-   └────────────┴──────────────────────────────────────────────────────────┘
-
-4. ESTENSIONI DI GARANZIA (logica adattiva)
-
-   ╔══════════════════════════════════════════════════════════════════════════╗
-   ║ LOGICA ADATTIVA: TIPO A (Standard) vs TIPO B (Master)                   ║
-   ╠══════════════════════════════════════════════════════════════════════════╣
-   ║                                                                          ║
-   ║ IF POLIZZA TIPO A (Standard):                                           ║
-   ║                                                                          ║
-   ║    Elencare condizioni particolari RCT/RCO/RCP in formato sintetico:    ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Terzi (RCT)</h4>                                   ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCT.05:</strong> Danni a cose in custodia            ║
-   ║            (limite €X, scoperto Y%)</li>                                 ║
-   ║        <li><strong>RCT.11:</strong> Installazione/manutenzione          ║
-   ║            (postuma 12 mesi, limite €X)</li>                             ║
-   ║        <!-- Altre condizioni particolari presenti -->                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Operai (RCO)</h4>                                  ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCO.01:</strong> Malattie professionali              ║
-   ║            (retroattività [data])</li>                                   ║
-   ║        <!-- Altre -->                                                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    <h4>Estensioni RC Prodotti (RCP)</h4>                                ║
-   ║    <ul class="extension-list">                                           ║
-   ║        <li><strong>RCP.01:</strong> Ritiro Prodotti (Recall)            ║
-   ║            (limite €X, scoperto Y%/Z%)</li>                              ║
-   ║        <li><strong>RCP.02:</strong> Danni Patrimoniali Puri             ║
-   ║            (sottolimite €X)</li>                                         ║
-   ║        <!-- Altre -->                                                    ║
-   ║    </ul>                                                                 ║
-   ║                                                                          ║
-   ║    FORMATO: 1 riga per estensione con info essenziali                   ║
-   ║    (limite, scoperto, durata se rilevanti)                               ║
-   ║                                                                          ║
-   ║ ─────────────────────────────────────────────────────────────────────── ║
-   ║                                                                          ║
-   ║ IF POLIZZA TIPO B (Master con coordinamento):                           ║
-   ║                                                                          ║
-   ║    Sezione A - Clausole Coordinamento Programma Internazionale:         ║
-   ║                                                                          ║
-   ║    <h4>Clausole di Coordinamento</h4>                                   ║
-   ║    <div class="coordination-box">                                        ║
-   ║        <h5>BCI - Business Continuity Interest</h5>                       ║
-   ║        <p>Copre la perdita pecuniaria della Capogruppo derivante        ║
-   ║        da sinistri alle filiali estere non direttamente assicurabili    ║
-   ║        ("Non-Admitted" countries).</p>                                   ║
-   ║        <p><strong>Società coperte in BCI:</strong> [elenco]</p>         ║
-   ║    </div>                                                                ║
-   ║                                                                          ║
-   ║    <div class="coordination-box">                                        ║
-   ║        <h5>DIC/DIL - Difference in Conditions/Limits</h5>               ║
-   ║        <p>Interviene per coprire differenze di condizioni o limiti      ║
-   ║        superiori rispetto alle polizze locali esistenti.</p>            ║
-   ║    </div>                                                                ║
-   ║                                                                          ║
-   ║    <!-- Se presenti altre clausole master: Follow Form, ecc. -->        ║
-   ║                                                                          ║
-   ║    Sezione B - Estensioni Standard (se presenti):                       ║
-   ║    [Elenco condizioni particolari come TIPO A]                          ║
-   ║                                                                          ║
-   ╚══════════════════════════════════════════════════════════════════════════╝
-   
-   IMPORTANTE:
-   - Riportare SOLO estensioni effettivamente presenti in polizza
-   - Formato sintetico: 1 riga per estensione
-   - Focus su: codice, titolo, limite/sottolimite, scoperto, durata
-   - NO testo integrale, NO spese dettagliate
-
-5. ESCLUSIONI PRINCIPALI (top 5-7)
-
-   Elencare le esclusioni PIÙ CRITICHE che il cliente deve conoscere:
-   
-   <h4>Esclusioni Principali</h4>
-   <ul class="exclusion-list">
-       <li><strong>Cyber Risk:</strong> Esclusi danni da attacchi informatici, 
-           perdita dati, violazione privacy</li>
-       <li><strong>PFAS:</strong> Sostanze perfluorurate e polifluorurate</li>
-       <li><strong>Amianto:</strong> Danni da esposizione all'amianto</li>
-       <li><strong>Nucleare:</strong> Energia nucleare e radiazioni ionizzanti</li>
-       <li><strong>Inquinamento graduale:</strong> Solo inquinamento accidentale coperto</li>
-       <!-- Altre esclusioni rilevanti per specifica polizza -->
-   </ul>
-   
-   Focus su esclusioni che potrebbero sorprendere il cliente o che sono 
-   particolarmente rilevanti per la sua attività.
-
-
-═══════════════════════════════════════════════════════════════════════════════
-TAB 3: CALCOLO PREMIO (ADATTIVO)
-═══════════════════════════════════════════════════════════════════════════════
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ LOGICA ADATTIVA: Formato varia in base al tipo polizza                      ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ IF POLIZZA TIPO A (Standard - premio unico):                                ║
-║    → Formato LINEARE                                                         ║
-║                                                                              ║
-║ IF POLIZZA TIPO B (Master - premi per entità):                              ║
-║    → Formato TABELLA PER ENTITÀ                                             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-FORMATO A: PREMIO UNICO (Polizza Standard)
+───────────────────────────────────────────────────────────────────────────────
+TABELLA 1: RC TERZI (RCT)
 ───────────────────────────────────────────────────────────────────────────────
 
-<div class="premio-calculation">
-    <table class="calculation-table">
-        <tr>
-            <td>Premio Imponibile</td>
-            <td class="col-curr">€ XX.XXX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Contributo SSN (X%)</td>
-            <td class="col-curr">€ XXX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Contributo Addizionale SSN</td>
-            <td class="col-curr">€ XX,XX</td>
-        </tr>
-        <tr>
-            <td>+ Imposta Assicurazioni (XX,X%)</td>
-            <td class="col-curr">€ X.XXX,XX</td>
-        </tr>
-        <tr class="total-row">
-            <td><strong>PREMIO LORDO ANNUO</strong></td>
-            <td class="col-curr"><strong>€ XX.XXX,XX</strong></td>
-        </tr>
-    </table>
-</div>
+Estrarre TUTTE le condizioni particolari RCT presenti in polizza.
 
-Se frazionamento con sovrapprezzo:
-<p class="note">Frazionamento semestrale con sovrapprezzo +2%: 
-€ XX.XXX,XX × 2 rate = € XX.XXX,XX</p>
+ORDINE: Per codice crescente (RCT.01, RCT.02, ..., RCT.05, ..., RCT.11, ecc.)
+Se codice non presente: ordine di apparizione in polizza.
 
-FORMATO B: TABELLA PER ENTITÀ (Polizza Master)
+GENERARE 1 RIGA PER OGNI GARANZIA:
+
+<tr>
+    <td class="col-center"><strong>[CODICE_RCT_N]</strong></td>
+    <td>[NOME_GARANZIA_RCT_N]</td>
+    <td class="col-curr">[LIMITE_RCT_N]</td>
+    <td class="col-curr">[FRANCHIGIA_RCT_N]</td>
+    <td class="col-curr">[SCOPERTO_RCT_N]</td>
+</tr>
+
+PLACEHOLDER:
+
+[CODICE_RCT_N]
+Codice condizione particolare (es. "RCT.05", "RCT.11")
+Se non presente codice: usare "N/A" o lasciare "-"
+
+[NOME_GARANZIA_RCT_N]
+Nome descrittivo garanzia (es. "Danni a cose in custodia")
+ESSERE CHIARI E SPECIFICI
+Non usare solo codice, spiegare cosa copre
+
+[LIMITE_RCT_N]
+Limite/massimale specifico garanzia
+Formato: "€ X.XXX.XXX"
+Se non specificato: "Incluso in massimale generale"
+Se postuma: "Postuma 12 mesi" o simile
+
+[FRANCHIGIA_RCT_N]
+Franchigia in euro (es. "€ 500")
+Se assente: "-"
+
+[SCOPERTO_RCT_N]
+Scoperto percentuale (es. "10%" o "10% min €1.000")
+Se assente: "-"
+
+ESEMPI GARANZIE RCT COMUNI:
+- RCT.05: Danni a cose in custodia
+- RCT.11: Installazione, montaggio, smontaggio
+- RCT.15: Inquinamento accidentale
+- RCT.22: Ricorso terzi da incendio
+- Danni a mezzi sotto carico/scarico
+- Sosta/movimentazione mezzi
+- Danni da interruzione/sospensione attività
+
+REGOLA CRITICA: 
+Se polizza ha 15 condizioni RCT, generare 15 righe.
+MAI riassumere, MAI omettere.
+
+───────────────────────────────────────────────────────────────────────────────
+TABELLA 2: RC OPERAI (RCO)
 ───────────────────────────────────────────────────────────────────────────────
 
-<h3>Dettaglio Premio per Entità</h3>
+Stesso formato identico di RCT.
 
-<table class="entity-premium-table">
-    <thead>
-        <tr>
-            <th>Società</th>
-            <th>Premio Imponibile</th>
-            <th>Accessori*</th>
-            <th>Premio Lordo</th>
-            <th>Note</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>[SOCIETÀ_1]</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td class="col-curr">€ X.XXX</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td>[FULL / BCI]</td>
-        </tr>
-        <tr>
-            <td>[SOCIETÀ_2]</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td class="col-curr">€ X.XXX</td>
-            <td class="col-curr">€ XX.XXX</td>
-            <td>[FULL / BCI]</td>
-        </tr>
-        <!-- Riga per OGNI entità -->
-        <tr class="total-row">
-            <td><strong>TOTALE</strong></td>
-            <td class="col-curr"><strong>€ XXX.XXX</strong></td>
-            <td class="col-curr"><strong>€ XX.XXX</strong></td>
-            <td class="col-curr"><strong>€ XXX.XXX</strong></td>
-            <td></td>
-        </tr>
-    </tbody>
+ESEMPI GARANZIE RCO COMUNI:
+- RCO.01: Malattie professionali
+- RCO.02: Infortuni in itinere
+- RCO.03: Infortuni verificatisi all'estero
+- Danni a dipendenti di altre aziende
+- Danni ad apprendisti/stagisti
+- Rivalsa INAIL
+
+NOTA SPECIALE: Malattie professionali
+Se malattie professionali Claims Made, indicare retroattività in limite/note
+Es: Limite = "€ 3.000.000, retroattività 31/12/2015"
+
+───────────────────────────────────────────────────────────────────────────────
+TABELLA 3: RC PRODOTTI (RCP)
+───────────────────────────────────────────────────────────────────────────────
+
+Stesso formato identico di RCT e RCO.
+
+ESEMPI GARANZIE RCP COMUNI:
+- RCP.01: Ritiro prodotti (Recall)
+- RCP.02: Danni patrimoniali puri
+- RCP.03: Danni da prodotti già consegnati
+- Installazione post-vendita
+- Assistenza tecnica
+- Garanzie contrattuali eccedenti responsabilità legale
+
+NOTA TERRITORIO:
+Se RCP ha franchigie/scoperti diversi per ROW vs USA/Canada:
+Indicare in colonna Franchigia/Scoperto entrambi valori
+Es: Scoperto = "10% min €5.000 ROW / €35.000 USA/Can"
+
+───────────────────────────────────────────────────────────────────────────────
+TABELLA 4: CLAUSOLE COORDINAMENTO MASTER (opzionale)
+───────────────────────────────────────────────────────────────────────────────
+
+LOGICA ADATTIVA:
+
+IF polizza contiene clausole BCI OR DIC/DIL OR altre clausole Master:
+    MOSTRARE questa tabella
+
+ELSE:
+    OMETTERE completamente sezione
+
+FORMATO TABELLA (3 colonne):
+
+<table>
+    <tr>
+        <td><strong>BCI</strong><br><span style="font-size:10px;">Business Continuity Interest</span></td>
+        <td>[DESCRIZIONE_BCI]<br><strong>Società:</strong> [ELENCO_SOCIETA_BCI]</td>
+        <td class="col-curr">[LIMITE_BCI]</td>
+    </tr>
+    <tr>
+        <td><strong>DIC/DIL</strong><br><span style="font-size:10px;">Difference in Conditions/Limits</span></td>
+        <td>[DESCRIZIONE_DIC]</td>
+        <td class="col-curr">[LIMITE_DIC]</td>
+    </tr>
 </table>
 
-<p class="note">* Accessori: SSN + Contributo SSN + Imposta Assicurazioni</p>
+PLACEHOLDER:
 
-<h4>Dettaglio Accessori</h4>
-<ul>
-    <li>Contributo SSN (X%): € XX.XXX,XX</li>
-    <li>Contributo Addizionale SSN: € XXX,XX</li>
-    <li>Imposta Assicurazioni (XX,X%): € XX.XXX,XX</li>
-</ul>
+[DESCRIZIONE_BCI]
+Spiegazione sintetica (2-3 righe max)
+Es: "Copre perdita pecuniaria capogruppo da sinistri a filiali estere non 
+direttamente assicurabili (paesi Non-Admitted)"
 
-REGOLE CRITICHE:
+[ELENCO_SOCIETA_BCI]
+Lista società coperte BCI (es. "Filiale Cina, Filiale USA, Omet Suzhou")
+
+[LIMITE_BCI]
+Massimale BCI (es. "€ 2.000.000")
+
+[DESCRIZIONE_DIC]
+Spiegazione DIC/DIL
+Es: "Interviene per differenze condizioni o limiti superiori rispetto polizze locali"
+
+[LIMITE_DIC]
+Limite DIC (es. "Secondo massimali polizza italiana")
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: CALCOLO PREMIO
+═══════════════════════════════════════════════════════════════════════════════
+
+LOGICA ADATTIVA:
+
+IF numero società = 1:
+    FORMATO LINEARE (calcolo semplice)
+    
+IF numero società >= 2:
+    FORMATO TABELLA ENTITÀ
+
+───────────────────────────────────────────────────────────────────────────────
+FORMATO A: TABELLA ENTITÀ (Polizza Master)
 ───────────────────────────────────────────────────────────────────────────────
 
-1. INCLUDERE TUTTE LE SOCIETÀ
-   Se polizza Master con N società → creare N righe nella tabella
-   NON omettere nessuna entità presente in polizza
-   
-2. COERENZA TOTALE
-   Somma premi singoli = Premio lordo totale indicato in polizza
-   Se discrepanza → verificare e segnalare
-   
-3. NOTE OPERATIVE
-   Indicare per ogni società se copertura è:
-   - FULL: Copertura completa RCT/RCO/RCP
-   - BCI: Solo Business Continuity Interest
-   - DIC/DIL: Difference in Conditions/Limits
+Generare tabella con 1 riga per OGNI società + riga TOTALE
 
+<table>
+    <tr>
+        <td>[SOCIETA_1]</td>
+        <td class="col-curr">[FATTURATO_USA_1]</td>
+        <td class="col-curr">[FATTURATO_ROW_1]</td>
+        <td class="col-curr">[PREMIO_IMPONIBILE_1]</td>
+        <td class="col-curr">[IMPOSTE_1]</td>
+        <td class="col-curr">[PREMIO_LORDO_1]</td>
+    </tr>
+    <!-- Ripetere per ogni società -->
+    <tr style="font-weight:700; background:#f1f5f9;">
+        <td>TOTALE POLIZZA</td>
+        <td class="col-curr">[FATTURATO_USA_TOT]</td>
+        <td class="col-curr">[FATTURATO_ROW_TOT]</td>
+        <td class="col-curr">[PREMIO_IMPONIBILE_TOT]</td>
+        <td class="col-curr">[IMPOSTE_TOT]</td>
+        <td class="col-curr">[PREMIO_LORDO_TOT]</td>
+    </tr>
+</table>
+
+PLACEHOLDER:
+
+[SOCIETA_N]
+Nome società
+
+[FATTURATO_USA_N]
+Fatturato USA/Canada (se applicabile)
+Formato "€ XX.XXX.XXX"
+Se non applicabile: "€ 0" o "-"
+
+[FATTURATO_ROW_N]
+Fatturato Rest of World (escluso USA/Canada)
+Formato "€ XX.XXX.XXX"
+
+[PREMIO_IMPONIBILE_N]
+Premio imponibile società
+Formato "€ XX.XXX,XX"
+
+[IMPOSTE_N]
+Contributi + Imposte (SSN + Imposta assicurazioni)
+Formato "€ X.XXX,XX"
+
+[PREMIO_LORDO_N]
+Premio lordo = Imponibile + Imposte
+Formato "€ XX.XXX,XX"
+
+REGOLA CRITICA:
+Somma premi singoli = Premio totale polizza
+Verificare coerenza matematica
+
+───────────────────────────────────────────────────────────────────────────────
+FORMATO B: CALCOLO LINEARE (Polizza Standard)
+───────────────────────────────────────────────────────────────────────────────
+
+Se 1 società, usare questo formato (decommentare nel template):
+
+Premio Imponibile:           [PREMIO_IMPONIBILE]
++ Contributo SSN (3,5%):     [SSN]
++ Contrib. Addizionale SSN:  [SSN_ADD]
++ Imposta Assicurazioni:     [IMPOSTA]
+─────────────────────────────────────────────
+PREMIO LORDO ANNUO:          [PREMIO_LORDO]
+
+PLACEHOLDER:
+[PREMIO_IMPONIBILE]  Formato "€ XX.XXX,XX"
+[SSN]                3,5% su imponibile, formato "€ X.XXX,XX"
+[SSN_ADD]            Contributo addizionale fisso, formato "€ XX,XX"
+[IMPOSTA]            22,25% su (imponibile + SSN), formato "€ X.XXX,XX"
+[PREMIO_LORDO]       Somma totale, formato "€ XX.XXX,XX"
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: SINISTRI & PREMI
 ═══════════════════════════════════════════════════════════════════════════════
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLE CRITICHE PER GESTIONE DATI SINISTRI                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ PRINCIPIO FONDAMENTALE:                                                     ║
-║ Utilizzare ESCLUSIVAMENTE dati certi estratti dalla documentazione fornita. ║
-║ È VIETATO generare esempi, interpolazioni, o dati sintetici.                ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE SINISTRI:                                           ║
-║                                                                              ║
-║ 1. IDENTIFICAZIONE FONTE DATI                                               ║
-║    Cercare nel documento:                                                    ║
-║    - File Excel allegati                                                     ║
-║    - Tabelle PDF                                                             ║
-║    - Screenshot o immagini di tabelle                                        ║
-║    - Sezioni "Statistica Sinistri" nel testo polizza                        ║
-║    - Allegati denominati "loss experience", "claims history", ecc.          ║
-║                                                                              ║
-║ 2. ESTRAZIONE DATI                                                           ║
-║    Per ogni sinistro identificato, estrarre TUTTI i campi disponibili:      ║
-║    - Data accadimento / data denuncia                                        ║
-║    - Importo riservato / stimato                                             ║
-║    - Importo pagato / liquidato                                              ║
-║    - Stato sinistro (aperto/chiuso/riservato)                               ║
-║    - Sezione polizza (RCT/RCO/RCP)                                          ║
-║    - Descrizione / causale / tipologia danno                                 ║
-║    - Numero sinistro (se presente)                                           ║
-║    - Qualsiasi altro dato disponibile                                        ║
-║                                                                              ║
-║ 3. GESTIONE ASSENZA DATI                                                     ║
-║    SE non sono presenti dati sinistri certi nel documento:                  ║
-║    → Mostrare messaggio: "Nessun dato storico sinistri disponibile nella   ║
-║      documentazione analizzata."                                             ║
-║    → NON creare grafici                                                      ║
-║    → NON generare tabelle con esempi                                         ║
-║    → NON inventare KPI (loss ratio, frequenza, ecc.)                        ║
-║                                                                              ║
-║ 4. CALCOLI STATISTICI (SOLO SE DATI CERTI DISPONIBILI)                      ║
-║    Dopo aver estratto i dati reali, calcolare:                              ║
-║                                                                              ║
-║    - Loss Ratio PAGATO = (Totale Pagato / Totale Premi) × 100              ║
-║      (sinistri effettivamente liquidati)                                     ║
-║                                                                              ║
-║    - Loss Ratio COMPLESSIVO = (Totale Pagato + Riserve Aperte) / Premi × 100║
-║      (include anche sinistri aperti con riserva)                            ║
-║                                                                              ║
-║    - Frequenza sinistri = N° Sinistri / N° Anni osservati                  ║
-║    - Costo medio sinistro = Totale Sinistri / N° Sinistri                  ║
-║    - Distribuzione per sezione (RCT/RCO/RCP)                                ║
-║                                                                              ║
-║    NOTA: Se disponibili riserve aperte, mostrare entrambi i loss ratio.    ║
-║    Il Loss Ratio COMPLESSIVO è più indicativo della sinistralità reale.    ║
-║                                                                              ║
-║ 5. COERENZA TEMPORALE                                                        ║
-║    - Anno sinistro = data denuncia (non data accadimento)                   ║
-║    - Anno premio = anno di vigenza polizza                                   ║
-║    - Verificare che gli anni siano coerenti con la vigenza polizza          ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 1: GRAFICO STORICO
+───────────────────────────────────────────────────────────────────────────────
 
-STRUTTURA TAB (SE DATI DISPONIBILI):
+Generare dati per grafico Chart.js (ultimi 5 anni)
 
-1. GRAFICO CHART.JS (Premi vs Sinistri)
+PLACEHOLDER JAVASCRIPT:
+
+labels: ['[ANNO_1]', '[ANNO_2]', '[ANNO_3]', '[ANNO_4]', '[ANNO_5]']
+premi:  [[PREMIO_1], [PREMIO_2], [PREMIO_3], [PREMIO_4], [PREMIO_5]]
+sinistri: [[SINISTRI_1], [SINISTRI_2], [SINISTRI_3], [SINISTRI_4], [SINISTRI_5]]
+
+[ANNO_N]      Anno competenza (es. "2020", "2021")
+[PREMIO_N]    Premio lordo anno (VALORE NUMERICO senza simbolo €, es. 65000)
+[SINISTRI_N]  Sinistri pagati/riservati anno (VALORE NUMERICO, es. 12500)
+
+REGOLA ANNI COMPETENZA:
+Per polizze con decorrenza/scadenza 31/12-31/12:
+- Anno competenza = anno scadenza
+- Es: Polizza 31/12/2023-31/12/2024 → competenza 2024
+
+Per altre date:
+- Anno competenza = anno prevalente
+- Es: Polizza 01/04/2023-31/03/2024 → competenza 2023
+
+NON duplicare anno (bug fix):
+Se polizza 31/12/2023-31/12/2024:
+- Inserire 1 volta nell'anno 2024
+- NON inserire sia in 2023 che 2024
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: LOSS RATIO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con loss ratio per anno
+
+<table>
+    <tr>
+        <td>[ANNO_1]</td>
+        <td class="col-curr">[PREMIO_1]</td>
+        <td class="col-curr">[SINISTRI_1]</td>
+        <td class="col-curr">[LOSS_RATIO_1]</td>
+    </tr>
+    <!-- Ripetere per ogni anno -->
+</table>
+
+[LOSS_RATIO_N]
+Calcolo: (Sinistri / Premio) × 100
+Formato: "XX,X%" (es. "18,5%")
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: DETTAGLIO SINISTRI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con TUTTI i sinistri ultimi 5 anni
+
+<table>
+    <tr>
+        <td class="col-center">[DATA_SINISTRO_1]</td>
+        <td class="col-center"><span class="badge">[SEZIONE_1]</span></td>
+        <td>[CAUSA_1]</td>
+        <td class="col-curr">[RISERVATO_1]</td>
+        <td class="col-curr">[PAGATO_1]</td>
+        <td>[STATUS_1]</td>
+    </tr>
+    <!-- Ripetere per ogni sinistro -->
+</table>
+
+PLACEHOLDER:
+
+[DATA_SINISTRO_N]  Data evento formato "gg/mm/aaaa"
+[SEZIONE_N]        "RCT", "RCO", o "RCP"
+[CAUSA_N]          Descrizione causa sinistro (1 riga, max 80 caratteri)
+[RISERVATO_N]      Importo riservato formato "€ XX.XXX"
+[PAGATO_N]         Importo pagato formato "€ XX.XXX"
+[STATUS_N]         "Aperto", "Chiuso", "In liquidazione"
+
+IMPORTANTE:
+- Estrarre da borderò sinistri o storico fornito
+- Se dati non disponibili: NON INVENTARE
+- Meglio tabella vuota con nota "Dati non disponibili" che dati fittizi
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: PROCEDURA SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+QUESTA SEZIONE È QUASI TUTTA STATICA (hardcoded nel template)
+
+Solo pochi placeholder da compilare se presenti termini specifici in polizza:
+
+- Termini denuncia (se diversi da 3 giorni standard)
+- Obblighi specifici non standard
+
+ALTRIMENTI: Lasciare testo statico del template che include:
+
+✓ Denuncia sempre a Eramo & Associati (fisso)
+✓ Email: sinistri@eramoassociati.it (fisso)
+✓ Tel: 0332 283123 (fisso)
+✓ Timeline standard
+✓ Obblighi standard assicurato
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE - DA RISPETTARE SEMPRE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA SOCIETÀ
+   ─────────────────────
+   Se polizza elenca 7 società:
+   - TAB 1: Tabella entità con 7 righe
+   - TAB 1: Retroattività con 7 righe (se applicabile)
+   - TAB 3: Premio con 7 righe + totale
    
-   ╔══════════════════════════════════════════════════════════════════════════╗
-   ║ REGOLE CRITICHE PER IL GRAFICO - LEGGERE ATTENTAMENTE                   ║
-   ╠══════════════════════════════════════════════════════════════════════════╣
-   ║                                                                          ║
-   ║ 1. ANNO COMPETENZA PREMI:                                                ║
-   ║    - Attribuire il premio all'anno di INIZIO VIGENZA                    ║
-   ║    - REGOLA: Premio va all'anno in cui inizia la copertura             ║
-   ║                                                                          ║
-   ║    ESEMPI:                                                               ║
-   ║    • Polizza 31/12/2024 - 31/12/2025 → Premio 2025 (inizia 31/12/24)   ║
-   ║    • Polizza 01/01/2024 - 31/12/2024 → Premio 2024                      ║
-   ║    • Polizza 01/07/2023 - 30/06/2024 → Premio 2023 (inizia 01/07/23)   ║
-   ║                                                                          ║
-   ║    ATTENZIONE CASI LIMITE:                                               ║
-   ║    • Polizza 31/12/2024 ore 24:00 - 31/12/2025 ore 24:00                ║
-   ║      → Considera SOLO anno 2025 (competenza economica)                  ║
-   ║      → NON attribuire premio a 2024                                      ║
-   ║                                                                          ║
-   ║ 2. VERIFICARE VIGENZA PRIMA DI CREARE GRAFICO:                          ║
-   ║    - Se polizza vigenza = UN SOLO anno → mostrare SOLO quell'anno      ║
-   ║    - Se polizza vigenza = più anni → mostrare tutti gli anni            ║
-   ║                                                                          ║
-   ║    ESEMPIO POLIZZA ANNUALE 31/12/2024-31/12/2025:                       ║
-   ║    years = ['2025']                     // SOLO 2025                    ║
-   ║    premiums = [88119]                   // Premio unico anno 2025       ║
-   ║    claims = [7000]                      // Sinistri anno 2025           ║
-   ║                                                                          ║
-   ║    ❌ ERRORE DA EVITARE:                                                 ║
-   ║    years = ['2024', '2025']             // SBAGLIATO!                   ║
-   ║    premiums = [88119, 88119]            // Premio duplicato!            ║
-   ║                                                                          ║
-   ║ 3. ANNO COMPETENZA SINISTRI:                                             ║
-   ║    - Usare l'anno di DENUNCIA del sinistro                              ║
-   ║    - NON l'anno di accadimento                                           ║
-   ║                                                                          ║
-   ║ 4. NO DUPLICAZIONI PREMI:                                                ║
-   ║    - Ogni premio va attribuito a UN SOLO anno                           ║
-   ║    - ERRORE: duplicare premio su più anni consecutivi                   ║
-   ║                                                                          ║
-   ║ 4. INCLUDERE ANNO CORRENTE:                                              ║
-   ║    - Se polizza in corso → includere anno corrente                      ║
-   ║    - Sinistri anno corrente possono essere 0 se non ce ne sono         ║
-   ║                                                                          ║
-   ║ 5. COERENZA ARRAY:                                                       ║
-   ║    years.length === premiums.length === claims.length                   ║
-   ║                                                                          ║
-   ╚══════════════════════════════════════════════════════════════════════════╝
+   MAI scrivere "... altre società" o omettere righe
+   SEMPRE generare N righe per N società
 
-   ESEMPIO CORRETTO:
-   ```javascript
-   const years = ['2022', '2023', '2024'];
-   const premiums = [48000, 52000, 52000];  // OK: premi distinti per anno
-   const claims = [15000, 28000, 0];        // OK: sinistri effettivi per anno
-   ```
-
-   ESEMPIO ERRATO:
-   ```javascript
-   const years = ['2024', '2025'];
-   const premiums = [52000, 52000];  // ERRORE: premio duplicato
-   const claims = [43000, 0];         // ERRORE: sinistri aggregati su 2024
-   ```
-
-2. KPI SINISTRALITÀ (info-grid, 4 card) - SOLO SE DATI DISPONIBILI
-   - Loss Ratio Complessivo: (Totale Sinistri / Totale Premi) × 100
-   - N° Sinistri Totali
-   - Totale Liquidato (pagato)
-   - Riserve Aperte
-
-3. LOSS EXPERIENCE PER ANNO (tabella) - SOLO SE DATI DISPONIBILI
-   Colonne: Anno | Premio | N° Sin. | Riservato | Pagato | Loss Ratio
-   Riga finale: TOTALE
-
-4. DISTRIBUZIONE PER SEZIONE (tabella) - SOLO SE DATI DISPONIBILI
-   Colonne: Sezione | N° Sinistri | % sul Totale | Importo Totale | Media per Sinistro
-   Righe: RCT (tag), RCO (tag), RCP (tag)
-
-5. DETTAGLIO SINISTRI (tabella) - SOLO SE DATI DISPONIBILI
-   Colonne: Data | Sezione (tag colorato) | Causa | Riservato | Pagato | Status
+2. COMPLETEZZA GARANZIE
+   ────────────────────
+   Se polizza ha 12 condizioni RCT:
+   - TAB 2: Generare 12 righe nella tabella RCT
    
-   Riportare TUTTI i sinistri estratti dal documento, con tutti i dati disponibili.
-
-STRUTTURA TAB (SE DATI NON DISPONIBILI):
-
-```html
-<div class="alert-box alert-medium">
-    <h3>📊 Dati Sinistri Non Disponibili</h3>
-    <p>Nessun dato storico sinistri è stato fornito nella documentazione analizzata.</p>
-    <p>Per una valutazione completa del rischio, si consiglia di richiedere alla compagnia la statistica sinistri degli ultimi 3-5 anni.</p>
-</div>
-```
-
-═══════════════════════════════════════════════════════════════════════════════
-TAB 5: PROCEDURA SINISTRI (LIVELLO PhD - ANALISI GIURIDICA COMPLETA)
-═══════════════════════════════════════════════════════════════════════════════
-
-PRINCIPIO: Trattazione approfondita con riferimenti normativi, giurisprudenziali e contrattuali.
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ STRUTTURA TAB 5 - PROCEDURA SINISTRI AVANZATA                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Questo TAB fornisce una guida operativa e giuridicamente accurata per la    ║
-║ gestione dei sinistri RC, con particolare attenzione a:                      ║
-║ • Fondamento normativo (Codice Civile artt. 1913-1932)                      ║
-║ • Obblighi contrattuali specifici della polizza                             ║
-║ • Conseguenze della violazione degli obblighi                               ║
-║ • Casistiche critiche e problematiche                                       ║
-║ • Gestione Claims Made vs Loss Occurrence                                    ║
-║ • Prescrizione e decadenza                                                   ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-═══════════════════════════════════════════════════════════════════════════════
-1. QUADRO NORMATIVO E OBBLIGHI DELL'ASSICURATO
-═══════════════════════════════════════════════════════════════════════════════
-
-1.1 OBBLIGO DI DENUNCIA (Art. 1913 c.c.)
-
-FONDAMENTO NORMATIVO:
-Art. 1913 c.c.: "L'assicurato deve dare avviso del sinistro all'assicuratore o all'agente 
-autorizzato a concludere il contratto entro tre giorni da quello in cui il sinistro si è 
-verificato o l'assicurato ne ha avuto conoscenza."
-
-CLAUSOLE CONTRATTUALI SPECIFICHE:
-- Verificare in polizza il termine di denuncia (generalmente [X] giorni)
-- Il termine decorre dal momento in cui l'assicurato ha avuto "notizia" del sinistro
-- Per polizze Claims Made: la denuncia deve avvenire durante il periodo di assicurazione
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ ATTENZIONE CRITICA: DENUNCIA TARDIVA                                         ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ CONSEGUENZE ART. 1915 C.C.:                                                  ║
-║ "Se l'assicurato omette dolosamente di dare l'avviso nel termine stabilito, ║
-║ o dolosamente fornisce indicazioni inesatte o reticenti sulla causa e sulle ║
-║ circostanze del sinistro, l'assicuratore non è tenuto a pagare l'indennità."║
-║                                                                              ║
-║ INTERPRETAZIONE GIURISPRUDENZIALE:                                           ║
-║ • Dolo: necessaria la volontà di recare pregiudizio all'assicuratore        ║
-║ • Colpa grave: riduzione proporzionale dell'indennizzo (clausole polizza)   ║
-║ • Colpa lieve: nessuna conseguenza se non vi è stato pregiudizio            ║
-║                                                                              ║
-║ ONERE DELLA PROVA:                                                           ║
-║ • Spetta all'assicuratore dimostrare il dolo o la colpa grave               ║
-║ • Spetta all'assicuratore provare il pregiudizio subito                     ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-MODALITÀ DI DENUNCIA:
-- PEC (preferibile per certezza data e contenuto)
-- Raccomandata A/R
-- Portale web compagnia (se previsto)
-- Eventuale modulo cartaceo (da verificare in polizza)
-
-CONTENUTO MINIMO DENUNCIA:
-□ Dati contraente/assicurato
-□ Numero polizza
-□ Data e luogo del sinistro
-□ Circostanze dettagliate dell'evento
-□ Natura e entità del danno
-□ Dati del danneggiato (se noti)
-□ Eventuale richiesta risarcitoria ricevuta
-□ Documentazione disponibile
-
-─────────────────────────────────────────────────────────────────────────────
-
-1.2 OBBLIGO DI SALVATAGGIO (Art. 1914 c.c.)
-
-FONDAMENTO NORMATIVO:
-Art. 1914 c.c., comma 1: "L'assicurato deve fare quanto gli è possibile per 
-evitare o diminuire il danno."
-
-APPLICAZIONI PRATICHE:
-- Adottare misure immediate per limitare l'aggravamento del danno
-- Conservare tracce dell'evento (fotografie, video, testimonianze)
-- Non rimuovere elementi probatori
-- Mettere in sicurezza l'area
-
-RIMBORSO SPESE DI SALVATAGGIO (Art. 1914, comma 2):
-"Le spese fatte per adempiere l'obbligo sono a carico dell'assicuratore, 
-in proporzione del valore assicurato rispetto a quello che la cosa aveva 
-al tempo del sinistro."
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ ASPETTO CRITICO: VIOLAZIONE OBBLIGO DI SALVATAGGIO                          ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ CONSEGUENZE:                                                                 ║
-║ L'assicuratore può rifiutare o ridurre l'indennizzo nella misura in cui     ║
-║ l'aggravamento del danno è imputabile all'assicurato.                       ║
-║                                                                              ║
-║ ESEMPI:                                                                      ║
-║ • RCT: perdita d'acqua non interrotta → aggravamento danni                  ║
-║ • RCP: mancato ritiro prodotto difettoso → moltiplicazione casi             ║
-║ • RCO: mancata segnalazione condizioni lavoro pericolose                    ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-─────────────────────────────────────────────────────────────────────────────
-
-1.3 DIVIETO DI AMMETTERE RESPONSABILITÀ (Art. 1917 c.c.)
-
-FONDAMENTO NORMATIVO:
-Art. 1917 c.c.: "L'assicurato non può rinunziare all'azione contro il terzo 
-responsabile o transigere con questo senza il consenso dell'assicuratore."
-
-IMPLICAZIONI OPERATIVE:
-✗ NON firmare verbali di accordo con il danneggiato
-✗ NON riconoscere formalmente la responsabilità
-✗ NON effettuare pagamenti diretti
-✗ NON transigere senza autorizzazione compagnia
-
-✓ Raccogliere informazioni
-✓ Assistere i danneggiati (aspetto umano)
-✓ Riferire i fatti alla compagnia
-✓ Attendere istruzioni per la gestione
-
-SANZIONE:
-Perdita del diritto all'indennizzo per la parte pregiudicata dalla condotta 
-dell'assicurato.
-
-═══════════════════════════════════════════════════════════════════════════════
-2. GESTIONE LITE - ASPETTI PROCESSUALI (Art. 1917 c.c.)
-═══════════════════════════════════════════════════════════════════════════════
-
-2.1 CONDUZIONE DELLA LITE
-
-Art. 1917 c.c., comma 2: "Finché è in corso l'azione di regresso dell'assicuratore, 
-questi può condurre la causa."
-
-IMPLICAZIONI:
-- L'assicuratore assume la gestione tecnica e legale della controversia
-- Nomina dei propri legali (salvo contraria volontà dell'assicurato)
-- Valutazione opportunità transattive
-- Decisione su strategia difensiva
-
-DIRITTO DELL'ASSICURATO:
-- Essere informato sull'andamento della causa
-- Partecipare alle decisioni strategiche fondamentali
-- Opporsi a transazioni pregiudizievoli (entro limiti massimale)
-
-─────────────────────────────────────────────────────────────────────────────
-
-2.2 SPESE DI RESISTENZA
-
-FONDAMENTO NORMATIVO:
-Art. 1917 c.c., comma 3: "Le spese sostenute per resistere all'azione del danneggiato 
-sono a carico dell'assicuratore nei limiti del quarto del massimale stabilito in polizza."
-
-INTERPRETAZIONE CORRETTA (giurisprudenza consolidata):
-Le spese legali sono coperte fino al 25% del massimale CONTRATTUALE e sono 
-considerate "FUORI MASSIMALE" rispetto all'indennizzo del danno.
-
-CALCOLO:
-- Massimale polizza: € [VALORE]
-- Limite spese legali: € [VALORE × 0,25] (25% del massimale CONTRATTUALE)
-
-ESEMPIO PRATICO:
-Massimale polizza: € 5.000.000
-Limite spese legali: € 1.250.000 (25% di 5M)
-
-SCENARIO: Danno liquidato € 4.800.000
-• Residuo massimale indennizzo: € 200.000
-• Spese legali coperte: € 1.250.000 (NON € 50.000!)
-• Le spese legali NON erodono il massimale dell'indennizzo
-
-SPESE INCLUSE:
-□ Onorari avvocati difensori
-□ CTU e consulenze tecniche
-□ Spese vive processuali
-□ Eventuali spese di transazione (se conveniente)
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ ATTENZIONE: LIMITE COMPLESSIVO SPESE + INDENNIZZO                           ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Sebbene le spese legali siano "fuori massimale", esiste comunque un limite  ║
-║ complessivo dato dalla somma di:                                             ║
-║ • Massimale indennizzo: € [VALORE]                                          ║
-║ • Massimale spese legali: € [VALORE × 0,25]                                 ║
-║ • TOTALE DISPONIBILE: € [VALORE × 1,25]                                     ║
-║                                                                              ║
-║ Se la somma di indennizzo + spese supera questo totale, l'eccedenza         ║
-║ rimane a carico dell'assicurato.                                            ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-═══════════════════════════════════════════════════════════════════════════════
-3. PRESCRIZIONE E DECADENZA
-═══════════════════════════════════════════════════════════════════════════════
-
-3.1 PRESCRIZIONE BIENNALE (Art. 2952 c.c.)
-
-FONDAMENTO NORMATIVO:
-Art. 2952 c.c.: "I diritti derivanti dal contratto di assicurazione si prescrivono 
-in due anni dal giorno in cui si è verificato il fatto su cui il diritto si fonda."
-
-DECORRENZA TERMINE:
-- Per danneggiato vs assicurato: dalla data del fatto dannoso
-- Per assicurato vs assicuratore: dalla richiesta del danneggiato o dalla sentenza
-- Per assicuratore vs assicurato (rivalsa): dalla data del pagamento
-
-INTERRUZIONE PRESCRIZIONE:
-□ Richiesta scritta di risarcimento
-□ Costituzione in mora
-□ Notifica atto di citazione
-□ Riconoscimento del debito
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ CRITICITÀ CLAIMS MADE: PRESCRIZIONE E FINESTRA TEMPORALE                    ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ PROBLEMA:                                                                    ║
-║ Il fatto dannoso può essere avvenuto ANNI prima della richiesta, ma la      ║
-║ polizza Claims Made copre solo richieste pervenute durante il periodo di    ║
-║ assicurazione (o postuma, se prevista).                                      ║
-║                                                                              ║
-║ CONSEGUENZA:                                                                 ║
-║ La prescrizione del diritto del danneggiato (10 anni extracontrattuale,     ║
-║ art. 2043 c.c.) è più lunga della finestra di copertura Claims Made.        ║
-║                                                                              ║
-║ SOLUZIONE CONTRATTUALE:                                                      ║
-║ • Data di retroattività: [INSERIRE DA POLIZZA]                              ║
-║ • Periodo postuma: [INSERIRE DA POLIZZA]                                    ║
-║ • Verifica estensioni disponibili                                           ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-─────────────────────────────────────────────────────────────────────────────
-
-3.2 PRESCRIZIONE DECENNALE (Art. 2946 c.c.)
-
-APPLICABILITÀ:
-Art. 2946 c.c. - Prescrizione DECENNALE si applica al diritto del DANNEGGIATO 
-verso l'ASSICURATO per fatto illecito extracontrattuale (art. 2043 c.c.).
-
-Art. 2952 c.c. - Prescrizione BIENNALE si applica ai rapporti tra 
-ASSICURATO e ASSICURATORE derivanti dal contratto di assicurazione.
-
-RILEVANZA PRATICA:
-- Il danneggiato ha 10 ANNI per agire contro l'assicurato
-- Ma l'assicurato ha solo 2 ANNI per agire contro l'assicuratore
-- E la polizza Claims Made copre solo richieste pervenute in vigenza/postuma
-
-GAP TEMPORALE = RISCHIO SCOPERTO
-
-ESEMPIO CONCRETO:
-• Fatto dannoso: 1° gennaio 2020
-• Richiesta danneggiato: 1° gennaio 2029 (entro 10 anni → valida verso assicurato)
-• Ma se polizza Claims Made scaduta il 31/12/2025 senza postuma → NON COPERTA
-• Risultato: assicurato deve pagare di tasca propria un danno che pensava coperto
-
-CONSEGUENZE:
-Questo disallineamento temporale è uno dei rischi principali delle polizze 
-Claims Made e rende fondamentale:
-1. Mantenere continuità copertura senza interruzioni
-2. Estendere postuma adeguata (min. 24-36 mesi)
-3. Verificare data retroattività ad ogni rinnovo
-4. Conservare documentazione polizze pregresse per 10+ anni
-
-═══════════════════════════════════════════════════════════════════════════════
-4. CLAIMS MADE: GESTIONE CRITICITÀ TEMPORALI
-═══════════════════════════════════════════════════════════════════════════════
-
-4.1 PERIODO DI COPERTURA
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ FINESTRA TEMPORALE CLAIMS MADE                                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ RETROATTIVITÀ: [DATA DA POLIZZA]                                            ║
-║ Fatti dannosi accaduti prima di questa data → NON COPERTI                   ║
-║                                                                              ║
-║ VIGENZA: [DATA INIZIO] - [DATA FINE]                                        ║
-║ Richieste pervenute in questo periodo → COPERTE                             ║
-║                                                                              ║
-║ POSTUMA: [SI/NO] - [DURATA]                                                 ║
-║ Richieste pervenute dopo scadenza ma per fatti durante vigenza → COPERTE    ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-4.2 CASISTICHE CRITICHE
-
-SCENARIO 1: Fatto prima della retroattività, richiesta in vigenza
-→ ✗ NON COPERTO (fatto antecedente a retroattività)
-
-SCENARIO 2: Fatto in vigenza, richiesta dopo scadenza (entro postuma)
-→ ✓ COPERTO (se postuma prevista)
-
-SCENARIO 3: Fatto in vigenza, richiesta dopo scadenza (oltre postuma)
-→ ✗ NON COPERTO (richiesta fuori finestra)
-
-SCENARIO 4: Cambio compagnia senza retroattività illimitata
-→ ⚠ BUCO DI COPERTURA per fatti precedenti
-
-RACCOMANDAZIONI:
-• Verificare data retroattività ad ogni rinnovo
-• Valutare estensione postuma adeguata (min. 24 mesi)
-• In caso di cambio compagnia: richiedere retroattività illimitata
-• Conservare documentazione polizze pregresse per almeno 10 anni
-
-═══════════════════════════════════════════════════════════════════════════════
-5. PROCEDURE OPERATIVE DETTAGLIATE
-═══════════════════════════════════════════════════════════════════════════════
-
-5.1 TIMELINE PROCEDURA SINISTRI (12 STEP)
-
-╔═══════════════════════════════════════════════════════════════════════════╗
-║ FASE 1: EVENTO DANNOSO                                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 1 - INTERVENTO IMMEDIATO (Obbligo art. 1914 c.c.)
-□ Mettere in sicurezza persone e cose
-□ Chiamare soccorsi se necessario (112/118)
-□ Isolare area per preservare tracce
-□ NON rimuovere elementi probatori
-
-STEP 2 - DOCUMENTAZIONE PRELIMINARE
-□ Fotografie/video scena (timestamp)
-□ Identificazione testimoni (nome, recapiti)
-□ Raccolta dichiarazioni spontanee
-□ Condizioni meteo/ambientali
-□ Verbali autorità (se intervengono)
-
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ FASE 2: COMUNICAZIONI URGENTI (entro 24-48 ore)                          ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 3 - CONTATTO BROKER (PRIORITÀ ASSOLUTA)
-Broker: [NOME]
-Email: [EMAIL]
-Telefono: [TELEFONO]
-Mobile emergenze: [MOBILE]
-
-Comunicare immediatamente:
-• Tipologia sinistro (RCT/RCO/RCP)
-• Gravità stimata
-• Eventuale intervento autorità
-• Urgenza gestione
-
-STEP 4 - NON AMMETTERE RESPONSABILITÀ (Art. 1917 c.c.)
-✗ Evitare frasi tipo: "È colpa nostra", "Pagheremo tutto"
-✗ Non firmare verbali di accordo
-✗ Non effettuare pagamenti
-✓ Esprimere dispiacere umano
-✓ Fornire assistenza immediata (senza riconoscimenti)
-
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ FASE 3: DENUNCIA FORMALE (entro [X] giorni)                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 5 - COMPILAZIONE DENUNCIA DETTAGLIATA
-Utilizzare modulo compagnia o redigere documento contenente:
-
-A) DATI IDENTIFICATIVI
-   - Contraente: [DENOMINAZIONE]
-   - Assicurato: [SE DIVERSO]
-   - Polizza n.: [NUMERO]
-   - Vigenza: [DATE]
-
-B) EVENTO
-   - Data: GG/MM/AAAA ore HH:MM
-   - Luogo: indirizzo completo + coordinate GPS se disponibili
-   - Sezione polizza interessata: RCT / RCO / RCP
-
-C) DINAMICA DETTAGLIATA (ESSENZIALE)
-   Descrivere:
-   • Attività in corso al momento del fatto
-   • Sequenza cronologica degli eventi
-   • Soggetti coinvolti (ruoli e azioni)
-   • Condizioni operative (meteo, illuminazione, ecc.)
-   • Eventuali anomalie o malfunzionamenti
-   • Misure preventive adottate
-
-D) DANNO
-   - Natura: a persone / a cose / patrimoniale puro
-   - Danneggiato/i: dati anagrafici completi
-   - Stima preliminare (se possibile)
-   - Documentazione disponibile
-
-E) ALLEGATI
-   □ Fotografie/video
-   □ Dichiarazioni testimoni
-   □ Verbali autorità
-   □ Preventivi/fatture danni
-   □ Certificati medici (RCO)
-   □ Denuncia INAIL (RCO)
-
-STEP 6 - INVIO DENUNCIA
-□ PEC a: [INDIRIZZO PEC COMPAGNIA]
-□ Copia conoscenza broker: [EMAIL BROKER]
-□ Conservare ricevuta consegna/lettura
-□ Protocollare internamente
-
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ FASE 4: GESTIONE ISTRUTTORIA                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 7 - APERTURA PRATICA COMPAGNIA
-Entro 5-10 giorni dall'invio denuncia:
-□ Assegnazione n° sinistro
-□ Nomina perito/liquidatore
-□ Richiesta documentazione integrativa
-
-STEP 8 - COLLABORAZIONE CON PERITO
-Obblighi dell'assicurato:
-□ Fornire accesso ai luoghi
-□ Produrre documentazione richiesta
-□ Rispondere a questionari
-□ Facilitare sopralluoghi
-□ Collaborazione leale (art. 1915 c.c.)
-
-Diritti dell'assicurato:
-□ Assistenza del proprio tecnico
-□ Visionare atti istruttori
-□ Controdedurre su rilievi perito
-□ Richiedere tempi ragionevoli
-
-STEP 9 - VALUTAZIONE RESPONSABILITÀ
-Il perito analizza:
-• Sussistenza responsabilità (oggettiva/soggettiva)
-• Nesso causale evento-danno
-• Operatività garanzia polizza
-• Eventuale concorso di colpa
-• Applicabilità franchigie/scoperti
-
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ FASE 5: DEFINIZIONE STRAGIUDIZIALE                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 10 - PROPOSTA TRANSATTIVA (se applicabile)
-La compagnia può:
-• Riconoscere responsabilità e quantificare risarcimento
-• Proporre transazione al danneggiato
-• Richiedere consenso assicurato (art. 1917 c.c.)
-
-Valutazione opportunità:
-PRO: Chiusura rapida, certezza costi, no spese legali
-CONTRO: Rinuncia a difesa, precedente per altri casi
-
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ FASE 6: GESTIONE CONTENZIOSA (se inevitabile)                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-
-STEP 11 - RICEZIONE ATTO GIUDIZIARIO
-Se notificato atto di citazione/decreto ingiuntivo:
-□ Consegna IMMEDIATA a compagnia/broker (entro 48 ore)
-□ La compagnia assume la lite (art. 1917 c.c.)
-□ Nomina avvocato difensore
-□ Predisposizione strategia difensiva
-
-SPESE LEGALI:
-- Coperte fino a 25% del massimale (art. 1917, c.3 c.c.)
-- Massimale spese legali: € [CALCOLO: MASSIMALE/4]
-
-STEP 12 - ESITO GIUDIZIALE
-Sentenza favorevole: chiusura sinistro, no pagamenti
-Sentenza sfavorevole: 
-  → Indennizzo entro massimale a carico compagnia
-  → Eccedenza a carico assicurato
-  → Verifica appello con compagnia
-
-═══════════════════════════════════════════════════════════════════════════════
-6. CASISTICHE CRITICHE E PROBLEMATICHE FREQUENTI
-═══════════════════════════════════════════════════════════════════════════════
-
-6.1 SINISTRI SERIALI (Prodotti Difettosi)
-
-PROBLEMA:
-Un unico difetto di produzione genera molteplici richieste risarcitorie.
-
-APPLICAZIONE MASSIMALI:
-• Loss Occurrence: massimale per sinistro × n° sinistri → attenzione aggregato
-• Claims Made: aggregazione possibile se "medesimo evento" (verifica clausole)
-
-STRATEGIA:
-□ Valutare ritiro proattivo prodotto (costi vs rischi)
-□ Attivare garanzia Recall se prevista
-□ Quantificare esposizione totale
-□ Informare tempestivamente compagnia
-
-─────────────────────────────────────────────────────────────────────────────
-
-6.2 FRANCHIGIE AGGREGATE
-
-Se prevista franchigia aggregata annua: € [VALORE]
-
-MECCANISMO:
-L'assicurato sopporta i primi € [X] di sinistri nell'annualità, 
-indipendentemente dal numero di sinistri.
-
-IMPLICAZIONE:
-• Piccoli sinistri: può convenire gestione diretta (sotto franchigia)
-• Sinistri oltre franchigia: attivarsi sempre compagnia
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ ATTENZIONE: MONITORAGGIO FRANCHIGIA AGGREGATA                                ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ L'assicurato deve tenere traccia dei sinistri per verificare quando la      ║
-║ franchigia aggregata è stata superata, al fine di attivare la copertura.    ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-─────────────────────────────────────────────────────────────────────────────
-
-6.3 CONCORSO DI COLPA DEL DANNEGGIATO
-
-Art. 1227 c.c.: "Se il fatto colposo del creditore ha concorso a cagionare 
-il danno, il risarcimento è diminuito secondo la gravità della colpa e 
-l'entità delle conseguenze che ne sono derivate."
-
-RILEVANZA:
-□ Riduce responsabilità assicurato (e quindi esborso compagnia)
-□ Onere della prova a carico dell'assicurato/compagnia
-□ Valutazione equitativa del giudice (%)
-
-ESEMPI:
-• RCT: terzo che accede a cantiere senza autorizzazione
-• RCO: lavoratore che non usa DPI forniti
-• RCP: cliente che usa prodotto in modo improprio
-
-─────────────────────────────────────────────────────────────────────────────
-
-6.4 SINISTRI SERIALI RCO (Malattie Professionali)
-
-PROBLEMA:
-L'esposizione continuativa ad agenti nocivi può generare richieste risarcitorie 
-multiple nel tempo, anche a distanza di anni dalla cessazione dell'esposizione.
-
-ESEMPIO CONCRETO:
-• Esposizione amianto: 1990-2010 (20 anni)
-• Prima diagnosi asbestosi: 2024 (14 anni dopo cessazione)
-• Altre diagnosi dipendenti: 2025, 2026, 2027, 2028...
-• Ogni diagnosi genera un sinistro autonomo
-
-IMPATTO SU MASSIMALI:
-- **Loss Occurrence**: ogni sinistro consuma il massimale dell'anno di manifestazione
-- **Claims Made**: rischio rapido esaurimento aggregato annuo con più richieste
-
-CRITICITÀ SPECIFICA CLAIMS MADE:
-Se polizza attivata nel 2020 con retroattività 2015:
-→ Esposizioni 1990-2014 NON COPERTE
-→ Solo malattie da esposizione post-2015 sono coperte
-→ Ma patologie da amianto hanno latenza 15-40 anni!
-
-GESTIONE OPERATIVA:
-
-FASE PREVENTIVA:
-□ Verificare data retroattività specifica per malattie professionali
-□ Se attività con esposizione storica nota (amianto, benzene, ecc.):
-  • Richiedere retroattività illimitata o più ampia possibile
-  • Valutare incremento massimale aggregato RCO
-□ Mappare dipendenti con esposizione storica documentata
-
-FASE REATTIVA (primo sinistro):
-□ Segnalare immediatamente a compagnia e broker
-□ Quantificare esposizione potenziale (n° dipendenti esposti)
-□ Valutare se massimale aggregato è adeguato
-□ Eventuale integrazione copertura prima di altri sinistri
-
-RACCOMANDAZIONI:
-• Aziende con storia di esposizione ad agenti nocivi: RCO con massimale 
-  aggregato elevato (3-5x il massimale per sinistro)
-• Monitoraggio sanitario dipendenti ex-esposti anche dopo cessazione rapporto
-• Documentazione accurata cronologia esposizioni per difesa in lite
-• Considerare polizza retroattiva dedicata se esposizioni significative pre-data
-
-═══════════════════════════════════════════════════════════════════════════════
-7. CONTATTI E RIFERIMENTI
-═══════════════════════════════════════════════════════════════════════════════
-
-7.1 CONTATTI EMERGENZA
-
-╔═══════════════════════════════════════════════════════════════════════════╗
-║ BROKER                                                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ Società: [BROKER]                                                         ║
-║ Referente: [NOME]                                                         ║
-║ Email: [EMAIL]                                                            ║
-║ Telefono: [TELEFONO]                                                      ║
-║ Mobile emergenze: [MOBILE]                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ COMPAGNIA - UFFICIO SINISTRI                                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║ Compagnia: [COMPAGNIA]                                                    ║
-║ Email denunce: [EMAIL]                                                    ║
-║ PEC: [PEC]                                                                ║
-║ Telefono: [NUMERO]                                                        ║
-║ Orari: [ORARI]                                                            ║
-║ Portale web: [URL] (se disponibile)                                       ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-
-7.2 RIFERIMENTI NORMATIVI PRINCIPALI
-
-□ Codice Civile, artt. 1882-1932 (Contratto di assicurazione)
-□ Codice Civile, art. 2043 (Responsabilità extracontrattuale)
-□ Codice Civile, art. 2049 (Responsabilità committenti)
-□ Codice Civile, art. 2050 (Attività pericolose)
-□ Codice Civile, art. 2051 (Responsabilità custodia cose)
-□ Codice Civile, art. 2052 (Danno da animali)
-□ Codice Civile, art. 2053 (Rovina edificio)
-□ Codice Civile, art. 2054 (Circolazione veicoli)
-□ D.Lgs. 81/2008 (Sicurezza lavoro - RCO)
-□ D.Lgs. 206/2005 (Codice Consumo - RCP)
-
-═══════════════════════════════════════════════════════════════════════════════
-NOTA FINALE
-═══════════════════════════════════════════════════════════════════════════════
-
-Questa procedura fornisce un quadro completo della gestione sinistri RC con 
-particolare attenzione agli aspetti giuridici. Per casi complessi o di rilevante 
-valore economico, si raccomanda sempre il coinvolgimento tempestivo del broker 
-e, se necessario, di consulenti legali specializzati in diritto assicurativo.
-
-═══════════════════════════════════════════════════════════════════════════════
-TAB 6: APPROFONDIMENTI
-═══════════════════════════════════════════════════════════════════════════════
-
-PRINCIPIO: CONCISO - max 4-5 righe per sezione, no "muri di testo"
-
-1. CLAIMS MADE vs LOSS OCCURRENCE (edu-grid con 2 card)
+   MAI riassumere o raggruppare
+   1 garanzia = 1 riga dedicata
+
+3. CELLE MAI VUOTE
+   ───────────────
+   In tutte le tabelle:
+   - Se dato presente: inserirlo
+   - Se dato assente: inserire "-"
+   - Se non applicabile: inserire "N/A"
    
-   Card 1 - Loss Occurrence:
-   "Conta QUANDO È SUCCESSO il fatto."
-   + esempio pratico in 2 righe
-   
-   Card 2 - Claims Made:
-   "Conta QUANDO ARRIVA la richiesta."
-   + esempio pratico in 2 righe
-   
-   + Alert box: attenzione al cambio polizza (rischio buchi copertura)
+   MAI lasciare <td></td> vuoto
 
-2. DATA DI RETROATTIVITÀ
-   - Spiegazione 2-3 righe
-   - Tabella: Sezione | Data Retroattività | Implicazione
-   
-3. LIMITE AGGREGATO ANNUO
-   - Spiegazione "come si consuma" (2-3 righe)
-   - Due card info-grid: Aggregato Annuo | Rapporto Aggregato/Massimale
+4. FORMATO VALUTE COERENTE
+   ───────────────────────
+   Importi: "€ XX.XXX,XX" (punto migliaia, virgola decimali)
+   Es: "€ 1.500.000,00" non "€1500000" o "EUR 1,500,000"
 
-4. FRANCHIGIA AGGREGATA (se presente)
-   - SE presente: spiegazione meccanismo
-   - SE assente: "Non prevista franchigia aggregata"
+5. HTML VALIDO
+   ───────────
+   - Chiudere tutti i tag
+   - Rispettare indentazione
+   - Usare classi CSS del template (col-curr, col-center, badge)
+
+6. DATI OGGETTIVI
+   ──────────────
+   - Estrarre solo da documenti forniti
+   - Zero interpretazioni
+   - Zero aggiunte creative
+   - Se dato manca: indicare "-" o "Non specificato"
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 7: PROCEDURA SINISTRI
+STRATEGIA ESTRAZIONE DATI
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. ALERT TEMPISTICHE (alert-box alert-high)
-   "Denuncia entro [X] giorni dal momento in cui hai avuto notizia..."
+STEP 1: IDENTIFICARE TIPO POLIZZA
+──────────────────────────────────
 
-2. TIMELINE 6 STEP (procedure-timeline)
-   
-   Step 1: Raccogli informazioni
-   Step 2 (warning): NON ammettere responsabilità
-   Step 3: Contatta broker
-   Step 4: Compila denuncia
-   Step 5: Collabora con perito
-   Step 6 (danger): Gestione atti legali (urgente)
+Leggere polizza e determinare:
 
-3. CONTATTI UTILI (info-grid)
-   - Broker (nome, email, telefono)
-   - Compagnia ufficio sinistri
+A. Numero società assicurate
+   - Se 1: Polizza STANDARD
+   - Se 2+: Polizza MASTER
 
-4. DOCUMENTI DA PREPARARE (clause-grid, 2 card)
-   
-   Card 1 "Per Tutti i Sinistri":
-   - Modulo denuncia
-   - Documentazione fotografica
-   - Richiesta danni
-   - Preventivi/fatture
-   
-   Card 2 "In Più per RCO":
-   - Denuncia INAIL
-   - Certificato medico
-   - DVR (se richiesto)
-   - Verbale ispettivo (se presente)
+B. Presenza clausole Master
+   - Cercare: "BCI", "Business Continuity Interest"
+   - Cercare: "DIC", "DIL", "Difference in Conditions"
+   - Cercare: "Follow Form", "Admitted/Non-Admitted"
 
-═══════════════════════════════════════════════════════════════════════════════
-CHECKLIST FINALE DI VALIDAZIONE
-═══════════════════════════════════════════════════════════════════════════════
+C. Forma copertura RCP
+   - Claims Made: data retroattività presente
+   - Loss Occurrence: no retroattività
 
-Prima di consegnare il report, verifica:
+STEP 2: ESTRARRE DATI BASE
+───────────────────────────
 
-□ TAB 1 - SINTESI
-  □ Info-grid dati generali completo
-  □ Premio Annuo = PREMIO LORDO (non imponibile)
-  □ 4 card massimali (sottolimite persona solo se presente per RCO)
-  □ Tabella riepilogo SENZA franchigie/scoperti
-  □ Attività assicurata: ogni società elencata separatamente con propria attività
-  □ 3 alert box (rosso, giallo, verde)
+Cercare in polizza:
 
-□ TAB 2 - GARANZIE
-  □ Box "cosa copre" per ogni sezione
-  □ Tabelle garanzie COMPLETE (TUTTE le garanzie presenti in polizza)
-  □ Controllo quantità minima: RCT (8-15), RCO (4-8), RCP (5-10)
-  □ Esclusioni principali in alert rosso
+- Frontespizio: contraente, assicurato, numero, date, premio
+- Oggetto assicurazione: attività svolta, descrizione rischio
+- Massimali: tabella limiti di indennizzo
+- Territorio: ambito geografico per sezione
+- Franchigie: tabella o articolo specifico
 
-□ TAB 3 - CALCOLO PREMIO
-  □ Tabella ESPLICITA con 8 colonne
-  □ UNA riga per OGNI società (mai aggregare tipo "ALTRE")
-  □ Fatturati divisi USA/Canada e ROW
-  □ Tassi distinti per USA/Canada e ROW
-  □ Colonne Premio USA/CAN e Premio ROW con calcoli visibili
-  □ Calcolo: Premio = (Fatturato × Tasso‰) / 1000
-  □ Premio Totale Società = Premio USA/CAN + Premio ROW
-  □ Riga finale TOTALE POLIZZA (sfondo blu #e6f0ff, bold)
-  □ Formula calcolo spiegata in nota metodologica
-  □ Verifica coerenza con premio totale polizza (alert se discrepanza)
+STEP 3: ESTRARRE GARANZIE
+──────────────────────────
 
-□ TAB 4 - SINISTRI
-  □ SE dati disponibili:
-     □ Grafico con ANNO CORRETTO per premi (anno competenza polizza)
-     □ Grafico con ANNO CORRETTO per sinistri (data denuncia)
-     □ Nessun premio duplicato su più anni
-     □ Anno corrente sempre incluso
-     □ Loss Experience coerente con grafico
-     □ years.length === premiums.length === claims.length
-     □ KPI calcolati correttamente (loss ratio, frequenza, ecc.)
-     □ Tabella dettaglio con TUTTI i sinistri estratti
-  □ SE dati NON disponibili:
-     □ Messaggio chiaro: "Nessun dato storico disponibile"
-     □ NO grafici inventati
-     □ NO tabelle con esempi
-     □ NO KPI calcolati
+Sezione "Condizioni Particolari" o "Estensioni Garanzie":
 
-□ TAB 5 - PROCEDURA SINISTRI (LIVELLO PhD)
-  □ Quadro normativo completo (artt. 1913-1932 c.c.)
-  □ Obbligo denuncia con art. 1913 c.c.
-  □ Obbligo salvataggio con art. 1914 c.c.
-  □ Divieto ammettere responsabilità con art. 1917 c.c.
-  □ Gestione lite e spese resistenza (art. 1917, c.2-3 c.c.)
-  □ Prescrizione biennale (art. 2952 c.c.)
-  □ Sezione Claims Made con criticità temporali
-  □ Timeline 12 step operativi dettagliati
-  □ Casistiche critiche (sinistri seriali, franchigie aggregate, concorso colpa)
-  □ Contatti emergenza (broker e compagnia)
-  □ Riferimenti normativi principali
+Per ogni sezione (RCT, RCO, RCP):
+   - Leggere TUTTE le condizioni
+   - Per ogni condizione estrarre:
+     * Codice (se presente)
+     * Nome/descrizione
+     * Limite/massimale
+     * Franchigia
+     * Scoperto
 
-□ TAB 6 - APPROFONDIMENTI
-  □ Testi CONCISI (max 4-5 righe per sezione)
-  □ Claims Made/Loss Occurrence spiegati
+NON fermarsi alle prime 3-4, leggere fino alla fine della sezione
+
+STEP 4: ESTRARRE PREMI E SINISTRI
+──────────────────────────────────
+
+Da borderò o appendice:
+   - Storia premi ultimi 5 anni
+   - Storia sinistri ultimi 5 anni
+   - Dettaglio ogni sinistro (data, causa, importi)
+
+Se documenti non forniti: indicare "Dati non disponibili"
 
 ═══════════════════════════════════════════════════════════════════════════════
-NOTE TECNICHE HTML
+OUTPUT FINALE
 ═══════════════════════════════════════════════════════════════════════════════
 
-- Usare ESATTAMENTE le classi CSS del template
-- Tag sezione: tag-rct (blu), tag-rco (verde), tag-rcp (ambra)
-- Tag forma copertura: tag-claims-made (rosa), tag-loss-occurrence (indaco)
-- Numeri: font-family 'JetBrains Mono', classe col-curr per allineamento destra
-- Alert: alert-high (rosso), alert-medium (giallo), alert-low (verde), alert-info (blu)
-- Card esempio: example-header.rct, .rco, .rcp per gradient colorati
-- Esiti: .covered (verde), .partial (ambra), .not-covered (rosso)
+Generare file HTML completo:
 
+1. Prendere template_rc_cliente_finale.html
+2. Sostituire TUTTI i placeholder [XXX] con dati estratti
+3. Per sezioni con numero variabile elementi (società, garanzie):
+   - Generare HTML dinamico ripetendo struttura <tr>...</tr>
+   - Inserire nel punto corretto del template
+4. Per sezioni da omettere (es. retroattività se LO, clausole Master se assenti):
+   - Rimuovere completamente blocco HTML
+5. Verificare:
+   - Tutti placeholder sostituiti (cercare "[" residui)
+   - HTML valido (tag chiusi)
+   - Dati coerenti (somme corrette)
+
+DELIVERABLE:
+File HTML completo, funzionante, pronto per apertura in browser.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
 ═══════════════════════════════════════════════════════════════════════════════
