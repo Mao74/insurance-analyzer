@@ -233,7 +233,9 @@ async def forgot_password(
     payload: ForgotPasswordRequest,
     db: Session = Depends(get_db)
 ):
-    """Request password reset - generates token and would send email"""
+    """Request password reset - generates token and sends email"""
+    from ..email_service import send_password_reset_email
+    
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     
     # Always return success to prevent email enumeration attacks
@@ -258,17 +260,21 @@ async def forgot_password(
     db.add(reset_token)
     db.commit()
     
-    # TODO: Send email with reset link
-    # For now, log the token (in production, send email)
-    reset_link = f"https://app.insurance-lab.ai/reset-password?token={token}"
-    print(f"PASSWORD RESET REQUEST for {user.email}")
-    print(f"Reset Link: {reset_link}")
-    print(f"Token: {token}")
+    # Send email via Resend
+    email_sent = send_password_reset_email(
+        to_email=user.email,
+        reset_token=token,
+        user_name=user.username
+    )
     
-    # In development, return the token for testing
-    # In production, this should ONLY return a generic success message
+    if email_sent:
+        print(f"[AUTH] Password reset email sent to {user.email}")
+    else:
+        # Email not sent (Resend not configured), log token for debugging
+        print(f"[AUTH] PASSWORD RESET for {user.email} - Token: {token}")
+    
     return MessageResponse(
-        message=f"Se l'email esiste nel sistema, riceverai le istruzioni per il reset. [DEV: token={token}]"
+        message="Se l'email esiste nel sistema, riceverai le istruzioni per il reset."
     )
 
 @router.post("/reset-password", response_model=MessageResponse)

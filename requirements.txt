@@ -13,3 +13,5 @@ python-dotenv==1.0.0
 itsdangerous==2.1.2
 python-magic-bin==0.4.14
 pydantic-settings
+psycopg2-binary==2.9.9
+resend==2.0.0
