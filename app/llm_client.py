@@ -23,7 +23,7 @@ class LLMClient:
         prompt_template: str, 
         html_template: str,
         reverse_mapping: dict = None
-    ) -> tuple[str, str]:
+    ) -> tuple[str, str, int]:
         """
         Costruisce il prompt finale e chiama l'API.
         """
@@ -125,7 +125,7 @@ ERRORI DA EVITARE:
         else:
             report_display = report_masked
         
-        return report_masked, report_display
+        return report_masked, report_display, input_tokens
     
     def _strip_markdown_wrappers(self, text: str) -> str:
         """Remove markdown code block wrappers and any preamble text from LLM response."""

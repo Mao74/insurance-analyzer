@@ -209,7 +209,8 @@ async def start_analysis(
         payload.skip_masking,
         payload.analysis_level,
         payload.policy_type,
-        payload.llm_model
+        payload.llm_model,
+        user_data["id"]  # Pass user ID for token tracking
     )
     
     return StartAnalysisResponse(
@@ -492,7 +493,8 @@ def full_analysis_pipeline(
     is_skipped: bool,
     analysis_level: str,
     policy_type: str,
-    llm_model: str
+    llm_model: str,
+    user_id: int
 ):
     from ..database import SessionLocal
     db = SessionLocal()
@@ -573,7 +575,7 @@ def full_analysis_pipeline(
             html_template = f.read()
         
         client = llm_client.LLMClient(model_name=llm_model)
-        report_masked, report_display = client.analyze(
+        report_masked, report_display, tokens_used = client.analyze(
             document_text=masked_text,
             prompt_template=prompt_template,
             html_template=html_template,
@@ -585,9 +587,17 @@ def full_analysis_pipeline(
         analysis.report_html_display = report_display
         analysis.status = models.AnalysisStatus.COMPLETED
         analysis.completed_at = datetime.utcnow()
+        analysis.total_tokens = tokens_used  # Update analysis tokens
+        
+        # 6. Update user's total tokens
+        user = db.query(models.User).filter(models.User.id == user_id).first()
+        if user:
+            user.total_tokens_used = (user.total_tokens_used or 0) + tokens_used
+            print(f"DEBUG: Updated user {user_id} tokens: +{tokens_used}, total: {user.total_tokens_used}")
+        
         db.commit()
         
-        print(f"DEBUG: Analysis {analysis_id} completed. Report size: {len(report_display or '')} chars.")
+        print(f"DEBUG: Analysis {analysis_id} completed. Report size: {len(report_display or '')} chars. Tokens: {tokens_used}")
         
     except Exception as e:
         print(f"Analysis Pipeline Error: {e}")
