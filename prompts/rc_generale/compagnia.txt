@@ -1,803 +1,851 @@
 ═══════════════════════════════════════════════════════════════════════════════
-PROMPT: REPORT RC (RCT/RCO/RCP) - VERSIONE COMPAGNIA
+PROMPT: RICHIESTA QUOTAZIONE RC COMPAGNIA - VERSIONE FINALE
 ═══════════════════════════════════════════════════════════════════════════════
 
-Sei il massimo esperto mondiale in analisi contrattuale assicurativa per polizze RESPONSABILITÀ CIVILE (RC Terzi, RC Operai, RC Prodotti). Devi generare un report tecnico completo per uso interno (broker, underwriter, risk manager), partendo da:
-- Polizza RC (RCT/RCO/RCP) in formato .txt
-- Eventuali appendici
-- Eventuale statistica sinistri
-- Template HTML allegato (da usare ESATTAMENTE per struttura e stile)
+OBIETTIVO: Generare richiesta quotazione per compagnie assicuratrici basata su 
+polizza RC attuale + requisiti cliente.
 
-Livello di output richiesto: PhD (analisi approfondita, documentata, con tracciabilità completa delle modifiche e riferimenti agli articoli di polizza).
-
-═══════════════════════════════════════════════════════════════════════════════
-PRINCIPI GUIDA - VERSIONE COMPAGNIA
-═══════════════════════════════════════════════════════════════════════════════
-
-1. COMPLETEZZA: Ogni campo, limite, franchigia, esclusione deve essere estratto
-2. TRACCIABILITÀ: Riferimenti ad articoli di polizza per ogni informazione
-3. AUDIT TRAIL: Documentare tutte le modifiche da appendici
-4. PRECISIONE: Valori esatti, nessuna approssimazione
-5. FORMATO TABULARE: Dati strutturati in tabelle per facile consultazione
-6. SEGNALAZIONI: Evidenziare conflitti, ambiguità, gap di copertura
+DESTINATARIO: Underwriter compagnia assicuratrice
+FORMATO: Scheda tecnica richiesta preventivo (NO TAB, documento lineare)
+TEMPLATE: template_rc_compagnia_finale.html (944 righe)
 
 ═══════════════════════════════════════════════════════════════════════════════
-STRUTTURA TAB (10 TAB)
+PRINCIPI GUIDA
 ═══════════════════════════════════════════════════════════════════════════════
 
-TAB 1: ANAGRAFICA
-TAB 2: ENTITÀ ASSICURATE
-TAB 3: MASSIMALI
-TAB 4: GARANZIE RCT
-TAB 5: GARANZIE RCO
+1. DATI TECNICI PURI
+   - Focus su informazioni per underwriting
+   - Zero narrativa, solo fatti e numeri
+   - Formato professionale sobrio
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCT (VERSIONE TECNICA)                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
-║ 2. Identificare ogni garanzia, anche secondaria                            ║
-║ 3. Estrarre per OGNI garanzia:                                              ║
-║    • Limite per sinistro                                                     ║
-║    • Limite aggregato annuo (se diverso)                                    ║
-║    • Franchigia                                                              ║
-║    • Scoperto                                                                ║
-║    • Articolo di riferimento in polizza                                     ║
-║    • Eventuale decorrenza/scadenza specifica                                ║
-║    • Condizioni particolari                                                  ║
-║                                                                              ║
-║ CONTROLLO QUALITÀ MINIMO:                                                    ║
-║ • TAB 4 (RCT): minimo 10-20 garanzie (polizze complesse)                   ║
-║                                                                              ║
-║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
-║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+2. COMPLETEZZA ASSOLUTA
+   - TUTTI i sinistri (aperti e chiusi)
+   - TUTTE le garanzie (attuali e richieste)
+   - TUTTE le società del gruppo
 
-TAB 6: GARANZIE RCP
-TAB 7: ESCLUSIONI
+3. COMPARAZIONE CHIARA
+   - Sempre evidenziare Attuale vs Richiesto
+   - Classificare: Miglioramento / Conferma / Riduzione
+   - Facilitare decisione underwriter
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCP (VERSIONE TECNICA)                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
-║ 2. Identificare ogni garanzia, anche secondaria                            ║
-║ 3. Estrarre per OGNI garanzia:                                              ║
-║    • Limite per sinistro                                                     ║
-║    • Limite aggregato annuo (se diverso)                                    ║
-║    • Franchigia                                                              ║
-║    • Scoperto                                                                ║
-║    • Articolo di riferimento in polizza                                     ║
-║    • Eventuale decorrenza/scadenza specifica                                ║
-║    • Condizioni particolari                                                  ║
-║                                                                              ║
-║ CONTROLLO QUALITÀ MINIMO:                                                    ║
-║ • TAB 6 (RCP): minimo 6-12 garanzie                                        ║
-║                                                                              ║
-║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
-║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-TAB 8: CALCOLO PREMIO
-TAB 9: SINISTRI
-TAB 10: APPENDICI
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLE CRITICHE PER GESTIONE DATI SINISTRI                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ PRINCIPIO FONDAMENTALE:                                                     ║
-║ Utilizzare ESCLUSIVAMENTE dati certi estratti dalla documentazione fornita. ║
-║ È VIETATO generare esempi, interpolazioni, o dati sintetici.                ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Identificare fonte dati (Excel, PDF, tabelle in polizza)                 ║
-║ 2. Estrarre TUTTI i campi disponibili per ogni sinistro:                    ║
-║    • Data accadimento/denuncia                                              ║
-║    • Importo riservato/pagato                                               ║
-║    • Stato (aperto/chiuso/riservato)                                        ║
-║    • Sezione (RCT/RCO/RCP)                                                  ║
-║    • Descrizione/causale                                                    ║
-║    • Numero sinistro                                                         ║
-║    • Qualsiasi altro dato presente                                          ║
-║                                                                              ║
-║ 3. GESTIONE ASSENZA DATI:                                                   ║
-║    SE non presenti dati certi:                                              ║
-║    • Mostrare "Nessun dato storico sinistri disponibile"                   ║
-║    • NON creare grafici                                                      ║
-║    • NON generare tabelle con esempi                                        ║
-║    • NON inventare KPI                                                       ║
-║    • VIETATO generare esempi, interpolazioni, dati sintetici               ║
-║                                                                              ║
-║ 4. CALCOLI STATISTICI: SOLO se dati certi disponibili                      ║
-║                                                                              ║
-║ 5. COERENZA TEMPORALE:                                                      ║
-║    • Anno sinistro = data denuncia (non accadimento)                        ║
-║    • Anno premio = anno vigenza polizza                                      ║
-║    • Verificare coerenza con vigenza                                        ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
+4. COERENZA MATEMATICA
+   - Fatturati devono sommare
+   - Loss ratio verificato
+   - Budget coerente con storia premi
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 1: ANAGRAFICA
+STRUTTURA DOCUMENTO (8 SEZIONI)
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Dati Contrattuali":
-- Compagnia (nome completo e sede)
-- Numero Polizza (con eventuali suffissi)
-- Contraente / P.IVA / C.F.
-- Sede Legale
-- Broker / Codice IVASS
-
-SEZIONE "Validità e Durata":
-- Data Decorrenza (gg/mm/aaaa) + Ora
-- Data Scadenza (gg/mm/aaaa) + Ora
-- Durata Contratto
-- Tipo Rinnovo (tacito/espresso)
-- Termini Disdetta
-
-SEZIONE "Premio":
-- Premio Imponibile: € [VALORE]
-- Imposte e Accessori (dettaglio completo):
-  * SSN (Servizio Sanitario Nazionale): € [VALORE] ([ALIQUOTA%])
-  * Contributo SSN: € [VALORE] ([ALIQUOTA%])
-  * Imposta sulle Assicurazioni: € [VALORE] ([ALIQUOTA%])
-  * [Altri accessori se presenti]: € [VALORE]
-- Premio Annuo Lordo: € [VALORE]
-- Frazionamento: [annuale/semestrale/trimestrale/mensile]
-- Tipo Regolazione: [Deposito+Conguaglio / Fisso]
-- Base Calcolo Premio: [Fatturato / Retribuzioni / Fisso]
-
-NOTA: Indicare TUTTE le voci che compongono la differenza tra imponibile e lordo.
-
-SEZIONE "Coassicurazione":
-- Polizza Coassicurata: SI/NO
-- SE SI: Tabella coassicuratori con:
-  * Nome compagnia
-  * Ruolo (Delegataria / Coassicuratore)
-  * Quota %
-  * Quota €
-  * Delega (tipo)
-
-SEZIONE "Forma di Copertura":
-Tabella con colonne: Sezione | Trigger | Retroattività | Postuma | Note
-Righe: RCT, RCO, RCP
-
-SEZIONE "Obblighi Contrattuali":
-- Termine Denuncia Sinistri (giorni)
-- Variazioni Rischio
-- Regolazione Premio (termini)
+SEZIONE 1: DATI CONTRAENTE
+SEZIONE 2: SITUAZIONE ATTUALE
+SEZIONE 3: STORICO SINISTRI
+SEZIONE 4: CONDIZIONI RICHIESTE
+SEZIONE 5: GARANZIE (Comparativa)
+SEZIONE 6: CONFRONTO SINTETICO
+SEZIONE 7: INFORMAZIONI TECNICHE
+SEZIONE 8: ALLEGATI
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 2: ENTITÀ ASSICURATE
+HEADER
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Elenco Entità Assicurate":
-Tabella con colonne: Denominazione | P.IVA | Sede | Attività | Tipo Copertura
+[RIFERIMENTO_BROKER]
+Riferimento interno broker (es. "RQ-2024-RC-0145")
 
-SEZIONE "Dettaglio Attività per Entità":
-Per OGNI società, blocco separato con:
-- Società (denominazione)
-- Attività Principale
-- Attività Secondarie
-- Prodotti fabbricati/commercializzati
-- Fatturato Dichiarato
-- N° Dipendenti
-- Codice ATECO
-- Ubicazioni/Stabilimenti
-
-SEZIONE "Struttura di Gruppo" (se applicabile):
-- Capogruppo
-- Polizza Master (SI/NO + riferimenti)
-- DIC/DIL (Difference in Conditions/Limits)
+[DATA_RICHIESTA]
+Data compilazione richiesta formato "gg/mm/aaaa"
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 3: MASSIMALI
+SEZIONE 1: DATI CONTRAENTE
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Massimali Principali per Sezione":
-Tabella con colonne: Sezione | Massimale Sinistro | Sottolimite Persona | Aggregato Annuo | Rapporto Agg/Max | Validità Territoriale
-Righe: RCT, RCO, RCP + riga TOTALE
+SUBSECTION: ANAGRAFICA
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Limite Aggregato Cumulativo":
-- Aggregato Cumulativo RCT+RCO+RCP (se unico)
-- Ricostituzione (Automatica / A pagamento / Non prevista)
+[RAGIONE_SOCIALE]
+Denominazione completa società
 
-SEZIONE "Validità Territoriale Dettagliata":
-Tabella con colonne: Sezione | Ambito Attività | Ambito Danni | Esclusioni/Limitazioni
-Righe: RCT, RCO, RCP
+[SEDE_LEGALE]
+Indirizzo completo (via, città, provincia)
+Formato: "Via Example 123, 20100 Milano (MI)"
 
-SEZIONE "Franchigie e Scoperti Base":
-Tabella con colonne: Sezione | Franchigia Cose | Franchigia Persone | Scoperto % | Minimo Scoperto | Note
-Righe: RCT, RCO, RCP
+[PIVA]
+Partita IVA / Codice Fiscale
 
-SEZIONE "Franchigie RCP per Area Geografica":
-Tabella con colonne: Area Geografica | Franchigia Base | Franchigia Recall | Scoperto | Note
-Righe: Italia, Europa, ROW, USA/Canada Occulta, USA/Canada Diretta
+[ATECO]
+Codice ATECO completo (es. "25.92.00 - Fabbricazione di imballaggi leggeri")
 
+SUBSECTION: DESCRIZIONE ATTIVITÀ
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Esposizione Teorica Massima" (calcolo automatico):
+[DESCRIZIONE_ATTIVITA]
+Descrizione dettagliata attività svolta (3-5 righe)
 
-FORMULA:
-Esposizione Max Annua = Massimale per Sinistro + (Aggregato Annuo - Massimale)
+COSA INCLUDERE:
+- Tipo produzione/servizio
+- Caratteristiche prodotti
+- Processi produttivi rilevanti
+- Mercati di riferimento
+- Particolarità tecniche
 
 ESEMPIO:
-- Massimale per sinistro: € 5.000.000
-- Aggregato annuo: € 10.000.000
-- Esposizione teorica massima: € 5M + (10M - 5M) = € 10.000.000
+"Produzione di macchinari per stampa flessografica destinati all'industria 
+packaging. Macchine customizzate con tecnologia digitale, installazione presso 
+cliente con formazione operatori. Export 70% (USA, EU, Asia). Manutenzione 
+post-vendita e assistenza tecnica."
 
-NOTA TECNICA:
-Se Aggregato = 2× Massimale, l'assicurato può avere:
-• Scenario A: 2 sinistri da 5M → totale 10M (aggregato esaurito)
-• Scenario B: 1 sinistro da 5M + 10 sinistri da 0,5M → totale 10M
+SUBSECTION: FATTURATO
+───────────────────────────────────────────────────────────────────────────────
 
-⚠️ ATTENZIONE UNDERWRITING:
-Con sinistralità elevata, aggregato può esaurirsi prima di fine annualità
-lasciando scoperti nuovi sinistri. Valutare:
-- Rapporto Aggregato/Massimale (minimo consigliato: 2x)
-- Storico sinistralità (frequenza e costo medio)
-- Meccanismo ricostituzione aggregato (automatica/a pagamento)
+Compilare tabella con 4 aree geografiche + totale
 
-═══════════════════════════════════════════════════════════════════════════════
-TAB 4: GARANZIE RCT
-═══════════════════════════════════════════════════════════════════════════════
+[FATTURATO_ITALIA]       Fatturato Italia ultimo esercizio (formato "€ XX.XXX.XXX")
+[FATTURATO_UE]           Fatturato Unione Europea
+[FATTURATO_USA]          Fatturato USA + Canada
+[FATTURATO_ROW]          Fatturato Rest of World (escluso IT, UE, USA/Can)
+[FATTURATO_TOTALE]       Somma delle 4 aree
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCT (VERSIONE TECNICA)                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
-║ 2. Identificare ogni garanzia, anche secondaria                            ║
-║ 3. Estrarre per OGNI garanzia:                                              ║
-║    • Limite per sinistro                                                     ║
-║    • Limite aggregato annuo (se diverso)                                    ║
-║    • Franchigia                                                              ║
-║    • Scoperto                                                                ║
-║    • Articolo di riferimento in polizza                                     ║
-║    • Eventuale decorrenza/scadenza specifica                                ║
-║    • Condizioni particolari                                                  ║
-║                                                                              ║
-║ CONTROLLO QUALITÀ MINIMO:                                                    ║
-║ • TAB 4 (RCT): minimo 10-20 garanzie (polizze complesse)                   ║
-║                                                                              ║
-║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
-║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+[PREV_FATTURATO_ITALIA]  Previsione prossimo esercizio Italia
+[PREV_FATTURATO_UE]      Previsione UE
+[PREV_FATTURATO_USA]     Previsione USA/Canada
+[PREV_FATTURATO_ROW]     Previsione ROW
+[PREV_FATTURATO_TOTALE]  Previsione totale
 
+IMPORTANTE:
+- Somme devono essere coerenti
+- Se previsione non disponibile: copiare ultimo esercizio
+- Fondamentale per underwriter (pricing basato su territori)
 
-SEZIONE "Garanzia Base RCT":
-- Oggetto della Garanzia
-- Massimale per Sinistro
-- Riferimento Articolo
+SUBSECTION: DIPENDENTI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Estensioni di Garanzia RCT":
-Tabella con colonne: Garanzia | Limite Sinistro | Limite Anno | Franchigia | Scoperto | Note/Condizioni
+[NUMERO_DIPENDENTI]
+Numero totale dipendenti (formato "XXX dipendenti")
 
-GARANZIE DA ELENCARE (verificare presenza in polizza):
-- Danni ai veicoli in sosta (Parcheggio)
-- Danni a mezzi sotto carico e scarico
-- Danni da interruzione o sospensione attività
-- Danni alle cose in consegna e custodia
-- Danni a cose nell'ambito dei lavori
-- Danni alle cose sulle quali si eseguono lavori
-- Danni da incendio o esplosione
-- Danni da furto agevolato (impalcature/ponteggi)
-- Danni a condutture e impianti sotterranei
-- Danni a cose traslate, sollevate, rimorchiate
-- Danni da installazione/riparazione/manutenzione (+ postuma)
-- Danni da inquinamento accidentale
-- Danni da errato trattamento dati (GDPR)
-- RC Committenza (art. 26 D.Lgs 81/08)
-- Responsabilità personale dipendenti
-- [Altre garanzie presenti in polizza]
+[MONTE_SALARI]
+Monte salari annuo totale (formato "€ X.XXX.XXX")
+Fondamentale per pricing RCO
 
-SEZIONE "Condizioni Particolari RCT":
-Tabella con colonne: Codice | Descrizione | Limite | Franchigia | Note
-(es. RCT.01, RCT.02, etc.)
+SUBSECTION: SOCIETÀ DEL GRUPPO (se Master)
+───────────────────────────────────────────────────────────────────────────────
+
+LOGICA ADATTIVA:
+
+IF numero società = 1:
+    OMETTERE completamente questa subsection
+
+IF numero società >= 2:
+    GENERARE tabella con TUTTE le società
+    
+FORMATO TABELLA:
+
+<tr>
+    <td>[SOCIETA_1]</td>
+    <td>[SEDE_SOCIETA_1]</td>
+    <td>[ATTIVITA_SOCIETA_1]</td>
+    <td class="col-curr">[FATTURATO_SOCIETA_1]</td>
+</tr>
+<!-- Ripetere per ogni società -->
+<tr style="font-weight:700;">
+    <td colspan="3">TOTALE GRUPPO</td>
+    <td class="col-curr">[FATTURATO_GRUPPO_TOTALE]</td>
+</tr>
+
+PLACEHOLDER:
+[SOCIETA_N]            Ragione sociale società N
+[SEDE_SOCIETA_N]       Città e provincia (es. "Lecco (LC)")
+[ATTIVITA_SOCIETA_N]   Attività specifica (es. "Assemblaggio componenti")
+[FATTURATO_SOCIETA_N]  Fatturato annuo società (formato "€ XX.XXX.XXX")
+
+[FATTURATO_GRUPPO_TOTALE]  Somma fatturati tutte società
+
+REGOLA: Somma fatturati società = Fatturato totale in tabella precedente
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 5: GARANZIE RCO
+SEZIONE 2: SITUAZIONE ATTUALE
 ═══════════════════════════════════════════════════════════════════════════════
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCO (VERSIONE TECNICA)                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
-║ 2. Identificare ogni garanzia, anche secondaria                            ║
-║ 3. Estrarre per OGNI garanzia:                                              ║
-║    • Limite per sinistro                                                     ║
-║    • Limite aggregato annuo (se diverso)                                    ║
-║    • Franchigia                                                              ║
-║    • Scoperto                                                                ║
-║    • Articolo di riferimento in polizza                                     ║
-║    • Eventuale decorrenza/scadenza specifica                                ║
-║    • Condizioni particolari                                                  ║
-║                                                                              ║
-║ CONTROLLO QUALITÀ MINIMO:                                                    ║
-║ • TAB 5 (RCO): minimo 5-10 garanzie                                        ║
-║                                                                              ║
-║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
-║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+SUBSECTION: POLIZZA IN ESSERE
+───────────────────────────────────────────────────────────────────────────────
 
+[COMPAGNIA_ATTUALE]
+Nome compagnia attuale (es. "AXA XL Insurance Company SE")
 
-SEZIONE "Garanzia Base RCO":
-- Oggetto della Garanzia
-- Massimale per Sinistro
-- Sottolimite per Persona
-- Riferimento Articolo
+[NUMERO_POLIZZA_ATTUALE]
+Numero polizza attuale
 
-SEZIONE "Prestatori di Lavoro Coperti":
-Tabella con colonne: Categoria | Coperta (SI/NO) | Note/Limitazioni
+[SCADENZA_ATTUALE]
+Data scadenza formato "gg/mm/aaaa"
 
-Categorie da verificare:
-- Dipendenti a tempo indeterminato
-- Dipendenti a tempo determinato
-- Apprendisti
-- Stagisti e tirocinanti
-- Lavoratori somministrati (ex interinali)
-- Lavoratori distaccati (art. 30 D.Lgs 276/03)
-- Collaboratori a progetto / parasubordinati
-- Amministratori (escluso L.R.)
-- Soggetti D.Lgs. 81/08 (RSPP, RLS, etc.)
-- Volontari
+[PREMIO_ATTUALE]
+Premio lordo annuo attuale (formato "€ XXX.XXX,XX")
 
-SEZIONE "Malattie Professionali":
-- Copertura: SI/NO
-- Tipologia: Solo tabellate / Anche extratabellate
-- Data Retroattività MP
-- Franchigia Specifica MP
-- Esclusioni Specifiche (Amianto, Silicosi, etc.)
+[ANNI_CONTINUITA]
+Numero anni con stessa compagnia (formato "X anni")
+Importante per underwriter (storia relazione)
 
-SEZIONE "Estensioni di Garanzia RCO":
-Tabella con colonne: Garanzia | Limite | Franchigia | Scoperto | Note
-- Danno biologico / differenziale
-- Danno esistenziale
-- Danno morale
-- Eredi e aventi diritto
-- [Altre estensioni]
+[FRAZIONAMENTO_ATTUALE]
+Modalità pagamento attuale (Annuale / Semestrale / ecc.)
 
-SEZIONE "Validità Territoriale RCO":
-- Territorio Base (Italia, SM, CV)
-- Trasferte Estero (SI/NO + max giorni)
-- Paesi Esteri Specifici
+SUBSECTION: MASSIMALI ATTUALI
+───────────────────────────────────────────────────────────────────────────────
 
-═══════════════════════════════════════════════════════════════════════════════
-TAB 6: GARANZIE RCP
-═══════════════════════════════════════════════════════════════════════════════
+Tabella 3 righe (RCT, RCO, RCP) × 3 colonne
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: COMPLETEZZA GARANZIE RCP (VERSIONE TECNICA)                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Report tecnico deve contenere TUTTE le garanzie senza eccezioni.            ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Leggere INTERO testo polizza + tutte le appendici                       ║
-║ 2. Identificare ogni garanzia, anche secondaria                            ║
-║ 3. Estrarre per OGNI garanzia:                                              ║
-║    • Limite per sinistro                                                     ║
-║    • Limite aggregato annuo (se diverso)                                    ║
-║    • Franchigia                                                              ║
-║    • Scoperto                                                                ║
-║    • Articolo di riferimento in polizza                                     ║
-║    • Eventuale decorrenza/scadenza specifica                                ║
-║    • Condizioni particolari                                                  ║
-║                                                                              ║
-║ CONTROLLO QUALITÀ MINIMO:                                                    ║
-║ • TAB 6 (RCP): minimo 6-12 garanzie                                        ║
-║                                                                              ║
-║ Se numero inferiore, RICONTROLLARE polizza per garanzie mancanti.          ║
-║ Cercare in: estensioni, clausole, appendici, condizioni particolari.       ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+[MASS_ATT_RCT_SINISTRO]   Massimale RCT per sinistro (formato "€ XX.XXX.XXX")
+[MASS_ATT_RCT_PERSONA]    Sottolimite per persona RCT
+[MASS_ATT_RCT_AGGREGATO]  Aggregato annuo RCT
 
+Ripetere per RCO e RCP.
 
-SEZIONE "Garanzia Base RCP":
-- Oggetto della Garanzia
-- Massimale per Sinistro
-- Trigger (Claims Made / Loss Occurrence)
-- Riferimento Articolo
+SUBSECTION: FRANCHIGIE E SCOPERTI ATTUALI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Prodotti Coperti":
-- Prodotti Fabbricati
-- Prodotti Commercializzati
-- Prodotti di Terzi Incorporati (SI/NO + condizioni)
-- Prodotti Esclusi
+[FRANCHIGIA_ATT_RCT]
+Descrizione franchigia/scoperto RCT attuale
+Formato: "€ 500 per danni a cose, nessuna per persone"
 
-SEZIONE "Estensioni di Garanzia RCP":
-Tabella con colonne: Garanzia | Limite Sinistro | Limite Anno | Franch. ROW | Franch. USA | Note
+[FRANCHIGIA_ATT_RCO]
+Franchigia RCO
 
-Garanzie principali:
-- Prodotto difettoso incorporato (Sisterhood)
-- Ritiro prodotti (Recall)
-- Danni patrimoniali puri
-- Garanzia di fornitura (Vendor's Liability)
-- Garanzia USA/Canada - Esportazione Diretta
-- Garanzia USA/Canada - Esportazione Occulta
-- Danni da installazione/manutenzione (postuma)
-- Danni da inquinamento prodotti
-- [Altre estensioni]
+[FRANCHIGIA_ATT_RCP_ROW]
+Franchigia/scoperto RCP per Rest of World
+Formato: "10% con minimo € 5.000"
 
-SEZIONE "Dettaglio Garanzia Recall":
-- Ambito Recall (Ritiro diretto / indiretto / entrambi)
-- Quando Opera (Sinistro verificato / preventivo / ordine autorità)
-- Spese Coperte (elenco dettagliato)
-- Spese Escluse
+[FRANCHIGIA_ATT_RCP_USA]
+Franchigia/scoperto RCP per USA/Canada
+Formato: "10% con minimo € 35.000"
 
-SEZIONE "Validità Temporale RCP":
-- Trigger
-- Data Retroattività
-- Postuma Automatica (SI/NO + durata)
-- Postuma Opzionale (SI/NO + costo)
+SUBSECTION: TERRITORIO E FORMA COPERTURA ATTUALI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Condizioni Particolari RCP":
-Tabella con colonne: Codice | Descrizione | Limite | Franchigia | Note
-(es. RCP.01, RCP.02, etc.)
+Tabella 3 righe × 4 colonne
+
+Per ogni sezione (RCT, RCO, RCP):
+
+[TERRITORIO_ATT_XXX]
+Ambito geografico (es. "Mondo Intero escluso USA/Canada")
+
+[FORMA_ATT_XXX]
+Forma copertura: "Claims Made" o "Loss Occurrence"
+
+[RETRO_ATT_XXX]
+Data retroattività se Claims Made (formato "gg/mm/aaaa")
+"-" se Loss Occurrence
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 7: ESCLUSIONI
+SEZIONE 3: STORICO SINISTRI
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Esclusioni Generali (Comuni a RCT/RCO/RCP)":
-Tabella con colonne: # | Esclusione | Rif. Articolo | Deroga Presente | Note/Condizioni Deroga
+SUBSECTION: ANDAMENTO ULTIMI 5 ANNI
+───────────────────────────────────────────────────────────────────────────────
 
-Esclusioni tipiche da verificare:
-1. Danni da dolo dell'Assicurato
-2. Responsabilità contrattuale (oltre ex lege)
-3. Danni a cose di proprietà/detenute/custodite
-4. Danni da furto
-5. Danni a cose su cui si lavora
-6. Danni da interruzione attività terzi
-7. Danni da inquinamento (graduale)
-8. Danni a condutture sotterranee
-9. Rischio atomico/nucleare
-10. Amianto
-11. PFAS
-12. Terrorismo/guerra/insurrezione
-13. Danni cyber / virus informatici
-14. Veicoli soggetti ad RCA obbligatoria
-15. Aeromobili
-[Altre esclusioni da polizza]
+Tabella con 1 riga per anno (ultimi 5 anni)
 
-SEZIONE "Esclusioni Specifiche RCT":
-Tabella con colonne: # | Esclusione | Rif. Articolo | Note
+[ANNO_N]             Anno competenza (es. "2020")
+[PREMIO_N]           Premio lordo anno (formato "€ XXX.XXX")
+[SINISTRI_PAG_N]     Sinistri pagati anno (formato "€ XX.XXX")
+[SINISTRI_RIS_N]     Sinistri riservati anno (formato "€ XX.XXX")
+[LOSS_RATIO_N]       Loss ratio = (Pagati + Riservati) / Premio × 100
+                     Formato: "XX,X%"
 
-SEZIONE "Esclusioni Specifiche RCO":
-Tabella con colonne: # | Esclusione | Rif. Articolo | Note
-- Malattie non professionali
-- Malattie da amianto / silicosi
-- Infortuni in itinere
-- Danni a cose dei dipendenti
-- Dipendenti non regolarmente assunti
+REGOLA ANNI COMPETENZA: Uguale a report Cliente
+- Polizza 31/12-31/12: anno scadenza
+- Altre: anno prevalente
+- NO duplicazioni
 
-SEZIONE "Esclusioni Specifiche RCP":
-Tabella con colonne: # | Esclusione | Rif. Articolo | Note
-- Garanzia commerciale oltre obblighi di legge
-- Spese recall/richiamo (se non estensione)
-- Controvalore prodotto difettoso
-- Spese sostituzione/riparazione prodotto
-- Inefficienza prodotto senza danno
-- Danni da uso improprio noto
-- Prodotti farmaceutici/dispositivi medici (se esclusi)
+SUBSECTION: DETTAGLIO SINISTRI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Esclusione Sostanze Specifiche":
-Tabella con colonne: Categoria | Sostanze Escluse
-- Amianto
-- PFAS (elenco completo)
-- Inquinanti Organici Persistenti
-- Altre sostanze (Piombo, Silice, Ftalati, Glifosato, PCB, etc.)
+IMPORTANTE: TUTTI i sinistri ultimi 5 anni (aperti E chiusi)
 
-SEZIONE "Esclusione Cyber":
-- Definizione Sistema Informatico
-- Ambito Esclusione
-- Eccezioni all'Esclusione (se presenti)
+Generare 1 riga per OGNI sinistro:
+
+[DATA_SIN_N]    Data evento formato "gg/mm/aaaa"
+[SEZ_SIN_N]     Sezione: "RCT", "RCO", o "RCP"
+[CAUSA_SIN_N]   Descrizione sintetica causa (max 60 caratteri)
+[RIS_SIN_N]     Importo riservato (formato "€ XX.XXX")
+                "€ 0" se chiuso
+[PAG_SIN_N]     Importo pagato (formato "€ XX.XXX")
+[STATUS_SIN_N]  Status: "Aperto", "Chiuso", "In liquidazione"
+
+ORDINE: Dal più recente al più vecchio
+
+SUBSECTION: NOTE SINISTRALITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTE_SINISTRALITA]
+Commento sintetico su:
+- Sinistri significativi (se presenti)
+- Cause ricorrenti
+- Azioni correttive intraprese
+- Trend positivo/negativo
+
+Formato: 3-5 righe massimo
+
+ESEMPIO:
+"Sinistralità concentrata in RCP (recall prodotti). Azioni correttive: 
+implementato sistema controllo qualità ISO 9001 (2023), ridotto difettosità 
+da 2,1% a 0,8%. Nessun sinistro RCO ultimi 3 anni."
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 8: CALCOLO PREMIO
+SEZIONE 4: CONDIZIONI RICHIESTE
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Calcolo Premio per Società":
-Tabella con colonne: Società | Fatturato USA/CAN | Tasso ‰ | Fatturato ROW | Tasso ‰ | Premio Imponibile | Imposte | Premio Lordo
-+ Riga TOTALE CALCOLATO (sfondo #e6f0ff)
+STRATEGIA DEFAULT: RICHIESTO = ATTUALE + MODIFICHE
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLA CRITICA: NON ACCORPARE LE SOCIETÀ                                     ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ Ogni società deve avere la propria riga SEPARATA nella tabella.             ║
-║                                                                              ║
-║ ERRORE: Accorpare società italiane in "TOTAL ITALY" o per paese             ║
-║ CORRETTO: Una riga per ogni società (OMET S.p.A., OMET SRL, etc.)           ║
-║                                                                              ║
-║ Se una società ha fatturato solo USA/CAN o solo ROW, indicare N/A           ║
-║ nelle colonne non applicabili.                                               ║
-║                                                                              ║
-║ Per società estere (es. filiali CZ, CN) mostrare comunque la riga           ║
-║ con i valori specifici estratti dalla polizza.                               ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+Se non diversamente specificato dal cliente/brief:
+→ Copiare tutti valori da SEZIONE 2 (Situazione Attuale)
+→ Modificare SOLO elementi esplicitamente richiesti
 
-REGOLE DI CALCOLO:
-- Premio Imponibile = (Fatturato USA/CAN × Tasso‰ / 1000) + (Fatturato ROW × Tasso‰ / 1000)
-- Premio Lordo = Premio Imponibile × (1 + aliquota imposte)
-- Aliquota imposte RC standard: 22,25% (verificare se diversa)
-- Formato numeri: europeo (punto migliaia, virgola decimali)
+Questo riduce carico lavoro e semplifica confronto.
 
-SEZIONE "Dettaglio Calcolo":
-- Formula Premio Imponibile
-- Aliquota Imposte applicata
-- Base di Calcolo (fatturato a preventivo)
-- Minimo di Premio (se previsto)
+SUBSECTION: MASSIMALI RICHIESTI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Regolazione Premio":
-- Tipo Regolazione
-- Termine Regolazione
-- Base Regolazione (fatturato/retribuzioni effettive)
-- Conseguenze Mancata Regolazione
+DEFAULT: Copiare da massimali attuali
 
-SEZIONE "Riparto Premio per Coassicuratore" (se coassicurazione):
-Tabella con colonne: Coassicuratore | Quota % | Premio Imponibile | Imposte | Premio Lordo
+[MASS_RICH_RCT_SINISTRO]   = [MASS_ATT_RCT_SINISTRO] se non specificato diversamente
+[MASS_RICH_RCT_PERSONA]    = [MASS_ATT_RCT_PERSONA] se non specificato diversamente
+[MASS_RICH_RCT_AGGREGATO]  = [MASS_ATT_RCT_AGGREGATO] se non specificato diversamente
 
-SEZIONE "Verifica Coerenza":
-- Premio calcolato vs Premio dichiarato in polizza
-- Segnalare eventuali discrepanze
+Ripetere per RCO e RCP.
 
-═══════════════════════════════════════════════════════════════════════════════
-TAB 9: SINISTRI
-═══════════════════════════════════════════════════════════════════════════════
+MODIFICARE SOLO SE:
+- Cliente richiede esplicitamente incremento (es. "RCT da €10M a €15M")
+- Broker suggerisce aggiustamento
+- Brief contiene indicazioni specifiche
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLE CRITICHE PER GESTIONE DATI SINISTRI                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║ PRINCIPIO FONDAMENTALE:                                                     ║
-║ Utilizzare ESCLUSIVAMENTE dati certi estratti dalla documentazione fornita. ║
-║ È VIETATO generare esempi, interpolazioni, o dati sintetici.                ║
-║                                                                              ║
-║ PROCEDURA DI ESTRAZIONE:                                                     ║
-║ 1. Identificare fonte dati (Excel, PDF, tabelle in polizza)                 ║
-║ 2. Estrarre TUTTI i campi disponibili per ogni sinistro:                    ║
-║    • Data accadimento/denuncia                                              ║
-║    • Importo riservato/pagato                                               ║
-║    • Stato (aperto/chiuso/riservato)                                        ║
-║    • Sezione (RCT/RCO/RCP)                                                  ║
-║    • Descrizione/causale                                                    ║
-║    • Numero sinistro                                                         ║
-║    • Qualsiasi altro dato presente                                          ║
-║                                                                              ║
-║ 3. GESTIONE ASSENZA DATI:                                                   ║
-║    SE non presenti dati certi:                                              ║
-║    • Mostrare "Nessun dato storico sinistri disponibile"                   ║
-║    • NON creare grafici                                                      ║
-║    • NON generare tabelle con esempi                                        ║
-║    • NON inventare KPI                                                       ║
-║    • VIETATO generare esempi, interpolazioni, dati sintetici               ║
-║                                                                              ║
-║ 4. CALCOLI STATISTICI: SOLO se dati certi disponibili                      ║
-║                                                                              ║
-║ 5. COERENZA TEMPORALE:                                                      ║
-║    • Anno sinistro = data denuncia (non accadimento)                        ║
-║    • Anno premio = anno vigenza polizza                                      ║
-║    • Verificare coerenza con vigenza                                        ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+ESEMPIO:
+Brief dice: "Incrementare massimale RCT a €15M"
+→ [MASS_RICH_RCT_SINISTRO] = "€ 15.000.000"
+→ [MASS_RICH_RCT_PERSONA] = [MASS_ATT_RCT_PERSONA] (copia da attuale)
+→ [MASS_RICH_RCT_AGGREGATO] = [MASS_ATT_RCT_AGGREGATO] (copia da attuale)
 
+SUBSECTION: FRANCHIGIE E SCOPERTI ACCETTABILI
+───────────────────────────────────────────────────────────────────────────────
 
-SEZIONE "Andamento Premi vs Sinistri":
-Grafico Chart.js a barre (Premi blu, Sinistri rosso)
+DEFAULT: Copiare da franchigie attuali
 
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ REGOLE CRITICHE PER IL GRAFICO                                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║ 1. RANGE ANNI: Dal primo anno con dati fino all'anno corrente               ║
-║ 2. ASSEGNAZIONE PREMI: Anno di COMPETENZA della polizza                     ║
-║    • Polizza 31/12/2024 → 31/12/2025 = premio assegnato a 2025             ║
-║    • NON duplicare premi su più anni                                         ║
-║ 3. ASSEGNAZIONE SINISTRI: Usare DATA DI DENUNCIA                            ║
-║ 4. ANNI A ZERO: Inserire 0, non omettere                                    ║
-║ 5. COERENZA: years.length === premiums.length === claims.length             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+[FRANCHIGIA_RICH_RCT] = [FRANCHIGIA_ATT_RCT] se non specificato diversamente
+[FRANCHIGIA_RICH_RCO] = [FRANCHIGIA_ATT_RCO] se non specificato diversamente
+[FRANCHIGIA_RICH_RCP_ROW] = [FRANCHIGIA_ATT_RCP_ROW] se non specificato diversamente
+[FRANCHIGIA_RICH_RCP_USA] = [FRANCHIGIA_ATT_RCP_USA] se non specificato diversamente
 
-SEZIONE "Dettaglio Calcolo":
-Per ogni società assicurata, tabella dettagliata con colonne:
-| Società | Fatturato USA/CAN | Tasso ‰ USA/CAN | Premio USA/CAN |
-| Fatturato ROW | Tasso ‰ ROW | Premio ROW | Premio Totale Imponibile |
+MODIFICARE SOLO SE:
+- Cliente richiede riduzione/aumento franchigia
+- Range accettabile specificato (es. "€ 500 - € 1.000")
 
-FORMULA ESPLICITA DI CALCOLO:
-Premio = (Fatturato × Tasso‰) / 1000
+SUBSECTION: TERRITORIO E FORMA RICHIESTI
+───────────────────────────────────────────────────────────────────────────────
 
-NOTA CRITICA SUL TASSO:
-Il tasso è espresso in "per mille" (‰), quindi:
-- Tasso 1,720 ‰ = 1,720 / 1000 = 0,001720 (coefficiente decimale)
-- Tasso 0,450 ‰ = 0,450 / 1000 = 0,000450 (coefficiente decimale)
-- ATTENZIONE: NON confondere ‰ (per mille) con % (percentuale)
+DEFAULT: Copiare da territorio attuale
 
-ESEMPIO CALCOLO COMPLETO:
-Società: FIN-OMET S.R.L
-Fatturato USA/CAN: €13.000.000 × Tasso 1,720‰
-= €13.000.000 × (1,720/1000)
-= €13.000.000 × 0,001720
-= €22.360
+[TERRITORIO_RICH_RCT] = [TERRITORIO_ATT_RCT] se non specificato diversamente
+[TERRITORIO_RICH_RCO] = [TERRITORIO_ATT_RCO] se non specificato diversamente
+[TERRITORIO_RICH_RCP] = [TERRITORIO_ATT_RCP] se non specificato diversamente
 
-Fatturato ROW: €90.000.000 × Tasso 0,450‰
-= €90.000.000 × (0,450/1000)
-= €90.000.000 × 0,000450
-= €40.500
+[FORMA_RICH_RCT] = [FORMA_ATT_RCT] se non specificato diversamente
+[FORMA_RICH_RCO] = [FORMA_ATT_RCO] se non specificato diversamente
+[FORMA_RICH_RCP] = [FORMA_ATT_RCP] se non specificato diversamente
 
-Premio Totale Società: €22.360 + €40.500 = €62.860
+[RETRO_RICH_RCT] = [RETRO_ATT_RCT] se non specificato diversamente
+[RETRO_RICH_RCO] = [RETRO_ATT_RCO] se non specificato diversamente
+[RETRO_RICH_RCP] = [RETRO_ATT_RCP] se non specificato diversamente
 
+MODIFICARE SOLO SE:
+- Estensione territorio richiesta (es. "Includere USA/Canada")
+- Cambio forma copertura (es. "Da Claims Made a Loss Occurrence")
+- Estensione retroattività (es. "Retroattività da 2014 a 2010")
 
-SEZIONE "KPI Sinistralità":
-5 card KPI:
-- Loss Ratio PAGATO: (Totale Pagato / Totale Premi) × 100
-  (sinistri effettivamente liquidati)
-- Loss Ratio COMPLESSIVO: (Totale Pagato + Riserve Aperte) / Totale Premi × 100
-  (include anche sinistri aperti con riserva)
-- N° Sinistri Totali
-- Totale Liquidato
-- Riserve Aperte
+SUBSECTION: PREMIO OBIETTIVO
+───────────────────────────────────────────────────────────────────────────────
 
-NOTA: Se disponibili riserve aperte, mostrare entrambi i loss ratio.
-Il Loss Ratio COMPLESSIVO è più indicativo della sinistralità reale per underwriting.
+[PREMIO_ATTUALE_RIF]
+Ripetere premio attuale per riferimento (formato "€ XXX.XXX,XX")
+Copiare da [PREMIO_ATTUALE] in SEZIONE 2
 
-SEZIONE "Loss Experience per Anno":
-Tabella con colonne: Anno | Premio | N° Sin. | Riservato | Pagato | Totale (R+P) |
-Loss Ratio Pagato | Loss Ratio Complessivo | Freq.
-+ Riga TOTALE
+[BUDGET_MASSIMO]
+Budget massimo accettabile (formato "€ XXX.XXX,XX")
 
-NOTA TECNICA:
-- Loss Ratio Pagato = (Pagato / Premio) × 100
-- Loss Ratio Complessivo = ((Pagato + Riservato) / Premio) × 100
+DEFAULT: Se non specificato dal cliente
+→ Calcolare: Premio attuale × 1.15 (tolleranza +15%)
 
-SEZIONE "Distribuzione per Sezione":
-Tabella con colonne: Sezione | N° Sinistri | % N° | Importo Totale | % Importo | Media Sinistro | Sinistro Max
-Righe: RCT, RCO, RCP
+ESEMPIO:
+Se premio attuale = € 85.000
+→ Budget massimo = € 97.750
 
-SEZIONE "Distribuzione per Causa":
-Tabella con colonne: Causa | N° Sinistri | % N° | Importo Totale | % Importo
-
-SEZIONE "Dettaglio Sinistri":
-Tabella con colonne: N° Sin. | Data Evento | Data Denuncia | Sezione | Causa/Descrizione | Riservato | Pagato | Status
-
-SEZIONE "Note sulla Sinistralità":
-Osservazioni rilevanti: trend, concentrazioni, sinistri significativi, impatto su aggregato
+Se cliente specifica budget: usare quello
+Se cliente dice "mantenere premio": usare premio attuale
+Se cliente dice "ridurre premio": specificare "Riduzione auspicata"
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 10: APPENDICI
+SEZIONE 5: GARANZIE - CONFRONTO ATTUALE vs RICHIESTO
 ═══════════════════════════════════════════════════════════════════════════════
 
-SEZIONE "Elenco Appendici":
-Tabella con colonne: N° Appendice | Data Emissione | Data Effetto | Oggetto/Descrizione | Impatto
+3 TABELLE: RCT, RCO, RCP
 
-SEZIONE "Audit Modifiche":
-Tabella con colonne: Appendice | Data Effetto | Campo Modificato | Valore Precedente | Nuovo Valore | Note
+STRATEGIA DEFAULT: RICHIESTO = ATTUALE (conferma condizioni)
 
-SEZIONE "Change Log":
-Elenco cronologico:
-- Polizza Base: [data] - Emissione polizza originale
-- Appendice [N]: [data effetto] - [descrizione sintetica modifica]
-- ...
+Per ogni garanzia presente in polizza attuale:
+→ DEFAULT: Copiare condizioni attuali in colonna "Richiesto"
+→ Classificazione: "col-same" (giallo = conferma)
+→ MODIFICARE solo se cliente richiede esplicitamente cambiamenti
 
-SEZIONE "Segnalazioni" (se presenti conflitti/ambiguità):
-Summary box warning con:
-- Conflitto rilevato
-- Risoluzione applicata
+FORMATO TABELLA COMPARATIVA:
+
+<tr>
+    <td><strong>[CODICE_GAR_XXX_N]</strong> [NOME_GAR_XXX_N]</td>
+    <td class="[CLASSE_COMP_XXX_N]">[CONDIZ_ATT_XXX_N]</td>
+    <td class="[CLASSE_COMP_XXX_N]">[CONDIZ_RICH_XXX_N]</td>
+</tr>
+
+PLACEHOLDER:
+
+[CODICE_GAR_XXX_N]
+Codice garanzia (es. "RCT.05", "RCO.01", "RCP.01")
+
+[NOME_GAR_XXX_N]
+Nome garanzia (es. "Danni a cose in custodia")
+
+[CONDIZ_ATT_XXX_N]
+Condizioni attuali
+Formato: "Operativa - Limite € 1M, scoperto 10%"
+Se non operativa: "Non inclusa"
+
+[CONDIZ_RICH_XXX_N]
+Condizioni richieste
+
+DEFAULT: Copiare da [CONDIZ_ATT_XXX_N] se non modifiche specificate
+Formato: "Operativa - Limite € 1M, scoperto 10%" (= uguale ad attuale)
+
+MODIFICARE SOLO SE cliente richiede:
+- Aumento limite: "Operativa - Limite € 2M, scoperto 10%"
+- Riduzione scoperto: "Operativa - Limite € 1M, scoperto 5%"
+- Eliminazione: "Elimina"
+- Aggiunta nuova: [CONDIZ_ATT_XXX_N] = "Non inclusa", [CONDIZ_RICH_XXX_N] = "Operativa - [dettagli]"
+
+[CLASSE_COMP_XXX_N]
+Classe CSS per evidenziare variazione:
+
+DEFAULT: "col-same" (giallo) se condizioni confermate
+
+MODIFICARE SOLO SE:
+- "col-increase" (verde) = Miglioramento richiesto
+  * Limite aumentato (€1M → €2M)
+  * Scoperto ridotto (10% → 5%)
+  * Nuova garanzia aggiunta
+  
+- "col-decrease" (rosso) = Riduzione richiesta
+  * Limite ridotto
+  * Garanzia eliminata
+  * Scoperto aumentato
+
+LOGICA CLASSIFICAZIONE:
+
+# Step 1: Confronta condizioni
+IF [CONDIZ_RICH_XXX_N] == [CONDIZ_ATT_XXX_N]:
+    classe = "col-same"  # Conferma, giallo
+    
+# Step 2: Se diverse, determina direzione
+ELIF richiesto migliore di attuale (limite > o scoperto <):
+    classe = "col-increase"  # Miglioramento, verde
+    
+ELIF richiesto peggiore di attuale OR "Elimina":
+    classe = "col-decrease"  # Riduzione, rosso
+
+GENERAZIONE RIGHE:
+
+Per ogni garanzia in polizza attuale:
+1. Estrarre codice + nome + condizioni attuali
+2. DEFAULT: Copiare condizioni attuali → richieste
+3. Verificare se brief cliente specifica modifiche per questa garanzia
+4. Se SÌ: applicare modifiche e classificare (verde/rosso)
+5. Se NO: confermare (giallo)
+6. Generare riga <tr>
+
+GARANZIE NUOVE (non in attuale):
+Se cliente richiede garanzia non presente:
+→ [CONDIZ_ATT_XXX_N] = "Non inclusa"
+→ [CONDIZ_RICH_XXX_N] = "Operativa - [dettagli richiesti]"
+→ [CLASSE_COMP_XXX_N] = "col-increase" (verde)
+
+ESEMPIO PRATICO:
+
+Brief cliente dice: "Incrementare limite RCT.05 a €2M, eliminare RCT.11"
+
+Polizza attuale ha:
+- RCT.05: Custodia - €1M, scoperto 10%
+- RCT.11: Installazione - €1.5M
+- RCT.15: Inquinamento - €500k
+
+OUTPUT:
+┌──────────┬─────────────────────────┬──────────────────────────┬─────────┐
+│ Codice   │ Attuale                 │ Richiesto                │ Classe  │
+├──────────┼─────────────────────────┼──────────────────────────┼─────────┤
+│ RCT.05   │ Operativa - €1M, 10%    │ Operativa - €2M, 10%     │ verde   │
+│ RCT.11   │ Operativa - €1.5M       │ Elimina                  │ rosso   │
+│ RCT.15   │ Operativa - €500k       │ Operativa - €500k        │ giallo  │
+└──────────┴─────────────────────────┴──────────────────────────┴─────────┘
+
+REGOLA: Generare riga per OGNI garanzia presente in attuale O richiesta
+- Se solo in attuale e non menzionata: confermare (giallo)
+- Se solo in attuale e da eliminare: rosso
+- Se solo in richiesta: verde (nuova)
+
+NOTA IMPORTANTE:
+Se brief cliente non specifica modifiche garanzie:
+→ TUTTE le garanzie attuali vengono confermate (giallo)
+→ Nessuna riga verde o rossa
 
 ═══════════════════════════════════════════════════════════════════════════════
-REGOLE DI RICONCILIAZIONE APPENDICI
+SEZIONE 6: CONFRONTO SINTETICO ATTUALE vs RICHIESTO
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. ORDINAMENTO CRONOLOGICO
-   - Applicare modifiche in ordine di data efficacia
-   - Tie-breaker: data emissione documento (più recente prevale)
+Tabella con elementi chiave polizza (8 righe)
 
-2. REVOCHE E SOSTITUZIONI ESPLICITE
-   - Appendice che revoca/sostituisce precedente: documentare nella tabella audit
-   - Annotare quale appendice è stata revocata e da quale
+STRATEGIA DEFAULT: RICHIESTO = ATTUALE per ogni elemento
+Classificazione: "col-same" (giallo) se non modifiche specificate
 
-3. GESTIONE MODIFICHE IMPLICITE
-   - NON applicare modifiche non documentate
-   - Se ambigua: segnalare "ND" + "⚠ RICHIEDE VERIFICA MANUALE"
+FORMATO:
 
-4. GESTIONE CONFLITTI
-   - Due appendici con valori incompatibili senza revoca: applicare ultima per data efficacia
-   - Flag visibile: "⚠ CONFLITTO: verificare appendici [ID, date]"
+<tr>
+    <td><strong>[ELEMENTO]</strong></td>
+    <td>[VALORE_ATTUALE]</td>
+    <td class="[CLASSE_CONFRONTO]">[VALORE_RICHIESTO]</td>
+</tr>
 
-5. VALORI CONSOLIDATI
-   - Mostrare sempre il valore FINALE dopo applicazione appendici
-   - La tracciabilità va nel TAB Appendici, non nelle altre sezioni
+RIGHE FISSE (con logica default):
+
+1. Massimale RCT (per sinistro)
+   [CONF_MASS_RCT_ATT]       es. "€ 10.000.000"
+   [CONF_MASS_RCT_RICH]      DEFAULT: = [CONF_MASS_RCT_ATT] se non modifiche
+   [CLASSE_CONF_MASS_RCT]    DEFAULT: "col-same"
+                             Modificare solo se cliente richiede incremento → "col-increase"
+
+2. Massimale RCO (per sinistro)
+   [CONF_MASS_RCO_ATT]
+   [CONF_MASS_RCO_RICH]      DEFAULT: = [CONF_MASS_RCO_ATT]
+   [CLASSE_CONF_MASS_RCO]    DEFAULT: "col-same"
+
+3. Massimale RCP (per sinistro)
+   [CONF_MASS_RCP_ATT]
+   [CONF_MASS_RCP_RICH]      DEFAULT: = [CONF_MASS_RCP_ATT]
+   [CLASSE_CONF_MASS_RCP]    DEFAULT: "col-same"
+
+4. Aggregato Annuo
+   [CONF_AGG_ATT]            es. "€ 20.000.000"
+   [CONF_AGG_RICH]           DEFAULT: = [CONF_AGG_ATT]
+   [CLASSE_CONF_AGG]         DEFAULT: "col-same"
+
+5. Territorio RCP
+   [CONF_TERR_ATT]           es. "Mondo escluso USA/Canada"
+   [CONF_TERR_RICH]          DEFAULT: = [CONF_TERR_ATT]
+   [CLASSE_CONF_TERR]        DEFAULT: "col-same"
+                             Modificare solo se estensione richiesta → "col-increase"
+
+6. Retroattività RCP
+   [CONF_RETRO_ATT]          es. "31/12/2014"
+   [CONF_RETRO_RICH]         DEFAULT: = [CONF_RETRO_ATT]
+   [CLASSE_CONF_RETRO]       DEFAULT: "col-same"
+                             Modificare solo se estensione richiesta → "col-increase"
+
+7. Franchigia RCT
+   [CONF_FRANCH_RCT_ATT]     es. "€ 500"
+   [CONF_FRANCH_RCT_RICH]    DEFAULT: = [CONF_FRANCH_RCT_ATT]
+   [CLASSE_CONF_FRANCH_RCT]  DEFAULT: "col-same"
+                             Riduzione franchigia → "col-increase"
+
+8. Scoperto RCP ROW
+   [CONF_SCOP_RCP_ATT]       es. "10% min € 5.000"
+   [CONF_SCOP_RCP_RICH]      DEFAULT: = [CONF_SCOP_RCP_ATT]
+   [CLASSE_CONF_SCOP_RCP]    DEFAULT: "col-same"
+                             Riduzione scoperto/minimo → "col-increase"
+
+LOGICA COMPILAZIONE:
+
+Per ogni riga:
+1. Estrarre valore attuale dalla SEZIONE 2
+2. DEFAULT: Copiare valore attuale → richiesto
+3. Verificare se brief cliente specifica modifica per questo elemento
+4. Se SÌ: 
+   - Inserire nuovo valore richiesto
+   - Classificare: "col-increase" se miglioramento, "col-decrease" se riduzione
+5. Se NO: 
+   - Confermare valore attuale
+   - Classificare: "col-same" (giallo)
+
+ESEMPIO:
+
+Brief cliente: "Incrementare massimale RCT a €15M, estendere territorio RCP a Mondo Intero"
+
+OUTPUT tabella:
+┌──────────────────┬──────────────┬───────────────┬─────────┐
+│ Elemento         │ Attuale      │ Richiesto     │ Classe  │
+├──────────────────┼──────────────┼───────────────┼─────────┤
+│ Massimale RCT    │ €10M         │ €15M          │ verde   │
+│ Massimale RCO    │ €10M         │ €10M          │ giallo  │
+│ Massimale RCP    │ €10M         │ €10M          │ giallo  │
+│ Aggregato        │ €20M         │ €20M          │ giallo  │
+│ Territorio RCP   │ Mondo ex USA │ Mondo Intero  │ verde   │
+│ Retroattività    │ 31/12/2014   │ 31/12/2014    │ giallo  │
+│ Franchigia RCT   │ €500         │ €500          │ giallo  │
+│ Scoperto RCP     │ 10% min €5k  │ 10% min €5k   │ giallo  │
+└──────────────────┴──────────────┴───────────────┴─────────┘
+
+QUESTA TABELLA = SINTESI VISUALE IMMEDIATA PER UNDERWRITER
+Evidenzia a colpo d'occhio solo le modifiche richieste
 
 ═══════════════════════════════════════════════════════════════════════════════
-CHECKLIST FINALE DI VALIDAZIONE
+SEZIONE 7: INFORMAZIONI TECNICHE
 ═══════════════════════════════════════════════════════════════════════════════
 
-Prima di consegnare il report, verifica:
+SUBSECTION: CERTIFICAZIONI E CONTROLLO QUALITÀ
+───────────────────────────────────────────────────────────────────────────────
 
-□ TAB 1 - ANAGRAFICA
-  □ Tutti i dati contrattuali compilati
-  □ Premio con dettaglio imponibile/imposte
-  □ Forma copertura per ogni sezione (trigger, retro, postuma)
+Elenco 3-5 elementi (formato lista bullet)
 
-□ TAB 2 - ENTITÀ
-  □ Ogni società elencata separatamente
-  □ Attività specifica per ogni società
-  □ Fatturato e dipendenti per società
+[CERTIFICAZIONE_1]  es. "ISO 9001:2015 - Sistema Gestione Qualità"
+[CERTIFICAZIONE_2]  es. "ISO 14001 - Sistema Gestione Ambientale"
+[CERTIFICAZIONE_3]  es. "Testing 100% prodotti pre-spedizione"
 
-□ TAB 3 - MASSIMALI
-  □ Massimali per ogni sezione
-  □ Franchigie/scoperti base
-  □ Franchigie RCP per area geografica (se differenziate)
+Se non disponibili: "Nessuna certificazione formale"
 
-□ TAB 4 - GARANZIE RCT
-  □ Tutte le estensioni presenti in polizza elencate
-  □ Limiti, franchigie, scoperti per ogni garanzia
-  □ Condizioni particolari (RCT.01, etc.)
+SUBSECTION: GESTIONE RISCHI
+───────────────────────────────────────────────────────────────────────────────
 
-□ TAB 5 - GARANZIE RCO
-  □ Prestatori di lavoro coperti (SI/NO per ogni categoria)
-  □ Malattie professionali (copertura, retro, esclusioni)
-  □ Estensioni (danno biologico, etc.)
+Elenco 3-5 elementi su risk management
 
-□ TAB 6 - GARANZIE RCP
-  □ Prodotti coperti/esclusi
-  □ Estensioni con franchigie ROW e USA separate
-  □ Dettaglio Recall
-  □ Validità temporale (trigger, retro, postuma)
+[GESTIONE_RISCHI_1]  es. "Formazione obbligatoria sicurezza (40h/anno)"
+[GESTIONE_RISCHI_2]  es. "Audit trimestrali stabilimenti"
+[GESTIONE_RISCHI_3]  es. "Assicurazione recall prodotti separata (€ 5M)"
 
-□ TAB 7 - ESCLUSIONI
-  □ Esclusioni generali con indicazione deroga SI/NO
-  □ Esclusioni specifiche per sezione
-  □ Esclusione sostanze (PFAS, amianto, etc.)
-  □ Esclusione cyber
+SUBSECTION: NOTE PARTICOLARI
+───────────────────────────────────────────────────────────────────────────────
 
-□ TAB 8 - CALCOLO PREMIO
-  □ Una riga per ogni società
-  □ Fatturati USA/CAN e ROW separati (se applicabile)
-  □ Tassi corretti
-  □ Verifica coerenza con premio polizza
+[NOTE_PARTICOLARI]
+Informazioni addizionali rilevanti per underwriter (3-5 righe)
 
-□ TAB 9 - SINISTRI
-  □ Grafico con anni corretti (premio anno competenza)
-  □ Nessun premio duplicato
-  □ KPI calcolati correttamente
-  □ Dettaglio sinistri con data denuncia
+COSA INCLUDERE:
+- Progetti espansione
+- Nuovi mercati
+- Investimenti sicurezza
+- Cambiamenti produttivi
 
-□ TAB 10 - APPENDICI
-  □ Elenco completo appendici
-  □ Audit modifiche compilato
-  □ Change log cronologico
-  □ Segnalazioni conflitti (se presenti)
+ESEMPIO:
+"Prevista espansione mercato USA nel 2025 con apertura filiale Texas. 
+Investimento € 2M in nuova linea produttiva automatizzata (riduzione 
+intervento umano -30%). Implementazione sistema tracciabilità blockchain 
+per supply chain."
 
 ═══════════════════════════════════════════════════════════════════════════════
-NOTE TECNICHE HTML
+SEZIONE 8: ALLEGATI
 ═══════════════════════════════════════════════════════════════════════════════
 
-- Usare ESATTAMENTE le classi CSS del template
-- section-header: intestazioni sezione (sfondo scuro)
-- col-label: celle etichetta (sfondo grigio chiaro)
-- col-curr: valori numerici allineati a destra (JetBrains Mono)
-- col-center: valori centrati
-- Badge sezione: tag-rct (blu), tag-rco (verde), tag-rcp (ambra)
-- Badge status: tag-ok (verde), tag-warn (giallo), tag-error (rosso)
-- Summary box: .summary-box, .summary-box.warning, .summary-box.critical
-- KPI: .kpi-grid con .kpi-card
+Lista documenti allegati (hardcoded):
+✓ Polizza attuale completa
+✓ Borderò sinistri ultimi 5 anni
+✓ Bilancio ultimo esercizio
 
+PLUS OPZIONALI:
+
+[ALTRO_ALLEGATO_1]  es. "✓ Certificazione ISO 9001"
+[ALTRO_ALLEGATO_2]  es. "✓ Planimetria stabilimenti"
+
+Se nessun allegato addizionale: omettere
+
+CONTATTI:
+
+[EMAIL_CONTATTO]  Email contatto broker (es. "quotazioni@eramoassociati.it")
+[TEL_CONTATTO]    Telefono (es. "0332 283123")
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COERENZA FATTURATI
+   ────────────────────
+   Somma fatturati per area = Fatturato totale
+   Somma fatturati società = Fatturato gruppo
+   Verificare matematicamente
+
+2. COMPLETEZZA SINISTRI
+   ─────────────────────
+   TUTTI i sinistri ultimi 5 anni
+   Nessuna selezione, nessun filtro
+   Aperti E chiusi
+   
+3. COMPLETEZZA GARANZIE
+   ─────────────────────
+   TUTTE le garanzie attuali
+   TUTTE le garanzie richieste
+   Anche se da eliminare o confermare
+   
+4. CLASSIFICAZIONE CORRETTA
+   ────────────────────────
+   Verde (col-increase): miglioramento per assicurato
+   Giallo (col-same): conferma condizioni
+   Rosso (col-decrease): peggioramento o eliminazione
+   
+5. FORMATO VALUTE UNIFORME
+   ───────────────────────
+   Sempre: "€ XX.XXX.XXX,XX" (punto migliaia, virgola decimali)
+   
+6. DATI OGGETTIVI
+   ──────────────
+   Solo da documenti forniti
+   NO interpretazioni
+   NO invenzioni
+   Se dato manca: indicare "Non disponibile"
+
+7. SOCIETÀ GRUPPO
+   ──────────────
+   Se Master: TUTTE le società in tabella
+   MAI omettere
+   
+8. TONO PROFESSIONALE
+   ──────────────────
+   Sobrio, tecnico, neutro
+   NO aggettivi superlativi
+   NO linguaggio commerciale
+   Focus su fatti e numeri
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI BASE
+─────────────────
+Da polizza attuale:
+- Anagrafica contraente
+- Massimali, franchigie, territorio
+- Garanzie operative
+- Premio
+
+Da bilancio:
+- Fatturati per area
+- Dipendenti, monte salari
+
+STEP 2: STORIA
+──────────────
+Da borderò sinistri:
+- Premi ultimi 5 anni
+- TUTTI sinistri (aperti + chiusi)
+- Calcolare loss ratio
+
+STEP 3: RICHIESTE (Strategia efficiente)
+─────────────────────────────────────────
+
+PRINCIPIO BASE: Richiesto = Attuale + Solo Modifiche
+
+A. DEFAULT per TUTTI gli elementi:
+   → Copiare valori da polizza attuale
+   → Classificazione: "col-same" (giallo = conferma)
+
+B. Cercare nel brief cliente/indicazioni broker:
+   → Modifiche esplicite richieste
+   → Solo per questi elementi: applicare nuovi valori
+
+C. Compilazione:
+   
+   Per SEZIONE 4 (Condizioni Richieste):
+   ┌─────────────────────────────────────────────────────────┐
+   │ [MASS_RICH_RCT_SINISTRO] = [MASS_ATT_RCT_SINISTRO]     │
+   │ [MASS_RICH_RCO_SINISTRO] = [MASS_ATT_RCO_SINISTRO]     │
+   │ [FRANCHIGIA_RICH_RCT] = [FRANCHIGIA_ATT_RCT]           │
+   │ ... (copia TUTTI i valori attuali)                     │
+   └─────────────────────────────────────────────────────────┘
+   
+   POI, se brief specifica modifiche:
+   → Aggiornare solo i campi interessati
+   
+   Esempio: Brief dice "Incrementare RCT a €15M"
+   → [MASS_RICH_RCT_SINISTRO] = "€ 15.000.000" (sovrascrive)
+   → Tutti gli altri rimangono = attuale
+
+   Per SEZIONE 5 (Garanzie Comparativa):
+   ┌─────────────────────────────────────────────────────────┐
+   │ Per ogni garanzia in polizza attuale:                   │
+   │   [CONDIZ_RICH_XXX_N] = [CONDIZ_ATT_XXX_N]             │
+   │   [CLASSE_COMP_XXX_N] = "col-same"                      │
+   └─────────────────────────────────────────────────────────┘
+   
+   POI, se brief specifica modifiche garanzie:
+   → Aggiornare solo garanzie interessate
+   → Cambiare classificazione in "col-increase" o "col-decrease"
+
+   Per SEZIONE 6 (Confronto Sintetico):
+   ┌─────────────────────────────────────────────────────────┐
+   │ [CONF_MASS_RCT_RICH] = [CONF_MASS_RCT_ATT]             │
+   │ [CONF_TERR_RICH] = [CONF_TERR_ATT]                     │
+   │ [CLASSE_CONF_XXX] = "col-same" per tutti                │
+   └─────────────────────────────────────────────────────────┘
+   
+   POI, applicare modifiche specificate nel brief
+
+D. Budget massimo:
+   Se non specificato: Premio attuale × 1.15
+   Se specificato: usare valore cliente
+
+VANTAGGI APPROCCIO:
+✓ Riduce drasticamente lavoro (no reinserimento dati)
+✓ Focus solo su modifiche richieste
+✓ Confronto evidenzia solo differenze reali
+✓ Tabelle quasi tutte gialle (conferme) tranne modifiche
+
+STEP 4: CONFRONTO (automatico)
+───────────────────────────────
+
+Per ogni elemento con Attuale vs Richiesto:
+
+IF [RICHIESTO] == [ATTUALE]:
+    classe = "col-same"  # Giallo, conferma
+    
+ELIF [RICHIESTO] migliore di [ATTUALE]:
+    classe = "col-increase"  # Verde, miglioramento
+    
+ELIF [RICHIESTO] peggiore di [ATTUALE]:
+    classe = "col-decrease"  # Rosso, riduzione
+
+Definizione "migliore":
+- Massimale più alto
+- Franchigia più bassa
+- Scoperto più basso o minimo più basso
+- Territorio più esteso
+- Retroattività più antica
+
+STEP 5: VERIFICA
+────────────────
+- Somme fatturati coerenti
+- Loss ratio calcolati correttamente
+- Tutte società presenti
+- Tutti sinistri presenti
+- Placeholder tutti sostituiti
+- Classificazioni coerenti (se attuale = richiesto → giallo)
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_rc_compagnia_finale.html
+2. Sostituire TUTTI i placeholder
+3. Per sezioni con numero variabile (società, garanzie, sinistri):
+   - Generare HTML dinamico
+   - Inserire nel punto corretto
+4. Per subsection da omettere (es. società gruppo se Standard):
+   - Rimuovere completamente blocco HTML
+5. Verificare:
+   - Tutti placeholder sostituiti
+   - HTML valido
+   - Dati coerenti
+   - Classificazioni corrette
+
+DELIVERABLE:
+File HTML completo, professionale, pronto per invio a compagnia.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
 ═══════════════════════════════════════════════════════════════════════════════

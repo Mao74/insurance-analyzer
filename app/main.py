@@ -42,7 +42,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # Public routes that don't require authentication
         public_paths = [
             "/api/health",
+            "/health",  # Docker health check
             "/api/auth/login",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password",
             "/static",
             "/docs",
             "/openapi.json",
@@ -96,8 +99,9 @@ app.add_middleware(
 # Static files (for uploaded files access if needed)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Health check endpoint
+# Health check endpoints
 @app.get("/api/health")
+@app.get("/health")  # Alias for Docker health check
 async def health_check():
     return {"status": "healthy", "version": "2.0.0", "message": "PoliSight API is running"}
 
