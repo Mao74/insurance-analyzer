@@ -36,6 +36,11 @@ class User(Base):
     login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)  # NULL = not locked
     
+    # Stripe subscription
+    stripe_customer_id = Column(String(255), nullable=True, unique=True)
+    stripe_subscription_id = Column(String(255), nullable=True)
+    subscription_status = Column(String(50), nullable=True)  # active, canceled, past_due, etc.
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     documents = relationship("Document", back_populates="user")
 

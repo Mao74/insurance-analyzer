@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 from .config import settings
 from .database import engine, Base, init_db
-from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes
+from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes
 import uvicorn
 
 app = FastAPI(title="PoliSight API", version="2.0.0")
@@ -46,6 +46,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/api/auth/login",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",
+            "/api/stripe/webhook",  # Stripe webhook
+            "/api/stripe/prices",   # Public prices endpoint
             "/static",
             "/docs",
             "/openapi.json",
@@ -111,6 +113,7 @@ app.include_router(upload_routes.router, prefix="/api/documents", tags=["Documen
 app.include_router(analysis_routes.router, prefix="/api/analysis", tags=["Analysis"])
 app.include_router(claims_routes.router, prefix="/api/claims", tags=["Claims"])
 app.include_router(admin_routes.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(stripe_routes.router, prefix="/api/stripe", tags=["Stripe"])
 
 @app.on_event("startup")
 def on_startup():
