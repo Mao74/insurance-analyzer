@@ -130,7 +130,8 @@ async def subscription_status(
     """Get current user's subscription status"""
     user = get_current_user(request, db)
     
-    if not user.stripe_subscription_id:
+    # If no subscription, return empty
+    if not user.stripe_subscription_id or not user.subscription_status:
         return SubscriptionStatusResponse(
             has_subscription=False,
             status=None,
@@ -138,34 +139,14 @@ async def subscription_status(
             expires_at=user.access_expires_at
         )
     
-    # Get fresh status from Stripe
-    result = stripe_service.get_subscription_details(user.stripe_subscription_id)
-    
-    if result["success"]:
-        sub = result["subscription"]
-        
-        # Determine plan type from price
-        plan = "unknown"
-        if sub.items.data:
-            price_id = sub.items.data[0].price.id
-            if price_id == settings.STRIPE_PRICE_MONTHLY:
-                plan = "monthly"
-            elif price_id == settings.STRIPE_PRICE_ANNUAL:
-                plan = "annual"
-        
-        return SubscriptionStatusResponse(
-            has_subscription=True,
-            status=sub.status,
-            plan=plan,
-            expires_at=result["current_period_end"]
-        )
-    else:
-        return SubscriptionStatusResponse(
-            has_subscription=False,
-            status=user.subscription_status,
-            plan=None,
-            expires_at=user.access_expires_at
-        )
+    # Return subscription info from database
+    # (Stripe webhook keeps this updated)
+    return SubscriptionStatusResponse(
+        has_subscription=True,
+        status=user.subscription_status,
+        plan="active",  # Plan details can be fetched separately if needed
+        expires_at=user.access_expires_at
+    )
 
 
 @router.post("/webhook")
