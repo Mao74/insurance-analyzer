@@ -177,26 +177,49 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         customer_id = data.get("customer")
         subscription_id = data.get("subscription")
         
-        if user_id:
+        if user_id and subscription_id:
             user = db.query(models.User).filter(models.User.id == int(user_id)).first()
             if user:
                 user.stripe_customer_id = customer_id
                 user.stripe_subscription_id = subscription_id
                 user.subscription_status = "active"
-                # Set access to far future (subscription handles expiry)
-                user.access_expires_at = datetime(2099, 12, 31)
+                
+                # Get subscription details to set real expiry date
+                import stripe
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                try:
+                    subscription = stripe.Subscription.retrieve(subscription_id)
+                    user.access_expires_at = datetime.fromtimestamp(subscription.current_period_end)
+                except Exception as e:
+                    print(f"[STRIPE] Error getting subscription details: {e}")
+                    # Fallback to 1 month from now
+                    from datetime import timedelta
+                    user.access_expires_at = datetime.utcnow() + timedelta(days=30)
+                
                 db.commit()
-                print(f"[STRIPE] Activated subscription for user {user.email}")
+                print(f"[STRIPE] Activated subscription for user {user.email} until {user.access_expires_at}")
     
     elif event_type == "invoice.paid":
         # Recurring payment successful
         customer_id = data.get("customer")
+        subscription_id = data.get("subscription")
+        
         user = db.query(models.User).filter(models.User.stripe_customer_id == customer_id).first()
         if user:
             user.subscription_status = "active"
-            user.access_expires_at = datetime(2099, 12, 31)
+            
+            # Get subscription details to set real expiry date
+            if subscription_id:
+                import stripe
+                stripe.api_key = settings.STRIPE_SECRET_KEY
+                try:
+                    subscription = stripe.Subscription.retrieve(subscription_id)
+                    user.access_expires_at = datetime.fromtimestamp(subscription.current_period_end)
+                except Exception as e:
+                    print(f"[STRIPE] Error getting subscription details: {e}")
+            
             db.commit()
-            print(f"[STRIPE] Invoice paid for user {user.email}")
+            print(f"[STRIPE] Invoice paid for user {user.email} until {user.access_expires_at}")
     
     elif event_type == "customer.subscription.updated":
         # Subscription status changed
