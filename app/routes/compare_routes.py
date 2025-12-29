@@ -74,14 +74,14 @@ async def start_comparison(
     if len(payload.document_ids) < 2:
         raise HTTPException(status_code=400, detail="At least 2 documents required for comparison")
     
-    if len(payload.document_ids) > 5:
-        raise HTTPException(status_code=400, detail="Maximum 5 documents for comparison")
+    if len(payload.document_ids) > 6:
+        raise HTTPException(status_code=400, detail="Maximum 6 documents for comparison")
     
     # Verify all documents exist and belong to user
     for doc_id in payload.document_ids:
         doc = db.query(models.Document).filter(
             models.Document.id == doc_id,
-            models.Document.user_id == user_data["id"]
+            models.Document.user_id == user_data.user_id
         ).first()
         if not doc:
             raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
@@ -119,7 +119,7 @@ async def start_comparison(
             'cap': md.get('cap', ''),
             'altri': altri_list
         }
-    
+
     # Run comparison in background
     background_tasks.add_task(
         comparison_pipeline,
@@ -128,7 +128,7 @@ async def start_comparison(
         sensitive_data,
         payload.policy_type,
         payload.llm_model,
-        user_data["id"]
+        user_data.user_id
     )
     
     return CompareStartResponse(
