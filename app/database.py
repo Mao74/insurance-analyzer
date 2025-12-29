@@ -41,10 +41,17 @@ def init_db():
             default_users = settings.DEFAULT_USERS.split(',')
             for user_pair in default_users:
                 if ':' in user_pair:
-                    username, password = user_pair.split(':')
+                    parts = user_pair.strip().split(':')
+                    email = parts[0]
+                    password = parts[1] if len(parts) > 1 else 'changeme123'
                     # Hash password here
                     pwd_hash = get_password_hash(password)
-                    user = models.User(username=username, password_hash=pwd_hash)
+                    user = models.User(
+                        email=email,
+                        username=email.split('@')[0],  # Use email prefix as username
+                        password_hash=pwd_hash,
+                        is_admin=True  # First user is admin
+                    )
                     db.add(user)
             db.commit()
             print("Default users created.")

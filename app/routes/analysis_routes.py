@@ -584,6 +584,9 @@ def full_analysis_pipeline(
         print(f"DEBUG: Using prompt: {prompt_path}")
         print(f"DEBUG: Using template: {template_path}")
         
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            prompt_template = f.read()
+        
         with open(template_path, "r", encoding="utf-8") as f:
             html_template = f.read()
         
