@@ -12,12 +12,12 @@ import json
 import re
 
 from ..database import get_db
-from ..auth import get_current_user
+from .auth_routes import get_current_user
 from .. import models
 from .. import masking
 from .. import llm_client
 
-router = APIRouter(prefix="/compare", tags=["compare"])
+router = APIRouter(tags=["compare"])
 
 # Upload directory
 UPLOAD_DIR = "uploads"
