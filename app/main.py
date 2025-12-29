@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 from .config import settings
 from .database import engine, Base, init_db
-from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes
+from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes, compare_routes
 import uvicorn
 
 app = FastAPI(title="PoliSight API", version="2.0.0")
@@ -114,6 +114,7 @@ app.include_router(analysis_routes.router, prefix="/api/analysis", tags=["Analys
 app.include_router(claims_routes.router, prefix="/api/claims", tags=["Claims"])
 app.include_router(admin_routes.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(stripe_routes.router, prefix="/api/stripe", tags=["Stripe"])
+app.include_router(compare_routes.router, prefix="/api/compare", tags=["Compare"])
 
 @app.on_event("startup")
 def on_startup():
