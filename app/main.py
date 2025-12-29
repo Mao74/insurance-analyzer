@@ -9,7 +9,7 @@ from .database import engine, Base, init_db
 from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes, compare_routes
 import uvicorn
 
-app = FastAPI(title="PoliSight API", version="2.0.0")
+app = FastAPI(title="Insurance-Lab.ai API", version="2.0.0")
 
 # CORS Configuration - MUST be added first (will be outermost)
 origins = [

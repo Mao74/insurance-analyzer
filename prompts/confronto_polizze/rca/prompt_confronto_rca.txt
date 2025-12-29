@@ -40,13 +40,18 @@ INPUT ATTESO
 
 Riceverai in input:
 
-1. **DATI POLIZZE RCA** (2 o più set)
+1. **DATI POLIZZE RCA** (2 o più set - SCALABILE DINAMICAMENTE)
    - PDF polizze/preventivi
    - Oppure report HTML già generati
    - Oppure JSON strutturato
+   
+   ⚠️ CRITICO: Il numero di polizze può essere 2, 3, 4, 5, 6 o più.
+   TUTTE le tabelle devono avere esattamente N colonne (dove N = numero polizze).
+   NON limitarti mai a 2 colonne se sono presenti più polizze.
 
 2. **TEMPLATE HTML** (obbligatorio)
    - File: template_confronto_rca_finale.html
+   - Template mostra esempio con 2 polizze ma DEVE essere espanso dinamicamente
 
 3. **CONTESTO VEICOLO** (opzionale)
    - Marca, modello, targa
@@ -150,9 +155,22 @@ TAB 2: SINTESI ECONOMICA
 SUBSECTION: CONFRONTO ECONOMICO
 ───────────────────────────────────────────────────────────────────────────────
 
-Tabella DINAMICA: 1 voce + N polizze
+⚠️ Tabella DINAMICA: 1 colonna voce + N colonne polizze
 
-Per CIASCUNA polizza:
+ESEMPIO STRUTTURA con 6 polizze:
+<thead>
+    <tr>
+        <th class="voce-col">Voce</th>
+        <th>[NOME_POLIZZA_1]</th>
+        <th>[NOME_POLIZZA_2]</th>
+        <th>[NOME_POLIZZA_3]</th>
+        <th>[NOME_POLIZZA_4]</th>
+        <th>[NOME_POLIZZA_5]</th>
+        <th>[NOME_POLIZZA_6]</th>
+    </tr>
+</thead>
+
+Per CIASCUNA polizza (da 1 a N):
 
 [PREMIO_RCA_BASE_N]
 Premio RCA base formato "€ XXX"
@@ -196,9 +214,30 @@ Tabella con 1 riga per OGNI polizza (esclusa attuale)
 TAB 3: MASSIMALI RCA
 ═══════════════════════════════════════════════════════════════════════════════
 
-Tabella DINAMICA massimali RCA
+⚠️ Tabella DINAMICA: espandere colonne per TUTTE le N polizze
 
-Per CIASCUNA polizza:
+ESEMPIO STRUTTURA con 4 polizze:
+<thead>
+    <tr>
+        <th class="voce-col">Massimale</th>
+        <th>[NOME_POLIZZA_1]</th>
+        <th>[NOME_POLIZZA_2]</th>
+        <th>[NOME_POLIZZA_3]</th>
+        <th>[NOME_POLIZZA_4]</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td class="row-header">Danni a Persone</td>
+        <td class="currency [DIFF_CLASS_PERS_1]">[MASS_PERSONE_1]</td>
+        <td class="currency [DIFF_CLASS_PERS_2]">[MASS_PERSONE_2]</td>
+        <td class="currency [DIFF_CLASS_PERS_3]">[MASS_PERSONE_3]</td>
+        <td class="currency [DIFF_CLASS_PERS_4]">[MASS_PERSONE_4]</td>
+    </tr>
+    <!-- Continuare per tutte le righe -->
+</tbody>
+
+Per CIASCUNA polizza (da 1 a N):
 
 [MASS_PERSONE_N]
 Massimale danni a persone formato "€ X.XXX.XXX"
@@ -424,6 +463,41 @@ Altre polizze: proporzionale
 SUBSECTION: SCORE TOTALE
 ───────────────────────────────────────────────────────────────────────────────
 
+⚠️ CREARE N SCORE CARDS (una per ogni polizza)
+
+ESEMPIO con 5 polizze:
+<div class="score-container">
+    <div class="score-card [WINNER_CLASS_1]">
+        <div class="score-card-label">[NOME_POLIZZA_1]</div>
+        <div class="score-card-value">[SCORE_TOTALE_1]</div>
+        <div class="score-card-max">/ 100 punti</div>
+    </div>
+    
+    <div class="score-card [WINNER_CLASS_2]">
+        <div class="score-card-label">[NOME_POLIZZA_2]</div>
+        <div class="score-card-value">[SCORE_TOTALE_2]</div>
+        <div class="score-card-max">/ 100 punti</div>
+    </div>
+    
+    <div class="score-card [WINNER_CLASS_3]">
+        <div class="score-card-label">[NOME_POLIZZA_3]</div>
+        <div class="score-card-value">[SCORE_TOTALE_3]</div>
+        <div class="score-card-max">/ 100 punti</div>
+    </div>
+    
+    <div class="score-card [WINNER_CLASS_4]">
+        <div class="score-card-label">[NOME_POLIZZA_4]</div>
+        <div class="score-card-value">[SCORE_TOTALE_4]</div>
+        <div class="score-card-max">/ 100 punti</div>
+    </div>
+    
+    <div class="score-card [WINNER_CLASS_5]">
+        <div class="score-card-label">[NOME_POLIZZA_5]</div>
+        <div class="score-card-value">[SCORE_TOTALE_5]</div>
+        <div class="score-card-max">/ 100 punti</div>
+    </div>
+</div>
+
 Per CIASCUNA polizza:
 
 [SCORE_TOTALE_N]
@@ -480,6 +554,40 @@ proporzionali."
 TAB 8: PRO E CONTRO
 ═══════════════════════════════════════════════════════════════════════════════
 
+⚠️ RIPETERE INTERAMENTE questa sezione per OGNI polizza (da 1 a N)
+
+STRUTTURA per ogni polizza:
+<h3 class="subsection-title">[NOME_POLIZZA_X]</h3>
+<div class="pro-contro-grid">
+    <div class="pro-contro-card">
+        <div class="pro-contro-header pro-header">✓ PUNTI DI FORZA</div>
+        <div class="pro-contro-list">
+            <ul>
+                <li>[PRO_1_POLX]</li>
+                <li>[PRO_2_POLX]</li>
+                <li>[PRO_3_POLX]</li>
+                <li>[PRO_4_POLX]</li>
+            </ul>
+        </div>
+    </div>
+    <div class="pro-contro-card">
+        <div class="pro-contro-header contro-header">✗ PUNTI DI DEBOLEZZA</div>
+        <div class="pro-contro-list">
+            <ul>
+                <li>[CONTRO_1_POLX]</li>
+                <li>[CONTRO_2_POLX]</li>
+                <li>[CONTRA_3_POLX]</li>
+                <li>[CONTRO_4_POLX]</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+ESEMPIO con 3 polizze - RIPETERE 3 volte:
+1. Sezione completa per [NOME_POLIZZA_1]
+2. Sezione completa per [NOME_POLIZZA_2]  
+3. Sezione completa per [NOME_POLIZZA_3]
+
 Ripetere per OGNI polizza (dinamico)
 
 [NOME_POLIZZA_N]
@@ -534,6 +642,35 @@ e veicolo datato. Confermare Allianz solo se massima protezione prioritaria."
 ═══════════════════════════════════════════════════════════════════════════════
 REGOLE CRITICHE
 ═══════════════════════════════════════════════════════════════════════════════
+
+0. ⚠️ ESPANSIONE DINAMICA COLONNE - REGOLA PRIORITARIA
+   ═══════════════════════════════════════════════════
+   
+   PRIMA di iniziare la generazione:
+   a) CONTARE il numero esatto di polizze ricevute in input: N
+   b) VERIFICARE che OGNI tabella abbia esattamente N colonne (1 per voce + N polizze)
+   c) REPLICARE tutti i placeholder per TUTTE le N polizze
+   
+   ESEMPIO PRATICO:
+   - Se ricevi 6 preventivi → ogni tabella deve avere 7 colonne (1 voce + 6 polizze)
+   - Template mostra esempio con 2 polizze → IGNORARE questo limite
+   - Espandere TUTTE le righe <th> e <td> per includere tutte le N polizze
+   
+   PLACEHOLDER DA REPLICARE N VOLTE:
+   - [NOME_POLIZZA_1], [NOME_POLIZZA_2], ..., [NOME_POLIZZA_N]
+   - [PREMIO_RCA_BASE_1], ..., [PREMIO_RCA_BASE_N]
+   - [MASS_PERSONE_1], ..., [MASS_PERSONE_N]
+   - [GAR_FURTO_1], ..., [GAR_FURTO_N]
+   - [FRANCH_KASKO_1], ..., [FRANCH_KASKO_N]
+   - [SCORE_TOTALE_1], ..., [SCORE_TOTALE_N]
+   - Tutti gli altri placeholder che seguono pattern [CAMPO_X]
+   
+   VERIFICHE POST-GENERAZIONE:
+   ✓ Nessuna cella vuota in tabelle comparative
+   ✓ Ogni polizza ha una colonna completa in ogni tabella
+   ✓ Sezione "Top 3 Differenze" ripetuta N volte
+   ✓ Sezione "Pro e Contro" ripetuta N volte
+   ✓ Score cards ripetute N volte
 
 1. DINAMICITÀ 2-N POLIZZE
    ───────────────────────
@@ -612,13 +749,55 @@ REGOLE CRITICHE
 STRATEGIA ESTRAZIONE DATI
 ═══════════════════════════════════════════════════════════════════════════════
 
-STEP 1: IDENTIFICAZIONE POLIZZE
-────────────────────────────────
+STEP 1: IDENTIFICAZIONE POLIZZE E SETUP COLONNE
+────────────────────────────────────────────────
 
-Contare polizze: N
-Assegnare nome:
-- Se presente "attuale": Polizza 1
-- Altre: Preventivo Compagnia X
+⚠️ QUESTO È LO STEP PIÙ CRITICO - DETERMINA LA STRUTTURA FINALE
+
+a) CONTARE polizze presenti: N = ?
+   
+b) ASSEGNARE nomi univoci:
+   - Se presente "attuale" o "in corso": Polizza Attuale [Compagnia]
+   - Altre: Preventivo [Compagnia X], Preventivo [Compagnia Y], etc.
+   
+c) CREARE LISTA POLIZZE:
+   Esempio con 6 polizze:
+   1. Polizza Attuale Allianz
+   2. Preventivo Generali
+   3. Preventivo UnipolSai
+   4. Preventivo Linear
+   5. Preventivo ConTe
+   6. Preventivo Verti
+
+d) ⚠️ MAPPARE PLACEHOLDER → POLIZZE:
+   [NOME_POLIZZA_1] = "Polizza Attuale Allianz"
+   [NOME_POLIZZA_2] = "Preventivo Generali"
+   [NOME_POLIZZA_3] = "Preventivo UnipolSai"
+   [NOME_POLIZZA_4] = "Preventivo Linear"
+   [NOME_POLIZZA_5] = "Preventivo ConTe"
+   [NOME_POLIZZA_6] = "Preventivo Verti"
+
+e) ⚠️ VERIFICARE che OGNI tabella HTML avrà:
+   - 1 colonna "Voce" 
+   - N colonne dati (una per ogni polizza)
+   - Totale colonne = N + 1
+   
+   Esempio con 6 polizze:
+   <thead>
+       <tr>
+           <th class="voce-col">Voce</th>
+           <th>[NOME_POLIZZA_1]</th>
+           <th>[NOME_POLIZZA_2]</th>
+           <th>[NOME_POLIZZA_3]</th>
+           <th>[NOME_POLIZZA_4]</th>
+           <th>[NOME_POLIZZA_5]</th>
+           <th>[NOME_POLIZZA_6]</th>
+       </tr>
+   </thead>
+   
+   E poi OGNI riga <tr> deve avere 7 <td> (1 + 6)
+
+f) PROCEDERE agli step successivi SOLO dopo aver verificato questo setup
 
 STEP 2: DATI VEICOLO
 ────────────────────
@@ -735,17 +914,30 @@ OUTPUT FINALE
 
 Generare file HTML completo:
 
-1. Template template_confronto_rca_finale.html
-2. Sostituire TUTTI placeholder
-3. Tabelle dinamiche N colonne
-4. Blocchi ripetuti N volte
-5. Highlighting CSS corretto
-6. Calcoli precisi
-7. HTML valido
+1. ⚠️ PRIMA: Contare polizze N e preparare lista nomi
+2. Template template_confronto_rca_finale.html come BASE
+3. ⚠️ ESPANDERE tutte le tabelle da 2 a N colonne:
+   - Aggiungere <th> per ogni polizza oltre la seconda
+   - Aggiungere <td> per ogni polizza oltre la seconda
+   - Mantenere allineamento colonne in TUTTE le righe
+4. Sostituire TUTTI placeholder [CAMPO_X] per X da 1 a N
+5. Ripetere blocchi dinamici (Top 3 diff, Pro/Contro, Score cards) N volte
+6. Highlighting CSS corretto per TUTTE le N polizze
+7. Calcoli precisi con comparazioni cross N-polizze
+8. HTML valido e navigabile
+
+⚠️ CHECKLIST PRE-CONSEGNA:
+□ Ogni tabella ha esattamente N+1 colonne (voce + N polizze)
+□ Nessun placeholder [CAMPO_N] rimasto vuoto se N <= numero polizze
+□ Sezione "Top 3 Differenze" presente per tutte le N polizze
+□ Sezione "Pro e Contro" presente per tutte le N polizze  
+□ Score cards presenti per tutte le N polizze
+□ Tab "SINTESI ECONOMICA" ha Delta per N-1 polizze (esclusa attuale)
+□ Tutti i confronti usano la polizza attuale come baseline
 
 DELIVERABLE:
-File HTML completo, navigabile, decisionale per confronto polizze RCA con 
-sistema scalabile 2-N polizze.
+File HTML completo, navigabile, con sistema completamente scalabile da 2 a N 
+polizze, decisionale per confronto RCA con N preventivi simultanei.
 
 ═══════════════════════════════════════════════════════════════════════════════
 FINE PROMPT - RCA CONFRONTO

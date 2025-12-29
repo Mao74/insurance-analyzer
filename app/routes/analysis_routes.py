@@ -323,7 +323,7 @@ def download_analysis_html(
         raise HTTPException(status_code=404, detail="Report content not ready")
     
     # Generate filename
-    filename = f"PoliSight_Report_{analysis_id}{suffix}.html"
+    filename = f"Insurance-Lab.ai_Report_{analysis_id}{suffix}.html"
     if analysis.title:
         safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
         filename = f"{safe_title}{suffix}.html"
@@ -363,7 +363,7 @@ def download_analysis_pdf(
         raise HTTPException(status_code=404, detail="Report content not ready")
     
     # Generate filename (include suffix for clear/masked)
-    filename = f"PoliSight_Report_{analysis_id}{suffix}.pdf"
+    filename = f"Insurance-Lab.ai_Report_{analysis_id}{suffix}.pdf"
     if analysis.title:
         safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
         filename = f"{safe_title}{suffix}.pdf"
