@@ -1,0 +1,777 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: CONFRONTO POLIZZE RC - VERSIONE DINAMICA FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze RC (Responsabilità 
+Civile) per supportare decisione assicurato/broker.
+
+DESTINATARIO: Cliente, broker, risk manager
+TEMPLATE: template_confronto_rc_finale.html (1206 righe)
+APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CHIAREZZA DECISIONALE
+   - Raccomandazione finale immediata e chiara
+   - Top 3 differenze per ogni polizza
+   - Impatto economico netto evidenziato
+
+2. OGGETTIVITÀ
+   - Scoring matematico trasparente
+   - Pro/contro bilanciati per ogni opzione
+   - Evidenziare sia vantaggi che svantaggi
+
+3. SCALABILITÀ DINAMICA
+   - Funziona con 2, 3, 4... N polizze
+   - Tabelle si espandono automaticamente
+   - Logica di confronto adattiva
+
+4. HIGHLIGHTING INTELLIGENTE
+   - Verde = migliore per assicurato
+   - Rosso = peggiore per assicurato
+   - Blu = pari o neutrale
+   - Arancione = attenzione/warning
+
+═══════════════════════════════════════════════════════════════════════════════
+INPUT ATTESO
+═══════════════════════════════════════════════════════════════════════════════
+
+Riceverai in input:
+
+1. **DATI POLIZZE** (2 o più set completi)
+   - Formato: testo estratto da PDF polizza/preventivo
+   - Oppure: file JSON strutturato
+   - Oppure: report HTML già generati con prompt RC singolo
+
+2. **TEMPLATE HTML** (obbligatorio)
+   - File: template_confronto_rc_finale.html
+
+3. **CONTESTO AGGIUNTIVO** (opzionale)
+   - Priorità assicurato (copertura max vs prezzo min)
+   - Storico sinistri
+   - Budget disponibile
+
+═══════════════════════════════════════════════════════════════════════════════
+LOGICA DINAMICA NUMERO POLIZZE
+═══════════════════════════════════════════════════════════════════════════════
+
+IDENTIFICAZIONE POLIZZE
+───────────────────────────────────────────────────────────────────────────────
+
+STEP 1: Contare polizze in input
+- Minimo: 2 polizze
+- Massimo: illimitato (raccomandato ≤ 5 per leggibilità)
+
+STEP 2: Assegnare identificativo a ciascuna
+- Polizza 1: Sempre "Polizza Attuale" (se presente)
+- Polizza 2-N: "Preventivo Compagnia X" o nome personalizzato
+
+STEP 3: Generare colonne dinamiche
+- Tabelle: 1 colonna fissa (voce) + N colonne polizze
+- Comparazioni: sempre vs Polizza Attuale (se presente)
+
+ESEMPIO 2 POLIZZE:
+┌─────────────────┬──────────────┬──────────────┐
+│ Voce            │ Attuale HDI  │ Preventivo A │
+├─────────────────┼──────────────┼──────────────┤
+│ RCT Massimale   │ € 2.000.000  │ € 3.000.000  │
+└─────────────────┴──────────────┴──────────────┘
+
+ESEMPIO 4 POLIZZE:
+┌─────────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+│ Voce            │ Attuale HDI  │ Preventivo A │ Preventivo B │ Preventivo C │
+├─────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+│ RCT Massimale   │ € 2.000.000  │ € 3.000.000  │ € 2.500.000  │ € 5.000.000  │
+└─────────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Ragione sociale contraente
+
+[NUMERO_POLIZZE]
+Numero totale polizze confrontate (formato "N polizze")
+
+[DATA_CONFRONTO]
+Data confronto formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: RACCOMANDAZIONE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RACCOMANDAZIONE FINALE
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONE_TESTO]
+Raccomandazione chiara e diretta (2-3 righe)
+
+Esempi:
+"Si raccomanda di passare al Preventivo Generali che offre massimali superiori 
+(+50% RCT), franchigie inferiori (-40%), e premio ridotto (-15%)."
+
+"Si raccomanda di confermare la polizza HDI attuale: pur con premio leggermente 
+superiore (+8%), offre garanzie più ampie e franchigie significativamente inferiori."
+
+"Si raccomanda il Preventivo Allianz per miglior rapporto qualità/prezzo: 
+massimali adeguati, coperture complete, e risparmio del 22% sul premio."
+
+[RACCOMANDAZIONE_MOTIVAZIONE]
+Motivazione dettagliata (5-10 righe)
+
+Includere:
+- Perché questa polizza è consigliata
+- 3-4 ragioni specifiche
+- Confronto con alternative
+- Eventuali caveat o punti attenzione
+
+SUBSECTION: TOP 3 DIFFERENZE PER POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Ripetere blocco per OGNI polizza (dinamico)
+
+[NOME_POLIZZA_N]
+Nome polizza
+Esempi: "Polizza Attuale HDI", "Preventivo Generali", "Preventivo Allianz"
+
+[DIFF_1_POLIZZA_N]
+Prima differenza chiave (1 riga)
+Esempio: "Massimale RCT € 5.000.000 (+150% vs attuale)"
+
+[DIFF_2_POLIZZA_N]
+Seconda differenza chiave
+
+[DIFF_3_POLIZZA_N]
+Terza differenza chiave
+
+REGOLA: Focalizzare su differenze MATERIALI, non cosmetiche
+- Massimali significativamente diversi (±20%+)
+- Franchigie molto diverse (±30%+)
+- Garanzie presenti/assenti
+- Esclusioni critiche
+
+SUBSECTION: IMPATTO ECONOMICO
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_ATTUALE]
+Premio lordo polizza attuale formato "€ XX.XXX"
+
+[PREMIO_CONSIGLIATO]
+Premio lordo opzione consigliata formato "€ XX.XXX"
+
+[DELTA_PREMIO]
+Delta premio (consigliato - attuale)
+Formato: "€ +X.XXX" oppure "€ -X.XXX"
+
+[VARIAZIONE_PERC]
+Variazione percentuale
+Formato: "+X%" oppure "-X%"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: SINTESI ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CONFRONTO ECONOMICO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella DINAMICA: 1 colonna voce + N colonne polizze
+
+Per CIASCUNA polizza:
+
+[PREMIO_IMP_N]
+Premio imponibile formato "€ XX.XXX"
+
+[IMPOSTE_N]
+Imposte formato "€ XXX"
+
+[SSN_N]
+SSN formato "€ XXX"
+
+[PREMIO_LORDO_N]
+Premio lordo totale formato "€ XX.XXX"
+
+[DIFF_CLASS_PREMIO_N]
+Classe CSS highlighting:
+- "diff-better" se migliore (più basso) vs altri
+- "diff-worse" se peggiore (più alto) vs altri
+- "diff-neutral" se pari
+
+[FRAZIONAMENTO_N]
+Frazionamento: "Annuale", "Semestrale", "Trimestrale", "Mensile"
+
+[RATA_N]
+Importo rata formato "€ X.XXX"
+
+SUBSECTION: ANALISI DELTA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con 1 riga per OGNI polizza (esclusa attuale se presente)
+
+[NOME_POLIZZA_N]
+
+[DELTA_VS_ATTUALE_N]
+Premio polizza N formato "€ XX.XXX"
+
+[VARIAZIONE_EURO_N]
+Delta vs attuale formato "€ +X.XXX" o "€ -X.XXX"
+
+[DIFF_CLASS_N]
+Classe CSS:
+- "diff-better" se risparmio
+- "diff-worse" se costo maggiore
+
+[VARIAZIONE_PERC_N]
+Variazione % formato "+X%" o "-X%"
+
+[VALUTAZIONE_N]
+Valutazione economica: "Risparmio", "Costo maggiore", "Pari"
+
+[BADGE_CLASS_N]
+Classe badge: "badge-migliore", "badge-peggiore", "badge-pari"
+
+[NOTE_CONFRONTO_PREMIO]
+Note sul confronto premi (3-5 righe)
+Esempio: "Tutti i preventivi sono calcolati con stesse garanzie e massimali base. 
+Preventivo Generali include frazionamento semestrale senza maggiorazioni."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: CONFRONTO MASSIMALI
+═══════════════════════════════════════════════════════════════════════════════
+
+3 TABELLE PRINCIPALI (RCT, RCO, RCP) + 1 ALTRE GARANZIE
+
+Tutte tabelle DINAMICHE: 1 colonna voce + N colonne polizze
+
+TABELLA RCT
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUNA polizza:
+
+[RCT_MASSIMALE_SINISTRO_N]
+Massimale per sinistro formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_RCT_SINISTRO_N]
+Classe CSS highlighting:
+- "diff-better" se massimale più alto vs altri
+- "diff-worse" se più basso
+- "diff-neutral" se pari
+
+[RCT_MASSIMALE_PERSONA_N]
+Massimale per persona formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_RCT_PERSONA_N]
+
+[RCT_MASSIMALE_ANNO_N]
+Massimale per anno formato "€ X.XXX.XXX" o "Illimitato"
+
+TABELLA RCO
+───────────────────────────────────────────────────────────────────────────────
+
+[RCO_MASSIMALE_SINISTRO_N]
+[DIFF_CLASS_RCO_SINISTRO_N]
+
+[RCO_MASSIMALE_PERSONA_N]
+[DIFF_CLASS_RCO_PERSONA_N]
+
+[RCO_MASSIMALE_ANNO_N]
+
+TABELLA RCP
+───────────────────────────────────────────────────────────────────────────────
+
+[RCP_MASSIMALE_SINISTRO_N]
+[DIFF_CLASS_RCP_SINISTRO_N]
+
+[RCP_MASSIMALE_ANNO_N]
+
+TABELLA ALTRE GARANZIE
+───────────────────────────────────────────────────────────────────────────────
+
+[INQUIN_MASSIMALE_N]
+Massimale inquinamento formato "€ XXX.XXX" o "Non coperto"
+
+[CUSTODIA_MASSIMALE_N]
+Massimale custodia
+
+[COMMIT_MASSIMALE_N]
+Massimale committente/proprietario
+
+REGOLE HIGHLIGHTING MASSIMALI
+───────────────────────────────────────────────────────────────────────────────
+
+Verde (diff-better):
+- Massimale più alto tra tutte polizze
+- Se pari massimo, tutti verde
+
+Rosso (diff-worse):
+- Massimale più basso tra tutte polizze
+- "Non coperto" sempre rosso
+
+Blu (diff-neutral):
+- Massimali intermedi
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: CONFRONTO FRANCHIGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella DINAMICA raggruppata per garanzia
+
+Per CIASCUNA polizza e garanzia:
+
+[FRANCHIGIA_RCT_N]
+Franchigia RCT formato "€ X.XXX" o "Nessuna"
+
+[DIFF_CLASS_FRANCH_RCT_N]
+Classe CSS:
+- "diff-better" se franchigia più bassa (MEGLIO per assicurato)
+- "diff-worse" se più alta (PEGGIO)
+- "diff-neutral" se pari
+
+[SCOPERTO_RCT_N]
+Scoperto RCT formato "X%" o "Nessuno"
+
+Ripetere per:
+- RCO: [FRANCHIGIA_RCO_N], [SCOPERTO_RCO_N]
+- RCP: [FRANCHIGIA_RCP_N], [SCOPERTO_RCP_N]
+- Inquinamento: [FRANCHIGIA_INQUIN_N]
+- Custodia: [FRANCHIGIA_CUSTODIA_N]
+
+[ANALISI_IMPATTO_FRANCHIGIE]
+Analisi impatto franchigie (5-10 righe)
+
+Esempio:
+"Franchigia RCT Allianz (€ 500) è 80% inferiore vs HDI (€ 2.500). Su sinistro 
+medio € 15.000, questo rappresenta risparmio € 2.000 per evento.
+
+Considerando storico 2 sinistri/anno, franchigia inferiore vale € 4.000/anno 
+anche se premio è € 800 superiore. ROI positivo.
+
+Franchigia RCO identica su tutte polizze (€ 1.000). Nessun vantaggio comparativo."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: CONFRONTO GARANZIE
+═══════════════════════════════════════════════════════════════════════════════
+
+2 TABELLE: Garanzie + Estensioni Territoriali
+
+Tutte DINAMICHE: 1 colonna voce + N colonne polizze
+
+TABELLA GARANZIE
+───────────────────────────────────────────────────────────────────────────────
+
+Raggruppate per sezione (RCT, RCO, RCP, Altre)
+
+Per CIASCUNA garanzia e polizza:
+
+[GAR_NOME_N]
+Copertura garanzia
+Formato: "Inclusa", "Inclusa - Massimale € XXX", "Esclusa", "Inclusa con limitazioni"
+
+Garanzie da confrontare:
+
+RCT:
+- GAR_INCENDIO_N (Danni da incendio)
+- GAR_SERBATOI_N (Serbatoi interrati)
+- GAR_INTERRUZIONI_N (Interruzioni/sospensioni)
+
+RCO:
+- GAR_MALATTIE_N (Malattie professionali)
+- GAR_RETROATT_N (Retroattività malattie - anni)
+- GAR_RIVALSA_INAIL_N (Rivalsa INAIL)
+
+RCP:
+- GAR_POSTDEL_N (Post-delivery - anni)
+- GAR_RICHIAMO_N (Richiamo prodotti)
+
+Altre:
+- GAR_INQUIN_ACC_N (Inquinamento accidentale)
+- GAR_LAV_N (Cose in lavorazione)
+- GAR_COMMITTENTE_N (RC Committente)
+- GAR_PROPRIETARIO_N (RC Proprietario)
+
+TABELLA ESTENSIONI TERRITORIALI
+───────────────────────────────────────────────────────────────────────────────
+
+[TERR_RCT_BASE_N]
+Territorio base RCT
+Esempio: "Italia", "Europa", "Mondo"
+
+[TERR_RCT_EST_N]
+Estensione RCT
+Esempio: "Europa inclusa", "USA/Canada esclusi", "Mondo intero"
+
+[TERR_RCP_BASE_N]
+[TERR_RCP_EST_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: ESCLUSIONI CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ESCLUSIONI PER POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Ripetere blocco per OGNI polizza (dinamico)
+
+[NOME_POLIZZA_N]
+
+Esclusioni Generali (3-5 principali):
+[ESCLUSIONE_GEN_1_POLN]
+[ESCLUSIONE_GEN_2_POLN]
+[ESCLUSIONE_GEN_3_POLN]
+
+Esclusioni RCO (2-3):
+[ESCLUSIONE_RCO_1_POLN]
+[ESCLUSIONE_RCO_2_POLN]
+
+Esclusioni RCP (2-3):
+[ESCLUSIONE_RCP_1_POLN]
+[ESCLUSIONE_RCP_2_POLN]
+
+Limitazioni (2-3):
+[LIMITAZIONE_1_POLN]
+[LIMITAZIONE_2_POLN]
+
+SUBSECTION: TABELLA DIFFERENZE CRITICHE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella DINAMICA con esclusioni chiave
+
+[ESCL_AMIANTO_N]
+Esempio: "Escluso", "Incluso sublimite € 100.000", "Incluso massimale pieno"
+
+[ESCL_OGM_N]
+[ESCL_CEM_N]
+[ESCL_SANZIONI_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 7: SCORING DETTAGLIATO
+═══════════════════════════════════════════════════════════════════════════════
+
+SCORING MATEMATICO OGGETTIVO
+
+METODOLOGIA
+───────────────────────────────────────────────────────────────────────────────
+
+Totale: 100 punti distribuiti su 5 categorie
+
+1. MASSIMALI (30 punti)
+   - RCT massimale (12 punti)
+   - RCO massimale (10 punti)
+   - RCP massimale (8 punti)
+
+2. FRANCHIGIE (20 punti)
+   - Franchigie RCT/RCO/RCP (inversamente proporzionale)
+
+3. GARANZIE (25 punti)
+   - Ampiezza garanzie (15 punti)
+   - Estensioni territoriali (10 punti)
+
+4. ESCLUSIONI (15 punti)
+   - Minori esclusioni = più punti
+
+5. RAPPORTO QUALITÀ/PREZZO (10 punti)
+   - Value for money
+
+CALCOLO PUNTEGGI
+───────────────────────────────────────────────────────────────────────────────
+
+Per CATEGORIA:
+- Identificare polizza con valore migliore = punteggio pieno
+- Altre polizze: proporzionale vs migliore
+
+Esempio Massimali RCT (12 punti):
+- Polizza A: € 5.000.000 → 12/12 punti
+- Polizza B: € 3.000.000 → 7.2/12 punti (60% di A)
+- Polizza C: € 2.000.000 → 4.8/12 punti (40% di A)
+
+Esempio Franchigie RCT (inversamente):
+- Polizza A: € 500 → 12/12 punti (più bassa)
+- Polizza B: € 1.000 → 6/12 punti
+- Polizza C: € 2.500 → 2.4/12 punti
+
+SUBSECTION: SCORE TOTALE
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUNA polizza:
+
+[SCORE_TOTALE_N]
+Score totale formato "XX" (da 0 a 100)
+
+[WINNER_CLASS_N]
+Classe CSS: "winner" se score più alto, altrimenti ""
+
+SUBSECTION: DETTAGLIO PUNTEGGI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella DINAMICA con breakdown scoring
+
+Per OGNI categoria e polizza:
+
+[SCORE_MASSIMALI_N]
+Punteggio categoria 1 formato "XX / 30"
+
+[DIFF_CLASS_SCORE_MASS_N]
+Highlighting: verde se migliore, rosso se peggiore
+
+[SUBSCORE_RCT_MASS_N]
+Sub-score RCT massimale formato "XX / 12"
+
+[SUBSCORE_RCO_MASS_N]
+[SUBSCORE_RCP_MASS_N]
+
+Ripetere per:
+- Franchigie: [SCORE_FRANCHIGIE_N], [SUBSCORE_FRANCH_N]
+- Garanzie: [SCORE_GARANZIE_N], [SUBSCORE_AMPIEZZA_N], [SUBSCORE_TERRITORIO_N]
+- Esclusioni: [SCORE_ESCLUSIONI_N], [SUBSCORE_ESCLUSIONI_N]
+- QPR: [SCORE_QPR_N], [SUBSCORE_VALUE_N]
+
+[METODOLOGIA_SCORING]
+Spiegazione metodologia (5-8 righe)
+
+Esempio:
+"Scoring basato su 5 categorie ponderate. Massimali (30%) e Garanzie (25%) hanno 
+peso maggiore essendo fattori critici per adeguatezza copertura.
+
+Franchigie (20%) inversamente proporzionali: più basse = più punti. Esclusioni 
+(15%) valutano ampiezza copertura. QPR (10%) bilancia qualità vs prezzo.
+
+Per ogni categoria, polizza con valore migliore ottiene punteggio pieno. Altre 
+polizze ricevono punteggio proporzionale."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 8: PRO E CONTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANALISI PER POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Ripetere blocco per OGNI polizza (dinamico)
+
+[NOME_POLIZZA_N]
+
+PUNTI DI FORZA (4-6 punti):
+[PRO_1_POLN]
+[PRO_2_POLN]
+[PRO_3_POLN]
+[PRO_4_POLN]
+
+Esempi:
+"Massimale RCT € 5.000.000 (+150% vs attuale) adeguato per rischi aziendali"
+"Franchigia RCT € 500 (-80% vs attuale) riduce esposizione finanziaria"
+"Garanzia inquinamento accidentale inclusa senza sublimiti"
+"Premio competitivo (-12% vs attuale) con coperture superiori"
+
+PUNTI DI DEBOLEZZA (4-6 punti):
+[CONTRO_1_POLN]
+[CONTRO_2_POLN]
+[CONTRO_3_POLN]
+[CONTRO_4_POLN]
+
+Esempi:
+"Esclusione danni da amianto senza deroga (critico per settore edilizia)"
+"Retroattività malattie professionali solo 2 anni (vs 5 anni attuale)"
+"Massimale RCO € 1.000.000 inferiore vs fabbisogno stimato € 2.000.000"
+"Territorio RCP limitato a Europa (esclude export USA)"
+
+SUBSECTION: SINTESI FINALE
+───────────────────────────────────────────────────────────────────────────────
+
+[SINTESI_COMPARATIVA_FINALE]
+Sintesi comparativa complessiva (10-15 righe)
+
+Esempio:
+"POLIZZA ATTUALE HDI: Solida ma costosa. Massimali adeguati, garanzie complete, 
+ma franchigie elevate e premio +18% vs mercato.
+
+PREVENTIVO GENERALI: Miglior rapporto qualità/prezzo. Massimali superiori (+50% 
+RCT), franchigie inferiori (-60%), garanzie ampliate (inquinamento incluso), e 
+risparmio 15% su premio. Unico neo: esclusione amianto vs HDI che copre.
+
+PREVENTIVO ALLIANZ: Opzione economica (-22% premio) ma massimali inferiori 
+(-30% RCT/RCO). Adeguata per azienda con rischi limitati, inadeguata per 
+esposizione attuale.
+
+RACCOMANDAZIONE: Generali per ottimale bilanciamento copertura/prezzo. In 
+alternativa, confermare HDI se criticità amianto è prioritaria vs risparmio."
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DINAMICITÀ NUMERO POLIZZE
+   ──────────────────────────
+   Sistema DEVE funzionare con 2-N polizze
+   Tabelle si espandono automaticamente
+   Highlighting adattivo (vs tutte polizze presenti)
+
+2. RACCOMANDAZIONE CHIARA
+   ───────────────────────
+   SEMPRE identificare polizza consigliata
+   Motivazione oggettiva e dettagliata
+   Se nessuna ottimale: spiegare perché
+
+3. HIGHLIGHTING INTELLIGENTE
+   ──────────────────────────
+   Verde = migliore PER ASSICURATO
+   - Massimali alti
+   - Franchigie basse
+   - Premio basso
+   - Garanzie ampie
+   
+   Rosso = peggiore PER ASSICURATO
+   - Massimali bassi
+   - Franchigie alte
+   - Premio alto
+   - Garanzie limitate
+
+4. TOP 3 DIFFERENZE
+   ────────────────
+   Focalizzare su differenze MATERIALI
+   Non elencare differenze minori
+   Quantificare impatto quando possibile
+
+5. SCORING MATEMATICO
+   ──────────────────
+   Sempre calcolare score 0-100
+   Metodologia trasparente
+   Breakdown per categoria
+
+6. PRO/CONTRO BILANCIATI
+   ──────────────────────
+   4-6 pro E 4-6 contro per OGNI polizza
+   Oggettività: anche polizza consigliata ha contro
+   Specifici, non generici
+
+7. OMOGENEITÀ DATI
+   ───────────────
+   Verificare tutti massimali comparabili
+   Stesse condizioni base (frazionamento, ecc.)
+   Evidenziare eventuali differenze strutturali
+
+8. CLASSE CSS CORRETTA
+   ───────────────────
+   diff-better / diff-worse / diff-neutral
+   badge-migliore / badge-peggiore / badge-pari
+   winner (per score card vincente)
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: IDENTIFICAZIONE POLIZZE
+────────────────────────────────
+
+Contare polizze in input: N
+Assegnare nome a ciascuna:
+- Se presente "attuale": Polizza 1 = Attuale
+- Altre: Preventivo Compagnia X
+
+STEP 2: ESTRAZIONE DATI PER POLIZZA
+────────────────────────────────────
+
+Per OGNI polizza estrarre:
+
+ECONOMICO:
+- Premio imponibile, imposte, SSN, lordo
+- Frazionamento, rata
+
+MASSIMALI:
+- RCT: per sinistro, persona, anno
+- RCO: per sinistro, persona, anno
+- RCP: per sinistro, anno
+- Altre garanzie
+
+FRANCHIGIE:
+- RCT, RCO, RCP
+- Scoperti
+- Altre garanzie
+
+GARANZIE:
+- 12-15 garanzie principali (inclusa/esclusa)
+- Estensioni territoriali
+
+ESCLUSIONI:
+- 5-8 esclusioni critiche
+- Limitazioni importanti
+
+STEP 3: COMPARAZIONE CROSS-POLIZZE
+───────────────────────────────────
+
+Per OGNI campo comparabile:
+- Identificare valore migliore
+- Identificare valore peggiore
+- Calcolare delta vs attuale (se presente)
+- Assegnare classe CSS highlighting
+
+STEP 4: SCORING
+───────────────
+
+Calcolare score 0-100 per ogni polizza:
+1. Massimali (30 pt)
+2. Franchigie (20 pt)
+3. Garanzie (25 pt)
+4. Esclusioni (15 pt)
+5. QPR (10 pt)
+
+STEP 5: TOP 3 DIFFERENZE
+─────────────────────────
+
+Per OGNI polizza:
+- Identificare 3 differenze più significative
+- Quantificare impatto
+- Ordinare per rilevanza
+
+STEP 6: PRO/CONTRO
+──────────────────
+
+Per OGNI polizza:
+- Elencare 4-6 punti forza
+- Elencare 4-6 punti debolezza
+- Bilanciare oggettivamente
+
+STEP 7: RACCOMANDAZIONE
+────────────────────────
+
+Sulla base di:
+- Score totale
+- Pro/contro
+- Impatto economico
+- Adeguatezza copertura
+
+Formulare raccomandazione chiara con motivazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_confronto_rc_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle dinamiche:
+   - Espandere colonne da N polizze
+   - Ripetere righe per ogni polizza
+4. Blocchi ripetuti:
+   - Top 3 differenze (N blocchi)
+   - Esclusioni per polizza (N blocchi)
+   - Pro/contro (N blocchi)
+   - Score cards (N cards)
+5. Highlighting CSS:
+   - diff-better / diff-worse applicato correttamente
+   - badge con classe corretta
+   - winner class su score più alto
+6. Calcoli:
+   - Delta premi
+   - Variazioni %
+   - Score 0-100
+7. HTML valido
+
+DELIVERABLE:
+File HTML completo, navigabile, stampabile, decisione-ready per confronto 
+polizze RC con sistema scalabile dinamicamente 2-N polizze.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

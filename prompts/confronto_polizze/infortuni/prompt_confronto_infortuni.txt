@@ -1,0 +1,150 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: CONFRONTO POLIZZE INFORTUNI - VERSIONE DINAMICA FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze Infortuni per 
+supportare decisione contraente/azienda.
+
+DESTINATARIO: Cliente, HR, risk manager, privato
+TEMPLATE: template_confronto_infortuni_finale.html (1134 righe)
+APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS PROTEZIONE PERSONA
+   - Massimali Morte, IP, IT
+   - Garanzie integrative (spese mediche, diaria)
+   - Franchigie e scoperti IP
+   - Copertura attività (professionale/extra)
+
+2. CHIAREZZA DECISIONALE
+   - Raccomandazione immediata
+   - Top 3 differenze per polizza
+   - Impatto economico netto
+
+3. DINAMICITÀ 2-N
+   - Tabelle espandibili
+   - Highlighting adattivo
+   - Comparazioni vs polizza attuale
+
+4. SPECIFICITÀ INFORTUNI
+   - Tipo liquidazione IP (progressiva/fissa)
+   - Ripartizione prof/extra %
+   - Territorio e attività sportive
+   - Franchigie giorni IT
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE - LEGGI ATTENTAMENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. LIQUIDAZIONE IP - CRITICA
+   ───────────────────────────
+   Progressiva vs Fissa = DIFFERENZA ENORME
+   
+   Progressiva (MIGLIORE):
+   - IP 50% → indennizzo ~75-80% massimale
+   - Esempio: IP 50% su € 500.000 = € 375.000-400.000
+   
+   Fissa (PEGGIORE):
+   - IP 50% → indennizzo 50% massimale
+   - Esempio: IP 50% su € 500.000 = € 250.000
+   
+   Differenza: € 125.000-150.000 stesso sinistro!
+   Progressiva vale +5 punti bonus scoring
+
+2. FRANCHIGIA IP
+   ──────────────
+   Franchigia % su IP indennizzabile
+   
+   Esempi:
+   - IP 50%, franchigia 5%, massimale € 500.000
+     Indennizzo: (50% - 5%) × € 500.000 = € 225.000
+   
+   - IP 50%, franchigia 10%, massimale € 500.000
+     Indennizzo: (50% - 10%) × € 500.000 = € 200.000
+   
+   5% vs 10% = € 25.000 differenza!
+   
+   Verde = franchigia bassa (MEGLIO)
+
+3. SCOPERTO IP
+   ────────────
+   Si applica DOPO franchigia, per fascia IP
+   
+   Esempio:
+   IP 30%, franchigia 5%, scoperto 1-25% = 25%
+   - IP indennizzabile: 30% - 5% = 25%
+   - Scoperto: 25% × 25% = 6,25%
+   - IP finale: 25% - 6,25% = 18,75%
+
+4. RIPARTIZIONE RISCHIO
+   ────────────────────
+   24/24 = MIGLIORE (tutto coperto)
+   Prof 50% / Extra 50% = OK
+   Solo professionale = ATTENZIONE (extra escluso!)
+
+5. TERRITORIO
+   ───────────
+   Base: Italia, Europa, Mondo
+   USA/Canada: spesso esclusi o opzionali
+   Verificare viaggi assicurati
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE COMPLETA
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1-12: vedi sezione dettagliata sotto
+
+═══════════════════════════════════════════════════════════════════════════════
+PLACEHOLDER TEMPLATE - TUTTI OBBLIGATORI
+═══════════════════════════════════════════════════════════════════════════════
+
+HEADER: [CONTRAENTE] [TIPO_POLIZZA] [NUMERO_POLIZZE] [DATA_CONFRONTO]
+
+TAB 1: [RACCOMANDAZIONE_TESTO] [RACCOMANDAZIONE_MOTIVAZIONE] 
+[NOME_POLIZZA_N] [DIFF_1_POLIZZA_N] [DIFF_2_POLIZZA_N] [DIFF_3_POLIZZA_N]
+[PREMIO_ATTUALE] [PREMIO_CONSIGLIATO] [DELTA_PREMIO] [VARIAZIONE_PERC]
+
+TAB 2: [PREMIO_BASE_N] [PREMIO_INTEGRATIVE_N] [IMPOSTE_N] [PREMIO_LORDO_N]
+[DIFF_CLASS_PREMIO_N] [FRAZIONAMENTO_N] [RATA_N] [TASSO_MILLE_N]
+[PREMIO_ANNUO_N] [DELTA_N] [VARIAZIONE_PERC_N] [VALUTAZIONE_N] [BADGE_CLASS_N]
+
+TAB 3: [MASS_MORTE_N] [MASS_MORTE_STRADA_N] [MASS_MORTE_GRANDI_N] [DIFF_CLASS_MORTE_N]
+[MASS_IP_N] [MASS_IP_STRADA_N] [MASS_IP_GRANDI_N] [TIPO_LIQ_IP_N] [DIFF_CLASS_IP_N]
+[DIARIA_N] [MAX_GIORNI_IT_N] [FRANCHIGIA_IT_N] [DIFF_CLASS_DIARIA_N] [DIFF_CLASS_FRANCH_IT_N]
+
+TAB 4: [GAR_SPESE_MED_N] [GAR_SPESE_OSP_N] [GAR_CHIRURGIA_N] [GAR_DIARIA_RIC_N]
+[GAR_DIARIA_GESSO_N] [GAR_ASSIST_DOM_N] [GAR_PERDITA_AVV_N] [GAR_SOSTITUZIONE_N]
+[GAR_TUTELA_N] [GAR_ESTETICO_N] [MASS_SPESE_MED_N] [MASS_DIARIA_RIC_N] [MASS_TUTELA_N]
+
+TAB 5: [FRANCH_MORTE_N] [FRANCH_IP_N] [FRANCH_IT_N] [FRANCH_SPESE_N] [FRANCH_DIARIA_N]
+[DIFF_CLASS_FRANCH_IP_N] [SCOPERTO_IP_1_25_POLN] [SCOPERTO_IP_26_50_POLN] 
+[SCOPERTO_IP_51_100_POLN] [ANALISI_IMPATTO_FRANCHIGIE]
+
+TAB 6: [PERC_PROF_N] [PERC_EXTRA_N] [H24_N] [TERRITORIO_BASE_N] [EST_MONDO_N]
+[USA_CANADA_N] [SPORT_AMATORIALI_N] [SPORT_INVERNALI_N] [SPORT_ESTREMI_N]
+
+TAB 7: [SCORE_TOTALE_N] [WINNER_CLASS_N] [SCORE_MASSIMALI_N] [SCORE_GARANZIE_N]
+[SCORE_FRANCHIGIE_N] [SCORE_ATTIVITA_N] [SCORE_QPR_N] [DIFF_CLASS_SCORE_*_N]
+[METODOLOGIA_SCORING]
+
+TAB 8: [PRO_1-4_POLN] [CONTRO_1-4_POLN] [SINTESI_COMPARATIVA_FINALE]
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Template HTML completo
+2. TUTTI placeholder sostituiti
+3. Tabelle dinamiche N colonne
+4. Highlighting corretto
+5. Calcoli precisi franchigie/indennizzi
+6. HTML valido
+
+DELIVERABLE: Report confronto Infortuni decisional-ready.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

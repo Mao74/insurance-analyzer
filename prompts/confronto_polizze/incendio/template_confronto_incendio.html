@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Polizze Incendio - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1e293b;
+            --primary-blue: #2563eb;
+            --bg-light: #f8fafc;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --green-light: #dcfce7;
+            --green-dark: #166534;
+            --red-light: #fee2e2;
+            --red-dark: #991b1b;
+            --orange-light: #fed7aa;
+            --orange-dark: #9a3412;
+            --blue-light: #dbeafe;
+            --blue-dark: #1e40af;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid var(--border-strong);
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0 0 20px 0;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 11px;
+        }
+
+        .header-meta-label {
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .header-meta-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: var(--bg-light);
+            border-bottom: 2px solid var(--border-strong);
+            overflow-x: auto;
+        }
+
+        .tab-link {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-link:hover {
+            color: var(--primary-blue);
+            background: white;
+        }
+
+        .tab-link.active {
+            color: var(--primary-blue);
+            background: white;
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SECTION */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subsection-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 20px 0 12px 0;
+        }
+
+        /* RACCOMANDAZIONE BOX */
+        .raccomandazione-box {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .raccomandazione-box h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .raccomandazione-box p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .raccomandazione-box .motivo {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            font-size: 12px;
+        }
+
+        /* COMPARISON TABLE */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        .comparison-table th {
+            background: var(--primary-dark);
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .comparison-table th.voce-col {
+            width: 25%;
+        }
+
+        .comparison-table td {
+            padding: 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .comparison-table .row-header {
+            font-weight: 600;
+            background: var(--bg-light);
+            color: var(--primary-dark);
+        }
+
+        /* DIFF HIGHLIGHTING */
+        .diff-better {
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        .diff-worse {
+            background: var(--red-light);
+            color: var(--red-dark);
+            font-weight: 600;
+        }
+
+        .diff-neutral {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+        }
+
+        .diff-warning {
+            background: var(--orange-light);
+            color: var(--orange-dark);
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-migliore {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .badge-peggiore {
+            background: var(--red-light);
+            color: var(--red-dark);
+        }
+
+        .badge-pari {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+        }
+
+        /* SCORING */
+        .score-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            flex: 1;
+            background: white;
+            border: 2px solid var(--border-strong);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .score-card.winner {
+            border-color: var(--green-dark);
+            background: var(--green-light);
+        }
+
+        .score-card-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .score-card-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .score-card.winner .score-card-value {
+            color: var(--green-dark);
+        }
+
+        .score-card-max {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* PRO/CONTRO */
+        .pro-contro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pro-contro-card {
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .pro-contro-header {
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pro-header {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .contro-header {
+            background: var(--red-light);
+            color: var(--red-dark);
+        }
+
+        .pro-contro-list {
+            padding: 15px;
+        }
+
+        .pro-contro-list li {
+            margin-bottom: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* CURRENCY */
+        .currency {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #dbeafe;
+            border-left: 3px solid var(--primary-blue);
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .note-box strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            padding: 14px 18px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .alert-warning {
+            background: #fff7ed;
+            border-color: var(--orange-dark);
+            color: var(--orange-dark);
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: var(--primary-blue);
+            color: var(--blue-dark);
+        }
+
+        /* LISTA */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                border: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>CONFRONTO POLIZZE INCENDIO</h1>
+            <p class="header-subtitle">Analisi Comparativa Assicurazione Property/Fire</p>
+            
+            <div class="header-meta">
+                <div>
+                    <div class="header-meta-label">Contraente</div>
+                    <div class="header-meta-value">[CONTRAENTE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Ubicazione</div>
+                    <div class="header-meta-value">[UBICAZIONE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Numero Polizze</div>
+                    <div class="header-meta-value">[NUMERO_POLIZZE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Data Confronto</div>
+                    <div class="header-meta-value">[DATA_CONFRONTO]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'tab1')">1. RACCOMANDAZIONE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab2')">2. SINTESI ECONOMICA</button>
+            <button class="tab-link" onclick="openTab(event, 'tab3')">3. SOMME ASSICURATE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab4')">4. GARANZIE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab5')">5. FRANCHIGIE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab6')">6. RISCHI CATASTROFALI</button>
+            <button class="tab-link" onclick="openTab(event, 'tab7')">7. SCORING</button>
+            <button class="tab-link" onclick="openTab(event, 'tab8')">8. PRO E CONTRO</button>
+        </div>
+
+        <!-- TAB 1: RACCOMANDAZIONE -->
+        <div id="tab1" class="tab-content active">
+            <div class="raccomandazione-box">
+                <h3>🎯 RACCOMANDAZIONE FINALE</h3>
+                <p><strong>[RACCOMANDAZIONE_TESTO]</strong></p>
+                <div class="motivo">
+                    <strong>Motivazione:</strong><br>
+                    [RACCOMANDAZIONE_MOTIVAZIONE]
+                </div>
+            </div>
+
+            <h2 class="section-title">Sintesi Differenze Chiave</h2>
+            
+            <h3 class="subsection-title">Top 3 Differenze per Polizza</h3>
+            
+            <!-- Ripetere per OGNI polizza -->
+            <div style="margin-bottom: 30px;">
+                <h4 style="font-size:13px; font-weight:700; color:var(--primary-blue); margin:0 0 12px 0;">[NOME_POLIZZA_1]</h4>
+                <ol style="margin:0; padding-left:20px;">
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_1_POLIZZA_1]</li>
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_2_POLIZZA_1]</li>
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_3_POLIZZA_1]</li>
+                </ol>
+            </div>
+
+            <h3 class="subsection-title">Impatto Economico</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Polizza Attuale</span>
+                    <span class="info-value currency">[PREMIO_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Opzione Consigliata</span>
+                    <span class="info-value currency">[PREMIO_CONSIGLIATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Delta Economico</span>
+                    <span class="info-value currency">[DELTA_PREMIO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Variazione %</span>
+                    <span class="info-value">[VARIAZIONE_PERC]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: SINTESI ECONOMICA -->
+        <div id="tab2" class="tab-content">
+            <h2 class="section-title">Confronto Economico</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Voce</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Premio Incendio Base</td>
+                        <td class="currency">[PREMIO_BASE_1]</td>
+                        <td class="currency">[PREMIO_BASE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Garanzie Aggiuntive</td>
+                        <td class="currency">[PREMIO_GARANZIE_1]</td>
+                        <td class="currency">[PREMIO_GARANZIE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Terremoto</td>
+                        <td class="currency">[PREMIO_TERREMOTO_1]</td>
+                        <td class="currency">[PREMIO_TERREMOTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Imposte</td>
+                        <td class="currency">[IMPOSTE_1]</td>
+                        <td class="currency">[IMPOSTE_2]</td>
+                    </tr>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td class="row-header">PREMIO LORDO TOTALE</td>
+                        <td class="currency [DIFF_CLASS_PREMIO_1]">[PREMIO_LORDO_1]</td>
+                        <td class="currency [DIFF_CLASS_PREMIO_2]">[PREMIO_LORDO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Tasso per Mille</td>
+                        <td>[TASSO_MILLE_1]</td>
+                        <td>[TASSO_MILLE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Frazionamento</td>
+                        <td>[FRAZIONAMENTO_1]</td>
+                        <td>[FRAZIONAMENTO_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Analisi Delta Economico</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Polizza</th>
+                        <th>Premio Annuo</th>
+                        <th>Delta vs Attuale</th>
+                        <th>Variazione %</th>
+                        <th>Valutazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[NOME_POLIZZA_N]</td>
+                        <td class="currency">[PREMIO_ANNUO_N]</td>
+                        <td class="currency [DIFF_CLASS_N]">[DELTA_N]</td>
+                        <td>[VARIAZIONE_PERC_N]</td>
+                        <td><span class="badge [BADGE_CLASS_N]">[VALUTAZIONE_N]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 3: SOMME ASSICURATE -->
+        <div id="tab3" class="tab-content">
+            <h2 class="section-title">Confronto Somme Assicurate</h2>
+
+            <h3 class="subsection-title">Fabbricato</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Voce</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Somma Assicurata Fabbricato</td>
+                        <td class="currency [DIFF_CLASS_FABB_1]">[SA_FABBRICATO_1]</td>
+                        <td class="currency [DIFF_CLASS_FABB_2]">[SA_FABBRICATO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Valore a Nuovo</td>
+                        <td>[VALORE_NUOVO_FABB_1]</td>
+                        <td>[VALORE_NUOVO_FABB_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Contenuto</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Voce</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Somma Assicurata Contenuto</td>
+                        <td class="currency [DIFF_CLASS_CONT_1]">[SA_CONTENUTO_1]</td>
+                        <td class="currency [DIFF_CLASS_CONT_2]">[SA_CONTENUTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Macchinari/Impianti</td>
+                        <td class="currency">[SA_MACCHINARI_1]</td>
+                        <td class="currency">[SA_MACCHINARI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Merci</td>
+                        <td class="currency">[SA_MERCI_1]</td>
+                        <td class="currency">[SA_MERCI_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Perdita Pigioni / Perdita Canoni</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Voce</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Somma Assicurata Perdita Pigioni</td>
+                        <td class="currency">[SA_PIGIONI_1]</td>
+                        <td class="currency">[SA_PIGIONI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Durata Indennizzo (mesi)</td>
+                        <td>[DURATA_PIGIONI_1]</td>
+                        <td>[DURATA_PIGIONI_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Adeguatezza Somme Assicurate:</strong>
+                [NOTE_SOMME_ASSICURATE]
+            </div>
+
+        </div>
+
+        <!-- TAB 4: GARANZIE -->
+        <div id="tab4" class="tab-content">
+            <h2 class="section-title">Confronto Garanzie</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>GARANZIE BASE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Incendio</td>
+                        <td>[GAR_INCENDIO_1]</td>
+                        <td>[GAR_INCENDIO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Fulmine</td>
+                        <td>[GAR_FULMINE_1]</td>
+                        <td>[GAR_FULMINE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Esplosione</td>
+                        <td>[GAR_ESPLOSIONE_1]</td>
+                        <td>[GAR_ESPLOSIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Scoppio</td>
+                        <td>[GAR_SCOPPIO_1]</td>
+                        <td>[GAR_SCOPPIO_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>EVENTI NATURALI</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Terremoto</td>
+                        <td>[GAR_TERREMOTO_1]</td>
+                        <td>[GAR_TERREMOTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione</td>
+                        <td>[GAR_ALLUVIONE_1]</td>
+                        <td>[GAR_ALLUVIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Inondazione</td>
+                        <td>[GAR_INONDAZIONE_1]</td>
+                        <td>[GAR_INONDAZIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Allagamento</td>
+                        <td>[GAR_ALLAGAMENTO_1]</td>
+                        <td>[GAR_ALLAGAMENTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Grandine</td>
+                        <td>[GAR_GRANDINE_1]</td>
+                        <td>[GAR_GRANDINE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Neve</td>
+                        <td>[GAR_NEVE_1]</td>
+                        <td>[GAR_NEVE_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>EVENTI SOCIO-POLITICI</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Furto</td>
+                        <td>[GAR_FURTO_1]</td>
+                        <td>[GAR_FURTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Atti Vandalici</td>
+                        <td>[GAR_VANDALISMI_1]</td>
+                        <td>[GAR_VANDALISMI_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Scioperi/Tumulti</td>
+                        <td>[GAR_SCIOPERI_1]</td>
+                        <td>[GAR_SCIOPERI_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Terrorismo</td>
+                        <td>[GAR_TERRORISMO_1]</td>
+                        <td>[GAR_TERRORISMO_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>ALTRE GARANZIE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Danni da Fumo</td>
+                        <td>[GAR_FUMO_1]</td>
+                        <td>[GAR_FUMO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Danni da Acqua Condotta</td>
+                        <td>[GAR_ACQUA_1]</td>
+                        <td>[GAR_ACQUA_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Demolizione/Sgombero</td>
+                        <td>[GAR_DEMOLIZIONE_1]</td>
+                        <td>[GAR_DEMOLIZIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese di Perizia</td>
+                        <td>[GAR_PERIZIA_1]</td>
+                        <td>[GAR_PERIZIA_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 5: FRANCHIGIE -->
+        <div id="tab5" class="tab-content">
+            <h2 class="section-title">Confronto Franchigie e Scoperti</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Incendio</td>
+                        <td class="[DIFF_CLASS_FRANCH_INC_1]">[FRANCH_INCENDIO_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_INC_2]">[FRANCH_INCENDIO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Terremoto</td>
+                        <td class="[DIFF_CLASS_FRANCH_TER_1]">[FRANCH_TERREMOTO_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_TER_2]">[FRANCH_TERREMOTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Alluvione</td>
+                        <td class="[DIFF_CLASS_FRANCH_ALL_1]">[FRANCH_ALLUVIONE_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_ALL_2]">[FRANCH_ALLUVIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Allagamento</td>
+                        <td>[FRANCH_ALLAGAMENTO_1]</td>
+                        <td>[FRANCH_ALLAGAMENTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Furto</td>
+                        <td>[FRANCH_FURTO_1]</td>
+                        <td>[FRANCH_FURTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Atti Vandalici</td>
+                        <td>[FRANCH_VANDAL_1]</td>
+                        <td>[FRANCH_VANDAL_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Scoperti</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Terremoto</td>
+                        <td>[SCOPERTO_TERREMOTO_1]</td>
+                        <td>[SCOPERTO_TERREMOTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione</td>
+                        <td>[SCOPERTO_ALLUVIONE_1]</td>
+                        <td>[SCOPERTO_ALLUVIONE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Furto</td>
+                        <td>[SCOPERTO_FURTO_1]</td>
+                        <td>[SCOPERTO_FURTO_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Impatto Franchigie:</strong>
+                [ANALISI_IMPATTO_FRANCHIGIE]
+            </div>
+
+        </div>
+
+        <!-- TAB 6: RISCHI CATASTROFALI -->
+        <div id="tab6" class="tab-content">
+            <h2 class="section-title">Rischi Catastrofali e Zone Sismiche</h2>
+
+            <h3 class="subsection-title">Zona Sismica Ubicazione</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Zona Sismica</span>
+                    <span class="info-value">[ZONA_SISMICA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Classe Rischio</span>
+                    <span class="info-value">[CLASSE_RISCHIO_SISMICO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Zona Alluvionale</span>
+                    <span class="info-value">[ZONA_ALLUVIONALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Classe Rischio Idro</span>
+                    <span class="info-value">[CLASSE_RISCHIO_IDRO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Confronto Copertura Catastrofali</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Evento</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Terremoto - Copertura</td>
+                        <td>[TERR_COPERTURA_1]</td>
+                        <td>[TERR_COPERTURA_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Terremoto - Massimale</td>
+                        <td class="currency">[TERR_MASSIMALE_1]</td>
+                        <td class="currency">[TERR_MASSIMALE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Terremoto - Franchigia</td>
+                        <td>[TERR_FRANCHIGIA_1]</td>
+                        <td>[TERR_FRANCHIGIA_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Terremoto - Scoperto</td>
+                        <td>[TERR_SCOPERTO_1]</td>
+                        <td>[TERR_SCOPERTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>ALLUVIONE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione - Copertura</td>
+                        <td>[ALLUV_COPERTURA_1]</td>
+                        <td>[ALLUV_COPERTURA_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione - Massimale</td>
+                        <td class="currency">[ALLUV_MASSIMALE_1]</td>
+                        <td class="currency">[ALLUV_MASSIMALE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione - Franchigia</td>
+                        <td>[ALLUV_FRANCHIGIA_1]</td>
+                        <td>[ALLUV_FRANCHIGIA_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Alluvione - Scoperto</td>
+                        <td>[ALLUV_SCOPERTO_1]</td>
+                        <td>[ALLUV_SCOPERTO_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert-box alert-warning">
+                <strong>⚠️ Adeguatezza Copertura Catastrofale:</strong><br>
+                [VALUTAZIONE_CATASTROFALE]
+            </div>
+
+        </div>
+
+        <!-- TAB 7: SCORING -->
+        <div id="tab7" class="tab-content">
+            <h2 class="section-title">Scoring Dettagliato</h2>
+
+            <h3 class="subsection-title">Score Totale</h3>
+            <div class="score-container">
+                <div class="score-card [WINNER_CLASS_1]">
+                    <div class="score-card-label">[NOME_POLIZZA_1]</div>
+                    <div class="score-card-value">[SCORE_TOTALE_1]</div>
+                    <div class="score-card-max">/ 100 punti</div>
+                </div>
+                
+                <div class="score-card [WINNER_CLASS_2]">
+                    <div class="score-card-label">[NOME_POLIZZA_2]</div>
+                    <div class="score-card-value">[SCORE_TOTALE_2]</div>
+                    <div class="score-card-max">/ 100 punti</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dettaglio Punteggi</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Categoria (Peso)</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Somme Assicurate (25 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_SA_1]"><strong>[SCORE_SOMME_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_SA_2]"><strong>[SCORE_SOMME_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Garanzie (30 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_GAR_1]"><strong>[SCORE_GARANZIE_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_GAR_2]"><strong>[SCORE_GARANZIE_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Franchigie (20 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FRANCH_1]"><strong>[SCORE_FRANCHIGIE_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FRANCH_2]"><strong>[SCORE_FRANCHIGIE_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Catastrofali (15 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_CAT_1]"><strong>[SCORE_CATASTROFALI_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_CAT_2]"><strong>[SCORE_CATASTROFALI_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Rapporto Qualità/Prezzo (10 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_QPR_1]"><strong>[SCORE_QPR_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_QPR_2]"><strong>[SCORE_QPR_2]</strong></td>
+                    </tr>
+                    <tr style="background:#f1f5f9; font-weight:700; font-size:13px;">
+                        <td>TOTALE (100 punti)</td>
+                        <td class="[DIFF_CLASS_TOTAL_1]">[SCORE_TOTALE_1]</td>
+                        <td class="[DIFF_CLASS_TOTAL_2]">[SCORE_TOTALE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Metodologia Scoring:</strong>
+                [METODOLOGIA_SCORING]
+            </div>
+
+        </div>
+
+        <!-- TAB 8: PRO E CONTRO -->
+        <div id="tab8" class="tab-content">
+            <h2 class="section-title">Pro e Contro per Polizza</h2>
+
+            <!-- Ripetere per OGNI polizza -->
+            <h3 class="subsection-title">[NOME_POLIZZA_1]</h3>
+            
+            <div class="pro-contro-grid">
+                <div class="pro-contro-card">
+                    <div class="pro-contro-header pro-header">✓ PUNTI DI FORZA</div>
+                    <div class="pro-contro-list">
+                        <ul>
+                            <li>[PRO_1_POL1]</li>
+                            <li>[PRO_2_POL1]</li>
+                            <li>[PRO_3_POL1]</li>
+                            <li>[PRO_4_POL1]</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pro-contro-card">
+                    <div class="pro-contro-header contro-header">✗ PUNTI DI DEBOLEZZA</div>
+                    <div class="pro-contro-list">
+                        <ul>
+                            <li>[CONTRO_1_POL1]</li>
+                            <li>[CONTRO_2_POL1]</li>
+                            <li>[CONTRO_3_POL1]</li>
+                            <li>[CONTRO_4_POL1]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Sintesi Comparativa Finale</h3>
+            <div class="alert-box alert-info">
+                <strong>Valutazione Complessiva:</strong><br>
+                [SINTESI_COMPARATIVA_FINALE]
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+
+</body>
+
+</html>

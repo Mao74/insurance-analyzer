@@ -1,0 +1,475 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: CONFRONTO POLIZZE CYBER RISK - VERSIONE DINAMICA FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze Cyber Risk per 
+supportare decisione contraente/azienda.
+
+DESTINATARIO: CTO, CISO, CFO, risk manager, IT manager
+TEMPLATE: template_confronto_cyber_finale.html (1097 righe)
+APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS CYBER
+   - First Party: danni diretti (ripristino, BI, ransomware)
+   - Third Party: responsabilità terzi (privacy, network security, sanzioni)
+   - Servizi post-breach (IRT, forensics, PR, notifiche)
+   - Franchigie per tipologia danno
+
+2. CRITICITÀ GDPR
+   - Sanzioni Garante Privacy
+   - Notifiche obbligatorie
+   - Data breach response
+   - Costi compliance
+
+3. DINAMICITÀ 2-N
+   - Tabelle espandibili
+   - Highlighting adattivo
+   - Comparazioni vs polizza attuale
+
+4. SPECIFICITÀ CYBER
+   - Business Interruption: periodo carenza ore
+   - Ransomware: negoziazione + pagamento
+   - Servizi vs massimali
+   - Tasso per milione fatturato
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE - LEGGI ATTENTAMENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FIRST PARTY vs THIRD PARTY
+   ─────────────────────────────
+   First Party = danni PROPRI:
+   - Ripristino dati/sistemi
+   - Business interruption
+   - Cyber estorsione (ransomware)
+   - Hardware danneggiato
+   
+   Third Party = danni a TERZI:
+   - Violazione privacy/GDPR
+   - Diffusione malware
+   - Interruzione servizi terzi
+   - Sanzioni autorità
+
+2. BUSINESS INTERRUPTION CYBER
+   ────────────────────────────
+   CRITICO: Periodo carenza (ore)
+   
+   Esempio:
+   Attacco blocca sistemi 48 ore
+   - Carenza 8h: indennizzo 40h
+   - Carenza 24h: indennizzo 24h
+   - Differenza: 16 ore perdita profitto!
+   
+   Verde = carenza bassa (MEGLIO)
+
+3. RANSOMWARE
+   ───────────
+   2 componenti:
+   - Pagamento riscatto (massimale €)
+   - Negoziazione esperti (inclusa/esclusa)
+   
+   Negoziazione CRITICA: può ridurre riscatto 50-70%
+
+4. SERVIZI POST-BREACH
+   ───────────────────
+   Valore ENORME oltre massimali:
+   - IRT 24/7: € 5.000-15.000/giorno
+   - Forensics: € 20.000-50.000
+   - PR crisis: € 10.000-30.000
+   - Notifiche GDPR: € 2-5/nominativo
+   
+   Su 10.000 record violati, notifiche = € 20.000-50.000
+
+5. SANZIONI GDPR
+   ─────────────
+   Fino a 4% fatturato annuo o € 20M
+   
+   Azienda € 50M fatturato:
+   - Max sanzione teorica: € 2.000.000
+   - Massimale polizza DEVE coprire
+   
+   Massimale sanzioni CRITICO
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Ragione sociale
+
+[SETTORE]
+Settore attività
+Esempio: "E-commerce", "Sanità", "Manifatturiero", "Servizi IT"
+
+[NUMERO_POLIZZE]
+[DATA_CONFRONTO]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: RACCOMANDAZIONE
+═══════════════════════════════════════════════════════════════════════════════
+
+[RACCOMANDAZIONE_TESTO]
+Raccomandazione (2-3 righe)
+
+Esempi:
+"Si raccomanda Chubb: massimali First Party superiori (BI € 2M vs € 1M), carenza 
+BI 8h (vs 24h), ransomware € 500k con negoziazione inclusa, servizi post-breach 
+completi, franchigie contenute. Premio +15% giustificato da protezione superiore."
+
+"Si raccomanda AIG attuale: unica con massimale sanzioni GDPR € 1M adeguato per 
+fatturato € 50M, servizi IRT 24/7, forensics illimitata, copertura terzi completa. 
+Premio competitivo."
+
+"Si raccomanda Generali: miglior QPR con massimali adeguati, BI carenza 12h, 
+ransomware incluso, servizi base completi, risparmio 18%."
+
+[RACCOMANDAZIONE_MOTIVAZIONE]
+Motivazione (5-10 righe)
+
+[NOME_POLIZZA_N] + [DIFF_1-3_POLIZZA_N]
+[PREMIO_ATTUALE] [PREMIO_CONSIGLIATO] [DELTA_PREMIO] [VARIAZIONE_PERC]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: SINTESI ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+Per CIASCUNA polizza:
+
+[PREMIO_BASE_N]
+[PREMIO_SERVIZI_N]
+[IMPOSTE_N]
+[PREMIO_LORDO_N]
+[DIFF_CLASS_PREMIO_N]
+
+[FATTURATO_N]
+Fatturato dichiarato formato "€ XX.XXX.XXX"
+
+[TASSO_MILIONE_N]
+Tasso per milione fatturato
+Formato: "X,XX ‰"
+Esempio: "3,50 ‰"
+
+Analisi delta: standard
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: MASSIMALI FIRST PARTY
+═══════════════════════════════════════════════════════════════════════════════
+
+3 TABELLE: Ripristino, BI, Ransomware
+
+TABELLA RIPRISTINO
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_RIPRISTINO_DATI_N]
+Massimale ripristino dati formato "€ XXX.XXX"
+
+[DIFF_CLASS_RIPR_DATI_N]
+Verde se più alto
+
+[MASS_RIPRISTINO_SISTEMI_N]
+[MASS_HARDWARE_N]
+
+TABELLA BUSINESS INTERRUPTION
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_PERDITA_PROFITTO_N]
+Massimale perdita profitto formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_BI_N]
+
+[PERIODO_INDENNIZZO_N]
+Periodo indennizzo formato "XXX ore" o "XX giorni"
+Esempio: "720 ore (30 giorni)"
+
+[CARENZA_BI_N]
+Periodo carenza formato "X ore"
+
+[DIFF_CLASS_CARENZA_N]
+Verde se più bassa (MEGLIO - meno ore perse)
+
+[MASS_SPESE_EXTRA_N]
+Spese extra formato "€ XXX.XXX"
+
+TABELLA RANSOMWARE
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_RANSOMWARE_N]
+Massimale pagamento riscatto formato "€ XXX.XXX"
+
+[DIFF_CLASS_RANSOM_N]
+
+[NEG_RANSOMWARE_N]
+Negoziazione esperti: "Inclusa" o "Esclusa"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: MASSIMALI THIRD PARTY
+═══════════════════════════════════════════════════════════════════════════════
+
+3 TABELLE: Privacy, Network Security, Sanzioni
+
+TABELLA PRIVACY
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_PRIVACY_N]
+Massimale violazione privacy formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_PRIVACY_N]
+
+[MASS_NOTIFICHE_N]
+Massimale notifiche data breach formato "€ XXX.XXX"
+
+[MASS_CREDIT_MON_N]
+Credit monitoring terzi formato "€ XXX.XXX"
+
+TABELLA NETWORK SECURITY
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_MALWARE_N]
+Diffusione malware formato "€ XXX.XXX"
+
+[MASS_INTERRUZIONE_TERZI_N]
+Interruzione servizi terzi formato "€ XXX.XXX"
+
+[MASS_DDOS_N]
+Danni DoS/DDoS formato "€ XXX.XXX"
+
+TABELLA SANZIONI
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_SANZIONI_N]
+Massimale sanzioni GDPR formato "€ XXX.XXX" o "€ X.XXX.XXX"
+
+[DIFF_CLASS_SANZIONI_N]
+
+[MASS_LEGALI_N]
+Spese legali difesa formato "€ XXX.XXX"
+
+[MASS_INVESTIGAZIONI_N]
+Costi investigazioni formato "€ XXX.XXX"
+
+IMPORTANTE: Massimale sanzioni DEVE essere adeguato a:
+- 4% fatturato annuo (max teorico GDPR)
+- Esempio: fatturato € 50M → max sanzione € 2M
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: SERVIZI POST-BREACH
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella DINAMICA con 4 sezioni
+
+Sezione RISPOSTA INCIDENTE:
+- Hotline 24/7: [SERV_HOTLINE_N]
+- IRT (Incident Response Team): [SERV_IRT_N]
+- Forensics Digitale: [SERV_FORENSICS_N]
+
+Sezione PR E COMUNICAZIONE:
+- Crisis Management PR: [SERV_PR_N]
+- Notifiche GDPR Autorità: [SERV_NOTIF_AUT_N]
+- Notifiche Data Subjects: [SERV_NOTIF_SUBJ_N]
+
+Sezione LEGALE:
+- Consulenza Legale: [SERV_LEGALE_N]
+- Assistenza GDPR/Privacy: [SERV_GDPR_N]
+
+Sezione MONITORAGGIO:
+- Credit Monitoring Vittime: [SERV_CREDIT_N]
+- Identity Theft Protection: [SERV_IDENTITY_N]
+- Call Center Dedicato: [SERV_CALL_N]
+
+Formato valore:
+"Incluso", "Incluso - Illimitato", "Incluso - Max € XXX", "Escluso", "Opzionale"
+
+[NOTE_SERVIZI]
+Note valore servizi (5-8 righe)
+
+Esempio:
+"SERVIZI POST-BREACH: Valore FONDAMENTALE oltre massimali.
+
+IRT 24/7: Costo mercato € 5.000-15.000/giorno. Su breach 7 giorni = € 35k-105k. 
+Tutte polizze includono, ma Chubb/AIG illimitato vs altri max € 50k.
+
+FORENSICS: € 20k-50k per investigazione. Chubb/AIG illimitati, Generali max € 30k.
+
+NOTIFICHE GDPR: € 2-5/nominativo. Su 10.000 record violati = € 20k-50k. Tutte 
+includono ma verificare massimale adeguato per DB azienda.
+
+PR CRISIS: € 10k-30k. Fondamentale per danni reputazionali. Chubb/AIG team dedicati, 
+altri servizio base."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: FRANCHIGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+2 TABELLE: First Party + Third Party
+
+TABELLA FIRST PARTY
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCH_RIPRISTINO_N]
+Franchigia ripristino formato "€ X.XXX" o "€ XX.XXX"
+
+[DIFF_CLASS_FRANCH_RIPR_N]
+Verde se più bassa
+
+[FRANCH_BI_N]
+Franchigia BI formato "€ XX.XXX" + "Carenza X ore"
+
+[DIFF_CLASS_FRANCH_BI_N]
+
+[FRANCH_RANSOMWARE_N]
+Franchigia ransomware formato "€ X.XXX" o "Nessuna"
+
+TABELLA THIRD PARTY
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCH_PRIVACY_N]
+Franchigia privacy formato "€ XX.XXX"
+
+[DIFF_CLASS_FRANCH_PRIV_N]
+
+[FRANCH_NETWORK_N]
+[FRANCH_SANZIONI_N]
+
+[ANALISI_IMPATTO_FRANCHIGIE]
+Analisi impatto (5-10 righe)
+
+Esempio:
+"FRANCHIGIE FIRST PARTY: € 5.000-25.000. Chubb € 5k (minima), Generali € 15k, 
+AIG € 25k.
+
+Su danno ripristino € 100.000:
+- Chubb: € 95.000 indennizzo
+- AIG: € 75.000 indennizzo
+Differenza € 20.000.
+
+FRANCHIGIE THIRD PARTY: € 10k-50k. Privacy/sanzioni tipicamente più alte.
+
+CARENZA BI: 8-24 ore. CRITICA. Su blocco 48h:
+- 8h carenza: 40h indennizzate
+- 24h carenza: 24h indennizzate
+Perdita 16 ore profitto."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 7: SCORING
+═══════════════════════════════════════════════════════════════════════════════
+
+METODOLOGIA SCORING
+───────────────────────────────────────────────────────────────────────────────
+
+Totale: 100 punti su 5 categorie
+
+1. FIRST PARTY (30 punti)
+   - Ripristino (8 pt)
+   - Business Interruption (12 pt)
+   - Ransomware (10 pt)
+
+2. THIRD PARTY (25 punti)
+   - Privacy/GDPR (12 pt)
+   - Network Security (8 pt)
+   - Sanzioni (5 pt)
+
+3. SERVIZI POST-BREACH (25 punti)
+   - IRT/Forensics (10 pt)
+   - PR/Notifiche (8 pt)
+   - Legale/Monitoring (7 pt)
+
+4. FRANCHIGIE (10 punti)
+   - First Party (5 pt)
+   - Third Party (5 pt)
+
+5. QPR (10 punti)
+
+BONUS: Servizi post-breach illimitati +5 pt
+
+Per CIASCUNA polizza:
+
+[SCORE_TOTALE_N]
+[WINNER_CLASS_N]
+
+[SCORE_FIRST_PARTY_N] / 30
+[SCORE_THIRD_PARTY_N] / 25
+[SCORE_SERVIZI_N] / 25
+[SCORE_FRANCHIGIE_N] / 10
+[SCORE_QPR_N] / 10
+
+[DIFF_CLASS_SCORE_*_N]
+
+[METODOLOGIA_SCORING]
+Spiegazione (5-8 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 8: PRO E CONTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+Ripetere per OGNI polizza:
+
+[NOME_POLIZZA_N]
+
+PRO (4-6):
+[PRO_1-4_POLN]
+
+Esempi:
+"Massimale BI € 2M (+100% vs mercato) adeguato per fatturato"
+"Carenza BI 8 ore (vs 24h standard) - su blocco 48h indennizza 16h più"
+"Ransomware € 500k con negoziazione esperti inclusa (riduce riscatto 50-70%)"
+"Massimale sanzioni GDPR € 1M adeguato per fatturato € 50M (2% vs 4% max)"
+"IRT 24/7 illimitato (valore € 5k-15k/giorno)"
+"Forensics digitale illimitata (vs max € 30k concorrenza)"
+"Franchigie First Party € 5k (vs € 25k mercato)"
+"Premio competitivo € 18.000/anno (-12% vs attuale)"
+
+CONTRO (4-6):
+[CONTRO_1-4_POLN]
+
+Esempi:
+"Massimale BI € 500k inadeguato per fatturato € 50M"
+"Carenza BI 24 ore (vs 8h mercato) - perde 16h indennizzo su blocco 48h"
+"Ransomware escluso (CRITICO - trend crescente settore)"
+"Massimale sanzioni € 250k insufficiente (vs max GDPR € 2M per fatturato)"
+"Servizi IRT limitati a € 50k (vs illimitato standard)"
+"Forensics max € 30k (inadeguato, costo tipico € 40-50k)"
+"Notifiche GDPR escluse (costo € 2-5/nominativo)"
+"Franchigie First Party € 25k alte (vs € 5k-10k mercato)"
+"Premio superiore +22% per massimali equivalenti"
+
+[SINTESI_COMPARATIVA_FINALE]
+Sintesi (10-15 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE - 12 STEP
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: Identificare N polizze
+STEP 2: Settore + fatturato
+STEP 3: Economico per polizza + tasso per milione
+STEP 4: Massimali First Party (ripristino, BI con carenza, ransomware)
+STEP 5: Massimali Third Party (privacy, network, sanzioni)
+STEP 6: Servizi post-breach 12 tipologie (inclusi/esclusi/massimali)
+STEP 7: Franchigie First Party + Third Party
+STEP 8: Valutare adeguatezza sanzioni vs fatturato (4% rule)
+STEP 9: Comparazione cross-polizze + highlighting
+STEP 10: Scoring 0-100 + bonus servizi illimitati
+STEP 11: Top 3 differenze + Pro/Contro
+STEP 12: Raccomandazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+File HTML completo con:
+1. Template compilato
+2. Tabelle dinamiche N colonne
+3. Highlighting corretto
+4. Valutazione adeguatezza sanzioni GDPR
+5. Calcoli carenza BI
+6. HTML valido
+
+DELIVERABLE: Report confronto Cyber decisional-ready per digital risk.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT - CYBER RISK CONFRONTO
+═══════════════════════════════════════════════════════════════════════════════

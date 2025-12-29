@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Polizze Cyber Risk - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1e293b;
+            --primary-blue: #2563eb;
+            --bg-light: #f8fafc;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --green-light: #dcfce7;
+            --green-dark: #166534;
+            --red-light: #fee2e2;
+            --red-dark: #991b1b;
+            --orange-light: #fed7aa;
+            --orange-dark: #9a3412;
+            --blue-light: #dbeafe;
+            --blue-dark: #1e40af;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid var(--border-strong);
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0 0 20px 0;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 11px;
+        }
+
+        .header-meta-label {
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .header-meta-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: var(--bg-light);
+            border-bottom: 2px solid var(--border-strong);
+            overflow-x: auto;
+        }
+
+        .tab-link {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-link:hover {
+            color: var(--primary-blue);
+            background: white;
+        }
+
+        .tab-link.active {
+            color: var(--primary-blue);
+            background: white;
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SECTION */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subsection-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 20px 0 12px 0;
+        }
+
+        /* RACCOMANDAZIONE BOX */
+        .raccomandazione-box {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .raccomandazione-box h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .raccomandazione-box p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .raccomandazione-box .motivo {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            font-size: 12px;
+        }
+
+        /* COMPARISON TABLE */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        .comparison-table th {
+            background: var(--primary-dark);
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .comparison-table th.voce-col {
+            width: 25%;
+        }
+
+        .comparison-table td {
+            padding: 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .comparison-table .row-header {
+            font-weight: 600;
+            background: var(--bg-light);
+            color: var(--primary-dark);
+        }
+
+        /* DIFF HIGHLIGHTING */
+        .diff-better {
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        .diff-worse {
+            background: var(--red-light);
+            color: var(--red-dark);
+            font-weight: 600;
+        }
+
+        .diff-neutral {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+        }
+
+        .diff-warning {
+            background: var(--orange-light);
+            color: var(--orange-dark);
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-migliore {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .badge-peggiore {
+            background: var(--red-light);
+            color: var(--red-dark);
+        }
+
+        .badge-pari {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+        }
+
+        /* SCORING */
+        .score-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            flex: 1;
+            background: white;
+            border: 2px solid var(--border-strong);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .score-card.winner {
+            border-color: var(--green-dark);
+            background: var(--green-light);
+        }
+
+        .score-card-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .score-card-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .score-card.winner .score-card-value {
+            color: var(--green-dark);
+        }
+
+        .score-card-max {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* PRO/CONTRO */
+        .pro-contro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pro-contro-card {
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .pro-contro-header {
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pro-header {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .contro-header {
+            background: var(--red-light);
+            color: var(--red-dark);
+        }
+
+        .pro-contro-list {
+            padding: 15px;
+        }
+
+        .pro-contro-list li {
+            margin-bottom: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* CURRENCY */
+        .currency {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #dbeafe;
+            border-left: 3px solid var(--primary-blue);
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .note-box strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            padding: 14px 18px;
+            margin: 20px 0;
+            border-left: 4px solid;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .alert-warning {
+            background: #fff7ed;
+            border-color: var(--orange-dark);
+            color: var(--orange-dark);
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: var(--primary-blue);
+            color: var(--blue-dark);
+        }
+
+        /* LISTA */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                border: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>CONFRONTO POLIZZE CYBER RISK</h1>
+            <p class="header-subtitle">Analisi Comparativa Assicurazione Rischio Informatico</p>
+            
+            <div class="header-meta">
+                <div>
+                    <div class="header-meta-label">Contraente</div>
+                    <div class="header-meta-value">[CONTRAENTE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Settore</div>
+                    <div class="header-meta-value">[SETTORE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Numero Polizze</div>
+                    <div class="header-meta-value">[NUMERO_POLIZZE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Data Confronto</div>
+                    <div class="header-meta-value">[DATA_CONFRONTO]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'tab1')">1. RACCOMANDAZIONE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab2')">2. SINTESI ECONOMICA</button>
+            <button class="tab-link" onclick="openTab(event, 'tab3')">3. MASSIMALI FIRST PARTY</button>
+            <button class="tab-link" onclick="openTab(event, 'tab4')">4. MASSIMALI THIRD PARTY</button>
+            <button class="tab-link" onclick="openTab(event, 'tab5')">5. SERVIZI POST-BREACH</button>
+            <button class="tab-link" onclick="openTab(event, 'tab6')">6. FRANCHIGIE</button>
+            <button class="tab-link" onclick="openTab(event, 'tab7')">7. SCORING</button>
+            <button class="tab-link" onclick="openTab(event, 'tab8')">8. PRO E CONTRO</button>
+        </div>
+
+        <!-- TAB 1: RACCOMANDAZIONE -->
+        <div id="tab1" class="tab-content active">
+            <div class="raccomandazione-box">
+                <h3>🎯 RACCOMANDAZIONE FINALE</h3>
+                <p><strong>[RACCOMANDAZIONE_TESTO]</strong></p>
+                <div class="motivo">
+                    <strong>Motivazione:</strong><br>
+                    [RACCOMANDAZIONE_MOTIVAZIONE]
+                </div>
+            </div>
+
+            <h2 class="section-title">Sintesi Differenze Chiave</h2>
+            
+            <h3 class="subsection-title">Top 3 Differenze per Polizza</h3>
+            
+            <!-- Ripetere per OGNI polizza -->
+            <div style="margin-bottom: 30px;">
+                <h4 style="font-size:13px; font-weight:700; color:var(--primary-blue); margin:0 0 12px 0;">[NOME_POLIZZA_1]</h4>
+                <ol style="margin:0; padding-left:20px;">
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_1_POLIZZA_1]</li>
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_2_POLIZZA_1]</li>
+                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_3_POLIZZA_1]</li>
+                </ol>
+            </div>
+
+            <h3 class="subsection-title">Impatto Economico</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Polizza Attuale</span>
+                    <span class="info-value currency">[PREMIO_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Opzione Consigliata</span>
+                    <span class="info-value currency">[PREMIO_CONSIGLIATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Delta Economico</span>
+                    <span class="info-value currency">[DELTA_PREMIO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Variazione %</span>
+                    <span class="info-value">[VARIAZIONE_PERC]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: SINTESI ECONOMICA -->
+        <div id="tab2" class="tab-content">
+            <h2 class="section-title">Confronto Economico</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Voce</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Premio Base</td>
+                        <td class="currency">[PREMIO_BASE_1]</td>
+                        <td class="currency">[PREMIO_BASE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Servizi Post-Breach</td>
+                        <td class="currency">[PREMIO_SERVIZI_1]</td>
+                        <td class="currency">[PREMIO_SERVIZI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Imposte</td>
+                        <td class="currency">[IMPOSTE_1]</td>
+                        <td class="currency">[IMPOSTE_2]</td>
+                    </tr>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td class="row-header">PREMIO LORDO TOTALE</td>
+                        <td class="currency [DIFF_CLASS_PREMIO_1]">[PREMIO_LORDO_1]</td>
+                        <td class="currency [DIFF_CLASS_PREMIO_2]">[PREMIO_LORDO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Fatturato Dichiarato</td>
+                        <td class="currency">[FATTURATO_1]</td>
+                        <td class="currency">[FATTURATO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Tasso per Milione Fatturato</td>
+                        <td>[TASSO_MILIONE_1]</td>
+                        <td>[TASSO_MILIONE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Analisi Delta Economico</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Polizza</th>
+                        <th>Premio Annuo</th>
+                        <th>Delta vs Attuale</th>
+                        <th>Variazione %</th>
+                        <th>Valutazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[NOME_POLIZZA_N]</td>
+                        <td class="currency">[PREMIO_ANNUO_N]</td>
+                        <td class="currency [DIFF_CLASS_N]">[DELTA_N]</td>
+                        <td>[VARIAZIONE_PERC_N]</td>
+                        <td><span class="badge [BADGE_CLASS_N]">[VALUTAZIONE_N]</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 3: MASSIMALI FIRST PARTY -->
+        <div id="tab3" class="tab-content">
+            <h2 class="section-title">Massimali First Party (Danni Diretti)</h2>
+
+            <h3 class="subsection-title">Ripristino Sistemi e Dati</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Ripristino Dati</td>
+                        <td class="currency [DIFF_CLASS_RIPR_DATI_1]">[MASS_RIPRISTINO_DATI_1]</td>
+                        <td class="currency [DIFF_CLASS_RIPR_DATI_2]">[MASS_RIPRISTINO_DATI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Ripristino Sistemi</td>
+                        <td class="currency">[MASS_RIPRISTINO_SISTEMI_1]</td>
+                        <td class="currency">[MASS_RIPRISTINO_SISTEMI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Sostituzione Hardware</td>
+                        <td class="currency">[MASS_HARDWARE_1]</td>
+                        <td class="currency">[MASS_HARDWARE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Business Interruption</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Perdita di Profitto</td>
+                        <td class="currency [DIFF_CLASS_BI_1]">[MASS_PERDITA_PROFITTO_1]</td>
+                        <td class="currency [DIFF_CLASS_BI_2]">[MASS_PERDITA_PROFITTO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Periodo Indennizzo (ore)</td>
+                        <td>[PERIODO_INDENNIZZO_1]</td>
+                        <td>[PERIODO_INDENNIZZO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Periodo Carenza (ore)</td>
+                        <td class="[DIFF_CLASS_CARENZA_1]">[CARENZA_BI_1]</td>
+                        <td class="[DIFF_CLASS_CARENZA_2]">[CARENZA_BI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Spese Extra</td>
+                        <td class="currency">[MASS_SPESE_EXTRA_1]</td>
+                        <td class="currency">[MASS_SPESE_EXTRA_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Cyber Estorsione</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Ransomware - Pagamento Riscatto</td>
+                        <td class="currency [DIFF_CLASS_RANSOM_1]">[MASS_RANSOMWARE_1]</td>
+                        <td class="currency [DIFF_CLASS_RANSOM_2]">[MASS_RANSOMWARE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Negoziazione Esperti</td>
+                        <td>[NEG_RANSOMWARE_1]</td>
+                        <td>[NEG_RANSOMWARE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 4: MASSIMALI THIRD PARTY -->
+        <div id="tab4" class="tab-content">
+            <h2 class="section-title">Massimali Third Party (Responsabilità Terzi)</h2>
+
+            <h3 class="subsection-title">Responsabilità Civile Privacy</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Violazione Privacy/GDPR</td>
+                        <td class="currency [DIFF_CLASS_PRIVACY_1]">[MASS_PRIVACY_1]</td>
+                        <td class="currency [DIFF_CLASS_PRIVACY_2]">[MASS_PRIVACY_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Data Breach - Notifiche</td>
+                        <td class="currency">[MASS_NOTIFICHE_1]</td>
+                        <td class="currency">[MASS_NOTIFICHE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Credit Monitoring Terzi</td>
+                        <td class="currency">[MASS_CREDIT_MON_1]</td>
+                        <td class="currency">[MASS_CREDIT_MON_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Responsabilità Network Security</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Diffusione Malware/Virus</td>
+                        <td class="currency">[MASS_MALWARE_1]</td>
+                        <td class="currency">[MASS_MALWARE_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Interruzione Servizi Terzi</td>
+                        <td class="currency">[MASS_INTERRUZIONE_TERZI_1]</td>
+                        <td class="currency">[MASS_INTERRUZIONE_TERZI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Danni da DoS/DDoS</td>
+                        <td class="currency">[MASS_DDOS_1]</td>
+                        <td class="currency">[MASS_DDOS_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Sanzioni Autorità</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Sanzioni GDPR/Garante</td>
+                        <td class="currency [DIFF_CLASS_SANZIONI_1]">[MASS_SANZIONI_1]</td>
+                        <td class="currency [DIFF_CLASS_SANZIONI_2]">[MASS_SANZIONI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Spese Legali Difesa</td>
+                        <td class="currency">[MASS_LEGALI_1]</td>
+                        <td class="currency">[MASS_LEGALI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Costi Investigazioni</td>
+                        <td class="currency">[MASS_INVESTIGAZIONI_1]</td>
+                        <td class="currency">[MASS_INVESTIGAZIONI_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 5: SERVIZI POST-BREACH -->
+        <div id="tab5" class="tab-content">
+            <h2 class="section-title">Servizi Post-Breach e Assistenza</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Servizio</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>RISPOSTA ALL'INCIDENTE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Hotline 24/7</td>
+                        <td>[SERV_HOTLINE_1]</td>
+                        <td>[SERV_HOTLINE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Incident Response Team</td>
+                        <td>[SERV_IRT_1]</td>
+                        <td>[SERV_IRT_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Forensics Digitale</td>
+                        <td>[SERV_FORENSICS_1]</td>
+                        <td>[SERV_FORENSICS_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>PR E COMUNICAZIONE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Crisis Management PR</td>
+                        <td>[SERV_PR_1]</td>
+                        <td>[SERV_PR_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Notifiche GDPR Autorità</td>
+                        <td>[SERV_NOTIF_AUT_1]</td>
+                        <td>[SERV_NOTIF_AUT_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Notifiche Data Subjects</td>
+                        <td>[SERV_NOTIF_SUBJ_1]</td>
+                        <td>[SERV_NOTIF_SUBJ_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>LEGALE E COMPLIANCE</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Consulenza Legale Specializzata</td>
+                        <td>[SERV_LEGALE_1]</td>
+                        <td>[SERV_LEGALE_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Assistenza GDPR/Privacy</td>
+                        <td>[SERV_GDPR_1]</td>
+                        <td>[SERV_GDPR_2]</td>
+                    </tr>
+
+                    <tr>
+                        <td class="row-header" colspan="100%"><strong>MONITORAGGIO</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Credit Monitoring Vittime</td>
+                        <td>[SERV_CREDIT_1]</td>
+                        <td>[SERV_CREDIT_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Identity Theft Protection</td>
+                        <td>[SERV_IDENTITY_1]</td>
+                        <td>[SERV_IDENTITY_2]</td>
+                    </tr>
+                    <tr>
+                        <td>Call Center Dedicato</td>
+                        <td>[SERV_CALL_1]</td>
+                        <td>[SERV_CALL_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Valore Servizi Post-Breach:</strong>
+                [NOTE_SERVIZI]
+            </div>
+
+        </div>
+
+        <!-- TAB 6: FRANCHIGIE -->
+        <div id="tab6" class="tab-content">
+            <h2 class="section-title">Confronto Franchigie</h2>
+
+            <h3 class="subsection-title">First Party</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Ripristino Dati/Sistemi</td>
+                        <td class="[DIFF_CLASS_FRANCH_RIPR_1]">[FRANCH_RIPRISTINO_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_RIPR_2]">[FRANCH_RIPRISTINO_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Business Interruption</td>
+                        <td class="[DIFF_CLASS_FRANCH_BI_1]">[FRANCH_BI_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_BI_2]">[FRANCH_BI_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Ransomware</td>
+                        <td>[FRANCH_RANSOMWARE_1]</td>
+                        <td>[FRANCH_RANSOMWARE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Third Party</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Garanzia</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">Responsabilità Privacy</td>
+                        <td class="[DIFF_CLASS_FRANCH_PRIV_1]">[FRANCH_PRIVACY_1]</td>
+                        <td class="[DIFF_CLASS_FRANCH_PRIV_2]">[FRANCH_PRIVACY_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Network Security</td>
+                        <td>[FRANCH_NETWORK_1]</td>
+                        <td>[FRANCH_NETWORK_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Sanzioni GDPR</td>
+                        <td>[FRANCH_SANZIONI_1]</td>
+                        <td>[FRANCH_SANZIONI_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Impatto Franchigie:</strong>
+                [ANALISI_IMPATTO_FRANCHIGIE]
+            </div>
+
+        </div>
+
+        <!-- TAB 7: SCORING -->
+        <div id="tab7" class="tab-content">
+            <h2 class="section-title">Scoring Dettagliato</h2>
+
+            <h3 class="subsection-title">Score Totale</h3>
+            <div class="score-container">
+                <div class="score-card [WINNER_CLASS_1]">
+                    <div class="score-card-label">[NOME_POLIZZA_1]</div>
+                    <div class="score-card-value">[SCORE_TOTALE_1]</div>
+                    <div class="score-card-max">/ 100 punti</div>
+                </div>
+                
+                <div class="score-card [WINNER_CLASS_2]">
+                    <div class="score-card-label">[NOME_POLIZZA_2]</div>
+                    <div class="score-card-value">[SCORE_TOTALE_2]</div>
+                    <div class="score-card-max">/ 100 punti</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dettaglio Punteggi</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="voce-col">Categoria (Peso)</th>
+                        <th>[NOME_POLIZZA_1]</th>
+                        <th>[NOME_POLIZZA_2]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. First Party (30 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FP_1]"><strong>[SCORE_FIRST_PARTY_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FP_2]"><strong>[SCORE_FIRST_PARTY_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Third Party (25 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_TP_1]"><strong>[SCORE_THIRD_PARTY_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_TP_2]"><strong>[SCORE_THIRD_PARTY_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Servizi Post-Breach (25 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_SERV_1]"><strong>[SCORE_SERVIZI_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_SERV_2]"><strong>[SCORE_SERVIZI_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Franchigie (10 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FRANCH_1]"><strong>[SCORE_FRANCHIGIE_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_FRANCH_2]"><strong>[SCORE_FRANCHIGIE_2]</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Rapporto Qualità/Prezzo (10 punti)</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_QPR_1]"><strong>[SCORE_QPR_1]</strong></td>
+                        <td class="[DIFF_CLASS_SCORE_QPR_2]"><strong>[SCORE_QPR_2]</strong></td>
+                    </tr>
+                    <tr style="background:#f1f5f9; font-weight:700; font-size:13px;">
+                        <td>TOTALE (100 punti)</td>
+                        <td class="[DIFF_CLASS_TOTAL_1]">[SCORE_TOTALE_1]</td>
+                        <td class="[DIFF_CLASS_TOTAL_2]">[SCORE_TOTALE_2]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Metodologia Scoring:</strong>
+                [METODOLOGIA_SCORING]
+            </div>
+
+        </div>
+
+        <!-- TAB 8: PRO E CONTRO -->
+        <div id="tab8" class="tab-content">
+            <h2 class="section-title">Pro e Contro per Polizza</h2>
+
+            <!-- Ripetere per OGNI polizza -->
+            <h3 class="subsection-title">[NOME_POLIZZA_1]</h3>
+            
+            <div class="pro-contro-grid">
+                <div class="pro-contro-card">
+                    <div class="pro-contro-header pro-header">✓ PUNTI DI FORZA</div>
+                    <div class="pro-contro-list">
+                        <ul>
+                            <li>[PRO_1_POL1]</li>
+                            <li>[PRO_2_POL1]</li>
+                            <li>[PRO_3_POL1]</li>
+                            <li>[PRO_4_POL1]</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pro-contro-card">
+                    <div class="pro-contro-header contro-header">✗ PUNTI DI DEBOLEZZA</div>
+                    <div class="pro-contro-list">
+                        <ul>
+                            <li>[CONTRO_1_POL1]</li>
+                            <li>[CONTRO_2_POL1]</li>
+                            <li>[CONTRO_3_POL1]</li>
+                            <li>[CONTRO_4_POL1]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Sintesi Comparativa Finale</h3>
+            <div class="alert-box alert-info">
+                <strong>Valutazione Complessiva:</strong><br>
+                [SINTESI_COMPARATIVA_FINALE]
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+
+</body>
+
+</html>

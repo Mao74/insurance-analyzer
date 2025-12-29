@@ -1,0 +1,752 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: CONFRONTO POLIZZE RCA - VERSIONE DINAMICA FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze RCA (Auto) per 
+supportare decisione contraente.
+
+DESTINATARIO: Cliente, broker, privato
+TEMPLATE: template_confronto_rca_finale.html (1058 righe)
+APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CHIAREZZA IMMEDIATA
+   - Raccomandazione diretta e motivata
+   - Top 3 differenze per ogni polizza
+   - Delta economico annuale
+
+2. FOCUS AUTO
+   - Massimali RCA (persone/cose)
+   - Garanzie accessorie (Furto, Kasko, Cristalli)
+   - Franchigie per garanzia
+   - Classe merito e Bonus/Malus
+
+3. DINAMICITÀ 2-N
+   - Tabelle si espandono automaticamente
+   - Highlighting adattivo
+   - Comparazioni sempre vs polizza attuale
+
+4. OBIETTIVITÀ
+   - Scoring matematico trasparente
+   - Pro/contro bilanciati
+   - Simulazione impatto sinistri
+
+═══════════════════════════════════════════════════════════════════════════════
+INPUT ATTESO
+═══════════════════════════════════════════════════════════════════════════════
+
+Riceverai in input:
+
+1. **DATI POLIZZE RCA** (2 o più set)
+   - PDF polizze/preventivi
+   - Oppure report HTML già generati
+   - Oppure JSON strutturato
+
+2. **TEMPLATE HTML** (obbligatorio)
+   - File: template_confronto_rca_finale.html
+
+3. **CONTESTO VEICOLO** (opzionale)
+   - Marca, modello, targa
+   - Anno immatricolazione
+   - Valore commerciale
+   - Storico sinistri
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Nome contraente
+
+[VEICOLO]
+Marca, modello, targa
+Esempio: "BMW X3 - AB123CD"
+
+[NUMERO_POLIZZE]
+Numero polizze confrontate (formato "N polizze")
+
+[DATA_CONFRONTO]
+Data confronto formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: RACCOMANDAZIONE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RACCOMANDAZIONE FINALE
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONE_TESTO]
+Raccomandazione chiara (2-3 righe)
+
+Esempi:
+"Si raccomanda di passare a Generali: massimali superiori (€ 7.500.000 persone 
+vs € 6.070.000), Kasko inclusa, franchigie inferiori, e risparmio € 150/anno (-12%)."
+
+"Si raccomanda polizza Allianz attuale: pur con premio +8% vs mercato, offre 
+Kasko totale con franchigia € 500 (vs € 1.500 concorrenza) e assistenza H24."
+
+"Si raccomanda Preventivo Linear: miglior rapporto qualità/prezzo con risparmio 
+€ 280/anno (-22%), massimali adeguati, e garanzie essenziali incluse."
+
+[RACCOMANDAZIONE_MOTIVAZIONE]
+Motivazione dettagliata (5-10 righe)
+
+Includere:
+- Perché questa polizza
+- 3-4 ragioni specifiche
+- Confronto alternative
+- Caveat se presenti
+
+Esempio:
+"Generali offre miglior bilanciamento copertura/prezzo:
+
+COPERTURA: Massimali superiori (+23% persone, +15% cose), Kasko collisione 
+inclusa (vs esclusa attuale), Cristalli senza franchigia, Assistenza 24/7.
+
+ECONOMICO: Premio € 1.100/anno vs € 1.250 attuale (-12%). Su 5 anni risparmio 
+€ 750 pur con coperture superiori.
+
+FRANCHIGIE: Kasko € 500 vs € 1.000 attuale. Su sinistro medio € 3.000, risparmio 
+€ 500 per evento.
+
+ATTENZIONE: Furto ha scoperto 10% vs 5% attuale. Verificare se zona residenza 
+ha alto tasso furti."
+
+SUBSECTION: TOP 3 DIFFERENZE PER POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Ripetere per OGNI polizza (dinamico)
+
+[NOME_POLIZZA_N]
+Nome polizza
+Esempi: "Polizza Attuale Allianz", "Preventivo Generali", "Preventivo Linear"
+
+[DIFF_1_POLIZZA_N]
+[DIFF_2_POLIZZA_N]
+[DIFF_3_POLIZZA_N]
+
+Esempi differenze:
+"Massimale persone € 7.500.000 (+23% vs attuale)"
+"Kasko collisione inclusa (€ 0 franchigia vs € 1.000 attuale)"
+"Premio € 920/anno (-27% risparmio vs attuale)"
+"Furto scoperto 15% (vs 5% attuale) - CRITICO per zona"
+"Assistenza limitata Italia (vs Europa attuale)"
+
+SUBSECTION: IMPATTO ECONOMICO ANNUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_ATTUALE]
+[PREMIO_CONSIGLIATO]
+[DELTA_PREMIO]
+[VARIAZIONE_PERC]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: SINTESI ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CONFRONTO ECONOMICO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella DINAMICA: 1 voce + N polizze
+
+Per CIASCUNA polizza:
+
+[PREMIO_RCA_BASE_N]
+Premio RCA base formato "€ XXX"
+
+[PREMIO_ACCESSORIE_N]
+Premio garanzie accessorie formato "€ XXX"
+
+[SSN_N]
+SSN formato "€ XX"
+
+[PREMIO_LORDO_N]
+Premio lordo totale formato "€ X.XXX"
+
+[DIFF_CLASS_PREMIO_N]
+Classe CSS: "diff-better" / "diff-worse" / "diff-neutral"
+
+[FRAZIONAMENTO_N]
+"Annuale", "Semestrale", "Trimestrale", "Mensile"
+
+[RATA_N]
+Importo rata formato "€ XXX"
+
+[SCONTO_N]
+Sconto applicato
+Esempio: "Sconto web 10%", "Sconto no sinistri 5 anni 15%", "Nessuno"
+
+SUBSECTION: ANALISI DELTA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con 1 riga per OGNI polizza (esclusa attuale)
+
+[NOME_POLIZZA_N]
+[PREMIO_ANNUO_N]
+[DELTA_N]
+[DIFF_CLASS_N]
+[VARIAZIONE_PERC_N]
+[VALUTAZIONE_N]
+[BADGE_CLASS_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: MASSIMALI RCA
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella DINAMICA massimali RCA
+
+Per CIASCUNA polizza:
+
+[MASS_PERSONE_N]
+Massimale danni a persone formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_PERS_N]
+Highlighting: verde se più alto, rosso se più basso
+
+[MASS_COSE_N]
+Massimale danni a cose formato "€ X.XXX.XXX"
+
+[DIFF_CLASS_COSE_N]
+
+[TIPO_MASSIMALI_N]
+Tipo massimali
+Esempi:
+- "Unici € 6.070.000"
+- "Separati: Persone € 7.500.000 / Cose € 1.500.000"
+- "Unici € 10.000.000"
+
+[NOTE_MASSIMALI]
+Note massimali (3-5 righe)
+
+Esempio:
+"Tutti preventivi rispettano minimi legali (€ 6.070.000 unici).
+
+Generali e UnipolSai offrono massimali separati superiori: Persone € 7.500.000, 
+Cose € 1.500.000. Consigliato per chi viaggia frequentemente con passeggeri.
+
+Linear mantiene massimale unico € 6.070.000. Adeguato per uso standard."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: GARANZIE ACCESSORIE
+═══════════════════════════════════════════════════════════════════════════════
+
+2 TABELLE: Garanzie incluse/escluse + Massimali garanzie
+
+TABELLA 1: COPERTURA GARANZIE
+───────────────────────────────────────────────────────────────────────────────
+
+Raggruppate in 2 sezioni
+
+Sezione DANNI AL VEICOLO:
+- Furto e Incendio: [GAR_FURTO_N]
+- Kasko Collisione: [GAR_KASKO_COLL_N]
+- Kasko Totale: [GAR_KASKO_TOT_N]
+- Cristalli: [GAR_CRISTALLI_N]
+- Eventi Naturali: [GAR_EVENTI_NAT_N]
+- Atti Vandalici: [GAR_VANDALISMI_N]
+
+Sezione TUTELA E ASSISTENZA:
+- Tutela Legale: [GAR_TUTELA_N]
+- Assistenza Stradale: [GAR_ASSISTENZA_N]
+- Infortuni Conducente: [GAR_INFORTUNI_N]
+
+Formato valore:
+"Inclusa", "Inclusa - Massimale € XXX", "Esclusa", "Opzionale +€ XXX/anno"
+
+Esempi:
+"Inclusa - Valore commerciale"
+"Inclusa - Massimale € 50.000"
+"Esclusa"
+"Opzionale +€ 120/anno"
+
+TABELLA 2: MASSIMALI GARANZIE
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUNA garanzia con massimale:
+
+[MASS_FURTO_N]
+Massimale Furto formato "€ XX.XXX" o "Valore commerciale" o "-"
+
+[MASS_KASKO_N]
+[MASS_CRISTALLI_N]
+[MASS_TUTELA_N]
+[MASS_INFORTUNI_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: FRANCHIGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+2 TABELLE: Franchigie + Scoperti
+
+TABELLA FRANCHIGIE
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUNA garanzia e polizza:
+
+[FRANCH_FURTO_N]
+Franchigia Furto formato "€ XXX" o "Nessuna" o "10% del danno"
+
+[DIFF_CLASS_FRANCH_FURTO_N]
+Highlighting: verde se più bassa, rosso se più alta
+
+[FRANCH_KASKO_N]
+[DIFF_CLASS_FRANCH_KASKO_N]
+
+[FRANCH_CRISTALLI_N]
+[DIFF_CLASS_FRANCH_CRISTALLI_N]
+
+[FRANCH_EVENTI_N]
+[FRANCH_VANDAL_N]
+
+TABELLA SCOPERTI
+───────────────────────────────────────────────────────────────────────────────
+
+[SCOPERTO_KASKO_RESP_N]
+Scoperto Kasko con responsabilità
+Formato: "X%" o "Nessuno"
+
+[SCOPERTO_KASKO_NORESP_N]
+Scoperto Kasko senza responsabilità
+
+[SCOPERTO_FURTO_N]
+Scoperto Furto
+
+[ANALISI_IMPATTO_FRANCHIGIE]
+Analisi impatto franchigie (5-10 righe)
+
+Esempio:
+"Franchigia Kasko Generali (€ 500) è 50% inferiore vs Allianz (€ 1.000). Su 
+sinistro medio € 2.500, risparmio € 500 per evento.
+
+Considerando storico 1 sinistro Kasko ogni 3 anni, franchigia inferiore vale 
+€ 165/anno anche se premio è € 80 superiore. ROI positivo.
+
+Furto: tutte polizze hanno scoperto 5-10%. Linear 10% è doppio vs altri. Su 
+valore veicolo € 25.000, esposizione +€ 1.250 in caso furto totale.
+
+Cristalli: Generali senza franchigia, altri € 100-150. Considerare frequenza 
+danni parabrezza zona residenza."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: CLASSE MERITO
+═══════════════════════════════════════════════════════════════════════════════
+
+2 TABELLE: Classe attuale + Simulazione evoluzione
+
+TABELLA CLASSE ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[CLASSE_CU_ATT_N]
+Classe CU attuale formato "CU XX"
+
+[CLASSE_CU_ASS_N]
+Classe CU assegnazione formato "CU XX"
+
+[PROVENIENZA_CU_N]
+Provenienza CU
+Esempio: "Attestato Allianz", "Prima immatricolazione", "Bersani da padre"
+
+[CLASSE_INTERNA_N]
+Classe interna compagnia formato "XX/XX"
+Esempio: "1/18" (migliore), "10/18"
+
+TABELLA SIMULAZIONE EVOLUZIONE
+───────────────────────────────────────────────────────────────────────────────
+
+[CLASSE_BONUS_N]
+Classe dopo anno senza sinistri
+Formato: "CU XX → CU YY"
+Esempio: "CU 5 → CU 4"
+
+[CLASSE_MALUS_N]
+Classe dopo 1 sinistro con responsabilità
+Formato: "CU XX → CU YY"
+Esempio: "CU 5 → CU 7"
+
+[IMPATTO_PREMIO_MALUS_N]
+Impatto premio dopo malus formato "€ +XXX"
+
+[DIFF_CLASS_MALUS_N]
+Highlighting: verde se impatto minore, rosso se maggiore
+
+[NOTE_CLASSE_MERITO]
+Note classe merito (5-8 righe)
+
+Esempio:
+"Tutte polizze partono da CU 5 (attestato Allianz).
+
+BONUS: Generali e Linear migliorano a CU 4 dopo anno senza sinistri. UnipolSai 
+mantiene CU 5 (classe interna diversa).
+
+MALUS: Impatto sinistro varia significativamente:
+- Generali: CU 5 → CU 7, premio +€ 180 (+16%)
+- Linear: CU 5 → CU 8, premio +€ 280 (+30%)
+- UnipolSai: CU 5 → CU 6, premio +€ 120 (+10%)
+
+Per conducente con rischio sinistri medio/alto, UnipolSai offre migliore 
+protezione malus."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 7: SCORING DETTAGLIATO
+═══════════════════════════════════════════════════════════════════════════════
+
+METODOLOGIA SCORING
+───────────────────────────────────────────────────────────────────────────────
+
+Totale: 100 punti su 5 categorie
+
+1. MASSIMALI RCA (25 punti)
+   - Danni a persone (15 pt)
+   - Danni a cose (10 pt)
+
+2. GARANZIE ACCESSORIE (30 punti)
+   - Numero garanzie incluse (15 pt)
+   - Massimali garanzie (15 pt)
+
+3. FRANCHIGIE (20 punti)
+   - Franchigie Kasko/Furto/Cristalli (inversamente)
+
+4. SERVIZI (10 punti)
+   - Assistenza stradale (5 pt)
+   - Tutela legale (3 pt)
+   - Infortuni conducente (2 pt)
+
+5. RAPPORTO QUALITÀ/PREZZO (15 punti)
+   - Value for money
+
+CALCOLO:
+Per ogni categoria, polizza migliore = punteggio pieno
+Altre polizze: proporzionale
+
+SUBSECTION: SCORE TOTALE
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUNA polizza:
+
+[SCORE_TOTALE_N]
+Score totale formato "XX" (0-100)
+
+[WINNER_CLASS_N]
+Classe CSS: "winner" se score più alto
+
+SUBSECTION: DETTAGLIO PUNTEGGI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella breakdown per categoria
+
+[SCORE_MASSIMALI_N]
+Punteggio massimali formato "XX / 25"
+
+[DIFF_CLASS_SCORE_MASS_N]
+
+[SCORE_GARANZIE_N]
+Punteggio garanzie formato "XX / 30"
+
+[DIFF_CLASS_SCORE_GAR_N]
+
+[SCORE_FRANCHIGIE_N]
+Punteggio franchigie formato "XX / 20"
+
+[DIFF_CLASS_SCORE_FRANCH_N]
+
+[SCORE_SERVIZI_N]
+Punteggio servizi formato "XX / 10"
+
+[DIFF_CLASS_SCORE_SERV_N]
+
+[SCORE_QPR_N]
+Punteggio QPR formato "XX / 15"
+
+[DIFF_CLASS_SCORE_QPR_N]
+
+[METODOLOGIA_SCORING]
+Spiegazione metodologia (5-8 righe)
+
+Esempio:
+"Scoring basato su 5 categorie ponderate. Garanzie Accessorie (30%) hanno peso 
+maggiore essendo determinanti per protezione veicolo.
+
+Massimali RCA (25%) verificano adeguatezza legale. Franchigie (20%) inversamente 
+proporzionali: più basse = più punti. Servizi (10%) valutano assistenza/tutela. 
+QPR (15%) bilancia qualità/prezzo.
+
+Polizza con valore migliore ogni categoria ottiene punteggio pieno. Altre 
+proporzionali."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 8: PRO E CONTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+Ripetere per OGNI polizza (dinamico)
+
+[NOME_POLIZZA_N]
+
+PUNTI DI FORZA (4-6):
+[PRO_1_POLN]
+[PRO_2_POLN]
+[PRO_3_POLN]
+[PRO_4_POLN]
+
+Esempi Pro:
+"Massimale persone € 7.500.000 (+23% vs minimo legale)"
+"Kasko collisione inclusa con franchigia € 500 (vs € 1.000 mercato)"
+"Cristalli senza franchigia (risparmio € 150/intervento)"
+"Assistenza stradale H24 Europa (vs solo Italia concorrenza)"
+"Premio competitivo € 920/anno (-27% vs attuale)"
+"Classe interna favorevole (impatto malus +10% vs +30% concorrenza)"
+
+PUNTI DI DEBOLEZZA (4-6):
+[CONTRO_1_POLN]
+[CONTRO_2_POLN]
+[CONTRO_3_POLN]
+[CONTRO_4_POLN]
+
+Esempi Contro:
+"Massimale cose € 1.000.000 (vs € 1.500.000 concorrenza)"
+"Furto scoperto 15% (vs 5% standard) - critico per zona residenza"
+"Eventi naturali esclusi (grandine, alluvione non coperti)"
+"Assistenza limitata a Italia (vs Europa estesa)"
+"Tutela legale massimale € 5.000 (vs € 50.000 standard)"
+"Premio superiore +18% per coperture equivalenti"
+
+[SINTESI_COMPARATIVA_FINALE]
+Sintesi finale (10-15 righe)
+
+Esempio:
+"POLIZZA ATTUALE ALLIANZ: Completa ma costosa. Kasko totale, massimali elevati, 
+assistenza Europa. Franchigie contenute. Premio € 1.250/anno (+32% vs mercato). 
+Ideale per chi cerca massima protezione.
+
+PREVENTIVO GENERALI: Miglior rapporto qualità/prezzo. Massimali superiori, Kasko 
+collisione inclusa, franchigie € 500 (vs € 1.000 attuale), assistenza H24. 
+Premio € 1.100/anno (-12% vs attuale). Unico neo: furto scoperto 10% vs 5%.
+
+PREVENTIVO LINEAR: Opzione economica. RCA base adeguata, massimali minimi, 
+garanzie essenziali. Premio € 920/anno (-26%). Adeguata per veicolo anziano 
+o basso valore, inadeguata per veicolo nuovo/premium.
+
+RACCOMANDAZIONE: Generali per ottimale bilanciamento. Linear se budget limitato 
+e veicolo datato. Confermare Allianz solo se massima protezione prioritaria."
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DINAMICITÀ 2-N POLIZZE
+   ───────────────────────
+   Sistema funziona con 2-N polizze
+   Tabelle espandibili
+   Highlighting adattivo
+
+2. VEICOLO CONTEXT
+   ────────────────
+   Sempre includere targa/modello nel header
+   Considerare valore veicolo per consigli
+   Storico sinistri se disponibile
+
+3. MASSIMALI RCA
+   ──────────────
+   Verificare conformità minimo legale (€ 6.070.000)
+   Distinguere unici vs separati
+   Highlighting verde per superiori
+
+4. GARANZIE ACCESSORIE
+   ───────────────────
+   9 garanzie principali sempre verificate
+   Distinguere Inclusa / Esclusa / Opzionale
+   Massimali per garanzia inclusa
+
+5. FRANCHIGIE AUTO
+   ───────────────
+   Franchigie per garanzia (€ fisso)
+   Scoperti (% danno)
+   Distinguere Kasko con/senza responsabilità
+
+6. CLASSE MERITO
+   ──────────────
+   Classe CU universale
+   Classe interna compagnia
+   Simulazione bonus/malus
+   Impatto premio post-sinistro
+
+7. GARANZIE CRITICHE AUTO
+   ──────────────────────
+   Kasko: fondamentale per veicoli nuovi/valore alto
+   Furto: critico per zona residenza
+   Cristalli: frequente, valutare franchigia
+   Assistenza: valutare copertura geografica
+
+8. HIGHLIGHTING SPECIFICO
+   ──────────────────────
+   Verde = migliore per assicurato
+   - Massimali alti
+   - Franchigie basse
+   - Premio basso
+   - Più garanzie incluse
+   
+   Rosso = peggiore
+   - Massimali bassi
+   - Franchigie alte
+   - Premio alto
+   - Garanzie escluse
+
+9. TOP 3 DIFFERENZE
+   ────────────────
+   Focalizzare su:
+   - Differenze economiche significative (±15%+)
+   - Garanzie presenti/assenti (Kasko, Furto)
+   - Franchigie molto diverse (±50%+)
+   - Servizi critici (assistenza geografica)
+
+10. SCORING AUTO
+    ────────────
+    5 categorie: Massimali (25), Garanzie (30), 
+    Franchigie (20), Servizi (10), QPR (15)
+    Totale 100 punti
+    Metodologia trasparente
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: IDENTIFICAZIONE POLIZZE
+────────────────────────────────
+
+Contare polizze: N
+Assegnare nome:
+- Se presente "attuale": Polizza 1
+- Altre: Preventivo Compagnia X
+
+STEP 2: DATI VEICOLO
+────────────────────
+
+Estrarre:
+- Marca, modello, targa
+- Anno immatricolazione
+- Valore commerciale
+- Uso veicolo (privato/professionale)
+
+STEP 3: ECONOMICO PER POLIZZA
+──────────────────────────────
+
+Per OGNI polizza:
+- Premio RCA base
+- Premio garanzie accessorie (dettaglio)
+- SSN
+- Lordo totale
+- Frazionamento, rata
+- Sconti applicati
+
+STEP 4: MASSIMALI RCA
+─────────────────────
+
+Per OGNI polizza:
+- Danni a persone
+- Danni a cose
+- Tipo (unici / separati)
+
+STEP 5: GARANZIE ACCESSORIE
+────────────────────────────
+
+Per OGNI polizza verificare 9 garanzie:
+1. Furto e Incendio
+2. Kasko Collisione
+3. Kasko Totale
+4. Cristalli
+5. Eventi Naturali
+6. Atti Vandalici
+7. Tutela Legale
+8. Assistenza Stradale
+9. Infortuni Conducente
+
+Per CIASCUNA: Inclusa/Esclusa/Opzionale + Massimale
+
+STEP 6: FRANCHIGIE E SCOPERTI
+──────────────────────────────
+
+Per OGNI garanzia e polizza:
+- Franchigia (€)
+- Scoperto (%)
+- Distinguere Kasko con/senza responsabilità
+
+STEP 7: CLASSE MERITO
+──────────────────────
+
+Per OGNI polizza:
+- Classe CU attuale/assegnazione
+- Provenienza
+- Classe interna
+- Simulazione bonus (CU dopo anno OK)
+- Simulazione malus (CU dopo sinistro)
+- Impatto premio malus
+
+STEP 8: COMPARAZIONE CROSS-POLIZZE
+───────────────────────────────────
+
+Per OGNI campo:
+- Identificare migliore/peggiore
+- Calcolare delta vs attuale
+- Assegnare classe CSS
+
+STEP 9: SCORING
+───────────────
+
+Calcolare score 0-100:
+1. Massimali RCA (25 pt)
+2. Garanzie (30 pt)
+3. Franchigie (20 pt)
+4. Servizi (10 pt)
+5. QPR (15 pt)
+
+STEP 10: TOP 3 DIFFERENZE
+──────────────────────────
+
+Per OGNI polizza:
+- 3 differenze più significative
+- Quantificare impatto
+- Ordinare per rilevanza
+
+STEP 11: PRO/CONTRO
+───────────────────
+
+Per OGNI polizza:
+- 4-6 punti forza
+- 4-6 punti debolezza
+- Bilanciati e specifici
+
+STEP 12: RACCOMANDAZIONE
+─────────────────────────
+
+Sulla base di:
+- Score totale
+- Pro/contro
+- Impatto economico
+- Adeguatezza veicolo/uso
+- Storico sinistri
+
+Formulare raccomandazione con motivazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Template template_confronto_rca_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle dinamiche N colonne
+4. Blocchi ripetuti N volte
+5. Highlighting CSS corretto
+6. Calcoli precisi
+7. HTML valido
+
+DELIVERABLE:
+File HTML completo, navigabile, decisionale per confronto polizze RCA con 
+sistema scalabile 2-N polizze.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT - RCA CONFRONTO
+═══════════════════════════════════════════════════════════════════════════════

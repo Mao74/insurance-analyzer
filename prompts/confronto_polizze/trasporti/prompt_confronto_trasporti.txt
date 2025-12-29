@@ -1,0 +1,494 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: CONFRONTO POLIZZE TRASPORTI - VERSIONE DINAMICA FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze Trasporti/Cargo 
+per supportare decisione contraente/azienda.
+
+DESTINATARIO: Spedizioniere, importatore/esportatore, logistica, supply chain mgr
+TEMPLATE: template_confronto_trasporti_finale.html (1092 righe)
+APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS TRASPORTI
+   - Clausole ICC (A/B/C)
+   - Massimali per spedizione/veicolo/annuo
+   - Mezzi trasporto (strada, mare, aereo, ferro, posta)
+   - Ambito geografico (Italia, Europa, Mondo)
+
+2. CRITICITÀ ICC
+   - ICC (A) = All Risks (MIGLIORE)
+   - ICC (B) = Named Perils Extended
+   - ICC (C) = Named Perils Basic (LIMITATA)
+   - Differenze copertura ENORMI
+
+3. DINAMICITÀ 2-N
+   - Tabelle espandibili
+   - Highlighting adattivo
+   - Comparazioni vs polizza attuale
+
+4. SPECIFICITÀ TRASPORTI
+   - Franchigia fissa + percentuale + minima
+   - Estensioni: magazzino-magazzino, deposito, imballaggio
+   - Merci speciali: deperibili, fragili, alto valore
+   - Guerra/scioperi: spesso esclusi
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE - LEGGI ATTENTAMENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CLAUSOLE ICC - FONDAMENTALI
+   ─────────────────────────────
+   
+   ICC (A) - ALL RISKS (MIGLIORE):
+   - Copre TUTTI rischi eccetto esclusi
+   - Furto totale/parziale: SI
+   - Mancata consegna: SI
+   - Bagnamento: SI
+   - Contaminazione: SI
+   - Imballaggio inadeguato: spesso SI
+   
+   ICC (B) - NAMED PERILS EXTENDED:
+   - Copre solo rischi elencati (estesi)
+   - Furto PARZIALE: NO (solo totale)
+   - Bagnamento: LIMITATO
+   - Contaminazione: NO
+   
+   ICC (C) - NAMED PERILS BASIC (PEGGIORE):
+   - Copre solo rischi principali
+   - Furto: NO
+   - Bagnamento: NO
+   - Contaminazione: NO
+   - Solo: naufragio, incendio, collisione
+   
+   Differenza (A) vs (C) = ABISSALE!
+   Verde = ICC (A), Rosso = ICC (C)
+
+2. MASSIMALI 3 LIVELLI
+   ───────────────────
+   - Per Spedizione: limite singola spedizione
+   - Per Veicolo: limite singolo mezzo
+   - Annuo Aggregato: totale anno
+   
+   Esempio:
+   € 100k spedizione, € 500k veicolo, € 5M annuo
+   
+   Verificare coerenza con traffico merci!
+
+3. MEZZI TRASPORTO
+   ────────────────
+   - Strada: autocarro/TIR
+   - Mare: container/nave
+   - Aereo: cargo aereo
+   - Ferrovia: treno merci
+   - Posta: corriere espresso
+   
+   Non tutti coperti da tutte polizze!
+
+4. FRANCHIGIE TRASPORTI
+   ────────────────────
+   3 tipologie:
+   - Fissa: € 500, € 1.000, € 2.500
+   - Percentuale: 1%, 2%, 5%
+   - Minima: € XXX (sotto non indennizza)
+   
+   Esempio danno € 10.000:
+   - Franchigia € 500: indennizzo € 9.500
+   - Franchigia 2%: indennizzo € 9.800
+   - Franchigia € 500 o 2% (maggiore): € 9.500
+   
+   Verde = franchigia bassa
+
+5. ESTENSIONI CRITICHE
+   ───────────────────
+   
+   MAGAZZINO-MAGAZZINO:
+   - Copre da partenza a destinazione
+   - Include depositi intermedi
+   - ESSENZIALE per trasporti lunghi
+   
+   DEPOSITO TEMPORANEO:
+   - Giorni copertura in deposito: 15, 30, 60, 90
+   - Oltre = NON coperto
+   - Critico per merci stagionali
+   
+   MERCI DEPERIBILI:
+   - Refrigerate, fresche, congelate
+   - Spesso ESCLUSE o premio maggiorato
+   
+   ALTO VALORE:
+   - Gioielli, preziosi, elettronica high-end
+   - Spesso ESCLUSI o sublimite
+   
+   IMBALLAGGIO INADEGUATO:
+   - ICC (A): spesso incluso
+   - ICC (B)/(C): ESCLUSO
+   - Può negare sinistro!
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Ragione sociale
+
+[TIPO_COPERTURA]
+Tipo copertura
+Esempi: "Importazioni", "Esportazioni", "Import/Export", "Nazionale", "Open Cover"
+
+[NUMERO_POLIZZE]
+[DATA_CONFRONTO]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: RACCOMANDAZIONE
+═══════════════════════════════════════════════════════════════════════════════
+
+[RACCOMANDAZIONE_TESTO]
+Raccomandazione (2-3 righe)
+
+Esempi:
+"Si raccomanda Generali: ICC (A) All Risks (vs ICC (C) attuale), massimale 
+spedizione € 200k (+100%), magazzino-magazzino incluso, deposito 60gg (vs 30gg), 
+merci deperibili coperte, franchigia € 500 (vs € 2.500). Premio +18% ampiamente 
+giustificato da copertura superiore."
+
+"Si raccomanda Allianz attuale: unica con ICC (A), massimali adeguati per traffico 
+merci, mondo incluso, estensioni complete. Premio competitivo per copertura All Risks."
+
+"Si raccomanda UnipolSai: ICC (B) adeguato per merci non fragili, massimali 
+sufficienti, ambito Europa, risparmio 25%. ICC (C) scartato: copertura troppo 
+limitata per rischio furto."
+
+[RACCOMANDAZIONE_MOTIVAZIONE]
+Motivazione (5-10 righe)
+
+[NOME_POLIZZA_N] + [DIFF_1-3_POLIZZA_N]
+[PREMIO_ATTUALE] [PREMIO_CONSIGLIATO] [DELTA_PREMIO] [VARIAZIONE_PERC]
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: SINTESI ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+Per CIASCUNA polizza:
+
+[PREMIO_BASE_N]
+[PREMIO_ESTENSIONI_N]
+[IMPOSTE_N]
+[PREMIO_LORDO_N]
+[DIFF_CLASS_PREMIO_N]
+
+[VALORE_MERCI_N]
+Valore merci annuo formato "€ X.XXX.XXX"
+
+[TASSO_MILLE_N]
+Tasso per mille
+Formato: "X,XX ‰"
+Esempio: "2,50 ‰"
+
+Analisi delta: standard
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: MASSIMALI E COPERTURA
+═══════════════════════════════════════════════════════════════════════════════
+
+3 TABELLE: Massimali, Mezzi, Territori
+
+TABELLA MASSIMALI
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_SPEDIZIONE_N]
+Massimale per spedizione formato "€ XXX.XXX"
+
+[DIFF_CLASS_SPED_N]
+Verde se più alto
+
+[MASS_VEICOLO_N]
+Massimale per veicolo formato "€ XXX.XXX"
+
+[MASS_ANNUO_N]
+Massimale annuo aggregato formato "€ X.XXX.XXX"
+
+TABELLA MEZZI TRASPORTO
+───────────────────────────────────────────────────────────────────────────────
+
+[MEZZO_STRADA_N]
+Strada: "Incluso", "Escluso", "Limitato a..."
+
+[MEZZO_MARE_N]
+Mare: "Incluso", "Escluso", "Solo container", "Solo FCL"
+
+[MEZZO_AEREO_N]
+[MEZZO_FERROVIA_N]
+[MEZZO_POSTA_N]
+
+TABELLA TERRITORI
+───────────────────────────────────────────────────────────────────────────────
+
+[TERR_ITALIA_N]
+[TERR_EUROPA_N]
+[TERR_MONDO_N]
+
+Formato: "Incluso", "Escluso", "Opzionale +€ XXX"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: CLAUSOLE ICC
+═══════════════════════════════════════════════════════════════════════════════
+
+TABELLA TIPO CLAUSOLA
+───────────────────────────────────────────────────────────────────────────────
+
+[ICC_A_N]
+ICC (A) All Risks: "Applicata" o "-"
+
+[DIFF_CLASS_ICC_A_N]
+Verde se applicata (MIGLIORE)
+
+[ICC_B_N]
+ICC (B) Named Perils Extended: "Applicata" o "-"
+
+[ICC_C_N]
+ICC (C) Named Perils Basic: "Applicata" o "-"
+
+IMPORTANTE: Solo UNA clausola applicata per polizza
+
+TABELLA RISCHI COPERTI
+───────────────────────────────────────────────────────────────────────────────
+
+Sezione RISCHI PRINCIPALI:
+- Naufragio/Rovesciamento: [RIS_NAUFRAGIO_N]
+- Incendio/Esplosione: [RIS_INCENDIO_N]
+- Collisione: [RIS_COLLISIONE_N]
+- Scarico Forzato: [RIS_SCARICO_N]
+
+Sezione RISCHI ORDINARI:
+- Furto Totale/Parziale: [RIS_FURTO_N]
+- Mancata Consegna: [RIS_MANCATA_CONS_N]
+- Bagnamento: [RIS_BAGNAMENTO_N]
+- Contaminazione: [RIS_CONTAMINAZIONE_N]
+
+Sezione RISCHI SPECIALI:
+- Guerra: [RIS_GUERRA_N]
+- Scioperi/Sommosse: [RIS_SCIOPERI_N]
+
+Formato valore:
+"Coperto", "Escluso", "Limitato", "Opzionale"
+
+[NOTE_ICC]
+Note clausole (8-12 righe)
+
+Esempio:
+"CLAUSOLE ICC: Differenza FONDAMENTALE tra (A), (B), (C).
+
+ICC (A) ALL RISKS - Generali: copre TUTTI rischi eccetto esclusi. Furto totale/
+parziale, mancata consegna, bagnamento, contaminazione INCLUSI. Imballaggio 
+inadeguato coperto. MIGLIORE per merci fragili/alto valore.
+
+ICC (B) EXTENDED - UnipolSai: copre solo rischi elencati (estesi). Furto TOTALE 
+coperto, PARZIALE NO. Bagnamento LIMITATO (solo da ingresso acqua). Contaminazione 
+ESCLUSA. Adeguata per merci robuste, inadeguata per elettronica/farmaceutica.
+
+ICC (C) BASIC - Preventivo X: copre solo rischi PRINCIPALI (naufragio, incendio, 
+collisione). Furto ESCLUSO, bagnamento ESCLUSO, contaminazione ESCLUSA. INADEGUATA 
+per qualsiasi merce con rischio furto. Solo per carichi bulk/rinfuse/materie prime.
+
+RACCOMANDAZIONE: Per elettronica/tessile/food SEMPRE ICC (A). Per materie prime 
+accettabile ICC (B). ICC (C) solo rinfuse basso valore."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: FRANCHIGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella DINAMICA
+
+[FRANCHIGIA_FISSA_N]
+Franchigia fissa formato "€ XXX" o "€ X.XXX"
+
+[DIFF_CLASS_FRANCH_N]
+Verde se più bassa
+
+[FRANCHIGIA_PERC_N]
+Franchigia percentuale formato "X%" o "-"
+
+[FRANCHIGIA_MIN_N]
+Franchigia minima formato "€ XXX"
+
+[SCOPERTO_ORD_N]
+Scoperto ordinario formato "X%" o "Nessuno"
+
+[FRANCH_FURTO_N]
+Franchigia speciale furto formato "€ X.XXX" o "X%" o "-"
+
+[ANALISI_IMPATTO_FRANCHIGIE]
+Analisi impatto (5-10 righe)
+
+Esempio:
+"FRANCHIGIE: Generali € 500 fissa, UnipolSai € 2.500 fissa, AIG 2% min € 1.000.
+
+Su danno € 10.000:
+- Generali: € 10.000 - € 500 = € 9.500
+- UnipolSai: € 10.000 - € 2.500 = € 7.500
+- AIG: € 10.000 - 2% (€ 200) vs min € 1.000 → € 9.000
+Generali migliore € 2.000 vs UnipolSai.
+
+Su danno € 100.000:
+- Generali: € 99.500
+- UnipolSai: € 97.500
+- AIG: € 100k - 2% = € 98.000
+
+FURTO: Franchigie speciali spesso 10-20% vs 2-5% ordinario. Verificare traffico 
+merci alto rischio (elettronica, abbigliamento)."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: ESTENSIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella DINAMICA con 3 sezioni
+
+Sezione ESTENSIONI TEMPORALI:
+- Magazzino a Magazzino: [EST_MAGAZZINO_N]
+- Deposito Temporaneo (giorni): [EST_DEPOSITO_N]
+- Ritardo Consegna: [EST_RITARDO_N]
+
+Sezione ESTENSIONI MERCI:
+- Merci Deperibili: [EST_DEPERIBILI_N]
+- Merci Fragili: [EST_FRAGILI_N]
+- Alto Valore: [EST_ALTO_VALORE_N]
+
+Sezione ESTENSIONI OPERATIVE:
+- Imballaggio Inadeguato: [EST_IMBALLAGGIO_N]
+- Spese Sgombero: [EST_SGOMBERO_N]
+- Spese Salvataggio: [EST_SALVATAGGIO_N]
+
+Formato valore:
+"Incluso", "Incluso - Max € XXX", "Escluso", "Opzionale +€ XXX", "XXX giorni"
+
+IMPORTANTE:
+- Magazzino-magazzino: ESSENZIALE per import/export
+- Deposito: 15gg minimo, 60-90gg MIGLIORE
+- Deperibili: refrigerati/freschi - spesso esclusi
+- Alto valore: gioielli/preziosi - spesso sublimite € 10-50k
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 7: SCORING
+═══════════════════════════════════════════════════════════════════════════════
+
+METODOLOGIA SCORING
+───────────────────────────────────────────────────────────────────────────────
+
+Totale: 100 punti su 5 categorie
+
+1. MASSIMALI (25 punti)
+   - Spedizione (10 pt)
+   - Veicolo (8 pt)
+   - Annuo (7 pt)
+
+2. CLAUSOLE ICC (30 punti)
+   - Tipo clausola (15 pt): A=15, B=10, C=5
+   - Rischi coperti (15 pt)
+
+3. FRANCHIGIE (20 punti)
+   - Franchigia fissa/perc (12 pt)
+   - Franchigia minima (8 pt)
+
+4. ESTENSIONI (15 punti)
+   - Temporali (6 pt)
+   - Merci (5 pt)
+   - Operative (4 pt)
+
+5. QPR (10 punti)
+
+BONUS: ICC (A) All Risks +5 pt
+
+Per CIASCUNA polizza:
+
+[SCORE_TOTALE_N]
+[WINNER_CLASS_N]
+
+[SCORE_MASSIMALI_N] / 25
+[SCORE_ICC_N] / 30
+[SCORE_FRANCHIGIE_N] / 20
+[SCORE_ESTENSIONI_N] / 15
+[SCORE_QPR_N] / 10
+
+[DIFF_CLASS_SCORE_*_N]
+
+[METODOLOGIA_SCORING]
+Spiegazione (5-8 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 8: PRO E CONTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+Ripetere per OGNI polizza:
+
+[NOME_POLIZZA_N]
+
+PRO (4-6):
+[PRO_1-4_POLN]
+
+Esempi:
+"ICC (A) All Risks: furto totale/parziale, bagnamento, contaminazione coperti"
+"Massimale spedizione € 200k (+100% vs mercato) adeguato per traffico"
+"Magazzino-magazzino incluso: copertura completa origine-destinazione"
+"Deposito temporaneo 90 giorni (vs 30gg standard) - ideale per merci stagionali"
+"Merci deperibili incluse senza maggiorazione"
+"Mondo incluso: import/export da qualsiasi paese"
+"Franchigia € 500 (vs € 2.500 mercato) - su sinistro € 10k risparmio € 2k"
+"Premio competitivo € 8.500/anno (-12% vs attuale)"
+
+CONTRO (4-6):
+[CONTRO_1-4_POLN]
+
+Esempi:
+"ICC (C) Named Perils Basic: furto/bagnamento/contaminazione ESCLUSI (CRITICO)"
+"ICC (B): furto PARZIALE escluso - inadeguato per elettronica/abbigliamento"
+"Massimale spedizione € 50k inadeguato per traffico medio € 80k"
+"Magazzino-magazzino ESCLUSO: scoperto durante depositi intermedi"
+"Deposito 15 giorni (vs 60gg standard) - inadeguato per merci stagionali"
+"Merci deperibili ESCLUSE (CRITICO per food/pharma)"
+"Alto valore sublimite € 10k (vs € 50k necessario per elettronica)"
+"Imballaggio inadeguato escluso - può negare sinistro"
+"Solo Italia/Europa: esclude import extra-UE"
+"Franchigia € 2.500 alta (vs € 500 mercato)"
+"Premio superiore +28% per copertura equivalente"
+
+[SINTESI_COMPARATIVA_FINALE]
+Sintesi (10-15 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE - 12 STEP
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: Identificare N polizze
+STEP 2: Tipo copertura (import/export/nazionale) + valore merci annuo
+STEP 3: Economico per polizza + tasso per mille
+STEP 4: Massimali (spedizione, veicolo, annuo)
+STEP 5: Mezzi trasporto coperti (5 tipologie)
+STEP 6: Territori (Italia, Europa, Mondo)
+STEP 7: Clausola ICC applicata (A, B o C) + rischi coperti
+STEP 8: Franchigie (fissa, %, minima, scoperto, furto)
+STEP 9: Estensioni 10 tipologie (temporali, merci, operative)
+STEP 10: Comparazione cross-polizze + highlighting
+STEP 11: Scoring 0-100 + bonus ICC (A)
+STEP 12: Top 3 differenze + Pro/Contro + Raccomandazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+File HTML completo con:
+1. Template compilato
+2. Tabelle dinamiche N colonne
+3. Highlighting corretto
+4. Spiegazione differenze ICC (A/B/C)
+5. Calcoli franchigie
+6. HTML valido
+
+DELIVERABLE: Report confronto Trasporti decisional-ready per cargo/logistics.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT - TRASPORTI CONFRONTO
+═══════════════════════════════════════════════════════════════════════════════

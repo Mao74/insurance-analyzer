@@ -31,6 +31,9 @@ class MaskingData(BaseModel):
     fiscalCode: Optional[str] = None
     insured: Optional[str] = None
     other: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    cap: Optional[str] = None
     
     def get_numero_polizza(self):
         return self.policyNumber or self.numero_polizza or ""
@@ -44,6 +47,12 @@ class MaskingData(BaseModel):
         return self.insured or self.assicurato or ""
     def get_altri(self):
         return self.other or self.altri or ""
+    def get_address(self):
+        return self.address or ""
+    def get_city(self):
+        return self.city or ""
+    def get_cap(self):
+        return self.cap or ""
 
 class StartAnalysisRequest(BaseModel):
     document_ids: List[int]
@@ -191,13 +200,22 @@ async def start_analysis(
     if payload.masking_data:
         md = payload.masking_data
         altri_raw = md.get_altri()
+        # Support both semicolon and newline separators
+        import re
+        altri_list = []
+        if altri_raw:
+            # Split by ; or newline
+            altri_list = [x.strip() for x in re.split(r'[;\n]', altri_raw) if x.strip()]
         sensitive_data = {
             'numero_polizza': md.get_numero_polizza(),
             'contraente': md.get_contraente(),
             'partita_iva': md.get_partita_iva(),
             'codice_fiscale': md.get_codice_fiscale(),
             'assicurato': md.get_assicurato(),
-            'altri': [x.strip() for x in altri_raw.split('\n') if x.strip()] if altri_raw else []
+            'indirizzo': md.get_address(),
+            'citta': md.get_city(),
+            'cap': md.get_cap(),
+            'altri': altri_list
         }
     
     # Run analysis in background
