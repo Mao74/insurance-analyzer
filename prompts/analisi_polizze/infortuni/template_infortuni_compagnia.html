@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richiesta Quotazione Infortuni - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --color-increase: #16a34a;
+            --color-same: #ca8a04;
+            --color-decrease: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+        }
+
+        /* --- SECTION --- */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 15px 0 10px 0;
+        }
+
+        /* --- INFO GRID --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* --- TABELLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* --- COMPARISON TABLE --- */
+        .comparison-table th {
+            width: 33.33%;
+        }
+
+        .comparison-table .col-increase {
+            background: #f0fdf4;
+            font-weight: 600;
+            color: var(--color-increase);
+        }
+
+        .comparison-table .col-same {
+            background: #fffbeb;
+        }
+
+        .comparison-table .col-decrease {
+            background: #fef2f2;
+            font-weight: 600;
+            color: var(--color-decrease);
+        }
+
+        /* --- NOTE BOX --- */
+        .note-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* --- LIST --- */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .report-container {
+                border: none;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            table {
+                font-size: 8pt;
+            }
+
+            th, tr, td {
+                border-color: #ccc !important;
+            }
+
+            th {
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- ========================================= -->
+        <!-- HEADER -->
+        <!-- ========================================= -->
+        <div class="header">
+            <h1>RICHIESTA QUOTAZIONE</h1>
+            <p>Polizza Infortuni</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>BROKER</strong>
+                    Eramo & Associati S.r.l.
+                </div>
+                <div class="header-meta-item">
+                    <strong>RIFERIMENTO</strong>
+                    [RIFERIMENTO_BROKER]
+                </div>
+                <div class="header-meta-item">
+                    <strong>DATA RICHIESTA</strong>
+                    [DATA_RICHIESTA]
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 1: DATI CONTRAENTE -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Contraente</h2>
+
+            <h3 class="subsection-title">Anagrafica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Ragione Sociale</span>
+                    <span class="info-value">[RAGIONE_SOCIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Sede Legale</span>
+                    <span class="info-value">[SEDE_LEGALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">P.IVA / C.F.</span>
+                    <span class="info-value">[PIVA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Codice ATECO</span>
+                    <span class="info-value">[ATECO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Descrizione Attività</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0;">[DESCRIZIONE_ATTIVITA]</p>
+
+            <h3 class="subsection-title">Dati Economici</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area Geografica</th>
+                        <th style="width:25%">Fatturato Ultimo Esercizio</th>
+                        <th style="width:25%">Previsione Prossimo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Italia</strong></td>
+                        <td class="col-curr">[FATTURATO_ITALIA]</td>
+                        <td class="col-curr">[PREV_FATTURATO_ITALIA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unione Europea</strong></td>
+                        <td class="col-curr">[FATTURATO_UE]</td>
+                        <td class="col-curr">[PREV_FATTURATO_UE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>USA / Canada</strong></td>
+                        <td class="col-curr">[FATTURATO_USA]</td>
+                        <td class="col-curr">[PREV_FATTURATO_USA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rest of World</strong></td>
+                        <td class="col-curr">[FATTURATO_ROW]</td>
+                        <td class="col-curr">[PREV_FATTURATO_ROW]</td>
+                    </tr>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td><strong>TOTALE</strong></td>
+                        <td class="col-curr">[FATTURATO_TOTALE]</td>
+                        <td class="col-curr">[PREV_FATTURATO_TOTALE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Dipendenti</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Numero Dipendenti Totale</span>
+                    <span class="info-value">[NUMERO_DIPENDENTI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Monte Salari Annuo</span>
+                    <span class="info-value">[MONTE_SALARI]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 2: SITUAZIONE ATTUALE -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">2. Situazione Attuale</h2>
+
+            <h3 class="subsection-title">Polizza in Essere</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Compagnia Attuale</span>
+                    <span class="info-value">[COMPAGNIA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scadenza</span>
+                    <span class="info-value">[SCADENZA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Premio Lordo Attuale</span>
+                    <span class="info-value">[PREMIO_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Anni Continuità</span>
+                    <span class="info-value">[ANNI_CONTINUITA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo Polizza</span>
+                    <span class="info-value">[TIPO_POLIZZA_ATTUALE]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Massimali Attuali</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:20%">Massimale / Diaria</th>
+                        <th style="width:20%">Franchigia</th>
+                        <th style="width:15%">Scoperto</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Morte</strong></td>
+                        <td class="col-curr">[MASS_ATT_MORTE]</td>
+                        <td class="col-center">[FRANCH_ATT_MORTE]</td>
+                        <td class="col-center">[SCOP_ATT_MORTE]</td>
+                        <td>[NOTE_ATT_MORTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invalidità Permanente</strong></td>
+                        <td class="col-curr">[MASS_ATT_IP]</td>
+                        <td class="col-center">[FRANCH_ATT_IP]</td>
+                        <td class="col-center">[SCOP_ATT_IP]</td>
+                        <td>[NOTE_ATT_IP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inabilità Temp. Totale</strong></td>
+                        <td class="col-curr">[MASS_ATT_ITT]</td>
+                        <td class="col-center">[FRANCH_ATT_ITT]</td>
+                        <td class="col-center">[SCOP_ATT_ITT]</td>
+                        <td>[NOTE_ATT_ITT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inabilità Temp. Parziale</strong></td>
+                        <td class="col-curr">[MASS_ATT_ITP]</td>
+                        <td class="col-center">[FRANCH_ATT_ITP]</td>
+                        <td class="col-center">[SCOP_ATT_ITP]</td>
+                        <td>[NOTE_ATT_ITP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Mediche</strong></td>
+                        <td class="col-curr">[MASS_ATT_SPESE]</td>
+                        <td class="col-center">[FRANCH_ATT_SPESE]</td>
+                        <td class="col-center">[SCOP_ATT_SPESE]</td>
+                        <td>[NOTE_ATT_SPESE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Garanzie Aggiuntive Attuali</h3>
+            <ul>
+                <li>[GARANZIA_AGG_ATT_1]</li>
+                <li>[GARANZIA_AGG_ATT_2]</li>
+                <li>[GARANZIA_AGG_ATT_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Ambito Copertura Attuale</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Tipologia</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ambito Temporale</strong></td>
+                        <td>[AMBITO_TEMP_ATT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Validità Territoriale</strong></td>
+                        <td>[TERRITORIO_ATT]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 3: COMPOSIZIONE ASSICURATI ATTUALI -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">3. Composizione Assicurati Attuali</h2>
+
+            <!-- SEZIONE CUMULATIVA: Mostrare solo se TIPO_POLIZZA_ATTUALE = "Cumulativa" -->
+            
+            <h3 class="subsection-title">Categorie Professionali e Retribuzioni</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Categoria</th>
+                        <th style="width:12%">N. Persone</th>
+                        <th style="width:15%">Classe Rischio</th>
+                        <th style="width:20%">Retribuzioni Annue</th>
+                        <th>Attività Svolta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per OGNI categoria -->
+                    <tr>
+                        <td><strong>[CATEGORIA_ATT_1]</strong></td>
+                        <td class="col-center">[N_PERS_ATT_1]</td>
+                        <td class="col-center">[CLASSE_RISCHIO_ATT_1]</td>
+                        <td class="col-curr">[RETRIB_ATT_1]</td>
+                        <td>[ATTIVITA_ATT_1]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>[CATEGORIA_ATT_2]</strong></td>
+                        <td class="col-center">[N_PERS_ATT_2]</td>
+                        <td class="col-center">[CLASSE_RISCHIO_ATT_2]</td>
+                        <td class="col-curr">[RETRIB_ATT_2]</td>
+                        <td>[ATTIVITA_ATT_2]</td>
+                    </tr>
+                    <!-- ... altre categorie ... -->
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td>TOTALE</td>
+                        <td class="col-center">[N_PERS_ATT_TOTALE]</td>
+                        <td></td>
+                        <td class="col-curr">[RETRIB_ATT_TOTALE]</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- SEZIONE NOMINATIVA: Mostrare solo se TIPO_POLIZZA_ATTUALE = "Nominativa" -->
+
+            <h3 class="subsection-title">Composizione Assicurati Nominativi</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Numero Totale Assicurati</span>
+                    <span class="info-value">[NUM_ASSIC_NOM_ATT]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Range Età</span>
+                    <span class="info-value">[RANGE_ETA_ATT]</span>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Qualifica</th>
+                        <th style="width:20%">N. Persone</th>
+                        <th>Età Media</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per ogni qualifica -->
+                    <tr>
+                        <td>[QUALIFICA_NOM_ATT_1]</td>
+                        <td class="col-center">[N_QUAL_NOM_ATT_1]</td>
+                        <td class="col-center">[ETA_MEDIA_NOM_ATT_1]</td>
+                    </tr>
+                    <!-- ... altre qualifiche ... -->
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 4: STORICO SINISTRI -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">4. Storico Sinistri</h2>
+
+            <h3 class="subsection-title">Andamento Ultimi 5 Anni</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Anno</th>
+                        <th style="width:22%">Premio Lordo</th>
+                        <th style="width:22%">Sinistri Pagati</th>
+                        <th style="width:22%">Sinistri Riservati</th>
+                        <th style="width:15%">Loss Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per ogni anno -->
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_1]</strong></td>
+                        <td class="col-curr">[PREMIO_1]</td>
+                        <td class="col-curr">[SINISTRI_PAG_1]</td>
+                        <td class="col-curr">[SINISTRI_RIS_1]</td>
+                        <td class="col-curr">[LOSS_RATIO_1]</td>
+                    </tr>
+                    <!-- ... altri anni ... -->
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Dettaglio Sinistri (Tutti - Aperti e Chiusi)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:10%">Data</th>
+                        <th style="width:15%">Garanzia</th>
+                        <th style="width:30%">Causa</th>
+                        <th style="width:15%">Riservato</th>
+                        <th style="width:15%">Pagato</th>
+                        <th style="width:15%">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per TUTTI i sinistri -->
+                    <tr>
+                        <td class="col-center">[DATA_SIN_1]</td>
+                        <td>[GAR_SIN_1]</td>
+                        <td>[CAUSA_SIN_1]</td>
+                        <td class="col-curr">[RIS_SIN_1]</td>
+                        <td class="col-curr">[PAG_SIN_1]</td>
+                        <td>[STATUS_SIN_1]</td>
+                    </tr>
+                    <!-- ... tutti altri sinistri ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Note Sinistralità:</strong><br>
+                [NOTE_SINISTRALITA]
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 5: RICHIESTA -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">5. Condizioni Richieste</h2>
+
+            <h3 class="subsection-title">Massimali Richiesti</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:20%">Massimale / Diaria</th>
+                        <th style="width:20%">Franchigia</th>
+                        <th style="width:15%">Scoperto</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Morte</strong></td>
+                        <td class="col-curr">[MASS_RICH_MORTE]</td>
+                        <td class="col-center">[FRANCH_RICH_MORTE]</td>
+                        <td class="col-center">[SCOP_RICH_MORTE]</td>
+                        <td>[NOTE_RICH_MORTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invalidità Permanente</strong></td>
+                        <td class="col-curr">[MASS_RICH_IP]</td>
+                        <td class="col-center">[FRANCH_RICH_IP]</td>
+                        <td class="col-center">[SCOP_RICH_IP]</td>
+                        <td>[NOTE_RICH_IP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inabilità Temp. Totale</strong></td>
+                        <td class="col-curr">[MASS_RICH_ITT]</td>
+                        <td class="col-center">[FRANCH_RICH_ITT]</td>
+                        <td class="col-center">[SCOP_RICH_ITT]</td>
+                        <td>[NOTE_RICH_ITT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inabilità Temp. Parziale</strong></td>
+                        <td class="col-curr">[MASS_RICH_ITP]</td>
+                        <td class="col-center">[FRANCH_RICH_ITP]</td>
+                        <td class="col-center">[SCOP_RICH_ITP]</td>
+                        <td>[NOTE_RICH_ITP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Mediche</strong></td>
+                        <td class="col-curr">[MASS_RICH_SPESE]</td>
+                        <td class="col-center">[FRANCH_RICH_SPESE]</td>
+                        <td class="col-center">[SCOP_RICH_SPESE]</td>
+                        <td>[NOTE_RICH_SPESE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Garanzie Aggiuntive Richieste</h3>
+            <ul>
+                <li>[GARANZIA_AGG_RICH_1]</li>
+                <li>[GARANZIA_AGG_RICH_2]</li>
+                <li>[GARANZIA_AGG_RICH_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Ambito Copertura Richiesto</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Tipologia</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ambito Temporale</strong></td>
+                        <td>[AMBITO_TEMP_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Validità Territoriale</strong></td>
+                        <td>[TERRITORIO_RICH]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Assicurati Richiesti</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Tipo Polizza</span>
+                    <span class="info-value">[TIPO_POLIZZA_RICH]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero/Composizione</span>
+                    <span class="info-value">[COMPOSIZIONE_RICH]</span>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>Eventuali Modifiche Composizione:</strong><br>
+                [NOTE_MODIFICHE_COMPOSIZIONE]
+            </div>
+
+            <h3 class="subsection-title">Premio Obiettivo</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Premio Attuale</span>
+                    <span class="info-value">[PREMIO_ATTUALE_RIF]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Budget Massimo</span>
+                    <span class="info-value">[BUDGET_MASSIMO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 6: CONFRONTO ATTUALE vs RICHIESTO -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">6. Confronto Sintetico Attuale vs Richiesto</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Attuale</th>
+                        <th>Richiesto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Massimale Morte</strong></td>
+                        <td>[CONF_MORTE_ATT]</td>
+                        <td class="[CLASSE_CONF_MORTE]">[CONF_MORTE_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Massimale IP</strong></td>
+                        <td>[CONF_IP_ATT]</td>
+                        <td class="[CLASSE_CONF_IP]">[CONF_IP_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diaria ITT</strong></td>
+                        <td>[CONF_ITT_ATT]</td>
+                        <td class="[CLASSE_CONF_ITT]">[CONF_ITT_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diaria ITP</strong></td>
+                        <td>[CONF_ITP_ATT]</td>
+                        <td class="[CLASSE_CONF_ITP]">[CONF_ITP_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Mediche</strong></td>
+                        <td>[CONF_SPESE_ATT]</td>
+                        <td class="[CLASSE_CONF_SPESE]">[CONF_SPESE_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Franchigia IP</strong></td>
+                        <td>[CONF_FRANCH_IP_ATT]</td>
+                        <td class="[CLASSE_CONF_FRANCH_IP]">[CONF_FRANCH_IP_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Territorio</strong></td>
+                        <td>[CONF_TERR_ATT]</td>
+                        <td class="[CLASSE_CONF_TERR]">[CONF_TERR_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ambito Temporale</strong></td>
+                        <td>[CONF_AMBITO_ATT]</td>
+                        <td class="[CLASSE_CONF_AMBITO]">[CONF_AMBITO_RICH]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 7: INFORMAZIONI TECNICHE -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">7. Informazioni Tecniche</h2>
+
+            <h3 class="subsection-title">Controllo Qualità e Sicurezza</h3>
+            <ul>
+                <li>[SICUREZZA_1]</li>
+                <li>[SICUREZZA_2]</li>
+                <li>[SICUREZZA_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Gestione Rischi</h3>
+            <ul>
+                <li>[GESTIONE_RISCHI_1]</li>
+                <li>[GESTIONE_RISCHI_2]</li>
+                <li>[GESTIONE_RISCHI_3]</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Note Particolari:</strong><br>
+                [NOTE_PARTICOLARI]
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- SEZIONE 8: ALLEGATI -->
+        <!-- ========================================= -->
+        <div class="section">
+            <h2 class="section-title">8. Documentazione Allegata</h2>
+
+            <ul>
+                <li>✓ Polizza attuale completa</li>
+                <li>✓ Borderò sinistri ultimi 5 anni</li>
+                <li>✓ Bilancio ultimo esercizio</li>
+                <li>[ALTRO_ALLEGATO_1]</li>
+                <li>[ALTRO_ALLEGATO_2]</li>
+            </ul>
+
+            <div class="note-box" style="margin-top:20px;">
+                <strong>Per informazioni o chiarimenti contattare:</strong><br>
+                Eramo & Associati S.r.l.<br>
+                Email: [EMAIL_CONTATTO]<br>
+                Tel: [TEL_CONTATTO]
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

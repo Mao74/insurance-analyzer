@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polizza Cyber Risk - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --primary-dark: #1a1a1a;
+            --primary-medium: #4a4a4a;
+            --bg-light: #fafafa;
+            --border-gold: #c9a961;
+            --text-dark: #2c2c2c;
+            --text-muted: #6b6b6b;
+            --accent-cyber: #0ea5e9;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gold) 0%, var(--border-gold) 100%);
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header-meta-item {
+            font-size: 11px;
+        }
+
+        .header-meta-label {
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .header-meta-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: var(--bg-light);
+            border-bottom: 2px solid var(--primary-gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: white;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            border-right: 1px solid var(--bg-light);
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab:hover {
+            background: var(--bg-light);
+            color: var(--primary-dark);
+        }
+
+        .tab.active {
+            background: var(--primary-gold);
+            color: white;
+        }
+
+        /* TAB CONTENT */
+        .tab-content {
+            display: none;
+            padding: 30px 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .subsection-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-medium);
+            margin: 20px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: #e5e7eb;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 12px 16px;
+        }
+
+        .info-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* COVERAGE CARD */
+        .coverage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .coverage-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .coverage-card:hover {
+            border-color: var(--primary-gold);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+        }
+
+        .coverage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .coverage-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .coverage-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .coverage-detail {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .coverage-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-cyber);
+            margin-top: 8px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        th {
+            background: var(--bg-light);
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            color: var(--primary-dark);
+            border: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        /* HIGHLIGHT BOX */
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid var(--accent-warning);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #78350f;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            background: #fee2e2;
+            border-left: 4px solid var(--accent-danger);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .alert-box strong {
+            color: #991b1b;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .alert-box p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #7f1d1d;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid var(--accent-cyber);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #1e3a8a;
+        }
+
+        /* LIST */
+        ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 11px;
+            margin-top: 40px;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>POLIZZA CYBER RISK</h1>
+            <p class="header-subtitle">Protezione Completa Rischi Informatici</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <div class="header-meta-label">Contraente</div>
+                    <div class="header-meta-value">[CONTRAENTE]</div>
+                </div>
+                <div class="header-meta-item">
+                    <div class="header-meta-label">Compagnia</div>
+                    <div class="header-meta-value">[COMPAGNIA]</div>
+                </div>
+                <div class="header-meta-item">
+                    <div class="header-meta-label">Scadenza</div>
+                    <div class="header-meta-value">[SCADENZA]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab(0)">Sintesi</button>
+            <button class="tab" onclick="showTab(1)">Coperture</button>
+            <button class="tab" onclick="showTab(2)">Esclusioni</button>
+            <button class="tab" onclick="showTab(3)">Franchigie</button>
+            <button class="tab" onclick="showTab(4)">Sinistri</button>
+            <button class="tab" onclick="showTab(5)">Servizi</button>
+        </div>
+
+        <!-- TAB 1: SINTESI -->
+        <div class="tab-content active">
+            <h2 class="section-title">Sintesi Polizza</h2>
+
+            <h3 class="subsection-title">Dati Generali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Contraente</div>
+                    <div class="info-value">[CONTRAENTE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Codice Fiscale / P.IVA</div>
+                    <div class="info-value">[CF_PIVA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Compagnia</div>
+                    <div class="info-value">[COMPAGNIA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Numero Polizza</div>
+                    <div class="info-value">[NUMERO_POLIZZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Decorrenza</div>
+                    <div class="info-value">[DECORRENZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Scadenza</div>
+                    <div class="info-value">[SCADENZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Premio Lordo Annuo</div>
+                    <div class="info-value">[PREMIO_LORDO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Frazionamento</div>
+                    <div class="info-value">[FRAZIONAMENTO]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Profilo Aziendale</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Settore Attività</div>
+                    <div class="info-value">[SETTORE_ATTIVITA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Fatturato Annuo</div>
+                    <div class="info-value">[FATTURATO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Numero Dipendenti</div>
+                    <div class="info-value">[NUMERO_DIPENDENTI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Sistemi IT Gestiti</div>
+                    <div class="info-value">[SISTEMI_IT]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Massimali Principali</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Garanzia</th>
+                        <th style="width:20%">Inclusa</th>
+                        <th style="width:30%">Massimale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Breach</strong></td>
+                        <td style="text-align:center">[DATA_BREACH_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[DATA_BREACH_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Extortion</strong></td>
+                        <td style="text-align:center">[EXTORTION_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[EXTORTION_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td style="text-align:center">[BI_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[BI_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>System Damage</strong></td>
+                        <td style="text-align:center">[SYSTEM_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[SYSTEM_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Crime</strong></td>
+                        <td style="text-align:center">[CRIME_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[CRIME_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal Defense (GDPR)</strong></td>
+                        <td style="text-align:center">[LEGAL_INCLUSA]</td>
+                        <td style="text-align:right; font-family: 'JetBrains Mono', monospace; font-weight:600">[LEGAL_MASSIMALE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <strong>⚡ DENUNCIA IMMEDIATA OBBLIGATORIA</strong>
+                <p>In caso di incidente cyber, la denuncia deve essere effettuata immediatamente (entro 24 ore dalla scoperta). Contattare la hotline H24: <strong>[HOTLINE_H24]</strong></p>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: COPERTURE -->
+        <div class="tab-content">
+            <h2 class="section-title">Coperture Cyber Risk</h2>
+
+            <div class="coverage-grid">
+                
+                <!-- Data Breach -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🔓 Data Breach</div>
+                        <span class="coverage-badge [DATA_BREACH_BADGE_CLASS]">[DATA_BREACH_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[DATA_BREACH_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [DATA_BREACH_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [DATA_BREACH_FRANCHIGIA]<br>
+                        Waiting Period: [DATA_BREACH_WAITING]
+                    </div>
+                </div>
+
+                <!-- Cyber Extortion -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🔐 Cyber Extortion</div>
+                        <span class="coverage-badge [EXTORTION_BADGE_CLASS]">[EXTORTION_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[EXTORTION_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [EXTORTION_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [EXTORTION_FRANCHIGIA]<br>
+                        Include: [EXTORTION_INCLUDE]
+                    </div>
+                </div>
+
+                <!-- Business Interruption -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">⏸️ Business Interruption</div>
+                        <span class="coverage-badge [BI_BADGE_CLASS]">[BI_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[BI_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [BI_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia Temporale: [BI_FRANCHIGIA_TEMP]<br>
+                        Periodo Indennizzo: [BI_PERIODO]
+                    </div>
+                </div>
+
+                <!-- System Damage -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🖥️ System Damage</div>
+                        <span class="coverage-badge [SYSTEM_BADGE_CLASS]">[SYSTEM_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[SYSTEM_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [SYSTEM_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [SYSTEM_FRANCHIGIA]<br>
+                        Copertura: [SYSTEM_COPERTURA]
+                    </div>
+                </div>
+
+                <!-- Cyber Crime -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">💳 Cyber Crime</div>
+                        <span class="coverage-badge [CRIME_BADGE_CLASS]">[CRIME_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[CRIME_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [CRIME_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [CRIME_FRANCHIGIA]<br>
+                        Tipologie: [CRIME_TIPOLOGIE]
+                    </div>
+                </div>
+
+                <!-- Legal Defense -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">⚖️ Legal Defense GDPR</div>
+                        <span class="coverage-badge [LEGAL_BADGE_CLASS]">[LEGAL_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[LEGAL_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [LEGAL_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [LEGAL_FRANCHIGIA]<br>
+                        Include: [LEGAL_INCLUDE]
+                    </div>
+                </div>
+
+                <!-- Notification Costs -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">📧 Notification Costs</div>
+                        <span class="coverage-badge [NOTIF_BADGE_CLASS]">[NOTIF_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[NOTIF_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [NOTIF_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [NOTIF_FRANCHIGIA]<br>
+                        Servizi: [NOTIF_SERVIZI]
+                    </div>
+                </div>
+
+                <!-- PR Crisis Management -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">📢 PR Crisis Management</div>
+                        <span class="coverage-badge [PR_BADGE_CLASS]">[PR_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[PR_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [PR_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [PR_FRANCHIGIA]<br>
+                        Durata: [PR_DURATA]
+                    </div>
+                </div>
+
+                <!-- Forensic Investigation -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🔍 Forensic Investigation</div>
+                        <span class="coverage-badge [FORENSIC_BADGE_CLASS]">[FORENSIC_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[FORENSIC_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [FORENSIC_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [FORENSIC_FRANCHIGIA]<br>
+                        Provider: [FORENSIC_PROVIDER]
+                    </div>
+                </div>
+
+                <!-- PCI DSS Fines -->
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">💰 PCI DSS Fines</div>
+                        <span class="coverage-badge [PCI_BADGE_CLASS]">[PCI_STATUS]</span>
+                    </div>
+                    <div class="coverage-detail">[PCI_DESCRIZIONE]</div>
+                    <div class="coverage-amount">Massimale: [PCI_MASSIMALE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Franchigia: [PCI_FRANCHIGIA]<br>
+                        Copertura: [PCI_COPERTURA]
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="info-box">
+                <strong>ℹ️ INFORMAZIONI GARANZIE</strong>
+                <p>Tutte le garanzie operano su base "claims made" (richiesta risarcimento pervenuta durante il periodo di polizza). Retroattività: [RETROATTIVITA]. Per dettagli specifici su ogni copertura, consultare le Condizioni di Polizza.</p>
+            </div>
+
+        </div>
+
+        <!-- TAB 3: ESCLUSIONI -->
+        <div class="tab-content">
+            <h2 class="section-title">Esclusioni & Limitazioni</h2>
+
+            <h3 class="subsection-title">Esclusioni Principali</h3>
+            <div class="alert-box">
+                <strong>⚠️ ATTENZIONE - Rischi NON Coperti</strong>
+                <p>Le seguenti situazioni sono escluse dalla copertura assicurativa:</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Categoria</th>
+                        <th>Descrizione Esclusione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Atti Dolosi</strong></td>
+                        <td>[ESCL_ATTI_DOLOSI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Guerra e Terrorismo</strong></td>
+                        <td>[ESCL_GUERRA_TERRORISMO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sanzioni Regolamentari</strong></td>
+                        <td>[ESCL_SANZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sistemi Legacy</strong></td>
+                        <td>[ESCL_SISTEMI_LEGACY]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Misure Sicurezza</strong></td>
+                        <td>[ESCL_MISURE_SICUREZZA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infrastrutture Critiche</strong></td>
+                        <td>[ESCL_INFRASTRUTTURE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Proprietà Intellettuale</strong></td>
+                        <td>[ESCL_IP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contrattuale</strong></td>
+                        <td>[ESCL_CONTRATTUALE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Limitazioni Territoriali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Validità Territoriale</div>
+                    <div class="info-value">[VALIDITA_TERRITORIALE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Esclusioni Geografiche</div>
+                    <div class="info-value">[ESCLUSIONI_GEOGRAFICHE]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Requisiti Minimi Sicurezza</h3>
+            <ul>
+                <li>[REQ_SICUREZZA_1]</li>
+                <li>[REQ_SICUREZZA_2]</li>
+                <li>[REQ_SICUREZZA_3]</li>
+                <li>[REQ_SICUREZZA_4]</li>
+                <li>[REQ_SICUREZZA_5]</li>
+            </ul>
+
+            <div class="alert-box">
+                <strong>⚠️ OBBLIGO CONFORMITÀ</strong>
+                <p>Il mancato rispetto dei requisiti minimi di sicurezza può comportare la decadenza totale o parziale della copertura assicurativa. Verificare periodicamente la conformità dei sistemi.</p>
+            </div>
+
+        </div>
+
+        <!-- TAB 4: FRANCHIGIE -->
+        <div class="tab-content">
+            <h2 class="section-title">Franchigie & Scoperti</h2>
+
+            <h3 class="subsection-title">Franchigie per Garanzia</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Garanzia</th>
+                        <th style="width:25%">Franchigia</th>
+                        <th style="width:25%">Scoperto</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Breach</strong></td>
+                        <td>[DATA_BREACH_FRANCHIGIA]</td>
+                        <td>[DATA_BREACH_SCOPERTO]</td>
+                        <td>[DATA_BREACH_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Extortion</strong></td>
+                        <td>[EXTORTION_FRANCHIGIA]</td>
+                        <td>[EXTORTION_SCOPERTO]</td>
+                        <td>[EXTORTION_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td>[BI_FRANCHIGIA_ORE] ore</td>
+                        <td>[BI_SCOPERTO]</td>
+                        <td>[BI_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>System Damage</strong></td>
+                        <td>[SYSTEM_FRANCHIGIA]</td>
+                        <td>[SYSTEM_SCOPERTO]</td>
+                        <td>[SYSTEM_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Crime</strong></td>
+                        <td>[CRIME_FRANCHIGIA]</td>
+                        <td>[CRIME_SCOPERTO]</td>
+                        <td>[CRIME_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal Defense</strong></td>
+                        <td>[LEGAL_FRANCHIGIA]</td>
+                        <td>[LEGAL_SCOPERTO]</td>
+                        <td>[LEGAL_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notification Costs</strong></td>
+                        <td>[NOTIF_FRANCHIGIA]</td>
+                        <td>[NOTIF_SCOPERTO]</td>
+                        <td>[NOTIF_NOTE_FRANCH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Forensic Investigation</strong></td>
+                        <td>[FORENSIC_FRANCHIGIA]</td>
+                        <td>[FORENSIC_SCOPERTO]</td>
+                        <td>[FORENSIC_NOTE_FRANCH]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Sublimiti Applicabili</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Voce</th>
+                        <th style="width:40%">Sublimite</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Consulenza Forensic per evento</td>
+                        <td>[SUBLIMITE_FORENSIC_EVENTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Spese legali per procedimento</td>
+                        <td>[SUBLIMITE_LEGAL_PROCEDIMENTO]</td>
+                    </tr>
+                    <tr>
+                        <td>PR Crisis Management per evento</td>
+                        <td>[SUBLIMITE_PR_EVENTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Pagamento Ransomware</td>
+                        <td>[SUBLIMITE_RANSOMWARE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <strong>💡 FRANCHIGIE SPECIFICHE</strong>
+                <p>Le franchigie possono variare in base al tipo di evento e alla garanzia coinvolta. La franchigia Business Interruption è espressa in ore di fermo operativo. Verificare sempre le condizioni specifiche per ogni sinistro.</p>
+            </div>
+
+        </div>
+
+        <!-- TAB 5: GESTIONE SINISTRI -->
+        <div class="tab-content">
+            <h2 class="section-title">Gestione Sinistri Cyber</h2>
+
+            <div class="alert-box">
+                <strong>🚨 DENUNCIA IMMEDIATA OBBLIGATORIA</strong>
+                <p>In caso di incidente cyber, contattare immediatamente (entro 24 ore dalla scoperta) la hotline dedicata. Il ritardo nella denuncia può compromettere la copertura.</p>
+            </div>
+
+            <h3 class="subsection-title">Contatti Emergenza H24</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Hotline H24 Cyber</div>
+                    <div class="info-value">[HOTLINE_H24]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email Emergenza</div>
+                    <div class="info-value">[EMAIL_EMERGENZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Broker Referente</div>
+                    <div class="info-value">[BROKER_NOME]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Telefono Broker</div>
+                    <div class="info-value">[BROKER_TEL]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Procedura Denuncia per Tipo Evento</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Tipo Evento</th>
+                        <th style="width:20%">Termine Denuncia</th>
+                        <th>Documentazione Necessaria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Breach</strong></td>
+                        <td>Immediata (24h)</td>
+                        <td>[DOC_DATA_BREACH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ransomware</strong></td>
+                        <td>Immediata (12h)</td>
+                        <td>[DOC_RANSOMWARE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DDoS Attack</strong></td>
+                        <td>Immediata (24h)</td>
+                        <td>[DOC_DDOS]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td>Immediata (24h)</td>
+                        <td>[DOC_BI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Crime</strong></td>
+                        <td>Immediata (24h)</td>
+                        <td>[DOC_CRIME]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Timeline Gestione Sinistro</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Fase</th>
+                        <th style="width:20%">Tempistica</th>
+                        <th>Attività</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>H+0 (Discovery)</strong></td>
+                        <td>Immediato</td>
+                        <td>[FASE_DISCOVERY]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H+1 (Contenimento)</strong></td>
+                        <td>1-4 ore</td>
+                        <td>[FASE_CONTENIMENTO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H+24 (Investigation)</strong></td>
+                        <td>24-48 ore</td>
+                        <td>[FASE_INVESTIGATION]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 3-7 (Recovery)</strong></td>
+                        <td>3-7 giorni</td>
+                        <td>[FASE_RECOVERY]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 8-30 (Notifiche)</strong></td>
+                        <td>8-30 giorni</td>
+                        <td>[FASE_NOTIFICHE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Obblighi GDPR</h3>
+            <div class="alert-box">
+                <strong>⚖️ NOTIFICA GARANTE PRIVACY</strong>
+                <p>In caso di data breach con dati personali, obbligo di notifica al Garante Privacy entro 72 ore dalla scoperta (Art. 33 GDPR). La polizza copre assistenza legale e costi notifica.</p>
+            </div>
+
+            <ul>
+                <li><strong>Valutazione gravità breach:</strong> [VALUTAZIONE_GRAVITA]</li>
+                <li><strong>Notifica Garante se:</strong> [NOTIFICA_GARANTE_SE]</li>
+                <li><strong>Comunicazione interessati se:</strong> [COMUNICAZIONE_INTERESSATI_SE]</li>
+                <li><strong>Assistenza legale inclusa:</strong> [ASSISTENZA_LEGALE_INCLUSA]</li>
+            </ul>
+
+        </div>
+
+        <!-- TAB 6: SERVIZI ASSISTENZA -->
+        <div class="tab-content">
+            <h2 class="section-title">Servizi di Assistenza Cyber</h2>
+
+            <h3 class="subsection-title">Servizi Inclusi nella Polizza</h3>
+
+            <div class="coverage-grid">
+                
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🔍 Forensic Investigation</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_FORENSIC_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Provider: [SERV_FORENSIC_PROVIDER]<br>
+                        Disponibilità: [SERV_FORENSIC_DISPONIBILITA]
+                    </div>
+                </div>
+
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">⚖️ Legal Counsel</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_LEGAL_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Provider: [SERV_LEGAL_PROVIDER]<br>
+                        Specializzazione: [SERV_LEGAL_SPECIAL]
+                    </div>
+                </div>
+
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">📢 PR Crisis Management</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_PR_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Provider: [SERV_PR_PROVIDER]<br>
+                        Servizi: [SERV_PR_SERVIZI]
+                    </div>
+                </div>
+
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">📧 Notification Services</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_NOTIF_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Provider: [SERV_NOTIF_PROVIDER]<br>
+                        Include: [SERV_NOTIF_INCLUDE]
+                    </div>
+                </div>
+
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">🛡️ Credit Monitoring</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_CREDIT_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Provider: [SERV_CREDIT_PROVIDER]<br>
+                        Durata: [SERV_CREDIT_DURATA]
+                    </div>
+                </div>
+
+                <div class="coverage-card">
+                    <div class="coverage-header">
+                        <div class="coverage-name">☎️ Call Center Support</div>
+                        <span class="coverage-badge badge-active">INCLUSO</span>
+                    </div>
+                    <div class="coverage-detail">[SERV_CALLCENTER_DESCRIZIONE]</div>
+                    <div style="font-size:10px; color:#6b6b6b; margin-top:8px">
+                        Lingue: [SERV_CALLCENTER_LINGUE]<br>
+                        Disponibilità: [SERV_CALLCENTER_DISPONIBILITA]
+                    </div>
+                </div>
+
+            </div>
+
+            <h3 class="subsection-title">Panel di Fornitori Pre-Approvati</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Servizio</th>
+                        <th style="width:30%">Provider</th>
+                        <th>Contatto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Forensic Investigation</td>
+                        <td>[PANEL_FORENSIC_NOME]</td>
+                        <td>[PANEL_FORENSIC_CONTATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>Legal GDPR</td>
+                        <td>[PANEL_LEGAL_NOME]</td>
+                        <td>[PANEL_LEGAL_CONTATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>PR Agency</td>
+                        <td>[PANEL_PR_NOME]</td>
+                        <td>[PANEL_PR_CONTATTO]</td>
+                    </tr>
+                    <tr>
+                        <td>IT Recovery</td>
+                        <td>[PANEL_IT_NOME]</td>
+                        <td>[PANEL_IT_CONTATTO]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>ℹ️ UTILIZZO PANEL PRE-APPROVATO</strong>
+                <p>L'utilizzo dei fornitori del panel pre-approvato garantisce costi concordati e tempi di risposta rapidi. È possibile richiedere provider alternativi previa approvazione della compagnia.</p>
+            </div>
+
+            <h3 class="subsection-title">Servizi Preventivi (Opzionali)</h3>
+            <ul>
+                <li>[SERV_PREV_1]</li>
+                <li>[SERV_PREV_2]</li>
+                <li>[SERV_PREV_3]</li>
+                <li>[SERV_PREV_4]</li>
+            </ul>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Documento riepilogativo non contrattuale - Fare sempre riferimento alle Condizioni di Polizza</p>
+            <p style="margin-top:8px">Broker: Eramo & Associati S.r.l. | Tel: [BROKER_TEL] | Email: [BROKER_EMAIL]</p>
+        </div>
+
+    </div>
+
+    <script>
+        function showTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

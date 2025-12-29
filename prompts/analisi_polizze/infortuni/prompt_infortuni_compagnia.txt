@@ -1,0 +1,608 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: RICHIESTA QUOTAZIONE INFORTUNI COMPAGNIA - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare richiesta quotazione per compagnie assicuratrici basata su 
+polizza Infortuni attuale + requisiti cliente.
+
+DESTINATARIO: Underwriter compagnia assicuratrice
+FORMATO: Scheda tecnica richiesta preventivo (NO TAB, documento lineare)
+TEMPLATE: template_infortuni_compagnia_finale.html (851 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DATI TECNICI PURI
+   - Focus su informazioni per underwriting e pricing
+   - Zero narrativa, solo fatti e numeri
+   - Formato professionale sobrio
+
+2. COMPLETEZZA ASSOLUTA
+   - TUTTI i sinistri (aperti e chiusi)
+   - TUTTE le categorie (se Cumulativa) con retribuzioni
+   - TUTTE le garanzie (attuali e richieste)
+
+3. COMPARAZIONE CHIARA
+   - Sempre evidenziare Attuale vs Richiesto
+   - Classificare: Miglioramento / Conferma / Riduzione
+   - Facilitare decisione underwriter
+
+4. RETRIBUZIONI CRITICHE
+   - Se Cumulativa: retribuzioni per categoria ESSENZIALI per pricing
+   - Dati base calcolo premio
+   - Somme verificate
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA DOCUMENTO (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI CONTRAENTE
+SEZIONE 2: SITUAZIONE ATTUALE
+SEZIONE 3: COMPOSIZIONE ASSICURATI ATTUALI
+SEZIONE 4: STORICO SINISTRI
+SEZIONE 5: CONDIZIONI RICHIESTE
+SEZIONE 6: CONFRONTO SINTETICO
+SEZIONE 7: INFORMAZIONI TECNICHE
+SEZIONE 8: ALLEGATI
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[RIFERIMENTO_BROKER]
+Riferimento interno broker (es. "RQ-2024-INF-0089")
+
+[DATA_RICHIESTA]
+Data compilazione richiesta formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI CONTRAENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANAGRAFICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RAGIONE_SOCIALE]
+Denominazione completa società
+
+[SEDE_LEGALE]
+Indirizzo completo (via, città, provincia)
+
+[PIVA]
+Partita IVA / Codice Fiscale
+
+[ATECO]
+Codice ATECO completo
+
+SUBSECTION: DESCRIZIONE ATTIVITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[DESCRIZIONE_ATTIVITA]
+Descrizione dettagliata attività svolta (3-5 righe)
+Focus su aspetti rilevanti per rischio infortuni
+
+SUBSECTION: DATI ECONOMICI
+───────────────────────────────────────────────────────────────────────────────
+
+Fatturato per area geografica (importante per valutare esposizione estero)
+
+[FATTURATO_ITALIA]       Fatturato Italia ultimo esercizio
+[FATTURATO_UE]           Fatturato Unione Europea
+[FATTURATO_USA]          Fatturato USA + Canada
+[FATTURATO_ROW]          Fatturato Rest of World
+[FATTURATO_TOTALE]       Somma
+
+[PREV_FATTURATO_ITALIA]  Previsione prossimo esercizio Italia
+[PREV_FATTURATO_UE]      Previsione UE
+[PREV_FATTURATO_USA]     Previsione USA/Canada
+[PREV_FATTURATO_ROW]     Previsione ROW
+[PREV_FATTURATO_TOTALE]  Previsione totale
+
+SUBSECTION: DIPENDENTI
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_DIPENDENTI]
+Numero totale dipendenti (formato "XXX dipendenti")
+
+[MONTE_SALARI]
+Monte salari annuo totale (formato "€ X.XXX.XXX")
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: SITUAZIONE ATTUALE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: POLIZZA IN ESSERE
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA_ATTUALE]
+Nome compagnia attuale
+
+[NUMERO_POLIZZA_ATTUALE]
+Numero polizza attuale
+
+[SCADENZA_ATTUALE]
+Data scadenza formato "gg/mm/aaaa"
+
+[PREMIO_ATTUALE]
+Premio lordo annuo attuale (formato "€ XXX.XXX,XX")
+
+[ANNI_CONTINUITA]
+Numero anni con stessa compagnia (formato "X anni")
+
+[TIPO_POLIZZA_ATTUALE]
+"Cumulativa" oppure "Nominativa"
+
+SUBSECTION: MASSIMALI ATTUALI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 garanzie base
+
+Per ogni garanzia compilare:
+
+[MASS_ATT_MORTE]      Massimale morte (formato "€ XXX.XXX")
+[FRANCH_ATT_MORTE]    Franchigia morte (formato "-" o "Nessuna")
+[SCOP_ATT_MORTE]      Scoperto morte (formato "-")
+[NOTE_ATT_MORTE]      Note particolari (es. "Riduzione 50% se età > 70")
+
+Ripetere per:
+- IP (Invalidità Permanente)
+- ITT (Inabilità Temp. Totale)
+- ITP (Inabilità Temp. Parziale)
+- SPESE (Spese Mediche)
+
+SUBSECTION: GARANZIE AGGIUNTIVE ATTUALI
+───────────────────────────────────────────────────────────────────────────────
+
+Lista garanzie aggiuntive operative
+
+[GARANZIA_AGG_ATT_1]  es. "Diaria ricovero: € 50/giorno, franchigia 3 giorni"
+[GARANZIA_AGG_ATT_2]  es. "Invalidità da malattia: € 100.000, franchigia 25%"
+[GARANZIA_AGG_ATT_3]  es. "Assistenza SOS inclusa"
+
+Se nessuna: "Nessuna garanzia aggiuntiva"
+
+SUBSECTION: AMBITO COPERTURA ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[AMBITO_TEMP_ATT]
+Ambito temporale attuale
+es. "24 ore su 24" o "Solo professionale"
+
+[TERRITORIO_ATT]
+Validità territoriale attuale
+es. "Mondo Intero" o "Europa + trasferte lavoro max 90 giorni"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: COMPOSIZIONE ASSICURATI ATTUALI
+═══════════════════════════════════════════════════════════════════════════════
+
+LOGICA ADATTIVA:
+
+IF tipo polizza attuale = "Cumulativa":
+    MOSTRARE sezione Categorie Professionali e Retribuzioni
+    OMETTERE sezione Composizione Nominativi
+
+IF tipo polizza attuale = "Nominativa":
+    OMETTERE sezione Categorie Professionali
+    MOSTRARE sezione Composizione Nominativi
+
+───────────────────────────────────────────────────────────────────────────────
+SUBSECTION A: CATEGORIE E RETRIBUZIONI (solo se Cumulativa)
+───────────────────────────────────────────────────────────────────────────────
+
+IMPORTANTISSIMO: Retribuzioni sono base calcolo premio, dato critico underwriter
+
+Generare 1 riga per OGNI categoria professionale
+
+<tr>
+    <td><strong>[CATEGORIA_ATT_1]</strong></td>
+    <td class="col-center">[N_PERS_ATT_1]</td>
+    <td class="col-center">[CLASSE_RISCHIO_ATT_1]</td>
+    <td class="col-curr">[RETRIB_ATT_1]</td>
+    <td>[ATTIVITA_ATT_1]</td>
+</tr>
+
+PLACEHOLDER:
+
+[CATEGORIA_ATT_N]
+Nome categoria professionale attuale
+es. "Operai addetti produzione"
+
+[N_PERS_ATT_N]
+Numero persone categoria (formato "XX")
+
+[CLASSE_RISCHIO_ATT_N]
+Classe rischio o tasso applicato
+es. "8‰" o "Classe 3"
+
+[RETRIB_ATT_N]
+Retribuzioni annue categoria (formato "€ XXX.XXX")
+DATO CRITICO - estrarre da polizza attuale
+
+[ATTIVITA_ATT_N]
+Descrizione attività categoria (1 riga)
+
+RIGA TOTALE:
+[N_PERS_ATT_TOTALE]   Somma persone
+[RETRIB_ATT_TOTALE]   Somma retribuzioni
+
+───────────────────────────────────────────────────────────────────────────────
+SUBSECTION B: COMPOSIZIONE NOMINATIVI (solo se Nominativa)
+───────────────────────────────────────────────────────────────────────────────
+
+[NUM_ASSIC_NOM_ATT]
+Numero totale assicurati (formato "XX persone")
+
+[RANGE_ETA_ATT]
+Range età assicurati
+es. "Da 28 a 65 anni"
+
+Tabella distribuzione per qualifica:
+
+[QUALIFICA_NOM_ATT_1]    es. "Dirigenti"
+[N_QUAL_NOM_ATT_1]       es. "3"
+[ETA_MEDIA_NOM_ATT_1]    es. "52 anni"
+
+Ripetere per ogni qualifica presente
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: STORICO SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANDAMENTO ULTIMI 5 ANNI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con 1 riga per anno
+
+[ANNO_N]             Anno (es. "2020")
+[PREMIO_N]           Premio lordo anno
+[SINISTRI_PAG_N]     Sinistri pagati anno
+[SINISTRI_RIS_N]     Sinistri riservati anno
+[LOSS_RATIO_N]       Loss ratio = (Pagati + Riservati) / Premio × 100
+
+SUBSECTION: DETTAGLIO SINISTRI
+───────────────────────────────────────────────────────────────────────────────
+
+TUTTI i sinistri ultimi 5 anni (aperti + chiusi)
+
+Generare 1 riga per OGNI sinistro:
+
+[DATA_SIN_N]     Data evento formato "gg/mm/aaaa"
+[GAR_SIN_N]      Garanzia: "Morte", "IP", "ITT", "Spese", ecc.
+[CAUSA_SIN_N]    Causa sinistro (max 60 caratteri)
+[RIS_SIN_N]      Importo riservato (formato "€ XX.XXX")
+[PAG_SIN_N]      Importo pagato (formato "€ XX.XXX")
+[STATUS_SIN_N]   Status: "Aperto", "Chiuso", "In liquidazione"
+
+SUBSECTION: NOTE SINISTRALITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTE_SINISTRALITA]
+Commento sintetico (3-5 righe) su:
+- Sinistri significativi
+- Cause ricorrenti
+- Azioni correttive
+- Trend
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: CONDIZIONI RICHIESTE
+═══════════════════════════════════════════════════════════════════════════════
+
+STRATEGIA DEFAULT: RICHIESTO = ATTUALE + MODIFICHE
+
+Se non diversamente specificato dal cliente:
+→ Copiare tutti valori da SEZIONE 2 (Situazione Attuale)
+→ Modificare SOLO elementi esplicitamente richiesti
+
+SUBSECTION: MASSIMALI RICHIESTI
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da massimali attuali
+
+[MASS_RICH_MORTE]      = [MASS_ATT_MORTE] se non specificato diversamente
+[FRANCH_RICH_MORTE]    = [FRANCH_ATT_MORTE] se non specificato
+[SCOP_RICH_MORTE]      = [SCOP_ATT_MORTE] se non specificato
+[NOTE_RICH_MORTE]      = [NOTE_ATT_MORTE] se non specificato
+
+Ripetere per IP, ITT, ITP, SPESE
+
+MODIFICARE SOLO SE cliente richiede esplicitamente cambiamenti
+
+SUBSECTION: GARANZIE AGGIUNTIVE RICHIESTE
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da garanzie aggiuntive attuali
+
+[GARANZIA_AGG_RICH_1] = [GARANZIA_AGG_ATT_1] se non modifiche
+[GARANZIA_AGG_RICH_2] = [GARANZIA_AGG_ATT_2] se non modifiche
+[GARANZIA_AGG_RICH_3] = [GARANZIA_AGG_ATT_3] se non modifiche
+
+MODIFICARE SOLO SE aggiunte/eliminazioni/modifiche richieste
+
+SUBSECTION: AMBITO COPERTURA RICHIESTO
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da ambito attuale
+
+[AMBITO_TEMP_RICH]  = [AMBITO_TEMP_ATT] se non specificato
+[TERRITORIO_RICH]   = [TERRITORIO_ATT] se non specificato
+
+SUBSECTION: ASSICURATI RICHIESTI
+───────────────────────────────────────────────────────────────────────────────
+
+[TIPO_POLIZZA_RICH]
+Tipo polizza richiesto: "Cumulativa" o "Nominativa"
+DEFAULT: = [TIPO_POLIZZA_ATTUALE]
+
+[COMPOSIZIONE_RICH]
+Numero/composizione richiesta
+DEFAULT: Se Cum = "Come attuale", se Nom = numero attuale
+
+[NOTE_MODIFICHE_COMPOSIZIONE]
+Eventuali modifiche previste
+es. "Previsto inserimento 5 nuovi operai da marzo 2025"
+Se nessuna modifica: "Nessuna modifica prevista"
+
+SUBSECTION: PREMIO OBIETTIVO
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_ATTUALE_RIF]
+Ripetere premio attuale (da SEZIONE 2)
+
+[BUDGET_MASSIMO]
+Budget massimo accettabile
+DEFAULT: Premio attuale × 1.15 (se non specificato)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: CONFRONTO SINTETICO ATTUALE vs RICHIESTO
+═══════════════════════════════════════════════════════════════════════════════
+
+STRATEGIA DEFAULT: Richiesto = Attuale per ogni elemento
+Classificazione: "col-same" (giallo) se non modifiche
+
+Tabella con 8 elementi chiave
+
+RIGHE FISSE:
+
+1. Massimale Morte
+   [CONF_MORTE_ATT]        Valore attuale
+   [CONF_MORTE_RICH]       DEFAULT = [CONF_MORTE_ATT]
+   [CLASSE_CONF_MORTE]     DEFAULT "col-same"
+
+2. Massimale IP
+   [CONF_IP_ATT]
+   [CONF_IP_RICH]          DEFAULT = [CONF_IP_ATT]
+   [CLASSE_CONF_IP]        DEFAULT "col-same"
+
+3. Diaria ITT
+   [CONF_ITT_ATT]
+   [CONF_ITT_RICH]         DEFAULT = [CONF_ITT_ATT]
+   [CLASSE_CONF_ITT]       DEFAULT "col-same"
+
+4. Diaria ITP
+   [CONF_ITP_ATT]
+   [CONF_ITP_RICH]         DEFAULT = [CONF_ITP_ATT]
+   [CLASSE_CONF_ITP]       DEFAULT "col-same"
+
+5. Spese Mediche
+   [CONF_SPESE_ATT]
+   [CONF_SPESE_RICH]       DEFAULT = [CONF_SPESE_ATT]
+   [CLASSE_CONF_SPESE]     DEFAULT "col-same"
+
+6. Franchigia IP
+   [CONF_FRANCH_IP_ATT]
+   [CONF_FRANCH_IP_RICH]   DEFAULT = [CONF_FRANCH_IP_ATT]
+   [CLASSE_CONF_FRANCH_IP] DEFAULT "col-same"
+
+7. Territorio
+   [CONF_TERR_ATT]
+   [CONF_TERR_RICH]        DEFAULT = [CONF_TERR_ATT]
+   [CLASSE_CONF_TERR]      DEFAULT "col-same"
+
+8. Ambito Temporale
+   [CONF_AMBITO_ATT]
+   [CONF_AMBITO_RICH]      DEFAULT = [CONF_AMBITO_ATT]
+   [CLASSE_CONF_AMBITO]    DEFAULT "col-same"
+
+LOGICA COMPILAZIONE:
+
+Per ogni riga:
+1. Estrarre valore attuale da SEZIONE 2
+2. DEFAULT: Copiare valore attuale → richiesto
+3. Verificare se brief cliente specifica modifica
+4. Se SÌ: 
+   - Inserire nuovo valore
+   - Classificare: "col-increase" o "col-decrease"
+5. Se NO: 
+   - Confermare valore attuale
+   - Classificare: "col-same"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: INFORMAZIONI TECNICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CONTROLLO QUALITÀ E SICUREZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 elementi su sicurezza lavoro
+
+[SICUREZZA_1]  es. "Formazione obbligatoria sicurezza 40h/anno"
+[SICUREZZA_2]  es. "DPI forniti: casco, scarpe antinfortunistiche, guanti"
+[SICUREZZA_3]  es. "Certificazione OHSAS 18001"
+
+SUBSECTION: GESTIONE RISCHI
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 elementi su risk management
+
+[GESTIONE_RISCHI_1]  es. "Audit trimestrali stabilimenti"
+[GESTIONE_RISCHI_2]  es. "Protocollo emergenze con simulazioni semestrali"
+[GESTIONE_RISCHI_3]  es. "Responsabile sicurezza interno RSPP"
+
+SUBSECTION: NOTE PARTICOLARI
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTE_PARTICOLARI]
+Informazioni addizionali rilevanti (3-5 righe)
+
+es. "Prevista automazione linea produttiva nel 2025 con riduzione -30% 
+intervento umano. Investimento € 2M in sistemi sicurezza attiva."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: ALLEGATI
+═══════════════════════════════════════════════════════════════════════════════
+
+Lista documenti (3 hardcoded + opzionali)
+
+[ALTRO_ALLEGATO_1]  es. "✓ Certificazione ISO 45001"
+[ALTRO_ALLEGATO_2]  es. "✓ DVR (Documento Valutazione Rischi)"
+
+[EMAIL_CONTATTO]    Email broker
+[TEL_CONTATTO]      Telefono broker
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA SINISTRI
+   ─────────────────────
+   TUTTI i sinistri ultimi 5 anni
+   Aperti E chiusi
+   Nessun filtro
+
+2. COMPLETEZZA CATEGORIE (se Cumulativa)
+   ────────────────────────────────────
+   TUTTE le categorie
+   Con retribuzioni per ciascuna
+   Somme verificate
+   
+3. RETRIBUZIONI CRITICHE (se Cumulativa)
+   ────────────────────────────────────
+   Retribuzioni = base calcolo premio
+   DATO FONDAMENTALE per underwriter
+   Estrarre da polizza attuale o preventivo
+   Verificare somma = monte salari totale
+
+4. COERENZA FATTURATI
+   ──────────────────
+   Somma fatturati per area = Totale
+   Previsioni coerenti con ultimo esercizio
+
+5. LOGICA ADATTIVA CORRETTA
+   ────────────────────────
+   Se Cumulativa:
+   - SEZIONE 3: Mostra categorie con retribuzioni
+   - Ometti composizione nominativi
+   
+   Se Nominativa:
+   - SEZIONE 3: Mostra composizione nominativi
+   - Ometti categorie
+
+6. DEFAULT RICHIESTO = ATTUALE
+   ───────────────────────────
+   SEZIONE 5: Copia TUTTI valori da SEZIONE 2
+   Modificare SOLO elementi con richieste specifiche
+   SEZIONE 6: Default tutto "col-same" (giallo)
+
+7. CLASSIFICAZIONE CORRETTA
+   ────────────────────────
+   Verde (col-increase): miglioramento per assicurato
+   Giallo (col-same): conferma condizioni
+   Rosso (col-decrease): riduzione
+
+8. FORMATO VALUTE
+   ──────────────
+   Sempre "€ XX.XXX,XX" (punto migliaia, virgola decimali)
+
+9. DATI OGGETTIVI
+   ──────────────
+   Solo da documenti
+   NO interpretazioni
+   Se manca: "Non disponibile"
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI BASE
+─────────────────
+Da polizza attuale:
+- Anagrafica, compagnia, date, premio
+- Massimali tutte garanzie
+- Franchigie
+- Tipo polizza (Cum/Nom)
+
+Da bilancio:
+- Fatturati per area
+- Dipendenti, monte salari
+
+STEP 2: COMPOSIZIONE ASSICURATI
+────────────────────────────────
+Se Cumulativa:
+- Estrarre TUTTE categorie
+- Per categoria: n. persone, retribuzioni, classe rischio
+- Calcolare totali
+
+Se Nominativa:
+- Numero totale persone
+- Range età
+- Distribuzione qualifiche
+
+STEP 3: STORIA SINISTRI
+────────────────────────
+Da borderò:
+- Premi ultimi 5 anni
+- TUTTI sinistri (aperti + chiusi)
+- Calcolare loss ratio
+
+STEP 4: RICHIESTE (Strategia efficiente)
+─────────────────────────────────────────
+A. DEFAULT: Copiare TUTTI valori da polizza attuale
+B. Cercare nel brief modifiche richieste
+C. Applicare SOLO modifiche trovate
+D. Resto rimane = attuale (giallo)
+
+STEP 5: CONFRONTO
+─────────────────
+Per ogni elemento:
+- Estrarre valore attuale
+- Estrarre valore richiesto (default = attuale)
+- Classificare (increase/same/decrease)
+- Assegnare classe CSS
+
+STEP 6: VERIFICA
+────────────────
+- Somme fatturati coerenti
+- Somme retribuzioni (se Cum) = monte salari
+- Loss ratio calcolati
+- Tutti placeholder sostituiti
+- Logica adattiva corretta
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_infortuni_compagnia_finale.html
+2. Sostituire TUTTI i placeholder
+3. Per sezioni con logica adattiva:
+   - Se Cumulativa: rimuovere sezione Nominativa
+   - Se Nominativa: rimuovere sezione Cumulativa
+4. Per sezioni con numero variabile:
+   - Generare HTML dinamico
+   - Inserire nel punto corretto
+5. Verificare:
+   - Tutti placeholder sostituiti
+   - Logica adattiva corretta
+   - HTML valido
+   - Classificazioni corrette
+   - Retribuzioni presenti (se Cum)
+
+DELIVERABLE:
+File HTML completo, professionale, pronto per invio a compagnia.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

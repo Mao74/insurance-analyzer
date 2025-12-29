@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Sinistro Cyber - [NUMERO_SINISTRO]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --accent-red: #dc2626;
+            --accent-orange: #ea580c;
+            --accent-green: #16a34a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* HEADER */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            padding: 12px 18px;
+            margin: 15px 30px;
+            border-left: 4px solid;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .alert-critical {
+            background: #fef2f2;
+            border-color: var(--accent-red);
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fff7ed;
+            border-color: var(--accent-orange);
+            color: #9a3412;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: var(--accent-blue);
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-color: var(--accent-green);
+            color: #166534;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 15px 0 10px 0;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* STATUS BADGE */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-aperto {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-chiuso {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-contenimento {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-recovery {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* CHECKLIST */
+        .checklist {
+            margin: 10px 0;
+        }
+
+        .checklist-item {
+            padding: 6px 0;
+            font-size: 11px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 15px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-strong);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid white;
+        }
+
+        .timeline-date {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* LIST */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* SEVERITY TAG */
+        .severity-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .severity-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .severity-high {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .severity-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-low {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .report-container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>ANALISI SINISTRO CYBER RISK</h1>
+            <p>Incidente Informatico - Gestione Broker</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>Numero Sinistro</strong>
+                    [NUMERO_SINISTRO]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Discovery Date</strong>
+                    [DATA_DISCOVERY]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Status</strong>
+                    [STATUS_SINISTRO]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Severity</strong>
+                    [SEVERITY]
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERT STATUS -->
+        <div class="[ALERT_CLASS]">
+            <strong>[ALERT_TITLE]</strong><br>
+            [ALERT_MESSAGE]
+        </div>
+
+        <!-- SEZIONE 1: DATI SINISTRO -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Sinistro</h2>
+
+            <h3 class="subsection-title">Identificativi</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Numero Sinistro Compagnia</span>
+                    <span class="info-value">[NUMERO_SINISTRO_COMP]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Pratica Broker</span>
+                    <span class="info-value">[NUMERO_PRATICA_BROKER]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Discovery</span>
+                    <span class="info-value">[DATA_DISCOVERY]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ora Discovery</span>
+                    <span class="info-value">[ORA_DISCOVERY]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Denuncia</span>
+                    <span class="info-value">[DATA_DENUNCIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tempo Denuncia</span>
+                    <span class="info-value">[TEMPO_DENUNCIA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Classificazione Incidente</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Tipo Incidente</span>
+                    <span class="info-value">[TIPO_INCIDENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Severity Level</span>
+                    <span class="info-value">[SEVERITY_BADGE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status Gestione</span>
+                    <span class="info-value">[STATUS_BADGE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Vettore Attacco</span>
+                    <span class="info-value">[VETTORE_ATTACCO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Polizza e Assicurato</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Compagnia</span>
+                    <span class="info-value">[COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Assicurato</span>
+                    <span class="info-value">[ASSICURATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Settore Attività</span>
+                    <span class="info-value">[SETTORE_ATTIVITA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Team Gestione</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Broker Referente</span>
+                    <span class="info-value">[BROKER_REFERENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Liquidatore Compagnia</span>
+                    <span class="info-value">[LIQUIDATORE_COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Forensic Provider</span>
+                    <span class="info-value">[FORENSIC_PROVIDER]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Legal Counsel</span>
+                    <span class="info-value">[LEGAL_COUNSEL]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 2: DESCRIZIONE INCIDENTE -->
+        <div class="section">
+            <h2 class="section-title">2. Descrizione Incidente</h2>
+
+            <h3 class="subsection-title">Discovery e Notifica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Come Scoperto</span>
+                    <span class="info-value">[COME_SCOPERTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto Da</span>
+                    <span class="info-value">[SCOPERTO_DA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Evento Stimata</span>
+                    <span class="info-value">[DATA_EVENTO_STIMATA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Dwell Time Stimato</span>
+                    <span class="info-value">[DWELL_TIME]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dinamica Attacco</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[DINAMICA_ATTACCO]</p>
+
+            <h3 class="subsection-title">Vettore e Tecnica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Vettore Iniziale</span>
+                    <span class="info-value">[VETTORE_INIZIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tecnica MITRE ATT&CK</span>
+                    <span class="info-value">[MITRE_ATTACK]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Malware Identificato</span>
+                    <span class="info-value">[MALWARE_IDENTIFICATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Threat Actor</span>
+                    <span class="info-value">[THREAT_ACTOR]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Sistemi Compromessi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Sistema/Servizio</th>
+                        <th style="width:20%">Tipo Compromissione</th>
+                        <th style="width:15%">Criticità</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[SISTEMA_COMP_1]</td>
+                        <td>[TIPO_COMP_1]</td>
+                        <td class="col-center"><span class="severity-tag [CRITICITA_CLASS_1]">[CRITICITA_1]</span></td>
+                        <td>[NOTE_COMP_1]</td>
+                    </tr>
+                    <!-- ... altri sistemi ... -->
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Indicatori di Compromissione (IOC)</h3>
+            <ul>
+                <li>[IOC_1]</li>
+                <li>[IOC_2]</li>
+                <li>[IOC_3]</li>
+            </ul>
+
+        </div>
+
+        <!-- SEZIONE 3: DANNI E IMPATTI -->
+        <div class="section">
+            <h2 class="section-title">3. Danni e Impatti</h2>
+
+            <h3 class="subsection-title">Dati Compromessi</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Data Breach Confermato</span>
+                    <span class="info-value">[DATA_BREACH_CONFERMATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Record Compromessi</span>
+                    <span class="info-value">[NUMERO_RECORD_COMPROMESSI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipologie Dati</span>
+                    <span class="info-value">[TIPOLOGIE_DATI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Dati Sensibili Coinvolti</span>
+                    <span class="info-value">[DATI_SENSIBILI]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Business Interruption</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Downtime Totale</span>
+                    <span class="info-value">[DOWNTIME_TOTALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Inizio Downtime</span>
+                    <span class="info-value">[INIZIO_DOWNTIME]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fine Downtime</span>
+                    <span class="info-value">[FINE_DOWNTIME]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Servizi Impattati</span>
+                    <span class="info-value">[SERVIZI_IMPATTATI]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Perdita Dati/Sistemi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Elemento</th>
+                        <th style="width:20%">Stato</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dati Cifrati (Ransomware)</strong></td>
+                        <td>[DATI_CIFRATI]</td>
+                        <td>[DATI_CIFRATI_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati Esfiltrati</strong></td>
+                        <td>[DATI_ESFILTRATI]</td>
+                        <td>[DATI_ESFILTRATI_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sistemi Danneggiati</strong></td>
+                        <td>[SISTEMI_DANNEGGIATI]</td>
+                        <td>[SISTEMI_DANNEGGIATI_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backup Disponibili</strong></td>
+                        <td>[BACKUP_DISPONIBILI]</td>
+                        <td>[BACKUP_DISPONIBILI_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Richieste Riscatto (se Ransomware)</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Richiesta Riscatto</span>
+                    <span class="info-value">[RICHIESTA_RISCATTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Importo Richiesto</span>
+                    <span class="info-value">[IMPORTO_RISCATTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Modalità Contatto</span>
+                    <span class="info-value">[MODALITA_CONTATTO_ATTACKER]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scadenza</span>
+                    <span class="info-value">[SCADENZA_RISCATTO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 4: COPERTURA ASSICURATIVA -->
+        <div class="section">
+            <h2 class="section-title">4. Copertura Assicurativa</h2>
+
+            <h3 class="subsection-title">Garanzie Operanti</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Garanzia</th>
+                        <th style="width:15%">Operante</th>
+                        <th style="width:25%">Massimale</th>
+                        <th>Applicabilità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Breach</strong></td>
+                        <td class="col-center">[DATA_BREACH_OPERANTE]</td>
+                        <td class="col-curr">[DATA_BREACH_MASSIMALE]</td>
+                        <td>[DATA_BREACH_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Extortion</strong></td>
+                        <td class="col-center">[EXTORTION_OPERANTE]</td>
+                        <td class="col-curr">[EXTORTION_MASSIMALE]</td>
+                        <td>[EXTORTION_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td class="col-center">[BI_OPERANTE]</td>
+                        <td class="col-curr">[BI_MASSIMALE]</td>
+                        <td>[BI_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>System Damage</strong></td>
+                        <td class="col-center">[SYSTEM_OPERANTE]</td>
+                        <td class="col-curr">[SYSTEM_MASSIMALE]</td>
+                        <td>[SYSTEM_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Crime</strong></td>
+                        <td class="col-center">[CRIME_OPERANTE]</td>
+                        <td class="col-curr">[CRIME_MASSIMALE]</td>
+                        <td>[CRIME_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal Defense</strong></td>
+                        <td class="col-center">[LEGAL_OPERANTE]</td>
+                        <td class="col-curr">[LEGAL_MASSIMALE]</td>
+                        <td>[LEGAL_APPLICABILITA]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Franchigie Applicabili</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Franchigia Data Breach</span>
+                    <span class="info-value">[FRANCHIGIA_DATA_BREACH]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia Extortion</span>
+                    <span class="info-value">[FRANCHIGIA_EXTORTION]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia BI (ore)</span>
+                    <span class="info-value">[FRANCHIGIA_BI_ORE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia System Damage</span>
+                    <span class="info-value">[FRANCHIGIA_SYSTEM]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Valutazione Operatività</h3>
+            <div class="note-box">
+                <strong>Valutazione Copertura:</strong><br>
+                [VALUTAZIONE_COPERTURA]
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 5: GESTIONE E AZIONI -->
+        <div class="section">
+            <h2 class="section-title">5. Gestione e Azioni</h2>
+
+            <h3 class="subsection-title">Status Attuale</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Fase Gestionale</span>
+                    <span class="info-value">[FASE_GESTIONALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ultimo Aggiornamento</span>
+                    <span class="info-value">[ULTIMO_AGGIORNAMENTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Forensic Completato</span>
+                    <span class="info-value">[FORENSIC_COMPLETATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Report Forensic</span>
+                    <span class="info-value">[DATA_REPORT_FORENSIC]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Azioni Contenimento</h3>
+            <ul>
+                <li>[AZIONE_CONTENIMENTO_1]</li>
+                <li>[AZIONE_CONTENIMENTO_2]</li>
+                <li>[AZIONE_CONTENIMENTO_3]</li>
+                <li>[AZIONE_CONTENIMENTO_4]</li>
+            </ul>
+
+            <h3 class="subsection-title">Azioni Recovery</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Azione</th>
+                        <th style="width:15%">Status</th>
+                        <th style="width:20%">Responsabile</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[AZIONE_RECOVERY_1]</td>
+                        <td>[STATUS_RECOVERY_1]</td>
+                        <td>[RESP_RECOVERY_1]</td>
+                        <td>[NOTE_RECOVERY_1]</td>
+                    </tr>
+                    <!-- ... altre azioni ... -->
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Notifiche GDPR</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Notifica Garante Necessaria</span>
+                    <span class="info-value">[NOTIFICA_GARANTE_NECESSARIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Notifica Garante</span>
+                    <span class="info-value">[DATA_NOTIFICA_GARANTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Comunicazione Interessati</span>
+                    <span class="info-value">[COMUNICAZIONE_INTERESSATI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Interessati Notificati</span>
+                    <span class="info-value">[NUMERO_NOTIFICATI]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Servizi Panel Attivati</h3>
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_FORENSIC]> <strong>Forensic Investigation</strong> - [FORENSIC_PROVIDER_NOME]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_LEGAL]> <strong>Legal Counsel GDPR</strong> - [LEGAL_COUNSEL_NOME]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_PR]> <strong>PR Crisis Management</strong> - [PR_PROVIDER_NOME]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_IT_RECOVERY]> <strong>IT Recovery Specialist</strong> - [IT_RECOVERY_NOME]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_NOTIFICATION]> <strong>Notification Services</strong> - [NOTIFICATION_PROVIDER_NOME]
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Prossimi Step</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Scadenza</th>
+                        <th style="width:30%">Azione</th>
+                        <th style="width:20%">Responsabile</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[SCADENZA_AZIONE_1]</td>
+                        <td>[AZIONE_1]</td>
+                        <td>[RESPONSABILE_1]</td>
+                        <td>[NOTE_AZIONE_1]</td>
+                    </tr>
+                    <!-- ... altre azioni ... -->
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- SEZIONE 6: VALUTAZIONE ECONOMICA -->
+        <div class="section">
+            <h2 class="section-title">6. Valutazione Economica</h2>
+
+            <h3 class="subsection-title">Riserva</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Riserva Iniziale</span>
+                    <span class="info-value">[RISERVA_INIZIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Costituzione</span>
+                    <span class="info-value">[DATA_RISERVA_INIZIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Riserva Attuale</span>
+                    <span class="info-value">[RISERVA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ultimo Aggiornamento</span>
+                    <span class="info-value">[DATA_AGG_RISERVA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dettaglio Costi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Voce</th>
+                        <th style="width:25%">Importo Stimato</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Forensic Investigation</strong></td>
+                        <td class="col-curr">[COSTO_FORENSIC]</td>
+                        <td>[NOTE_FORENSIC]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IT Recovery / System Restore</strong></td>
+                        <td class="col-curr">[COSTO_IT_RECOVERY]</td>
+                        <td>[NOTE_IT_RECOVERY]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pagamento Riscatto</strong></td>
+                        <td class="col-curr">[COSTO_RISCATTO]</td>
+                        <td>[NOTE_RISCATTO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td class="col-curr">[COSTO_BI]</td>
+                        <td>[NOTE_BI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal / GDPR Compliance</strong></td>
+                        <td class="col-curr">[COSTO_LEGAL]</td>
+                        <td>[NOTE_LEGAL]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notification Services</strong></td>
+                        <td class="col-curr">[COSTO_NOTIFICATION]</td>
+                        <td>[NOTE_NOTIFICATION]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PR Crisis Management</strong></td>
+                        <td class="col-curr">[COSTO_PR]</td>
+                        <td>[NOTE_PR]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credit Monitoring (Vittime)</strong></td>
+                        <td class="col-curr">[COSTO_CREDIT_MONITORING]</td>
+                        <td>[NOTE_CREDIT_MONITORING]</td>
+                    </tr>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td><strong>TOTALE STIMATO</strong></td>
+                        <td class="col-curr">[TOTALE_COSTI]</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Pagamenti Effettuati</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Data</th>
+                        <th style="width:30%">Beneficiario</th>
+                        <th style="width:20%">Importo</th>
+                        <th>Causale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[DATA_PAG_1]</td>
+                        <td>[BENEF_PAG_1]</td>
+                        <td class="col-curr">[IMPORTO_PAG_1]</td>
+                        <td>[CAUSALE_PAG_1]</td>
+                    </tr>
+                    <!-- ... altri pagamenti ... -->
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td colspan="2"><strong>TOTALE PAGATO</strong></td>
+                        <td class="col-curr">[TOTALE_PAGATO]</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Sintesi Economica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Riserva Residua</span>
+                    <span class="info-value">[RISERVA_RESIDUA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Stima Chiusura Finale</span>
+                    <span class="info-value">[STIMA_CHIUSURA]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 7: NOTE E RACCOMANDAZIONI -->
+        <div class="section">
+            <h2 class="section-title">7. Note e Raccomandazioni</h2>
+
+            <h3 class="subsection-title">Criticità Emerse</h3>
+            <ul>
+                <li>[CRITICITA_1]</li>
+                <li>[CRITICITA_2]</li>
+                <li>[CRITICITA_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Root Cause Analysis</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[ROOT_CAUSE_ANALYSIS]</p>
+
+            <h3 class="subsection-title">Remediation Plan</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Misura</th>
+                        <th style="width:15%">Priorità</th>
+                        <th style="width:20%">Timeline</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[REMEDIATION_1]</td>
+                        <td class="col-center"><span class="severity-tag [PRIORITA_CLASS_1]">[PRIORITA_1]</span></td>
+                        <td>[TIMELINE_1]</td>
+                        <td>[DESC_REMEDIATION_1]</td>
+                    </tr>
+                    <!-- ... altre misure ... -->
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Raccomandazioni Assicurato</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[RACCOMANDAZIONI_ASSICURATO]</p>
+
+            <h3 class="subsection-title">Lezioni Apprese</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[LEZIONI_APPRESE]</p>
+
+            <h3 class="subsection-title">Impatto Portfolio</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Impatto Loss Ratio</span>
+                    <span class="info-value">[IMPATTO_LOSS_RATIO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Impatto Rinnovo</span>
+                    <span class="info-value">[IMPATTO_RINNOVO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 8: CRONOLOGIA -->
+        <div class="section">
+            <h2 class="section-title">8. Cronologia Incident Response</h2>
+
+            <div class="timeline">
+                <!-- Ripetere per ogni evento -->
+                <div class="timeline-item">
+                    <div class="timeline-date">[DATA_EVENTO_CRONOL_1]</div>
+                    <div class="timeline-content">
+                        <strong>[TITOLO_EVENTO_1]</strong><br>
+                        [DESCRIZIONE_EVENTO_1]
+                    </div>
+                </div>
+                <!-- ... altri eventi ... -->
+            </div>
+
+            <h3 class="subsection-title" style="margin-top:25px;">Comunicazioni Compagnia</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Data</th>
+                        <th style="width:20%">Tipo</th>
+                        <th>Oggetto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[DATA_COM_1]</td>
+                        <td>[TIPO_COM_1]</td>
+                        <td>[OGGETTO_COM_1]</td>
+                    </tr>
+                    <!-- ... altre comunicazioni ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box" style="margin-top:20px;">
+                <strong>Documentazione Completa Archiviata:</strong><br>
+                Riferimento Pratica: [RIFERIMENTO_ARCHIVIO]<br>
+                Percorso: [PERCORSO_ARCHIVIO]
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

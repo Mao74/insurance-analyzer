@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Polizza Infortuni - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-gold: #d4af37;
+            --accent-gold-light: #f4e4b5;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --danger: #dc2626;
+            --info: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-main) 100%);
+            color: white;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gold);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 12px;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 9px;
+        }
+
+        /* --- TABS --- */
+        .tabs {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 2px solid var(--accent-gold);
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 15px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--primary-dark);
+        }
+
+        .tab.active {
+            color: var(--accent-gold);
+            background: white;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        /* --- TAB CONTENT --- */
+        .tab-content {
+            display: none;
+            padding: 25px 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 20px 0 12px 0;
+        }
+
+        /* --- INFO GRID --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* --- TABELLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 9px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 8px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* --- BADGE --- */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .badge-inactive {
+            background: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        .badge-morte {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-ip {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-itt {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-spese {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        /* --- HIGHLIGHT BOX --- */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--accent-gold-light) 0%, #fff9e6 100%);
+            border-left: 4px solid var(--accent-gold);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary-dark);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* --- NOTE BOX --- */
+        .note-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--info);
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* --- LIST --- */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* --- PRINT --- */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .report-container {
+                border: none;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .tabs {
+                display: none;
+            }
+
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+
+            table {
+                font-size: 8pt;
+            }
+
+            th, tr, td {
+                border-color: #ccc !important;
+            }
+
+            th {
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .badge {
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- ========================================= -->
+        <!-- HEADER -->
+        <!-- ========================================= -->
+        <div class="header">
+            <h1>POLIZZA INFORTUNI</h1>
+            <p>[CONTRAENTE]</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>Broker</strong>
+                    Eramo & Associati S.r.l.
+                </div>
+                <div class="header-meta-item">
+                    <strong>Compagnia</strong>
+                    [COMPAGNIA]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Polizza N.</strong>
+                    [NUMERO_POLIZZA]
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TABS NAVIGATION -->
+        <!-- ========================================= -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(event, 'tab1')">Sintesi Polizza</button>
+            <button class="tab" onclick="switchTab(event, 'tab2')">Garanzie & Massimali</button>
+            <button class="tab" onclick="switchTab(event, 'tab3')">Assicurati</button>
+            <button class="tab" onclick="switchTab(event, 'tab4')">Calcolo Premio</button>
+            <button class="tab" onclick="switchTab(event, 'tab5')">Esclusioni & Limitazioni</button>
+            <button class="tab" onclick="switchTab(event, 'tab6')">Gestione Sinistri</button>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 1: SINTESI POLIZZA -->
+        <!-- ========================================= -->
+        <div id="tab1" class="tab-content active">
+            <h2 class="section-title">Sintesi Contrattuale</h2>
+
+            <h3 class="subsection-title">Dati Generali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Contraente</span>
+                    <span class="info-value">[CONTRAENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Assicurato</span>
+                    <span class="info-value">[ASSICURATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Broker</span>
+                    <span class="info-value">Eramo & Associati S.r.l.</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Compagnia</span>
+                    <span class="info-value">[COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Decorrenza</span>
+                    <span class="info-value">[DECORRENZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scadenza</span>
+                    <span class="info-value">[SCADENZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Premio Lordo Annuo</span>
+                    <span class="info-value">[PREMIO_LORDO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Frazionamento</span>
+                    <span class="info-value">[FRAZIONAMENTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Termini Disdetta</span>
+                    <span class="info-value">[TERMINI_DISDETTA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Termini Mora</span>
+                    <span class="info-value">[TERMINI_MORA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Attività Svolta</span>
+                    <span class="info-value">[ATTIVITA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Tipo Polizza</h3>
+            <div class="highlight-box">
+                <strong>Tipologia: [TIPO_POLIZZA]</strong>
+                [DESCRIZIONE_TIPO_POLIZZA]
+            </div>
+
+            <h3 class="subsection-title">Ambito Assicurativo</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Tipologia Infortuni</th>
+                        <th>Dettagli Copertura</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ambito Temporale</strong></td>
+                        <td>[AMBITO_TEMPORALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infortuni Professionali</strong></td>
+                        <td>[INFORTUNI_PROFESSIONALI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infortuni Extra-Professionali</strong></td>
+                        <td>[INFORTUNI_EXTRAPROFESSIONALI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Validità Territoriale</strong></td>
+                        <td>[VALIDITA_TERRITORIALE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Riepilogo Assicurati</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Tipo Copertura</span>
+                    <span class="info-value">[TIPO_COPERTURA_RIEP]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Assicurati / Categorie</span>
+                    <span class="info-value">[NUMERO_ASSICURATI_RIEP]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 2: GARANZIE & MASSIMALI -->
+        <!-- ========================================= -->
+        <div id="tab2" class="tab-content">
+            <h2 class="section-title">Garanzie & Massimali</h2>
+
+            <h3 class="subsection-title">Garanzie Base</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Garanzia</th>
+                        <th style="width:15%">Inclusa</th>
+                        <th style="width:18%">Massimale</th>
+                        <th style="width:15%">Franchigia</th>
+                        <th style="width:12%">Scoperto</th>
+                        <th>Limitazioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-morte">MORTE</span></td>
+                        <td class="col-center">[MORTE_INCLUSA]</td>
+                        <td class="col-curr">[MORTE_MASSIMALE]</td>
+                        <td class="col-center">[MORTE_FRANCHIGIA]</td>
+                        <td class="col-center">[MORTE_SCOPERTO]</td>
+                        <td>[MORTE_LIMITAZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-ip">INVALIDITÀ PERMANENTE</span></td>
+                        <td class="col-center">[IP_INCLUSA]</td>
+                        <td class="col-curr">[IP_MASSIMALE]</td>
+                        <td class="col-center">[IP_FRANCHIGIA]</td>
+                        <td class="col-center">[IP_SCOPERTO]</td>
+                        <td>[IP_LIMITAZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-itt">INABILITÀ TEMP. TOTALE</span></td>
+                        <td class="col-center">[ITT_INCLUSA]</td>
+                        <td class="col-curr">[ITT_MASSIMALE]</td>
+                        <td class="col-center">[ITT_FRANCHIGIA]</td>
+                        <td class="col-center">[ITT_SCOPERTO]</td>
+                        <td>[ITT_LIMITAZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-itt">INABILITÀ TEMP. PARZIALE</span></td>
+                        <td class="col-center">[ITP_INCLUSA]</td>
+                        <td class="col-curr">[ITP_MASSIMALE]</td>
+                        <td class="col-center">[ITP_FRANCHIGIA]</td>
+                        <td class="col-center">[ITP_SCOPERTO]</td>
+                        <td>[ITP_LIMITAZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-spese">SPESE MEDICHE</span></td>
+                        <td class="col-center">[SPESE_INCLUSA]</td>
+                        <td class="col-curr">[SPESE_MASSIMALE]</td>
+                        <td class="col-center">[SPESE_FRANCHIGIA]</td>
+                        <td class="col-center">[SPESE_SCOPERTO]</td>
+                        <td>[SPESE_LIMITAZIONI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Note Garanzie Base:</strong><br>
+                [NOTE_GARANZIE_BASE]
+            </div>
+
+            <h3 class="subsection-title">Garanzie Aggiuntive</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia Aggiuntiva</th>
+                        <th style="width:15%">Inclusa</th>
+                        <th style="width:18%">Massimale / Diaria</th>
+                        <th style="width:15%">Franchigia</th>
+                        <th>Condizioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Diaria da Ricovero</strong></td>
+                        <td class="col-center">[DIARIA_RIC_INCLUSA]</td>
+                        <td class="col-curr">[DIARIA_RIC_IMPORTO]</td>
+                        <td class="col-center">[DIARIA_RIC_FRANCHIGIA]</td>
+                        <td>[DIARIA_RIC_CONDIZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diaria da Gessatura</strong></td>
+                        <td class="col-center">[DIARIA_GESS_INCLUSA]</td>
+                        <td class="col-curr">[DIARIA_GESS_IMPORTO]</td>
+                        <td class="col-center">[DIARIA_GESS_FRANCHIGIA]</td>
+                        <td>[DIARIA_GESS_CONDIZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invalidità da Malattia</strong></td>
+                        <td class="col-center">[INV_MAL_INCLUSA]</td>
+                        <td class="col-curr">[INV_MAL_MASSIMALE]</td>
+                        <td class="col-center">[INV_MAL_FRANCHIGIA]</td>
+                        <td>[INV_MAL_CONDIZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Morte da Malattia</strong></td>
+                        <td class="col-center">[MORTE_MAL_INCLUSA]</td>
+                        <td class="col-curr">[MORTE_MAL_MASSIMALE]</td>
+                        <td class="col-center">[MORTE_MAL_FRANCHIGIA]</td>
+                        <td>[MORTE_MAL_CONDIZIONI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assistenza (SOS)</strong></td>
+                        <td class="col-center">[ASSIST_INCLUSA]</td>
+                        <td class="col-center">[ASSIST_DETTAGLI]</td>
+                        <td class="col-center">-</td>
+                        <td>[ASSIST_CONDIZIONI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 3: ASSICURATI -->
+        <!-- ========================================= -->
+        <div id="tab3" class="tab-content">
+            <h2 class="section-title">Persone Assicurate</h2>
+
+            <!-- SEZIONE CUMULATIVA: Mostrare solo se TIPO_POLIZZA = "Cumulativa" -->
+            <!-- Se Nominativa: OMETTERE questa sezione -->
+            
+            <h3 class="subsection-title">Categorie Professionali Assicurate</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Categoria</th>
+                        <th style="width:15%">N. Persone</th>
+                        <th style="width:15%">Classe Rischio</th>
+                        <th>Descrizione Attività</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per OGNI categoria -->
+                    <tr>
+                        <td><strong>[CATEGORIA_1]</strong></td>
+                        <td class="col-center">[N_PERSONE_1]</td>
+                        <td class="col-center">[CLASSE_RISCHIO_1]</td>
+                        <td>[DESCRIZIONE_ATT_1]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>[CATEGORIA_2]</strong></td>
+                        <td class="col-center">[N_PERSONE_2]</td>
+                        <td class="col-center">[CLASSE_RISCHIO_2]</td>
+                        <td>[DESCRIZIONE_ATT_2]</td>
+                    </tr>
+                    <!-- ... altre categorie ... -->
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td>TOTALE</td>
+                        <td class="col-center">[N_PERSONE_TOTALE]</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Note Copertura Cumulativa:</strong><br>
+                La polizza copre un numero variabile di persone rientranti nelle categorie sopra indicate. 
+                Il numero indicato rappresenta il preventivo di esposizione comunicato in fase di sottoscrizione.
+            </div>
+
+            <!-- SEZIONE NOMINATIVA: Mostrare solo se TIPO_POLIZZA = "Nominativa" -->
+            <!-- Se Cumulativa: OMETTERE questa sezione -->
+
+            <h3 class="subsection-title">Elenco Nominativo Assicurati</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:5%">N.</th>
+                        <th style="width:25%">Cognome Nome</th>
+                        <th style="width:12%">Data Nascita</th>
+                        <th style="width:25%">Professione</th>
+                        <th style="width:18%">Massimale Morte</th>
+                        <th style="width:18%">Massimale IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per OGNI persona assicurata -->
+                    <tr>
+                        <td class="col-center">1</td>
+                        <td>[NOME_1]</td>
+                        <td class="col-center">[DATA_NASC_1]</td>
+                        <td>[PROFESSIONE_1]</td>
+                        <td class="col-curr">[MASS_MORTE_1]</td>
+                        <td class="col-curr">[MASS_IP_1]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center">2</td>
+                        <td>[NOME_2]</td>
+                        <td class="col-center">[DATA_NASC_2]</td>
+                        <td>[PROFESSIONE_2]</td>
+                        <td class="col-curr">[MASS_MORTE_2]</td>
+                        <td class="col-curr">[MASS_IP_2]</td>
+                    </tr>
+                    <!-- ... tutte altre persone ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Note Copertura Nominativa:</strong><br>
+                La polizza copre esclusivamente le persone sopra elencate. Ogni variazione (inserimento/cancellazione) 
+                richiede apposita appendice contrattuale.
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 4: CALCOLO PREMIO -->
+        <!-- ========================================= -->
+        <div id="tab4" class="tab-content">
+            <h2 class="section-title">Determinazione del Premio</h2>
+
+            <!-- CALCOLO CUMULATIVA: Mostrare solo se TIPO_POLIZZA = "Cumulativa" -->
+
+            <h3 class="subsection-title">Preventivo Retribuzioni e Calcolo Premio</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Categoria</th>
+                        <th style="width:12%">N. Persone</th>
+                        <th style="width:18%">Retribuzioni Annue</th>
+                        <th style="width:12%">Tasso ‰</th>
+                        <th style="width:18%">Premio Imponibile</th>
+                        <th style="width:15%">Imposte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per OGNI categoria -->
+                    <tr>
+                        <td><strong>[CATEGORIA_CALC_1]</strong></td>
+                        <td class="col-center">[N_PERS_CALC_1]</td>
+                        <td class="col-curr">[RETRIB_1]</td>
+                        <td class="col-center">[TASSO_1]</td>
+                        <td class="col-curr">[PREMIO_IMP_1]</td>
+                        <td class="col-curr">[IMPOSTE_1]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>[CATEGORIA_CALC_2]</strong></td>
+                        <td class="col-center">[N_PERS_CALC_2]</td>
+                        <td class="col-curr">[RETRIB_2]</td>
+                        <td class="col-center">[TASSO_2]</td>
+                        <td class="col-curr">[PREMIO_IMP_2]</td>
+                        <td class="col-curr">[IMPOSTE_2]</td>
+                    </tr>
+                    <!-- ... altre categorie ... -->
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td colspan="2"><strong>TOTALE</strong></td>
+                        <td class="col-curr">[RETRIB_TOTALE]</td>
+                        <td></td>
+                        <td class="col-curr">[PREMIO_IMP_TOTALE]</td>
+                        <td class="col-curr">[IMPOSTE_TOTALE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <strong>Premio Lordo Annuo: [PREMIO_LORDO_CALC]</strong>
+                Comprensivo di imposte e contributi di legge
+            </div>
+
+            <div class="note-box">
+                <strong>Formula Calcolo:</strong><br>
+                Premio Imponibile = (Retribuzioni Annue / 1.000) × Tasso ‰<br>
+                Premio Lordo = Premio Imponibile + Imposte (2,5%)
+            </div>
+
+            <!-- CALCOLO NOMINATIVA: Mostrare solo se TIPO_POLIZZA = "Nominativa" -->
+
+            <h3 class="subsection-title">Riepilogo Premio</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Premio Imponibile</span>
+                    <span class="info-value">[PREMIO_IMP_NOM]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Imposte (2,5%)</span>
+                    <span class="info-value">[IMPOSTE_NOM]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Premio Lordo Annuo</span>
+                    <span class="info-value">[PREMIO_LORDO_NOM]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Frazionamento</span>
+                    <span class="info-value">[FRAZ_NOM]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 5: ESCLUSIONI & LIMITAZIONI -->
+        <!-- ========================================= -->
+        <div id="tab5" class="tab-content">
+            <h2 class="section-title">Esclusioni e Limitazioni</h2>
+
+            <h3 class="subsection-title">Esclusioni Standard</h3>
+            <ul>
+                <li>[ESCLUSIONE_1]</li>
+                <li>[ESCLUSIONE_2]</li>
+                <li>[ESCLUSIONE_3]</li>
+                <li>[ESCLUSIONE_4]</li>
+                <li>[ESCLUSIONE_5]</li>
+            </ul>
+
+            <h3 class="subsection-title">Limitazioni Specifiche</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Tipologia Limitazione</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sport Pericolosi</strong></td>
+                        <td>[LIMIT_SPORT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Attività Aeree</strong></td>
+                        <td>[LIMIT_AEREE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Guida Motoveicoli</strong></td>
+                        <td>[LIMIT_MOTOVEICOLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Malattie Preesistenti</strong></td>
+                        <td>[LIMIT_MALATTIE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Età Massima Copertura</strong></td>
+                        <td>[LIMIT_ETA]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Franchigie Particolari per Categoria</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Categoria / Attività</th>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:20%">Franchigia</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per ogni franchigia particolare -->
+                    <tr>
+                        <td>[FRANCH_PART_CAT_1]</td>
+                        <td>[FRANCH_PART_GAR_1]</td>
+                        <td class="col-center">[FRANCH_PART_VAL_1]</td>
+                        <td>[FRANCH_PART_NOTE_1]</td>
+                    </tr>
+                    <!-- ... altre franchigie particolari ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Importante:</strong><br>
+                Per esclusioni e limitazioni complete si rimanda alle Condizioni Generali di Assicurazione 
+                depositate presso l'IVASS. Le esclusioni sopra riportate sono solo le principali.
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TAB 6: GESTIONE SINISTRI -->
+        <!-- ========================================= -->
+        <div id="tab6" class="tab-content">
+            <h2 class="section-title">Procedura Gestione Sinistri</h2>
+
+            <h3 class="subsection-title">Denuncia Sinistro</h3>
+            <div class="highlight-box">
+                <strong>Termine Denuncia:</strong> [TERMINE_DENUNCIA]<br>
+                <strong>Contatti:</strong><br>
+                Eramo & Associati S.r.l.<br>
+                Email: sinistri@eramoassociati.it<br>
+                Tel: 0332 283123
+            </div>
+
+            <h3 class="subsection-title">Documentazione Necessaria</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Tipo Sinistro</th>
+                        <th>Documenti da Fornire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Morte</strong></td>
+                        <td>[DOC_MORTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invalidità Permanente</strong></td>
+                        <td>[DOC_IP]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inabilità Temporanea</strong></td>
+                        <td>[DOC_ITT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Mediche</strong></td>
+                        <td>[DOC_SPESE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diarie (Ricovero/Gessatura)</strong></td>
+                        <td>[DOC_DIARIE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Timeline Liquidazione</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Fase</th>
+                        <th style="width:20%">Tempistica</th>
+                        <th>Attività</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Giorno 0</strong></td>
+                        <td>Evento</td>
+                        <td>Si verifica l'infortunio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entro [TERMINE_DENUNCIA]</strong></td>
+                        <td>Denuncia</td>
+                        <td>Comunicazione sinistro a broker e compagnia</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entro 15 giorni</strong></td>
+                        <td>Presa in carico</td>
+                        <td>Compagnia assegna numero sinistro e richiede documentazione</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Variabile</strong></td>
+                        <td>Istruttoria</td>
+                        <td>Valutazione documentazione, eventuali perizie mediche</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consolidamento</strong></td>
+                        <td>Liquidazione</td>
+                        <td>Pagamento indennizzo secondo massimali e condizioni polizza</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Obblighi dell'Assicurato</h3>
+            <ul>
+                <li>Denunciare tempestivamente l'infortunio nei termini previsti dalla polizza</li>
+                <li>Conservare tutta la documentazione medica relativa all'evento</li>
+                <li>Fornire alla compagnia ogni informazione e documento richiesto</li>
+                <li>Sottoporsi agli accertamenti medici disposti dalla compagnia</li>
+                <li>Non transigere con terzi senza preventiva autorizzazione della compagnia</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Nota Importante:</strong><br>
+                Il mancato rispetto degli obblighi sopra indicati può comportare la perdita totale 
+                o parziale del diritto all'indennizzo ai sensi degli artt. 1892-1915 C.C.
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            // Nascondere tutti i contenuti
+            var tabContents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            // Rimuovere classe active da tutti i tab
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+
+            // Mostrare contenuto selezionato
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+
+</body>
+
+</html>

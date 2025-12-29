@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polizza RCA - [TARGA]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f4f6f8;
+            --bg-paper: #ffffff;
+            --primary-dark: #0f172a;
+            --primary-main: #334155;
+            --accent-gold: #b49b66;
+            --accent-blue: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 30px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        .report-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-main) 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        .header-meta {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header-meta-item {
+            font-size: 12px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-meta-item span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background-color: #f8fafc;
+            border-bottom: 2px solid var(--border-strong);
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-dark);
+        }
+
+        .tab.active {
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
+            background-color: white;
+        }
+
+        /* TAB CONTENT */
+        .tab-content {
+            display: none;
+            padding: 35px 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--accent-gold);
+        }
+
+        .subsection-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 25px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 14px 18px;
+        }
+
+        .info-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 12px 14px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 10px 14px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-inactive {
+            background: #f1f5f9;
+            color: #94a3b8;
+        }
+
+        .badge-rca {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-furto {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-kasko {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-assistenza {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        /* HIGHLIGHT BOX */
+        .highlight-box {
+            background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+            border-left: 4px solid var(--accent-gold);
+            padding: 18px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box strong {
+            color: var(--primary-dark);
+            font-size: 14px;
+        }
+
+        .highlight-box p {
+            margin: 8px 0 0 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #eff6ff;
+            border-left: 3px solid var(--accent-blue);
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* LISTA */
+        ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Polizza RCA Auto</h1>
+            <p class="header-subtitle">Responsabilità Civile Autoveicoli + Garanzie Accessorie</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>Targa</strong>
+                    <span>[TARGA]</span>
+                </div>
+                <div class="header-meta-item">
+                    <strong>Veicolo</strong>
+                    <span>[MARCA] [MODELLO]</span>
+                </div>
+                <div class="header-meta-item">
+                    <strong>Compagnia</strong>
+                    <span>[COMPAGNIA]</span>
+                </div>
+                <div class="header-meta-item">
+                    <strong>Scadenza</strong>
+                    <span>[SCADENZA]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(event, 'tab1')">Sintesi Polizza</button>
+            <button class="tab" onclick="switchTab(event, 'tab2')">Garanzie RCA</button>
+            <button class="tab" onclick="switchTab(event, 'tab3')">Garanzie Accessorie</button>
+            <button class="tab" onclick="switchTab(event, 'tab4')">Massimali & Franchigie</button>
+            <button class="tab" onclick="switchTab(event, 'tab5')">Esclusioni</button>
+            <button class="tab" onclick="switchTab(event, 'tab6')">Gestione Sinistri</button>
+        </div>
+
+        <!-- TAB 1: SINTESI POLIZZA -->
+        <div id="tab1" class="tab-content active">
+            <h2 class="section-title">Sintesi Polizza</h2>
+
+            <h3 class="subsection-title">Dati Generali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Contraente</span>
+                    <span class="info-value">[CONTRAENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Broker</span>
+                    <span class="info-value">Eramo & Associati S.r.l.</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Compagnia</span>
+                    <span class="info-value">[COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Decorrenza</span>
+                    <span class="info-value">[DECORRENZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scadenza</span>
+                    <span class="info-value">[SCADENZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Premio Lordo Annuo</span>
+                    <span class="info-value">[PREMIO_LORDO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Frazionamento</span>
+                    <span class="info-value">[FRAZIONAMENTO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dati Veicolo</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Targa</span>
+                    <span class="info-value">[TARGA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Marca e Modello</span>
+                    <span class="info-value">[MARCA] [MODELLO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Anno Immatricolazione</span>
+                    <span class="info-value">[ANNO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Potenza</span>
+                    <span class="info-value">[POTENZA_KW] kW ([POTENZA_CV] CV)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Cilindrata</span>
+                    <span class="info-value">[CILINDRATA] cc</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Alimentazione</span>
+                    <span class="info-value">[ALIMENTAZIONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Valore Assicurato</span>
+                    <span class="info-value">[VALORE_VEICOLO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Uso Veicolo</span>
+                    <span class="info-value">[USO_VEICOLO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Classe di Merito</h3>
+            <div class="highlight-box">
+                <strong>Classe Bonus/Malus: [CLASSE_MERITO]</strong>
+                <p>[DESCRIZIONE_CLASSE]</p>
+            </div>
+
+            <h3 class="subsection-title">Riepilogo Coperture</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Garanzia</th>
+                        <th style="width:15%">Inclusa</th>
+                        <th style="width:25%">Massimale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-rca">RCA</span> <strong>Responsabilità Civile Auto</strong></td>
+                        <td class="col-center"><span class="badge badge-active">Sì</span></td>
+                        <td class="col-curr">Persone: [MASS_RCA_PERS] / Cose: [MASS_RCA_COSE]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-furto">FURTO</span> <strong>Furto e Incendio</strong></td>
+                        <td class="col-center">[FURTO_INCLUSA]</td>
+                        <td class="col-curr">[FURTO_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-kasko">KASKO</span> <strong>Kasko / Collisione</strong></td>
+                        <td class="col-center">[KASKO_INCLUSA]</td>
+                        <td class="col-curr">[KASKO_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td class="col-center">[CRISTALLI_INCLUSA]</td>
+                        <td class="col-curr">[CRISTALLI_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td class="col-center">[EVENTI_NAT_INCLUSA]</td>
+                        <td class="col-curr">[EVENTI_NAT_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td class="col-center">[VANDAL_INCLUSA]</td>
+                        <td class="col-curr">[VANDAL_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td class="col-center">[TUTELA_INCLUSA]</td>
+                        <td class="col-curr">[TUTELA_MASSIMALE]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-assistenza">SOS</span> <strong>Assistenza Stradale</strong></td>
+                        <td class="col-center">[ASSISTENZA_INCLUSA]</td>
+                        <td class="col-curr">[ASSISTENZA_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 2: GARANZIE RCA -->
+        <div id="tab2" class="tab-content">
+            <h2 class="section-title">Garanzie RCA Obbligatoria</h2>
+
+            <h3 class="subsection-title">Massimali Legali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Persone</span>
+                    <span class="info-value">[MASS_RCA_PERSONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Cose</span>
+                    <span class="info-value">[MASS_RCA_COSE]</span>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>Nota:</strong> I massimali RCA sono stabiliti per legge e coprono i danni causati a terzi 
+                dalla circolazione del veicolo. La polizza opera in base al principio del "fatto dannoso" 
+                (loss occurrence).
+            </div>
+
+            <h3 class="subsection-title">Franchigie e Scoperti RCA</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipologia Danno</th>
+                        <th style="width:25%">Franchigia</th>
+                        <th style="width:25%">Scoperto</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Danni a Persone</strong></td>
+                        <td class="col-center">[FRANCH_RCA_PERSONE]</td>
+                        <td class="col-center">[SCOP_RCA_PERSONE]</td>
+                        <td>[NOTE_RCA_PERSONE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Danni a Cose</strong></td>
+                        <td class="col-center">[FRANCH_RCA_COSE]</td>
+                        <td class="col-center">[SCOP_RCA_COSE]</td>
+                        <td>[NOTE_RCA_COSE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Validità Territoriale</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 20px 0;">
+                <strong>Copertura Geografica:</strong> [TERRITORIO_RCA]
+            </p>
+
+            <h3 class="subsection-title">Conducenti Garantiti</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 20px 0;">
+                <strong>Guida:</strong> [CONDUCENTI_GARANTITI]
+            </p>
+
+        </div>
+
+        <!-- TAB 3: GARANZIE ACCESSORIE -->
+        <div id="tab3" class="tab-content">
+            <h2 class="section-title">Garanzie Accessorie</h2>
+
+            <!-- FURTO E INCENDIO -->
+            <h3 class="subsection-title">
+                <span class="badge badge-furto">FURTO</span> Furto e Incendio
+            </h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[FURTO_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[FURTO_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[FURTO_FRANCHIGIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto</span>
+                    <span class="info-value">[FURTO_SCOPERTO]</span>
+                </div>
+            </div>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 20px 0;">
+                <strong>Copertura:</strong> [FURTO_DESCRIZIONE]
+            </p>
+
+            <!-- KASKO / COLLISIONE -->
+            <h3 class="subsection-title">
+                <span class="badge badge-kasko">KASKO</span> Kasko / Collisione
+            </h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[KASKO_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo Kasko</span>
+                    <span class="info-value">[KASKO_TIPO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[KASKO_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[KASKO_FRANCHIGIA]</span>
+                </div>
+            </div>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 20px 0;">
+                <strong>Copertura:</strong> [KASKO_DESCRIZIONE]
+            </p>
+
+            <!-- CRISTALLI -->
+            <h3 class="subsection-title">Cristalli</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[CRISTALLI_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[CRISTALLI_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[CRISTALLI_FRANCHIGIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto</span>
+                    <span class="info-value">[CRISTALLI_SCOPERTO]</span>
+                </div>
+            </div>
+
+            <!-- EVENTI NATURALI -->
+            <h3 class="subsection-title">Eventi Naturali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[EVENTI_NAT_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[EVENTI_NAT_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[EVENTI_NAT_FRANCHIGIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Eventi Coperti</span>
+                    <span class="info-value">[EVENTI_NAT_EVENTI]</span>
+                </div>
+            </div>
+
+            <!-- ATTI VANDALICI -->
+            <h3 class="subsection-title">Atti Vandalici</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[VANDAL_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[VANDAL_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[VANDAL_FRANCHIGIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto</span>
+                    <span class="info-value">[VANDAL_SCOPERTO]</span>
+                </div>
+            </div>
+
+            <!-- TUTELA LEGALE -->
+            <h3 class="subsection-title">Tutela Legale</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[TUTELA_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale</span>
+                    <span class="info-value">[TUTELA_MASSIMALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia</span>
+                    <span class="info-value">[TUTELA_FRANCHIGIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ambito</span>
+                    <span class="info-value">[TUTELA_AMBITO]</span>
+                </div>
+            </div>
+
+            <!-- ASSISTENZA STRADALE -->
+            <h3 class="subsection-title">
+                <span class="badge badge-assistenza">SOS</span> Assistenza Stradale
+            </h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia Inclusa</span>
+                    <span class="info-value">[ASSISTENZA_INCLUSA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Servizi Inclusi</span>
+                    <span class="info-value">[ASSISTENZA_SERVIZI]</span>
+                </div>
+            </div>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 20px 0;">
+                <strong>Dettagli:</strong> [ASSISTENZA_DETTAGLI]
+            </p>
+
+        </div>
+
+        <!-- TAB 4: MASSIMALI & FRANCHIGIE -->
+        <div id="tab4" class="tab-content">
+            <h2 class="section-title">Riepilogo Massimali e Franchigie</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:20%">Massimale</th>
+                        <th style="width:18%">Franchigia</th>
+                        <th style="width:12%">Scoperto</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RCA Persone</strong></td>
+                        <td class="col-curr">[MASS_RCA_PERSONE]</td>
+                        <td class="col-center">[FRANCH_RCA_PERSONE]</td>
+                        <td class="col-center">[SCOP_RCA_PERSONE]</td>
+                        <td>[NOTE_RCA_PERSONE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RCA Cose</strong></td>
+                        <td class="col-curr">[MASS_RCA_COSE]</td>
+                        <td class="col-center">[FRANCH_RCA_COSE]</td>
+                        <td class="col-center">[SCOP_RCA_COSE]</td>
+                        <td>[NOTE_RCA_COSE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Furto e Incendio</strong></td>
+                        <td class="col-curr">[FURTO_MASSIMALE]</td>
+                        <td class="col-center">[FURTO_FRANCHIGIA]</td>
+                        <td class="col-center">[FURTO_SCOPERTO]</td>
+                        <td>[FURTO_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td class="col-curr">[KASKO_MASSIMALE]</td>
+                        <td class="col-center">[KASKO_FRANCHIGIA]</td>
+                        <td class="col-center">[KASKO_SCOPERTO]</td>
+                        <td>[KASKO_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td class="col-curr">[CRISTALLI_MASSIMALE]</td>
+                        <td class="col-center">[CRISTALLI_FRANCHIGIA]</td>
+                        <td class="col-center">[CRISTALLI_SCOPERTO]</td>
+                        <td>[CRISTALLI_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td class="col-curr">[EVENTI_NAT_MASSIMALE]</td>
+                        <td class="col-center">[EVENTI_NAT_FRANCHIGIA]</td>
+                        <td class="col-center">[EVENTI_NAT_SCOPERTO]</td>
+                        <td>[EVENTI_NAT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td class="col-curr">[VANDAL_MASSIMALE]</td>
+                        <td class="col-center">[VANDAL_FRANCHIGIA]</td>
+                        <td class="col-center">[VANDAL_SCOPERTO]</td>
+                        <td>[VANDAL_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td class="col-curr">[TUTELA_MASSIMALE]</td>
+                        <td class="col-center">[TUTELA_FRANCHIGIA]</td>
+                        <td class="col-center">-</td>
+                        <td>[TUTELA_NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- TAB 5: ESCLUSIONI -->
+        <div id="tab5" class="tab-content">
+            <h2 class="section-title">Esclusioni e Limitazioni</h2>
+
+            <h3 class="subsection-title">Esclusioni RCA Standard</h3>
+            <ul>
+                <li>[ESCLUSIONE_RCA_1]</li>
+                <li>[ESCLUSIONE_RCA_2]</li>
+                <li>[ESCLUSIONE_RCA_3]</li>
+                <li>[ESCLUSIONE_RCA_4]</li>
+                <li>[ESCLUSIONE_RCA_5]</li>
+            </ul>
+
+            <h3 class="subsection-title">Esclusioni Garanzie Accessorie</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th>Esclusioni Specifiche</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Furto e Incendio</strong></td>
+                        <td>[ESCL_FURTO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td>[ESCL_KASKO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td>[ESCL_CRISTALLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td>[ESCL_EVENTI_NAT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td>[ESCL_VANDAL]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Limitazioni Conducenti</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 20px 0;">
+                [LIMITAZIONI_CONDUCENTI]
+            </p>
+
+            <h3 class="subsection-title">Limitazioni Territoriali</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 20px 0;">
+                [LIMITAZIONI_TERRITORIALI]
+            </p>
+
+            <h3 class="subsection-title">Limitazioni Uso Veicolo</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 20px 0;">
+                [LIMITAZIONI_USO]
+            </p>
+
+        </div>
+
+        <!-- TAB 6: GESTIONE SINISTRI -->
+        <div id="tab6" class="tab-content">
+            <h2 class="section-title">Gestione Sinistri</h2>
+
+            <h3 class="subsection-title">Denuncia Sinistro</h3>
+            <div class="highlight-box">
+                <strong>Termine Denuncia:</strong> [TERMINE_DENUNCIA]<br>
+                <strong>Modalità:</strong> [MODALITA_DENUNCIA]<br>
+                <strong>Contatti Broker:</strong><br>
+                Email: info@eramoassociati.it | Tel: [TEL_BROKER]
+            </div>
+
+            <h3 class="subsection-title">Documentazione per Tipo Sinistro</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Tipo Sinistro</th>
+                        <th>Documenti Necessari</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sinistro RCA</strong></td>
+                        <td>[DOC_RCA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Furto Totale</strong></td>
+                        <td>[DOC_FURTO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Incendio</strong></td>
+                        <td>[DOC_INCENDIO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td>[DOC_KASKO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td>[DOC_CRISTALLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td>[DOC_EVENTI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td>[DOC_VANDAL]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Constatazione Amichevole (CAI)</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 15px 0;">
+                In caso di sinistro RCA con altro veicolo, compilare sempre il modulo di Constatazione 
+                Amichevole (CAI) anche in caso di disaccordo. Il modulo va firmato da entrambi i conducenti 
+                e consegnato alla compagnia entro 3 giorni.
+            </p>
+
+            <h3 class="subsection-title">Timeline Liquidazione</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Fase</th>
+                        <th style="width:20%">Tempistica</th>
+                        <th>Attività</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Giorno 0</strong></td>
+                        <td>Evento</td>
+                        <td>Sinistro si verifica. Mettere in sicurezza, documentare con foto, compilare CAI se possibile.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 1-3</strong></td>
+                        <td>Entro [TERMINE_DENUNCIA]</td>
+                        <td>Denunciare sinistro a broker con tutta documentazione disponibile.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 4-10</strong></td>
+                        <td>Entro 7 giorni</td>
+                        <td>Compagnia prende in carico pratica e nomina perito.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 11-30</strong></td>
+                        <td>Variabile</td>
+                        <td>Perizia veicolo, valutazione danni, raccolta documenti.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giorni 31+</strong></td>
+                        <td>Variabile</td>
+                        <td>Liquidazione o autorizzazione riparazione.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Attivazione Assistenza Stradale</h3>
+            <p style="font-size:13px; line-height:1.6; margin:0 0 15px 0;">
+                [PROCEDURA_ASSISTENZA]
+            </p>
+
+            <div class="note-box">
+                <strong>Note Importanti:</strong>
+                <ul style="margin-top:10px;">
+                    <li>Conservare sempre tutti i documenti originali</li>
+                    <li>In caso di furto, denunciare immediatamente alle autorità</li>
+                    <li>Non ammettere mai responsabilità sul luogo del sinistro</li>
+                    <li>Scattare foto dettagliate dei danni</li>
+                    <li>Richiedere sempre preventivo riparazioni prima di procedere</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            const tabs = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            const buttons = document.getElementsByClassName('tab');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+
+</body>
+
+</html>

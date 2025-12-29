@@ -1,0 +1,1009 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: ANALISI SINISTRO CYBER RISK - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML di analisi e gestione sinistro Cyber Risk 
+per uso interno broker/agente/risk manager.
+
+DESTINATARIO: Broker, agente, risk manager
+TEMPLATE: template_sinistro_cyber_finale.html (1104 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da pratica
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS INCIDENT RESPONSE
+   - Timeline dettagliata discovery → contenimento → recovery
+   - IOC (Indicators of Compromise)
+   - Threat actor e tecniche MITRE ATT&CK
+   - Sistemi compromessi
+
+2. GESTIONE GDPR
+   - Notifica Garante 72h
+   - Comunicazione interessati
+   - Numero record compromessi
+   - Dati sensibili coinvolti
+
+3. OPERATIVITÀ TECNICA
+   - Forensic investigation
+   - Panel provider attivati
+   - Azioni contenimento e recovery
+   - Remediation plan
+
+4. VALORE AGGIUNTO
+   - Root cause analysis
+   - Lezioni apprese
+   - Raccomandazioni specifiche
+   - Impatto portfolio
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI SINISTRO
+SEZIONE 2: DESCRIZIONE INCIDENTE
+SEZIONE 3: DANNI E IMPATTI
+SEZIONE 4: COPERTURA ASSICURATIVA
+SEZIONE 5: GESTIONE E AZIONI
+SEZIONE 6: VALUTAZIONE ECONOMICA
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+SEZIONE 8: CRONOLOGIA
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER + ALERT BOX
+═══════════════════════════════════════════════════════════════════════════════
+
+[NUMERO_SINISTRO]
+Numero sinistro (formato "CYB-2024-0089")
+
+[DATA_DISCOVERY]
+Data discovery formato "gg/mm/aaaa"
+
+[STATUS_SINISTRO]
+Status: "Aperto", "Contenimento", "Recovery", "Chiuso"
+
+[SEVERITY]
+Severity: "Critical", "High", "Medium", "Low"
+
+ALERT BOX
+─────────
+
+[ALERT_CLASS]
+Classe CSS:
+- "alert-critical" → Ransomware attivo, data breach massivo, downtime critico
+- "alert-warning" → Compromissione sistemi, notifica GDPR in corso
+- "alert-info" → Gestione standard, recovery in corso
+- "alert-success" → Chiuso, sistemi ripristinati
+
+[ALERT_TITLE]
+Titolo alert
+
+[ALERT_MESSAGE]
+Messaggio (2-3 righe)
+Esempio: "Ransomware attivo. 50.000 record compromessi. Notifica Garante 
+effettuata. Downtime 48h. Riscatto € 100.000 richiesto."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI SINISTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: IDENTIFICATIVI
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_SINISTRO_COMP]
+Numero sinistro compagnia
+
+[NUMERO_PRATICA_BROKER]
+Numero pratica broker (formato "BR-CYB-2024-0089")
+
+[DATA_DISCOVERY]
+Data discovery incidente formato "gg/mm/aaaa"
+
+[ORA_DISCOVERY]
+Ora discovery formato "HH:MM"
+
+[DATA_DENUNCIA]
+Data denuncia compagnia formato "gg/mm/aaaa"
+
+[TEMPO_DENUNCIA]
+Tempo tra discovery e denuncia
+Esempio: "4 ore", "12 ore", "24 ore"
+
+SUBSECTION: CLASSIFICAZIONE INCIDENTE
+───────────────────────────────────────────────────────────────────────────────
+
+[TIPO_INCIDENTE]
+Tipo incidente principale
+Esempi:
+- "Ransomware"
+- "Data Breach"
+- "Phishing / Business Email Compromise (BEC)"
+- "DDoS Attack"
+- "Malware Infection"
+- "Insider Threat"
+- "SQL Injection"
+- "Zero-Day Exploit"
+
+[SEVERITY_BADGE]
+Badge HTML severity:
+<span class="severity-tag severity-critical">Critical</span>
+<span class="severity-tag severity-high">High</span>
+<span class="severity-tag severity-medium">Medium</span>
+<span class="severity-tag severity-low">Low</span>
+
+[STATUS_BADGE]
+Badge HTML status:
+<span class="status-badge status-aperto">Aperto</span>
+<span class="status-badge status-contenimento">Contenimento</span>
+<span class="status-badge status-recovery">Recovery</span>
+<span class="status-badge status-chiuso">Chiuso</span>
+
+[VETTORE_ATTACCO]
+Vettore attacco iniziale
+Esempi:
+- "Phishing email"
+- "RDP exploit"
+- "Vulnerabilità VPN"
+- "Credenziali compromesse"
+- "Supply chain attack"
+
+SUBSECTION: POLIZZA E ASSICURATO
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA]
+Compagnia assicuratrice
+
+[NUMERO_POLIZZA]
+Numero polizza
+
+[ASSICURATO]
+Ragione sociale assicurato
+
+[SETTORE_ATTIVITA]
+Settore attività
+Esempio: "Software Development", "E-commerce", "Healthcare"
+
+SUBSECTION: TEAM GESTIONE
+───────────────────────────────────────────────────────────────────────────────
+
+[BROKER_REFERENTE]
+Nome broker
+
+[LIQUIDATORE_COMPAGNIA]
+Nome liquidatore
+
+[FORENSIC_PROVIDER]
+Nome provider forensic
+Esempio: "Mandiant", "CrowdStrike", "Kaspersky"
+
+[LEGAL_COUNSEL]
+Nome legale GDPR
+Se non coinvolto: "-"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: DESCRIZIONE INCIDENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DISCOVERY E NOTIFICA
+───────────────────────────────────────────────────────────────────────────────
+
+[COME_SCOPERTO]
+Come incidente è stato scoperto
+Esempi:
+- "Alert SIEM automatico"
+- "Segnalazione utente"
+- "Schermata ransomware"
+- "Impossibilità accesso sistemi"
+- "Alert EDR"
+
+[SCOPERTO_DA]
+Chi ha scoperto
+Esempio: "IT Manager", "SOC esterno", "Utente finale"
+
+[DATA_EVENTO_STIMATA]
+Data stimata evento iniziale formato "gg/mm/aaaa"
+Se sconosciuta: "Da determinare (forensic in corso)"
+
+[DWELL_TIME]
+Dwell time (tempo tra compromissione e discovery)
+Formato: "X giorni" o "X ore"
+Esempio: "14 giorni", "72 ore"
+
+SUBSECTION: DINAMICA ATTACCO
+───────────────────────────────────────────────────────────────────────────────
+
+[DINAMICA_ATTACCO]
+Descrizione dettagliata dinamica (15-25 righe)
+
+Includere:
+- Initial access (come attacker è entrato)
+- Lateral movement (come si è mosso in rete)
+- Persistence (come ha mantenuto accesso)
+- Privilege escalation (come ha ottenuto privilegi)
+- Exfiltration (se dati esfiltrati)
+- Impact (azioni finali: encryption, destruction, ecc.)
+
+Esempio:
+"Il giorno 15/03/2024 ore 09:30, dipendente ha cliccato link phishing in 
+email apparentemente da fornitore legittimo. Link scaricava trojan Emotet 
+che si installava su workstation Windows 10. Emotet eseguiva reconnaissance 
+rete aziendale e identificava controller dominio Active Directory.
+
+Attraverso lateral movement con credenziali harvested, attacker accedeva a 
+controller dominio ore 14:00 stesso giorno. Successivamente deployava 
+Cobalt Strike beacon per command & control persistente.
+
+Nei giorni successivi (15-22/03), attacker esplorava file server, identificava 
+backup, e disabilitava servizi VSS (Volume Shadow Copy). Il 22/03 ore 23:00, 
+attacker deployava ransomware LockBit 3.0 su tutti server e workstation 
+simultaneamente tramite GPO malevola.
+
+Encryption completata in 4 ore. Totale 45 server e 180 workstation cifrati. 
+Schermata ransomware con richiesta € 200.000 in Bitcoin apparsa 23/03 ore 03:00.
+
+Discovery da IT Manager ore 06:00 del 23/03 impossibilità accesso sistemi. 
+Hotline H24 compagnia chiamata ore 06:15."
+
+SUBSECTION: VETTORE E TECNICA
+───────────────────────────────────────────────────────────────────────────────
+
+[VETTORE_INIZIALE]
+Vettore iniziale dettagliato
+Esempio: "Email phishing con allegato macro Excel malevolo"
+
+[MITRE_ATTACK]
+Tecniche MITRE ATT&CK Framework
+Esempio: "T1566 (Phishing), T1059 (Command Scripting), T1486 (Data Encrypted)"
+
+[MALWARE_IDENTIFICATO]
+Malware identificato
+Esempio: "Emotet → Cobalt Strike → LockBit 3.0 ransomware"
+
+[THREAT_ACTOR]
+Threat actor (se identificato)
+Esempio: "LockBit gang", "APT29", "Non identificato"
+
+SUBSECTION: SISTEMI COMPROMESSI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI sistema compromesso
+
+[SISTEMA_COMP_N]
+Nome sistema/servizio
+Esempio: "Active Directory Controller", "File Server PROD", "SQL Database"
+
+[TIPO_COMP_N]
+Tipo compromissione
+Esempi: "Encrypted", "Accessed", "Exfiltrated", "Destroyed"
+
+[CRITICITA_CLASS_N]
+Classe CSS criticità:
+- "severity-critical"
+- "severity-high"
+- "severity-medium"
+- "severity-low"
+
+[CRITICITA_N]
+Criticità: "Critical", "High", "Medium", "Low"
+
+[NOTE_COMP_N]
+Note specifiche
+
+SUBSECTION: IOC (INDICATORS OF COMPROMISE)
+───────────────────────────────────────────────────────────────────────────────
+
+[IOC_N]
+Elencare 3-5 IOC principali
+
+Esempi:
+"IP C2: 185.220.101.45 (TOR exit node)"
+"File hash: SHA256 a3f8d9e2c1b4... (Emotet dropper)"
+"Domain: update-security[.]com (phishing domain)"
+"Registry key: HKLM\Software\Malware (persistence)"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: DANNI E IMPATTI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DATI COMPROMESSI
+───────────────────────────────────────────────────────────────────────────────
+
+[DATA_BREACH_CONFERMATO]
+Data breach confermato: "Sì" oppure "No" oppure "In valutazione"
+
+[NUMERO_RECORD_COMPROMESSI]
+Numero record dati personali compromessi
+Formato: "XX.XXX record"
+
+[TIPOLOGIE_DATI]
+Tipologie dati compromessi
+Esempio: "Nome, cognome, email, telefono, CF, dati sanitari"
+
+[DATI_SENSIBILI]
+Dati sensibili coinvolti: "Sì" oppure "No"
+Se sì, specificare tipo
+
+SUBSECTION: BUSINESS INTERRUPTION
+───────────────────────────────────────────────────────────────────────────────
+
+[DOWNTIME_TOTALE]
+Downtime totale formato "XX ore" o "X giorni"
+
+[INIZIO_DOWNTIME]
+Data/ora inizio formato "gg/mm/aaaa HH:MM"
+
+[FINE_DOWNTIME]
+Data/ora fine formato "gg/mm/aaaa HH:MM"
+Se ancora in downtime: "In corso"
+
+[SERVIZI_IMPATTATI]
+Servizi impattati
+Esempio: "Email, ERP, CRM, sito web, produzione"
+
+SUBSECTION: PERDITA DATI/SISTEMI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe
+
+[DATI_CIFRATI]
+"Sì" oppure "No"
+
+[DATI_CIFRATI_DETTAGLI]
+Dettagli
+Esempio: "45 server, 180 workstation, 15TB dati cifrati LockBit 3.0"
+
+[DATI_ESFILTRATI]
+"Sì" oppure "No" oppure "In valutazione"
+
+[DATI_ESFILTRATI_DETTAGLI]
+Dettagli
+Esempio: "Forensic conferma 2GB dati esfiltrati via FTP prima encryption"
+
+[SISTEMI_DANNEGGIATI]
+"Sì" oppure "No"
+
+[SISTEMI_DANNEGGIATI_DETTAGLI]
+Dettagli
+Esempio: "3 server con MBR corrotto, necessaria reinstallazione OS"
+
+[BACKUP_DISPONIBILI]
+"Sì" oppure "Parziale" oppure "No"
+
+[BACKUP_DISPONIBILI_DETTAGLI]
+Dettagli
+Esempio: "Backup completo disponibile -7 giorni. Ultimi 7gg persi."
+
+SUBSECTION: RICHIESTE RISCATTO (SE RANSOMWARE)
+───────────────────────────────────────────────────────────────────────────────
+
+[RICHIESTA_RISCATTO]
+Richiesta riscatto presente: "Sì" oppure "No"
+
+[IMPORTO_RISCATTO]
+Importo richiesto formato "€ XXX.XXX" o "X Bitcoin"
+
+[MODALITA_CONTATTO_ATTACKER]
+Modalità contatto attacker
+Esempio: "TOR hidden service, email ProtonMail"
+
+[SCADENZA_RISCATTO]
+Scadenza pagamento
+Formato: "gg/mm/aaaa" o "XX ore da discovery"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: COPERTURA ASSICURATIVA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: GARANZIE OPERANTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 6 righe - garanzie principali
+
+Per CIASCUNA garanzia:
+
+[NOME_OPERANTE]
+"✓" se operante, "✗" se non operante
+
+[NOME_MASSIMALE]
+Massimale formato "€ XXX.XXX"
+
+[NOME_APPLICABILITA]
+Applicabilità
+Esempio: "Operante - Evento coperto", "Non operante - Sistemi legacy esclusi"
+
+Garanzie:
+1. Data Breach
+2. Cyber Extortion
+3. Business Interruption
+4. System Damage
+5. Cyber Crime
+6. Legal Defense
+
+SUBSECTION: FRANCHIGIE APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCHIGIA_DATA_BREACH]
+Franchigia Data Breach formato "€ X.XXX"
+
+[FRANCHIGIA_EXTORTION]
+Franchigia Extortion formato "€ X.XXX"
+
+[FRANCHIGIA_BI_ORE]
+Franchigia BI formato "XX ore"
+
+[FRANCHIGIA_SYSTEM]
+Franchigia System Damage formato "€ X.XXX"
+
+SUBSECTION: VALUTAZIONE OPERATIVITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[VALUTAZIONE_COPERTURA]
+Valutazione complessiva operatività (5-10 righe)
+
+Esempio:
+"Garanzie Data Breach, Cyber Extortion, System Damage operanti. Business 
+Interruption operante superata franchigia 24h (downtime 48h).
+
+Verificato rispetto requisiti minimi sicurezza: backup off-site presente, 
+antivirus attivo, MFA su accessi admin. Nessuna esclusione applicabile.
+
+Franchigie: € 5.000 per Data Breach e System Damage. 24h per BI. Totale 
+franchigia € 10.000 + perdita prime 24h.
+
+Massimali adeguati: Data Breach € 500.000, Extortion € 250.000, BI € 100.000/giorno.
+
+Copertura confermata. Liquidazione può procedere."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: GESTIONE E AZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: STATUS ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[FASE_GESTIONALE]
+Fase:
+- "Discovery e denuncia"
+- "Contenimento in corso"
+- "Forensic investigation"
+- "Recovery e ripristino"
+- "Post-incident / Chiusura"
+
+[ULTIMO_AGGIORNAMENTO]
+Data formato "gg/mm/aaaa"
+
+[FORENSIC_COMPLETATO]
+Forensic completato: "Sì" oppure "No" oppure "In corso"
+
+[DATA_REPORT_FORENSIC]
+Data report forensic formato "gg/mm/aaaa"
+Se non ancora disponibile: "Da definire"
+
+SUBSECTION: AZIONI CONTENIMENTO
+───────────────────────────────────────────────────────────────────────────────
+
+[AZIONE_CONTENIMENTO_N]
+Elencare 4-6 azioni contenimento
+
+Esempi:
+"Isolamento server compromessi da rete aziendale (H+1)"
+"Disabilitazione account utente origine phishing (H+2)"
+"Cambio password tutti account amministrativi (H+3)"
+"Blocco comunicazioni C2 su firewall perimetrale (H+4)"
+"Imaging forensic sistemi prima ripristino (H+8)"
+"Verifica integrità backup off-site (H+12)"
+
+SUBSECTION: AZIONI RECOVERY
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI azione recovery
+
+[AZIONE_RECOVERY_N]
+Azione
+Esempio: "Ripristino Active Directory da backup"
+
+[STATUS_RECOVERY_N]
+Status: "Completato", "In corso", "Pianificato"
+
+[RESP_RECOVERY_N]
+Responsabile
+Esempio: "IT Manager", "Forensic team", "System admin"
+
+[NOTE_RECOVERY_N]
+Note
+
+SUBSECTION: NOTIFICHE GDPR
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTIFICA_GARANTE_NECESSARIA]
+Notifica Garante necessaria: "Sì" oppure "No"
+
+[DATA_NOTIFICA_GARANTE]
+Data notifica formato "gg/mm/aaaa"
+(Obbligatoria entro 72h da discovery se breach)
+
+[COMUNICAZIONE_INTERESSATI]
+Comunicazione interessati necessaria: "Sì" oppure "No"
+
+[NUMERO_NOTIFICATI]
+Numero interessati notificati formato "XX.XXX"
+
+SUBSECTION: SERVIZI PANEL ATTIVATI
+───────────────────────────────────────────────────────────────────────────────
+
+Checklist 5 servizi
+
+[CHECK_FORENSIC]
+"checked" se attivato
+
+[FORENSIC_PROVIDER_NOME]
+Nome provider
+
+Ripetere per:
+- CHECK_LEGAL / LEGAL_COUNSEL_NOME
+- CHECK_PR / PR_PROVIDER_NOME
+- CHECK_IT_RECOVERY / IT_RECOVERY_NOME
+- CHECK_NOTIFICATION / NOTIFICATION_PROVIDER_NOME
+
+SUBSECTION: PROSSIMI STEP
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per azione
+
+[SCADENZA_AZIONE_N]
+[AZIONE_N]
+[RESPONSABILE_N]
+[NOTE_AZIONE_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: VALUTAZIONE ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RISERVA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_INIZIALE]
+[DATA_RISERVA_INIZIALE]
+[RISERVA_ATTUALE]
+[DATA_AGG_RISERVA]
+
+SUBSECTION: DETTAGLIO COSTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 9 righe
+
+Per CIASCUNA voce:
+
+[COSTO_NOME]
+Importo stimato formato "€ XX.XXX"
+
+[NOTE_NOME]
+Note costo
+
+Voci costo:
+1. Forensic Investigation
+2. IT Recovery / System Restore
+3. Pagamento Riscatto (se autorizzato)
+4. Business Interruption (perdita fatturato)
+5. Legal / GDPR Compliance
+6. Notification Services (comunicazioni interessati)
+7. PR Crisis Management
+8. Credit Monitoring (vittime)
+9. TOTALE
+
+Esempi calcolo:
+
+[COSTO_FORENSIC]
+"€ 35.000"
+
+[NOTE_FORENSIC]
+"Mandiant - 5 giorni on-site + report dettagliato"
+
+[COSTO_BI]
+"€ 120.000"
+
+[NOTE_BI]
+"48h downtime × € 2.500/h fatturato medio. Dedotta franchigia 24h (€ 60.000)"
+
+SUBSECTION: PAGAMENTI EFFETTUATI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per pagamento
+
+[DATA_PAG_N]
+[BENEF_PAG_N]
+[IMPORTO_PAG_N]
+[CAUSALE_PAG_N]
+
+[TOTALE_PAGATO]
+
+SUBSECTION: SINTESI ECONOMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_RESIDUA]
+Riserva residua = Riserva attuale - Totale pagato
+
+[STIMA_CHIUSURA]
+Stima importo finale
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CRITICITÀ EMERSE
+───────────────────────────────────────────────────────────────────────────────
+
+[CRITICITA_N]
+
+Esempi:
+"Backup non testati regolarmente - ritardo 6h per ripristino"
+"MFA non attivo su tutti account admin - facilitato lateral movement"
+"Patch management inadeguato - vulnerabilità critica non patchata da 45gg"
+
+SUBSECTION: ROOT CAUSE ANALYSIS
+───────────────────────────────────────────────────────────────────────────────
+
+[ROOT_CAUSE_ANALYSIS]
+Analisi cause radice (10-15 righe)
+
+Esempio:
+"Root cause: Phishing email non bloccato da gateway sicurezza.
+
+Fattori contribuenti:
+1. Assenza email gateway avanzato (solo antispam base)
+2. Security awareness training non effettuato da 18 mesi
+3. MFA non obbligatorio su tutti account (solo 60% utenti)
+4. Segmentazione rete inadeguata (workstation → server senza restrizioni)
+5. Backup VSS non protetti da manomissione attacker
+6. Monitoraggio insufficiente (nessun SIEM, solo antivirus)
+
+Conclusione: Combinazione insufficiente difesa perimetrale (email), 
+awareness utenti, segmentazione rete, protezione backup. Singolo punto 
+fallimento (phishing riuscito) ha compromesso intera infrastruttura."
+
+SUBSECTION: REMEDIATION PLAN
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per misura
+
+[REMEDIATION_N]
+Misura remediation
+Esempio: "Implementazione email gateway Proofpoint"
+
+[PRIORITA_CLASS_N]
+Classe CSS priorità:
+- "severity-critical"
+- "severity-high"
+- "severity-medium"
+
+[PRIORITA_N]
+Priorità: "Critical", "High", "Medium"
+
+[TIMELINE_N]
+Timeline implementazione
+Esempio: "30 giorni", "60 giorni"
+
+[DESC_REMEDIATION_N]
+Descrizione misura
+
+SUBSECTION: RACCOMANDAZIONI ASSICURATO
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONI_ASSICURATO]
+Raccomandazioni (10-15 righe)
+
+Esempio:
+"Si raccomanda all'assicurato di:
+
+IMMEDIATO (30 giorni):
+1. Implementare MFA su TUTTI account (0% esclusi)
+2. Email gateway avanzato (Proofpoint, Mimecast)
+3. Segmentazione rete con firewall interno
+4. Protezione immutabile backup (Veeam immutability)
+
+BREVE TERMINE (60 giorni):
+5. SIEM o EDR con monitoraggio H24
+6. Security awareness training trimestrale obbligatorio
+7. Phishing simulation mensile
+8. Vulnerability assessment trimestrale
+
+MEDIO TERMINE (90 giorni):
+9. Penetration test annuale
+10. Incident Response Plan documentato e testato"
+
+SUBSECTION: LEZIONI APPRESE
+───────────────────────────────────────────────────────────────────────────────
+
+[LEZIONI_APPRESE]
+Analisi (10-15 righe)
+
+Esempio:
+"Sinistro evidenzia:
+
+POSITIVI:
+- Denuncia immediata (4h) ha accelerato intervento
+- Backup off-site ha permesso recovery (seppur parziale)
+- Panel forensic pre-attivato ha ridotto tempi analisi
+
+NEGATIVI:
+- Security awareness insufficiente (utente ha cliccato phishing)
+- Backup non testati hanno causato ritardi recovery
+- Assenza SIEM ha ritardato discovery (dwell time 7 giorni)
+- Costi downtime superiori a previsioni (€ 120.000)
+
+Per portfolio: verificare clienti abbiano MFA, email gateway avanzato, 
+backup testati. Valutare aumento massimali BI per aziende con e-commerce."
+
+SUBSECTION: IMPATTO PORTFOLIO
+───────────────────────────────────────────────────────────────────────────────
+
+[IMPATTO_LOSS_RATIO]
+Impatto loss ratio
+
+[IMPATTO_RINNOVO]
+Impatto rinnovo
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: CRONOLOGIA
+═══════════════════════════════════════════════════════════════════════════════
+
+Timeline incident response + Comunicazioni
+
+[DATA_EVENTO_CRONOL_N]
+Data formato "gg/mm/aaaa HH:MM"
+
+[TITOLO_EVENTO_N]
+Titolo evento
+
+[DESCRIZIONE_EVENTO_N]
+Descrizione
+
+Esempio timeline:
+"23/03/2024 06:00 - Discovery Incidente - IT Manager scopre impossibilità 
+accesso sistemi. Schermata ransomware presente."
+
+Tabella comunicazioni:
+[DATA_COM_N]
+[TIPO_COM_N]
+[OGGETTO_COM_N]
+
+[RIFERIMENTO_ARCHIVIO]
+[PERCORSO_ARCHIVIO]
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. TIMELINE DETTAGLIATA
+   ────────────────────
+   Discovery → Denuncia → Contenimento → Recovery
+   Tutti timestamp precisi (HH:MM)
+   Dwell time sempre stimato
+
+2. DINAMICA TECNICA
+   ────────────────
+   Initial access → Lateral movement → Impact
+   Tecniche MITRE ATT&CK
+   IOC specifici (IP, hash, domain)
+   Malware identificato
+
+3. DATA BREACH GDPR
+   ────────────────
+   Sempre verificare se dati personali compromessi
+   Numero record preciso
+   Notifica Garante 72h
+   Comunicazione interessati se alto rischio
+
+4. SISTEMI COMPROMESSI
+   ───────────────────
+   Lista completa sistemi
+   Tipo compromissione ciascuno
+   Criticità (Critical/High/Medium/Low)
+
+5. BACKUP VERIFICATI
+   ─────────────────
+   Sempre indicare se backup disponibili
+   Se disponibili: quanto vecchi
+   Se testati: quando ultimo test
+
+6. RANSOMWARE
+   ──────────
+   Se presente: importo richiesto
+   Modalità contatto attacker
+   Scadenza pagamento
+   Decisione pagamento (autorizzato/non autorizzato)
+
+7. COSTI DETTAGLIATI
+   ─────────────────
+   Forensic, IT recovery, riscatto, BI
+   Legal, notifiche, PR, credit monitoring
+   Totale sempre calcolato
+
+8. ROOT CAUSE
+   ──────────
+   Analisi cause radice obbligatoria
+   Fattori contribuenti
+   Remediation plan con priorità
+
+9. LEZIONI APPRESE
+   ───────────────
+   Cosa ha funzionato
+   Cosa non ha funzionato
+   Impatto portfolio
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: IDENTIFICATIVI
+──────────────────────
+
+Da denuncia:
+- Numero sinistro, date
+- Discovery vs evento stimato
+- Tempo denuncia
+
+STEP 2: CLASSIFICAZIONE
+───────────────────────
+
+Tipo incidente:
+- Ransomware, Data Breach, Phishing, DDoS, ecc.
+- Severity (Critical/High/Medium/Low)
+- Vettore attacco
+
+STEP 3: DINAMICA
+────────────────
+
+Da report forensic:
+- Timeline attacco completa
+- Initial access → Impact
+- Tecniche MITRE ATT&CK
+- Threat actor se identificato
+- IOC (IP, hash, domain)
+
+STEP 4: SISTEMI COMPROMESSI
+────────────────────────────
+
+Da assessment forensic:
+- Lista tutti sistemi
+- Tipo compromissione
+- Criticità business
+- Note specifiche
+
+STEP 5: DATI COMPROMESSI
+────────────────────────
+
+Da valutazione DPO/legal:
+- Data breach confermato?
+- Numero record
+- Tipologie dati
+- Dati sensibili?
+
+STEP 6: BUSINESS INTERRUPTION
+──────────────────────────────
+
+Da IT/Operations:
+- Downtime totale (ore/giorni)
+- Inizio/fine
+- Servizi impattati
+- Perdita fatturato stimata
+
+STEP 7: BACKUP E DANNI
+──────────────────────
+
+Da IT:
+- Dati cifrati? Quanti?
+- Dati esfiltrati?
+- Sistemi danneggiati?
+- Backup disponibili?
+
+STEP 8: RANSOMWARE
+──────────────────
+
+Se applicabile:
+- Richiesta presente
+- Importo
+- Modalità contatto
+- Scadenza
+- Decisione pagamento
+
+STEP 9: COPERTURA
+─────────────────
+
+Da polizza:
+- Garanzie operanti (✓/✗)
+- Massimali
+- Franchigie
+- Valutazione applicabilità
+
+STEP 10: GESTIONE
+─────────────────
+
+Azioni contenimento:
+- Lista completa azioni
+- Timeline esecuzione
+
+Azioni recovery:
+- Tabella con status
+- Responsabili
+
+STEP 11: GDPR
+─────────────
+
+Se data breach:
+- Notifica Garante (data)
+- Comunicazione interessati (sì/no)
+- Numero notificati
+
+STEP 12: SERVIZI PANEL
+──────────────────────
+
+Provider attivati:
+- Forensic, Legal, PR, IT Recovery, Notification
+- Nome ciascuno
+
+STEP 13: ECONOMICO
+──────────────────
+
+Costi stimati:
+- Forensic
+- IT recovery
+- Riscatto (se pagato)
+- BI (fatturato perso)
+- Legal, notifiche, PR, credit monitoring
+
+STEP 14: ROOT CAUSE
+───────────────────
+
+Analisi:
+- Causa principale
+- Fattori contribuenti
+- Remediation plan (tabella con priorità)
+
+STEP 15: RACCOMANDAZIONI
+────────────────────────
+
+Per assicurato:
+- Immediate (30gg)
+- Breve termine (60gg)
+- Medio termine (90gg)
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_sinistro_cyber_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle dinamiche:
+   - Sistemi compromessi (variabile)
+   - Garanzie operanti (6 righe)
+   - Azioni recovery (variabile)
+   - Costi (9 righe)
+   - Pagamenti (variabile)
+   - Remediation plan (variabile)
+4. Timeline cronologica:
+   - Discovery → Contenimento → Recovery
+   - Timestamp precisi
+5. Alert box:
+   - Classe in base severity
+   - Messaggio sintesi situazione
+6. Severity/Status badge:
+   - Colori coerenti
+7. IOC:
+   - IP, hash, domain specifici
+8. Calcoli:
+   - BI: downtime × fatturato/ora
+   - Totale costi
+   - Riserva residua
+9. HTML valido
+
+DELIVERABLE:
+File HTML completo, tecnico, incident response timeline dettagliata, strumento 
+operativo gestione sinistro Cyber Risk.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT - RAMO CYBER COMPLETO!
+═══════════════════════════════════════════════════════════════════════════════

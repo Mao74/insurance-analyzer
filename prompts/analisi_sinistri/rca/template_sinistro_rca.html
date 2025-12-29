@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Sinistro RCA - [NUMERO_SINISTRO]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --accent-red: #dc2626;
+            --accent-orange: #ea580c;
+            --accent-green: #16a34a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* HEADER */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ALERT BOX */
+        .alert-box {
+            padding: 12px 18px;
+            margin: 15px 30px;
+            border-left: 4px solid;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .alert-critical {
+            background: #fef2f2;
+            border-color: var(--accent-red);
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fff7ed;
+            border-color: var(--accent-orange);
+            color: #9a3412;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: var(--accent-blue);
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-color: var(--accent-green);
+            color: #166534;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 15px 0 10px 0;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* STATUS BADGE */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-aperto {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-chiuso {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-liquidazione {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-card {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* CHECKLIST */
+        .checklist {
+            margin: 10px 0;
+        }
+
+        .checklist-item {
+            padding: 6px 0;
+            font-size: 11px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 15px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-strong);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid white;
+        }
+
+        .timeline-date {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* LIST */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .report-container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>ANALISI SINISTRO RCA</h1>
+            <p>Responsabilità Civile Auto - Gestione Broker</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>Numero Sinistro</strong>
+                    [NUMERO_SINISTRO]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Data Sinistro</strong>
+                    [DATA_SINISTRO]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Status</strong>
+                    [STATUS_SINISTRO]
+                </div>
+                <div class="header-meta-item">
+                    <strong>Targa</strong>
+                    [TARGA]
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERT STATUS -->
+        <div class="[ALERT_CLASS]">
+            <strong>[ALERT_TITLE]</strong><br>
+            [ALERT_MESSAGE]
+        </div>
+
+        <!-- SEZIONE 1: DATI SINISTRO -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Sinistro</h2>
+
+            <h3 class="subsection-title">Identificativi</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Numero Sinistro Compagnia</span>
+                    <span class="info-value">[NUMERO_SINISTRO_COMP]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Pratica Broker</span>
+                    <span class="info-value">[NUMERO_PRATICA_BROKER]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero CAI</span>
+                    <span class="info-value">[NUMERO_CAI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Sinistro</span>
+                    <span class="info-value">[DATA_SINISTRO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Denuncia</span>
+                    <span class="info-value">[DATA_DENUNCIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ora Sinistro</span>
+                    <span class="info-value">[ORA_SINISTRO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Status Gestione</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Status Sinistro</span>
+                    <span class="info-value">[STATUS_BADGE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gestione</span>
+                    <span class="info-value">[TIPO_GESTIONE]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Polizza e Veicolo Nostro</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Compagnia</span>
+                    <span class="info-value">[COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Contraente</span>
+                    <span class="info-value">[CONTRAENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Conducente</span>
+                    <span class="info-value">[CONDUCENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Targa</span>
+                    <span class="info-value">[TARGA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Veicolo</span>
+                    <span class="info-value">[VEICOLO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Gestori</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Broker Referente</span>
+                    <span class="info-value">[BROKER_REFERENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Liquidatore Compagnia</span>
+                    <span class="info-value">[LIQUIDATORE_COMPAGNIA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Carrozziere Fiduciario</span>
+                    <span class="info-value">[CARROZZIERE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Perito/CID</span>
+                    <span class="info-value">[PERITO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 2: DESCRIZIONE SINISTRO -->
+        <div class="section">
+            <h2 class="section-title">2. Descrizione Sinistro</h2>
+
+            <h3 class="subsection-title">Dinamica</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[DINAMICA_SINISTRO]</p>
+
+            <h3 class="subsection-title">Luogo e Circostanze</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Luogo</span>
+                    <span class="info-value">[LUOGO_SINISTRO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo Strada</span>
+                    <span class="info-value">[TIPO_STRADA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Condizioni Meteo</span>
+                    <span class="info-value">[CONDIZIONI_METEO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Condizioni Traffico</span>
+                    <span class="info-value">[CONDIZIONI_TRAFFICO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">CAI - Constatazione Amichevole</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">CAI Compilato</span>
+                    <span class="info-value">[CAI_COMPILATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Entrambe le Firme</span>
+                    <span class="info-value">[CAI_FIRME]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Caselle Barrate Nostro Veicolo</span>
+                    <span class="info-value">[CAI_CASELLE_NOSTRO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Caselle Barrate Controparte</span>
+                    <span class="info-value">[CAI_CASELLE_CONTRO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Forze dell'Ordine e Testimoni</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Intervento Forze Ordine</span>
+                    <span class="info-value">[FORZE_ORDINE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Verbale Acquisito</span>
+                    <span class="info-value">[VERBALE_ACQUISITO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Testimoni Identificati</span>
+                    <span class="info-value">[TESTIMONI_IDENTIFICATI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Dichiarazioni Raccolte</span>
+                    <span class="info-value">[DICHIARAZIONI_RACCOLTE]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Documentazione Acquisita</h3>
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_CAI]> <strong>CAI firmato</strong> - [DETTAGLI_CAI]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_FOTO_VEICOLI]> <strong>Foto veicoli</strong> - [DETTAGLI_FOTO_VEICOLI]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_FOTO_LUOGO]> <strong>Foto luogo</strong> - [DETTAGLI_FOTO_LUOGO]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_VERBALE]> <strong>Verbale forze ordine</strong> - [DETTAGLI_VERBALE]
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_PREVENTIVI]> <strong>Preventivi riparazione</strong> - [DETTAGLI_PREVENTIVI]
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 3: DANNI E RESPONSABILITÀ -->
+        <div class="section">
+            <h2 class="section-title">3. Danni e Responsabilità</h2>
+
+            <h3 class="subsection-title">Danni Veicolo Nostro</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40%">Parte Danneggiata</th>
+                        <th style="width:20%">Tipo Danno</th>
+                        <th style="width:40%">Dettaglio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[PARTE_DANNEGGIATA_1]</td>
+                        <td>[TIPO_DANNO_1]</td>
+                        <td>[DETTAGLIO_DANNO_1]</td>
+                    </tr>
+                    <!-- ... altri danni ... -->
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Valutazione Danni Veicolo Nostro</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Preventivo Riparazione</span>
+                    <span class="info-value">[PREVENTIVO_RIPARAZIONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Stima Perito</span>
+                    <span class="info-value">[STIMA_PERITO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Riparazione Economica</span>
+                    <span class="info-value">[RIPARAZIONE_ECONOMICA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Valore Commerciale Pre-Sinistro</span>
+                    <span class="info-value">[VALORE_COMMERCIALE]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Danni Controparte</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Veicolo Controparte</span>
+                    <span class="info-value">[VEICOLO_CONTROPARTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Targa Controparte</span>
+                    <span class="info-value">[TARGA_CONTROPARTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Danni Dichiarati</span>
+                    <span class="info-value">[DANNI_DICHIARATI_CONTRO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Richiesta Risarcimento</span>
+                    <span class="info-value">[RICHIESTA_RISARCIMENTO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Lesioni a Persone</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Lesioni Nostri Occupanti</span>
+                    <span class="info-value">[LESIONI_NOSTRI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Lesioni Controparte</span>
+                    <span class="info-value">[LESIONI_CONTRO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Prognosi</span>
+                    <span class="info-value">[PROGNOSI_LESIONI]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Certificati Medici</span>
+                    <span class="info-value">[CERT_MEDICI]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Analisi Responsabilità</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Responsabilità Principale</span>
+                    <span class="info-value">[RESPONSABILITA_PRINCIPALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Percentuali Colpa Stimate</span>
+                    <span class="info-value">[PERCENTUALI_COLPA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Base Giuridica</span>
+                    <span class="info-value">[BASE_GIURIDICA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Concorso Colpa</span>
+                    <span class="info-value">[CONCORSO_COLPA]</span>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>Valutazione Responsabilità:</strong><br>
+                [VALUTAZIONE_RESPONSABILITA]
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 4: COPERTURA ASSICURATIVA -->
+        <div class="section">
+            <h2 class="section-title">4. Copertura Assicurativa</h2>
+
+            <h3 class="subsection-title">Garanzie RCA</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Massimale Persone</span>
+                    <span class="info-value">[MASSIMALE_PERSONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale Cose</span>
+                    <span class="info-value">[MASSIMALE_COSE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia RCA</span>
+                    <span class="info-value">[FRANCHIGIA_RCA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto RCA</span>
+                    <span class="info-value">[SCOPERTO_RCA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Garanzie Accessorie Applicabili</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Garanzia</th>
+                        <th style="width:20%">Inclusa</th>
+                        <th style="width:20%">Massimale</th>
+                        <th style="width:15%">Franchigia</th>
+                        <th>Applicabilità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td class="col-center">[KASKO_INCLUSA]</td>
+                        <td class="col-curr">[KASKO_MASSIMALE]</td>
+                        <td class="col-center">[KASKO_FRANCHIGIA]</td>
+                        <td>[KASKO_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td class="col-center">[CRIST_INCLUSA]</td>
+                        <td class="col-curr">[CRIST_MASSIMALE]</td>
+                        <td class="col-center">[CRIST_FRANCHIGIA]</td>
+                        <td>[CRIST_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td class="col-center">[TUT_INCLUSA]</td>
+                        <td class="col-curr">[TUT_MASSIMALE]</td>
+                        <td class="col-center">[TUT_FRANCHIGIA]</td>
+                        <td>[TUT_APPLICABILITA]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Infortuni Conducente</strong></td>
+                        <td class="col-center">[INF_INCLUSA]</td>
+                        <td class="col-curr">[INF_MASSIMALE]</td>
+                        <td class="col-center">[INF_FRANCHIGIA]</td>
+                        <td>[INF_APPLICABILITA]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Valutazione Operatività</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Garanzia RCA Operante</span>
+                    <span class="info-value">[RCA_OPERANTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Conducente Garantito</span>
+                    <span class="info-value">[CONDUCENTE_GARANTITO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Validità Territoriale</span>
+                    <span class="info-value">[VALIDITA_TERRITORIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Uso Veicolo Conforme</span>
+                    <span class="info-value">[USO_CONFORME]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Esclusioni Potenziali</h3>
+            <ul>
+                <li>[ESCLUSIONE_POTENZIALE_1]</li>
+                <li>[ESCLUSIONE_POTENZIALE_2]</li>
+                <li>[ESCLUSIONE_POTENZIALE_3]</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Valutazione Complessiva Copertura:</strong><br>
+                [VALUTAZIONE_COPERTURA]
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 5: GESTIONE E AZIONI -->
+        <div class="section">
+            <h2 class="section-title">5. Gestione e Azioni</h2>
+
+            <h3 class="subsection-title">Status Attuale</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Fase Gestionale</span>
+                    <span class="info-value">[FASE_GESTIONALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ultimo Aggiornamento</span>
+                    <span class="info-value">[ULTIMO_AGGIORNAMENTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Perito Incaricato</span>
+                    <span class="info-value">[PERITO_INCARICATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Perizia</span>
+                    <span class="info-value">[DATA_PERIZIA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Gestione CARD</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Procedura CARD Applicabile</span>
+                    <span class="info-value">[CARD_APPLICABILE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Compagnia Controparte</span>
+                    <span class="info-value">[COMPAGNIA_CONTROPARTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Richiesta CARD Inviata</span>
+                    <span class="info-value">[CARD_INVIATA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Risposta CARD</span>
+                    <span class="info-value">[CARD_RISPOSTA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Documentazione Raccolta</h3>
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_DENUNCIA]> Denuncia sinistro
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_CAI_ORIG]> CAI originale
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_POLIZZA]> Copia polizza
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_LIBRETTO]> Libretto circolazione
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_PATENTE]> Patente conducente
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_PREVENTIVO]> Preventivo riparazione
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" [CHECK_DOC_PERIZIA]> Relazione perito
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Documentazione Ancora Necessaria</h3>
+            <ul>
+                <li>[DOC_NECESSARIA_1]</li>
+                <li>[DOC_NECESSARIA_2]</li>
+                <li>[DOC_NECESSARIA_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Prossimi Step</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Scadenza</th>
+                        <th style="width:25%">Azione</th>
+                        <th style="width:25%">Responsabile</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[SCADENZA_AZIONE_1]</td>
+                        <td>[AZIONE_1]</td>
+                        <td>[RESPONSABILE_1]</td>
+                        <td>[NOTE_AZIONE_1]</td>
+                    </tr>
+                    <!-- ... altre azioni ... -->
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- SEZIONE 6: VALUTAZIONE ECONOMICA -->
+        <div class="section">
+            <h2 class="section-title">6. Valutazione Economica</h2>
+
+            <h3 class="subsection-title">Riserva e Pagamenti</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Riserva Iniziale</span>
+                    <span class="info-value">[RISERVA_INIZIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Costituzione Riserva</span>
+                    <span class="info-value">[DATA_RISERVA_INIZIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Riserva Attuale</span>
+                    <span class="info-value">[RISERVA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Ultimo Aggiornamento</span>
+                    <span class="info-value">[DATA_AGG_RISERVA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dettaglio Costi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40%">Voce</th>
+                        <th style="width:30%">Importo Stimato</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Riparazione Veicolo Nostro</strong></td>
+                        <td class="col-curr">[COSTO_RIPARAZIONE_NOSTRO]</td>
+                        <td>[NOTE_RIP_NOSTRO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Risarcimento Controparte</strong></td>
+                        <td class="col-curr">[COSTO_CONTROPARTE]</td>
+                        <td>[NOTE_CONTRO]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Peritali</strong></td>
+                        <td class="col-curr">[COSTO_PERITALI]</td>
+                        <td>[NOTE_PERIT]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spese Legali</strong></td>
+                        <td class="col-curr">[COSTO_LEGALI]</td>
+                        <td>[NOTE_LEGALI]</td>
+                    </tr>
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td><strong>TOTALE STIMATO</strong></td>
+                        <td class="col-curr">[TOTALE_COSTI]</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Pagamenti Effettuati</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Data</th>
+                        <th style="width:30%">Beneficiario</th>
+                        <th style="width:20%">Importo</th>
+                        <th>Causale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[DATA_PAG_1]</td>
+                        <td>[BENEF_PAG_1]</td>
+                        <td class="col-curr">[IMPORTO_PAG_1]</td>
+                        <td>[CAUSALE_PAG_1]</td>
+                    </tr>
+                    <!-- ... altri pagamenti ... -->
+                    <tr style="font-weight:700; background:#f1f5f9;">
+                        <td colspan="2"><strong>TOTALE PAGATO</strong></td>
+                        <td class="col-curr">[TOTALE_PAGATO]</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Sintesi Economica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Riserva Residua</span>
+                    <span class="info-value">[RISERVA_RESIDUA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Stima Chiusura Finale</span>
+                    <span class="info-value">[STIMA_CHIUSURA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Rivalsa vs Controparte</span>
+                    <span class="info-value">[RIVALSA_CONTROPARTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Importo a Carico Assicurato</span>
+                    <span class="info-value">[CARICO_ASSICURATO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 7: NOTE E RACCOMANDAZIONI -->
+        <div class="section">
+            <h2 class="section-title">7. Note e Raccomandazioni</h2>
+
+            <h3 class="subsection-title">Criticità Emerse</h3>
+            <ul>
+                <li>[CRITICITA_1]</li>
+                <li>[CRITICITA_2]</li>
+                <li>[CRITICITA_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Raccomandazioni per l'Assicurato</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[RACCOMANDAZIONI_ASSICURATO]</p>
+
+            <h3 class="subsection-title">Azioni Preventive Future</h3>
+            <ul>
+                <li>[AZIONE_PREVENTIVA_1]</li>
+                <li>[AZIONE_PREVENTIVA_2]</li>
+                <li>[AZIONE_PREVENTIVA_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Lezioni Apprese</h3>
+            <p style="font-size:12px; line-height:1.6; margin:0 0 15px 0; white-space: pre-line;">[LEZIONI_APPRESE]</p>
+
+            <h3 class="subsection-title">Impatto su Portfolio</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Impatto Loss Ratio</span>
+                    <span class="info-value">[IMPATTO_LOSS_RATIO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Impatto Classe Merito</span>
+                    <span class="info-value">[IMPATTO_CLASSE_MERITO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Impatto Rinnovo Polizza</span>
+                    <span class="info-value">[IMPATTO_RINNOVO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Malus Stimato</span>
+                    <span class="info-value">[MALUS_STIMATO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 8: CRONOLOGIA -->
+        <div class="section">
+            <h2 class="section-title">8. Cronologia Eventi</h2>
+
+            <div class="timeline">
+                <!-- Ripetere per ogni evento -->
+                <div class="timeline-item">
+                    <div class="timeline-date">[DATA_EVENTO_CRONOL_1]</div>
+                    <div class="timeline-content">
+                        <strong>[TITOLO_EVENTO_1]</strong><br>
+                        [DESCRIZIONE_EVENTO_1]
+                    </div>
+                </div>
+                <!-- ... altri eventi ... -->
+            </div>
+
+            <h3 class="subsection-title" style="margin-top:25px;">Comunicazioni Compagnia</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Data</th>
+                        <th style="width:20%">Tipo</th>
+                        <th>Oggetto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center">[DATA_COM_1]</td>
+                        <td>[TIPO_COM_1]</td>
+                        <td>[OGGETTO_COM_1]</td>
+                    </tr>
+                    <!-- ... altre comunicazioni ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box" style="margin-top:20px;">
+                <strong>Documentazione Completa Archiviata:</strong><br>
+                Riferimento Pratica: [RIFERIMENTO_ARCHIVIO]<br>
+                Percorso: [PERCORSO_ARCHIVIO]
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

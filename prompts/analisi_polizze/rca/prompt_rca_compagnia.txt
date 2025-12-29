@@ -1,0 +1,651 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: RICHIESTA QUOTAZIONE RCA COMPAGNIA - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare richiesta quotazione per compagnie assicuratrici basata su 
+polizza RCA attuale + requisiti cliente.
+
+DESTINATARIO: Underwriter compagnia assicuratrice
+FORMATO: Scheda tecnica richiesta preventivo (documento lineare 8 sezioni)
+TEMPLATE: template_rca_compagnia_finale.html (838 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DATI TECNICI PURI
+   - Focus su informazioni per underwriting e pricing
+   - Zero narrativa, solo fatti e numeri
+   - Formato professionale sobrio
+
+2. COMPLETEZZA VEICOLO
+   - Tutti dati tecnici (targa, marca, modello, anno, kW, cilindrata, telaio)
+   - Valore commerciale e assicurato
+   - Impianti sicurezza (antifurto, GPS)
+   - Classe merito e storico sinistri
+
+3. COMPARAZIONE CHIARA
+   - Sempre evidenziare Attuale vs Richiesto
+   - Classificare: Miglioramento / Conferma / Riduzione
+   - Facilitare decisione underwriter
+
+4. STORICO SINISTRI COMPLETO
+   - Tutti sinistri ultimi 5 anni
+   - Per garanzia (RCA, furto, kasko, ecc.)
+   - Status (aperto/chiuso)
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA DOCUMENTO (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI CONTRAENTE
+SEZIONE 2: SITUAZIONE ATTUALE
+SEZIONE 3: VEICOLO ASSICURATO
+SEZIONE 4: STORICO SINISTRI
+SEZIONE 5: CONDIZIONI RICHIESTE
+SEZIONE 6: CONFRONTO SINTETICO
+SEZIONE 7: INFORMAZIONI TECNICHE
+SEZIONE 8: ALLEGATI
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[RIFERIMENTO_BROKER]
+Riferimento interno broker (es. "RQ-2024-RCA-0156")
+
+[DATA_RICHIESTA]
+Data compilazione richiesta formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI CONTRAENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANAGRAFICA
+───────────────────────────────────────────────────────────────────────────────
+
+[CONTRAENTE]
+Nome cognome (se persona fisica) o Ragione sociale (se persona giuridica)
+
+[TIPO_CONTRAENTE]
+"Persona Fisica" oppure "Persona Giuridica"
+
+[DATA_NASCITA]
+Se persona fisica: data nascita formato "gg/mm/aaaa"
+Se persona giuridica: data costituzione formato "gg/mm/aaaa"
+
+[CF_PIVA]
+Codice fiscale (se persona fisica) o P.IVA (se persona giuridica)
+
+[INDIRIZZO]
+Indirizzo completo residenza/sede
+
+[ATTIVITA]
+Attività svolta
+Se persona fisica: "Privato", "Dipendente", "Professionista", ecc.
+Se persona giuridica: attività economica (es. "Commercio abbigliamento")
+
+SUBSECTION: USO VEICOLO
+───────────────────────────────────────────────────────────────────────────────
+
+[USO_VEICOLO]
+Destinazione uso:
+- "Uso privato"
+- "Uso promiscuo"
+- "Uso aziendale"
+
+[KM_ANNUI]
+Chilometri percorsi annui stimati (formato "XX.XXX km/anno")
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: SITUAZIONE ATTUALE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: POLIZZA IN ESSERE
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA_ATTUALE]
+Compagnia attuale
+
+[NUMERO_POLIZZA_ATTUALE]
+Numero polizza attuale
+
+[SCADENZA_ATTUALE]
+Data scadenza formato "gg/mm/aaaa"
+
+[PREMIO_ATTUALE]
+Premio lordo annuo attuale (formato "€ XXX,XX")
+
+[ANNI_CONTINUITA]
+Numero anni con stessa compagnia (formato "X anni")
+
+[CLASSE_ATTUALE]
+Classe merito attuale (formato "CU X")
+
+SUBSECTION: MASSIMALI RCA ATTUALI
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_ATT_PERSONE]
+Massimale danni persone (formato "€ 7.500.000")
+
+[MASS_ATT_COSE]
+Massimale danni cose (formato "€ 1.500.000")
+
+[FRANCH_ATT_RCA]
+Franchigia RCA (formato "€ XXX" o "Nessuna")
+
+[SCOP_ATT_RCA]
+Scoperto RCA (formato "10%" o "-")
+
+SUBSECTION: GARANZIE ACCESSORIE ATTUALI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 7 righe (una per garanzia)
+
+Per CIASCUNA garanzia accessoria:
+
+[NOME_GAR_ATT_INCL]
+"Sì" oppure "No"
+
+[NOME_GAR_ATT_MASS]
+Massimale (formato "€ XX.XXX")
+Se non inclusa: "-"
+
+[NOME_GAR_ATT_FRANCH]
+Franchigia (formato "€ XXX" o "10%")
+Se non inclusa: "-"
+
+[NOME_GAR_ATT_NOTE]
+Note particolari (es. "Kasko Parziale", "Solo parabrezza")
+Se nessuna nota: "-"
+
+GARANZIE (ordine fisso):
+1. Furto e Incendio
+2. Kasko / Collisione
+3. Cristalli
+4. Eventi Naturali
+5. Atti Vandalici
+6. Tutela Legale
+7. Assistenza Stradale
+
+SUBSECTION: CONDIZIONI ATTUALI
+───────────────────────────────────────────────────────────────────────────────
+
+[CONDUCENTI_ATT]
+Conducenti garantiti attuale
+Esempi: "Guida libera", "Guida esperta", "Guida esclusiva contraente"
+
+[TERRITORIO_ATT]
+Validità territoriale attuale
+Esempio: "Italia + UE"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: VEICOLO ASSICURATO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DATI TECNICI
+───────────────────────────────────────────────────────────────────────────────
+
+[TARGA]
+Targa veicolo (formato "AB123CD")
+
+[MARCA]
+Marca veicolo (es. "Fiat", "Volkswagen")
+
+[MODELLO]
+Modello veicolo (es. "Panda 1.2", "Golf 1.5 TSI")
+
+[ANNO]
+Anno immatricolazione (formato "2020")
+
+[ALLESTIMENTO]
+Allestimento/Versione (es. "Lounge", "Highline", "Business")
+
+[POTENZA_KW]
+Potenza in kW (formato "55")
+
+[POTENZA_CV]
+Potenza in CV (formato "75")
+Conversione: CV = kW × 1.36
+
+[CILINDRATA]
+Cilindrata motore (formato "1.242" per 1242 cc)
+
+[ALIMENTAZIONE]
+Tipo alimentazione: Benzina / Diesel / GPL / Metano / Ibrido / Elettrico
+
+[TELAIO]
+Numero telaio (VIN - 17 caratteri alfanumerici)
+
+SUBSECTION: VALORE E SICUREZZA
+───────────────────────────────────────────────────────────────────────────────
+
+[VALORE_COMMERCIALE]
+Valore commerciale corrente (formato "€ XX.XXX")
+Da quotazione Quattroruote o Eurotax
+
+[VALORE_ASSICURATO]
+Valore da assicurare richiesto (formato "€ XX.XXX")
+Per furto/kasko
+
+[ANTIFURTO]
+Tipo antifurto installato
+Esempi: "Antifurto elettronico omologato", "Nessuno", "Allarme volumetrico"
+
+[GPS]
+Sistema localizzazione GPS
+Esempi: "GPS satellitare certificato", "Nessuno", "App smartphone"
+
+SUBSECTION: ATTESTATO DI RISCHIO
+───────────────────────────────────────────────────────────────────────────────
+
+[CLASSE_MERITO]
+Classe bonus/malus (formato "CU X")
+CU = Classe Universale (da 1 a 18)
+
+[NUMERO_SINISTRI_5Y]
+Numero sinistri con colpa ultimi 5 anni (formato "X")
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: STORICO SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANDAMENTO ULTIMI 5 ANNI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 righe (una per anno)
+
+Per CIASCUN anno:
+
+[ANNO_N]
+Anno (formato "2020")
+
+[PREMIO_N]
+Premio lordo anno (formato "€ XXX,XX")
+
+[SIN_PAG_N]
+Sinistri pagati anno (formato "€ XXX,XX")
+
+[SIN_RIS_N]
+Sinistri riservati anno (formato "€ XXX,XX")
+
+[LOSS_N]
+Loss ratio anno (formato "XX%" o "XXX%")
+Calcolo: (Pagati + Riservati) / Premio × 100
+
+SUBSECTION: DETTAGLIO SINISTRI
+───────────────────────────────────────────────────────────────────────────────
+
+TUTTI i sinistri ultimi 5 anni (aperti + chiusi)
+
+Generare 1 riga per OGNI sinistro:
+
+[DATA_SIN_N]
+Data evento formato "gg/mm/aaaa"
+
+[GAR_SIN_N]
+Garanzia: "RCA", "Furto", "Kasko", "Cristalli", ecc.
+
+[DESC_SIN_N]
+Descrizione sinistro (max 60 caratteri)
+Esempi: "Tamponamento autostrada", "Furto totale veicolo", "Parabrezza scheggiato"
+
+[RIS_SIN_N]
+Importo riservato (formato "€ XXX,XX")
+
+[PAG_SIN_N]
+Importo pagato (formato "€ XXX,XX")
+
+[STATUS_SIN_N]
+Status: "Aperto", "Chiuso", "In liquidazione"
+
+SUBSECTION: NOTE SINISTRALITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTE_SINISTRALITA]
+Commento sintetico (3-5 righe) su:
+- Sinistri significativi
+- Cause ricorrenti
+- Azioni correttive
+- Trend
+
+Esempio: "Unico sinistro RCA in 5 anni per tamponamento a bassa velocità. 
+Conducente ha frequentato corso guida sicura. Nessun sinistro su garanzie 
+accessorie. Loss ratio medio 22%."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: CONDIZIONI RICHIESTE
+═══════════════════════════════════════════════════════════════════════════════
+
+STRATEGIA DEFAULT: RICHIESTO = ATTUALE + MODIFICHE
+
+Se non diversamente specificato dal cliente:
+→ Copiare tutti valori da SEZIONE 2 (Situazione Attuale)
+→ Modificare SOLO elementi esplicitamente richiesti
+
+SUBSECTION: MASSIMALI RCA RICHIESTI
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da massimali attuali
+
+[MASS_RICH_PERSONE]    = [MASS_ATT_PERSONE] se non specificato
+[MASS_RICH_COSE]       = [MASS_ATT_COSE] se non specificato
+[FRANCH_RICH_RCA]      = [FRANCH_ATT_RCA] se non specificato
+[SCOP_RICH_RCA]        = [SCOP_ATT_RCA] se non specificato
+
+MODIFICARE SOLO SE cliente richiede cambiamenti
+
+SUBSECTION: GARANZIE ACCESSORIE RICHIESTE
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da garanzie accessorie attuali
+
+Per ciascuna garanzia:
+[NOME_GAR_RICH_INCL]   = [NOME_GAR_ATT_INCL] se non specificato
+[NOME_GAR_RICH_MASS]   = [NOME_GAR_ATT_MASS] se non specificato
+[NOME_GAR_RICH_FRANCH] = [NOME_GAR_ATT_FRANCH] se non specificato
+[NOME_GAR_RICH_NOTE]   = [NOME_GAR_ATT_NOTE] se non specificato
+
+MODIFICARE SOLO SE aggiunte/eliminazioni/modifiche richieste
+
+SUBSECTION: CONDIZIONI RICHIESTE
+───────────────────────────────────────────────────────────────────────────────
+
+DEFAULT: Copiare da condizioni attuali
+
+[CONDUCENTI_RICH] = [CONDUCENTI_ATT] se non specificato
+[TERRITORIO_RICH] = [TERRITORIO_ATT] se non specificato
+
+SUBSECTION: PREMIO OBIETTIVO
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_ATTUALE_RIF]
+Ripetere premio attuale (da SEZIONE 2)
+
+[BUDGET_MASSIMO]
+Budget massimo accettabile
+DEFAULT: Premio attuale × 1.10 (se non specificato)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: CONFRONTO SINTETICO ATTUALE vs RICHIESTO
+═══════════════════════════════════════════════════════════════════════════════
+
+STRATEGIA DEFAULT: Richiesto = Attuale per ogni elemento
+Classificazione: "col-same" (giallo) se non modifiche
+
+Tabella con 8 elementi chiave
+
+RIGHE FISSE:
+
+1. Massimale Persone
+   [CONF_PERS_ATT]      Valore attuale
+   [CONF_PERS_RICH]     DEFAULT = [CONF_PERS_ATT]
+   [CLASSE_CONF_PERS]   DEFAULT "col-same"
+
+2. Massimale Cose
+   [CONF_COSE_ATT]
+   [CONF_COSE_RICH]     DEFAULT = [CONF_COSE_ATT]
+   [CLASSE_CONF_COSE]   DEFAULT "col-same"
+
+3. Furto e Incendio
+   [CONF_FURTO_ATT]
+   [CONF_FURTO_RICH]    DEFAULT = [CONF_FURTO_ATT]
+   [CLASSE_CONF_FURTO]  DEFAULT "col-same"
+
+4. Kasko / Collisione
+   [CONF_KASKO_ATT]
+   [CONF_KASKO_RICH]    DEFAULT = [CONF_KASKO_ATT]
+   [CLASSE_CONF_KASKO]  DEFAULT "col-same"
+
+5. Cristalli
+   [CONF_CRIST_ATT]
+   [CONF_CRIST_RICH]    DEFAULT = [CONF_CRIST_ATT]
+   [CLASSE_CONF_CRIST]  DEFAULT "col-same"
+
+6. Eventi Naturali
+   [CONF_EVENTI_ATT]
+   [CONF_EVENTI_RICH]   DEFAULT = [CONF_EVENTI_ATT]
+   [CLASSE_CONF_EVENTI] DEFAULT "col-same"
+
+7. Tutela Legale
+   [CONF_TUTELA_ATT]
+   [CONF_TUTELA_RICH]   DEFAULT = [CONF_TUTELA_ATT]
+   [CLASSE_CONF_TUTELA] DEFAULT "col-same"
+
+8. Conducenti
+   [CONF_COND_ATT]
+   [CONF_COND_RICH]     DEFAULT = [CONF_COND_ATT]
+   [CLASSE_CONF_COND]   DEFAULT "col-same"
+
+LOGICA COMPILAZIONE:
+
+Per ogni riga:
+1. Estrarre valore attuale da SEZIONE 2
+2. DEFAULT: Copiare valore attuale → richiesto
+3. Verificare se brief cliente specifica modifica
+4. Se SÌ: 
+   - Inserire nuovo valore
+   - Classificare: "col-increase" o "col-decrease"
+5. Se NO: 
+   - Confermare valore attuale
+   - Classificare: "col-same"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: INFORMAZIONI TECNICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: UTILIZZO VEICOLO
+───────────────────────────────────────────────────────────────────────────────
+
+[KM_ANNUI_DET]
+KM percorsi annui (ripetere da [KM_ANNUI])
+
+[RIMESSA]
+Dove viene parcheggiato veicolo
+Esempi: "Garage privato chiuso", "Box condominiale", "Parcheggio scoperto", 
+"Strada pubblica"
+
+SUBSECTION: CONDUCENTI ABITUALI
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco conducenti (3 max)
+
+[CONDUCENTE_1]
+Formato: "Nome Cognome, nato il gg/mm/aaaa, patente dal gg/mm/aaaa"
+
+[CONDUCENTE_2]
+[CONDUCENTE_3]
+
+Se guida esclusiva: solo 1 conducente
+Se guida libera: "Guida libera - conducenti variabili"
+
+SUBSECTION: IMPIANTI SICUREZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 elementi sicurezza
+
+[SICUREZZA_1]
+[SICUREZZA_2]
+[SICUREZZA_3]
+
+Esempi:
+- "Antifurto elettronico satellitare certificato Thatcham"
+- "Immobilizer di serie"
+- "Sistema ABS + ESP"
+- "Airbag conducente + passeggero + laterali"
+
+SUBSECTION: NOTE PARTICOLARI
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTE_PARTICOLARI]
+Informazioni addizionali rilevanti (3-5 righe)
+
+Esempio: "Veicolo utilizzato esclusivamente per tragitto casa-lavoro 20 km/giorno. 
+Parcheggio sempre in garage chiuso con videosorveglianza. Conducente esperienza 
+15 anni senza sinistri."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: ALLEGATI
+═══════════════════════════════════════════════════════════════════════════════
+
+Lista documenti (4 hardcoded + opzionali)
+
+[ALTRO_ALLEGATO_1]
+[ALTRO_ALLEGATO_2]
+
+Esempi:
+- "✓ Foto veicolo (4 lati)"
+- "✓ Certificato antifurto"
+
+[EMAIL_CONTATTO]
+Email broker
+
+[TEL_CONTATTO]
+Telefono broker
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA DATI VEICOLO
+   ────────────────────────
+   Tutti campi tecnici obbligatori
+   Targa, marca, modello, anno, kW, CV, cilindrata, telaio
+   Conversione kW → CV: CV = kW × 1.36
+   Valore commerciale + valore assicurato
+
+2. CLASSE MERITO ESSENZIALE
+   ────────────────────────
+   Sempre includere classe CU
+   Numero sinistri 5 anni
+   Dato critico per pricing
+
+3. COMPLETEZZA SINISTRI
+   ────────────────────
+   TUTTI i sinistri ultimi 5 anni
+   Per ogni garanzia (RCA + accessorie)
+   Aperti E chiusi
+
+4. DEFAULT RICHIESTO = ATTUALE
+   ───────────────────────────
+   SEZIONE 5: Copia TUTTI valori da SEZIONE 2
+   Modificare SOLO elementi con richieste specifiche
+   SEZIONE 6: Default tutto "col-same" (giallo)
+
+5. CLASSIFICAZIONE CORRETTA
+   ────────────────────────
+   Verde (col-increase): miglioramento per assicurato
+   Giallo (col-same): conferma condizioni
+   Rosso (col-decrease): riduzione
+
+6. FORMATO VALUTE
+   ──────────────
+   Sempre "€ XXX,XX" o "€ XX.XXX,XX"
+   Punto migliaia, virgola decimali
+
+7. IMPIANTI SICUREZZA
+   ──────────────────
+   Antifurto, GPS, immobilizer
+   Dettagliare marca/modello se certificati
+   Influenzano pricing furto
+
+8. DATI OGGETTIVI
+   ──────────────
+   Solo da documenti
+   NO interpretazioni
+   Se manca: "Non disponibile"
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI CONTRAENTE
+───────────────────────
+Da documenti identità o visura:
+- Nome/ragione sociale, tipo, CF/P.IVA
+- Indirizzo, attività
+
+STEP 2: DATI VEICOLO
+────────────────────
+Da libretto circolazione:
+- Targa, marca, modello, anno
+- kW, CV, cilindrata, telaio
+- Alimentazione
+
+Da mercato:
+- Valore commerciale (Quattroruote/Eurotax)
+- Valore assicurato richiesto
+
+STEP 3: POLIZZA ATTUALE
+────────────────────────
+Da polizza in essere:
+- Compagnia, numero, scadenza, premio
+- Massimali RCA
+- Garanzie accessorie (tutte)
+- Franchigie e scoperti
+
+STEP 4: ATTESTATO RISCHIO
+──────────────────────────
+Da attestato:
+- Classe merito CU
+- Sinistri con colpa 5 anni
+
+STEP 5: STORICO SINISTRI
+─────────────────────────
+Da borderò:
+- Premi ultimi 5 anni
+- TUTTI sinistri (RCA + accessorie)
+- Calcolare loss ratio
+
+STEP 6: RICHIESTE (Strategia efficiente)
+─────────────────────────────────────────
+A. DEFAULT: Copiare TUTTI valori da polizza attuale
+B. Cercare nel brief modifiche richieste
+C. Applicare SOLO modifiche trovate
+D. Resto rimane = attuale (giallo)
+
+STEP 7: CONFRONTO
+─────────────────
+Per ogni elemento:
+- Estrarre valore attuale
+- Estrarre valore richiesto (default = attuale)
+- Classificare (increase/same/decrease)
+- Assegnare classe CSS
+
+STEP 8: INFO TECNICHE
+─────────────────────
+- KM annui, rimessa
+- Conducenti abituali
+- Impianti sicurezza installati
+
+STEP 9: VERIFICA
+────────────────
+- Conversione kW → CV corretta
+- Classe merito CU formato corretto
+- Tutti sinistri inclusi
+- Tutti placeholder sostituiti
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_rca_compagnia_finale.html
+2. Sostituire TUTTI i placeholder
+3. Per sezioni con numero variabile (sinistri):
+   - Generare HTML dinamico
+   - Inserire nel punto corretto
+4. Verificare:
+   - Tutti placeholder sostituiti
+   - Classificazioni corrette
+   - HTML valido
+   - Dati veicolo completi
+   - Classe merito presente
+
+DELIVERABLE:
+File HTML completo, professionale, pronto per invio a compagnia.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

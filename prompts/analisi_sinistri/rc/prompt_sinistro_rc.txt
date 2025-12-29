@@ -1,0 +1,838 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: ANALISI SINISTRO RC - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML di analisi e gestione sinistro RC 
+(Responsabilità Civile) per uso interno broker/agente/risk manager.
+
+DESTINATARIO: Broker, agente, risk manager
+TEMPLATE: template_sinistro_rc_finale.html (978 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da pratica
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA GESTIONALE
+   - Tutti dati sinistro e polizza
+   - Dinamica evento dettagliata
+   - Analisi responsabilità
+   - Valutazione copertura assicurativa
+   - Timeline completa
+
+2. FOCUS OPERATIVO
+   - Azioni da compiere
+   - Documentazione necessaria
+   - Prossimi step con scadenze
+   - Checklist avanzamento
+
+3. ANALISI PROFESSIONALE
+   - Valutazione responsabilità percentuale
+   - Trigger polizza (loss occurrence/claims made)
+   - Esclusioni potenziali
+   - Franchigie/scoperti applicabili
+
+4. VALORE AGGIUNTO
+   - Lezioni apprese
+   - Raccomandazioni cliente
+   - Azioni preventive future
+   - Impatto portfolio
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI SINISTRO
+SEZIONE 2: DESCRIZIONE EVENTO
+SEZIONE 3: DANNI E RESPONSABILITÀ
+SEZIONE 4: COPERTURA ASSICURATIVA
+SEZIONE 5: GESTIONE E AZIONI
+SEZIONE 6: VALUTAZIONE ECONOMICA
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+SEZIONE 8: CRONOLOGIA
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER + ALERT BOX
+═══════════════════════════════════════════════════════════════════════════════
+
+[NUMERO_SINISTRO]
+Numero sinistro (formato "RC-2024-0156")
+
+[DATA_EVENTO]
+Data evento formato "gg/mm/aaaa"
+
+[STATUS_SINISTRO]
+Status: "Aperto", "In liquidazione", "Chiuso", "In recupero"
+
+ALERT BOX (colorato in base a priorità)
+─────────────────────────────────────
+
+[ALERT_CLASS]
+Classe CSS alert box:
+- "alert-critical" → Sinistro critico (rosso)
+- "alert-warning" → Attenzione richiesta (arancione)
+- "alert-info" → Informativo (blu)
+- "alert-success" → Chiuso positivamente (verde)
+
+Logica selezione:
+- alert-critical: Riserva > € 500.000, esclusioni applicabili, rivalsa
+- alert-warning: Riserva € 100.000-500.000, documentazione incompleta
+- alert-info: Gestione standard in corso
+- alert-success: Chiuso, recupero completato
+
+[ALERT_TITLE]
+Titolo alert (es. "ATTENZIONE: Sinistro di rilevanza significativa")
+
+[ALERT_MESSAGE]
+Messaggio alert (2-3 righe)
+Esempio: "Riserva attuale € 450.000. Possibile applicazione esclusione dolo. 
+Richiesta urgente parere legale."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI SINISTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: IDENTIFICATIVI
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_SINISTRO_COMP]
+Numero sinistro assegnato da compagnia
+
+[NUMERO_PRATICA_BROKER]
+Numero pratica interno broker (formato "BR-RC-2024-0156")
+
+[DATA_EVENTO]
+Data evento formato "gg/mm/aaaa"
+
+[DATA_DENUNCIA]
+Data denuncia a compagnia formato "gg/mm/aaaa"
+
+[ORA_EVENTO]
+Ora evento formato "HH:MM"
+
+[STATUS_BADGE]
+Badge HTML status:
+<span class="status-badge status-aperto">Aperto</span>
+<span class="status-badge status-liquidazione">In Liquidazione</span>
+<span class="status-badge status-chiuso">Chiuso</span>
+<span class="status-badge status-recupero">In Recupero</span>
+
+SUBSECTION: POLIZZA COINVOLTA
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA]
+Compagnia assicuratrice
+
+[NUMERO_POLIZZA]
+Numero polizza RC
+
+[CONTRAENTE]
+Contraente polizza
+
+[ASSICURATO]
+Assicurato (se diverso da contraente)
+
+[GARANZIA_OPERANTE]
+Garanzia RC specifica operante
+Esempi:
+- "RC Professionale"
+- "RC Prodotti"
+- "RC Generale"
+- "RC Amministratori"
+
+[MASSIMALE_DISPONIBILE]
+Massimale disponibile formato "€ X.XXX.XXX"
+
+SUBSECTION: GESTORI
+───────────────────────────────────────────────────────────────────────────────
+
+[BROKER_REFERENTE]
+Nome broker che gestisce sinistro
+
+[LIQUIDATORE_COMPAGNIA]
+Nome liquidatore compagnia
+
+[PERITO_NOMINATO]
+Nome perito (se nominato)
+Se non nominato: "Non ancora nominato"
+
+[LEGALE]
+Nome legale (se coinvolto)
+Se non coinvolto: "-"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: DESCRIZIONE EVENTO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DINAMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[DINAMICA_EVENTO]
+Descrizione dettagliata dinamica (10-20 righe)
+
+Includere:
+- Sequenza eventi cronologica
+- Azioni/omissioni rilevanti
+- Soggetti coinvolti
+- Circostanze aggravanti/attenuanti
+
+Esempio RC Professionale:
+"Il giorno 15/03/2024 il cliente XYZ S.p.A. ha ricevuto diffida legale da 
+ABC S.r.l. per presunto errore progettuale. L'assicurato aveva progettato 
+impianto elettrico edificio commerciale inaugurato il 10/01/2024. In data 
+05/03/2024 si è verificato cortocircuito con conseguente incendio locale 
+tecnico. ABC S.r.l. sostiene che errore dimensionamento cavi elettrici ha 
+causato sovraccarico. Danni stimati: € 280.000 (ripristino impianto + danno 
+indiretto fermo attività). Assicurato contesta addebito, evidenziando che 
+progetto conforme norme CEI e validato da direzione lavori. In corso 
+accertamento tecnico."
+
+SUBSECTION: LUOGO E CIRCOSTANZE
+───────────────────────────────────────────────────────────────────────────────
+
+[LUOGO_EVENTO]
+Luogo evento (indirizzo completo)
+
+[CIRCOSTANZE]
+Circostanze rilevanti (3-5 righe)
+Esempio: "Evento verificatosi durante normale orario lavorativo. Presenti 
+dipendenti danneggiato. Nessun preallarme. Condizioni meteo normali."
+
+SUBSECTION: TESTIMONI E AUTORITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella dinamica - generare 1 riga per OGNI testimone/autorità
+
+[TESTIMONE_NOME_N]
+Nome cognome testimone o "VV.FF." / "Polizia Municipale"
+
+[TESTIMONE_RUOLO_N]
+Ruolo: "Testimone oculare", "Vigili del Fuoco", "Carabinieri", "Perito parte"
+
+[TESTIMONE_CONTATTO_N]
+Email/telefono
+
+[TESTIMONE_NOTE_N]
+Note (es. "Verbale acquisito", "Deposizione scritta disponibile")
+
+SUBSECTION: DOCUMENTAZIONE ACQUISITA
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUN tipo documento:
+
+[CHECK_FOTO]
+"checked" se acquisito, "" se non acquisito
+
+[DETTAGLI_FOTO]
+Descrizione foto (es. "45 foto luogo danno da 4 angolazioni")
+
+Ripetere per:
+- CHECK_VIDEO / DETTAGLI_VIDEO
+- CHECK_VERBALE / DETTAGLI_VERBALE
+- CHECK_PERIZIA / DETTAGLI_PERIZIA
+- CHECK_FATTURE / DETTAGLI_FATTURE
+- CHECK_CORRISP / DETTAGLI_CORRISP
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: DANNI E RESPONSABILITÀ
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: TIPOLOGIA DANNI
+───────────────────────────────────────────────────────────────────────────────
+
+[CATEGORIA_DANNO]
+Categoria principale:
+- "Danni a Persone"
+- "Danni a Cose"
+- "Danni Patrimoniali Puri"
+- "Danno Biologico"
+- "Lucro Cessante"
+
+[SOTTOCATEGORIA_DANNO]
+Sottocategoria specifica
+Esempi:
+- "Lesioni personali gravi"
+- "Danneggiamento immobile"
+- "Perdita economica da interruzione attività"
+
+SUBSECTION: DETTAGLIO DANNI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella dinamica - 1 riga per OGNI voce danno
+
+[VOCE_DANNO_N]
+Nome voce (es. "Ripristino impianto elettrico", "Danno emergente")
+
+[DESC_DANNO_N]
+Descrizione voce (es. "Sostituzione 150m cavi + quadri elettrici")
+
+[IMPORTO_DANNO_N]
+Importo stimato formato "€ XX.XXX,XX"
+
+[TOTALE_DANNI_STIMATO]
+Somma tutte voci formato "€ XXX.XXX,XX"
+
+SUBSECTION: ANALISI RESPONSABILITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[RESPONSABILITA_PRINCIPALE]
+Chi è responsabile:
+- "Assicurato 100%"
+- "Terzo identificato 100%"
+- "Concorsuale assicurato/terzo"
+- "Da accertare"
+
+[PERCENTUALE_RESPONSABILITA]
+Percentuale stimata responsabilità assicurato
+Formato: "100%", "60%", "30%", "0%"
+
+[TIPO_RESPONSABILITA]
+Tipo giuridico:
+- "Contrattuale (ex art. 1218 c.c.)"
+- "Extracontrattuale (ex art. 2043 c.c.)"
+- "Professionale (ex art. 2236 c.c.)"
+- "Da prodotto difettoso (D.P.R. 224/88)"
+
+[CONCORSO_COLPA]
+Presenza concorso:
+"Sì - Concorso con [soggetto]" oppure "No"
+
+[VALUTAZIONE_RESPONSABILITA]
+Valutazione articolata responsabilità (5-10 righe)
+
+Esempio:
+"Responsabilità contrattuale dell'assicurato per inadempimento obblighi 
+prestazione professionale. Errore progettuale dimostrato da CTU. Tuttavia 
+presente concorso colpa committente che ha modificato progetto senza 
+approvazione progettista. Stima ripartizione: 70% assicurato, 30% committente. 
+Assenza dolo o colpa grave (art. 2236 c.c. applicabile). Polizza operante."
+
+SUBSECTION: TERZI COINVOLTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI terzo danneggiato/corresponsabile
+
+[TERZO_NOME_N]
+Nome/ragione sociale terzo
+
+[TERZO_RUOLO_N]
+Ruolo: "Danneggiato", "Corresponsabile", "Testimone interessato"
+
+[TERZO_RICHIESTA_N]
+Richiesta danni formato "€ XX.XXX" oppure "Non quantificata"
+
+[TERZO_NOTE_N]
+Note (es. "Diffida ricevuta 10/04/2024", "Trattativa in corso")
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: COPERTURA ASSICURATIVA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: GARANZIE APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI garanzia potenzialmente applicabile
+
+[GARANZIA_N]
+Nome garanzia (es. "RC Professionale", "RC Prodotti")
+
+[MASSIMALE_N]
+Massimale garanzia formato "€ X.XXX.XXX"
+
+[FRANCHIGIA_N]
+Franchigia formato "€ XX.XXX" o "10%" o "Nessuna"
+
+[APPLICABILITA_N]
+Applicabilità: "Operante", "Non operante", "Da verificare"
+
+SUBSECTION: VALUTAZIONE OPERATIVITÀ POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+[POLIZZA_OPERANTE]
+"Sì" oppure "No" oppure "In verifica"
+
+[TIPO_TRIGGER]
+Tipo trigger polizza:
+- "Loss Occurrence (fatto dannoso)"
+- "Claims Made (richiesta danni)"
+- "Claims Made con retroattività"
+
+[DATA_FATTO_DANNOSO]
+Data fatto dannoso formato "gg/mm/aaaa"
+
+[RETROATTIVITA]
+Data retroattività polizza formato "gg/mm/aaaa"
+Se non presente: "Nessuna retroattività"
+
+SUBSECTION: ESCLUSIONI POTENZIALI
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 esclusioni potenzialmente applicabili
+
+[ESCLUSIONE_POTENZIALE_N]
+Testo esclusione + valutazione applicabilità
+
+Esempio:
+"Art. 5.2 CG - Dolo assicurato: Non applicabile. Assenza elementi costitutivi 
+dolo. Errore derivante da negligenza, non da volontà."
+
+[VALUTAZIONE_COPERTURA]
+Valutazione complessiva copertura (5-8 righe)
+
+Esempio:
+"Polizza operante. Fatto dannoso 05/03/2024 ricade in vigenza polizza 
+(01/01/2024-31/12/2024). Trigger loss occurrence. Garanzia RC Professionale 
+applicabile. Massimale € 2.000.000 sufficiente. Nessuna esclusione applicabile. 
+Franchigia € 5.000. Cliente informato operatività polizza. Autorizzazione 
+gestione sinistro ricevuta da compagnia."
+
+SUBSECTION: FRANCHIGIE E SCOPERTI
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCHIGIA_APPLICABILE]
+Franchigia formato "€ X.XXX" o "Nessuna"
+
+[SCOPERTO_APPLICABILE]
+Scoperto formato "10%" o "Nessuno"
+
+[IMPORTO_CARICO_ASSICURATO]
+Importo a carico assicurato (franchigia + scoperto)
+Formato "€ XX.XXX"
+
+[MASSIMALE_RESIDUO]
+Massimale residuo dopo sinistro
+Formato "€ X.XXX.XXX"
+Calcolo: Massimale originale - Riserva sinistro
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: GESTIONE E AZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: STATUS ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[FASE_GESTIONALE]
+Fase attuale:
+- "Denuncia e costituzione riserva"
+- "Istruttoria e raccolta documentazione"
+- "Perizia in corso"
+- "Trattativa liquidazione"
+- "Contenzioso legale"
+- "Liquidazione autorizzata"
+- "Chiusura"
+
+[ULTIMO_AGGIORNAMENTO]
+Data ultimo aggiornamento formato "gg/mm/aaaa"
+
+[PERITO_INCARICATO]
+Nome perito incaricato da compagnia
+
+[DATA_PERIZIA]
+Data perizia formato "gg/mm/aaaa"
+Se non ancora effettuata: "Da programmare"
+
+SUBSECTION: DOCUMENTAZIONE RACCOLTA
+───────────────────────────────────────────────────────────────────────────────
+
+Per CIASCUN documento:
+
+[CHECK_DOC_DENUNCIA]
+"checked" se raccolto, "" se non raccolto
+
+Ripetere per tutti documenti:
+- CHECK_DOC_DENUNCIA
+- CHECK_DOC_POLIZZA
+- CHECK_DOC_RICHIESTA
+- CHECK_DOC_PREVENTIVI
+- CHECK_DOC_FOTO_DANNI
+- CHECK_DOC_RELAZIONE_PERITO
+- CHECK_DOC_CORRISP_COMP
+
+SUBSECTION: DOCUMENTAZIONE ANCORA NECESSARIA
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco documenti mancanti (3 max)
+
+[DOC_NECESSARIA_N]
+Esempio: "CTU su errore progettuale - Scadenza 30/06/2024"
+
+SUBSECTION: CONTATTI CON PARTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI contatto rilevante
+
+[DATA_CONTATTO_N]
+Data contatto formato "gg/mm/aaaa"
+
+[SOGGETTO_CONTATTO_N]
+Con chi: "Liquidatore compagnia", "Danneggiato", "Legale assicurato"
+
+[ESITO_CONTATTO_N]
+Oggetto ed esito (2-3 righe)
+Esempio: "Call con liquidatore. Concordato invio documentazione integrativa 
+entro 15/05. Confermata operatività polizza."
+
+SUBSECTION: PROSSIMI STEP
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI azione da compiere
+
+[SCADENZA_AZIONE_N]
+Scadenza formato "gg/mm/aaaa"
+
+[AZIONE_N]
+Descrizione azione
+Esempio: "Richiedere CTU su dinamica incendio"
+
+[RESPONSABILE_N]
+Chi: "Broker", "Assicurato", "Compagnia", "Perito"
+
+[NOTE_AZIONE_N]
+Note aggiuntive
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: VALUTAZIONE ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RISERVA E PAGAMENTI
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_INIZIALE]
+Riserva iniziale costituita formato "€ XXX.XXX"
+
+[DATA_RISERVA_INIZIALE]
+Data costituzione formato "gg/mm/aaaa"
+
+[RISERVA_ATTUALE]
+Riserva attuale formato "€ XXX.XXX"
+
+[DATA_AGG_RISERVA]
+Data ultimo aggiornamento riserva formato "gg/mm/aaaa"
+
+SUBSECTION: STORICO AGGIORNAMENTI RISERVA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI aggiornamento riserva
+
+[DATA_AGG_RIS_N]
+Data aggiornamento formato "gg/mm/aaaa"
+
+[RIS_PREC_N]
+Riserva precedente formato "€ XXX.XXX"
+
+[RIS_NUOVA_N]
+Nuova riserva formato "€ XXX.XXX"
+
+[MOTIV_AGG_N]
+Motivazione (es. "Incremento per CTU costi maggiori", "Riduzione per transazione")
+
+SUBSECTION: PAGAMENTI EFFETTUATI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI pagamento
+
+[DATA_PAG_N]
+Data pagamento formato "gg/mm/aaaa"
+
+[BENEF_PAG_N]
+Beneficiario pagamento
+
+[IMPORTO_PAG_N]
+Importo formato "€ XX.XXX,XX"
+
+[CAUSALE_PAG_N]
+Causale (es. "Acconto liquidazione danni", "Onorario perito")
+
+[TOTALE_PAGATO]
+Somma tutti pagamenti formato "€ XXX.XXX,XX"
+
+SUBSECTION: SINTESI ECONOMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_RESIDUA]
+Riserva residua formato "€ XXX.XXX"
+Calcolo: Riserva attuale - Totale pagato
+
+[STIMA_CHIUSURA]
+Stima importo chiusura finale formato "€ XXX.XXX"
+
+[RIVALSA_POTENZIALE]
+Rivalsa potenziale vs terzi formato "€ XX.XXX"
+Se nessuna: "Nessuna rivalsa"
+
+[RECUPERO_STIMATO]
+Importo recupero stimato formato "€ XX.XXX"
+
+[NOTE_ECONOMICHE]
+Note economiche (3-5 righe)
+Esempio: "Riserva adeguata rispetto danni stimati. Possibilità transazione 
+€ 200.000 in discussione con danneggiato. Rivalsa 30% vs committente 
+(€ 60.000) da valutare dopo chiusura sinistro principale."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CRITICITÀ EMERSE
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 criticità
+
+[CRITICITA_N]
+Esempio: "Documentazione progettuale incompleta - difficoltà difesa tecnica"
+
+SUBSECTION: RACCOMANDAZIONI PER IL CLIENTE
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONI_CLIENTE]
+Raccomandazioni operative (5-10 righe)
+
+Esempio:
+"Si raccomanda all'assicurato di:
+1. Implementare procedura controllo qualità progetti con doppia firma
+2. Archiviare tutta documentazione tecnica per almeno 10 anni
+3. Inserire clausola limitazione responsabilità contratti con committenti
+4. Valutare incremento massimale RC a € 3.000.000 al prossimo rinnovo
+5. Sottoscrivere estensione retroattività illimitata"
+
+SUBSECTION: AZIONI PREVENTIVE FUTURE
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 3 azioni preventive
+
+[AZIONE_PREVENTIVA_N]
+Esempio: "Formazione personale su normativa CEI aggiornata"
+
+SUBSECTION: LEZIONI APPRESE
+───────────────────────────────────────────────────────────────────────────────
+
+[LEZIONI_APPRESE]
+Analisi lezioni apprese (5-10 righe)
+
+Esempio:
+"Sinistro evidenzia criticità:
+- Mancanza procedura validazione progetti da parte secondo tecnico
+- Assenza clausole contrattuali limitazione responsabilità
+- Documentazione progettuale non completa (mancanza calcoli dimensionamento)
+Positivo: denuncia tempestiva, collaborazione assicurato, polizza operante.
+Per portfolio: verificare se altre aziende settore hanno procedure simili.
+Proporre audit risk management clienti ingegneria/architettura."
+
+SUBSECTION: IMPATTO SU PORTFOLIO
+───────────────────────────────────────────────────────────────────────────────
+
+[IMPATTO_LOSS_RATIO]
+Impatto su loss ratio
+Esempio: "Sinistro porta loss ratio polizza da 45% a 78%"
+
+[IMPATTO_RINNOVO]
+Impatto su rinnovo
+Esempi:
+- "Aumento premio stimato +15% al rinnovo"
+- "Possibile esclusione progettazione impianti elettrici"
+- "Richiesta franchigia maggiorata € 10.000"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: CRONOLOGIA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CRONOLOGIA EVENTI (Timeline)
+───────────────────────────────────────────────────────────────────────────────
+
+Per OGNI evento rilevante (ordine cronologico):
+
+[DATA_EVENTO_CRONOL_N]
+Data formato "gg/mm/aaaa"
+
+[TITOLO_EVENTO_N]
+Titolo breve (es. "Evento dannoso", "Denuncia sinistro", "Perizia")
+
+[DESCRIZIONE_EVENTO_N]
+Descrizione (2-4 righe)
+
+Esempio:
+Data: 05/03/2024
+Titolo: Evento dannoso - Incendio
+Descrizione: Incendio locale tecnico edificio commerciale. Intervento VV.FF. 
+Danni a impianto elettrico e locale. Nessun ferito.
+
+SUBSECTION: COMUNICAZIONI COMPAGNIA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI comunicazione formale
+
+[DATA_COM_N]
+Data formato "gg/mm/aaaa"
+
+[TIPO_COM_N]
+Tipo: "Email", "Lettera", "PEC", "Telefonata"
+
+[OGGETTO_COM_N]
+Oggetto comunicazione
+Esempio: "Conferma operatività polizza - Nomina perito Ing. Rossi"
+
+SUBSECTION: ARCHIVIO
+───────────────────────────────────────────────────────────────────────────────
+
+[RIFERIMENTO_ARCHIVIO]
+Riferimento pratica archivio (es. "ARC-RC-2024-0156")
+
+[PERCORSO_ARCHIVIO]
+Percorso fisico/digitale archivio
+Esempio: "S:\Sinistri\RC\2024\Cliente_XYZ\Pratica_0156"
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DINAMICA DETTAGLIATA
+   ────────────────────
+   Sezione 2: Descrizione evento minimo 10 righe
+   Sequenza cronologica chiara
+   Tutti fatti rilevanti
+
+2. ANALISI RESPONSABILITÀ
+   ───────────────────────
+   Percentuale responsabilità sempre indicata
+   Tipo responsabilità giuridica specificato
+   Valutazione argomentata
+
+3. TRIGGER POLIZZA
+   ───────────────
+   Sempre specificare tipo trigger
+   Loss occurrence vs claims made
+   Data retroattività se presente
+
+4. ESCLUSIONI
+   ──────────
+   Sempre verificare esclusioni potenziali
+   Valutare applicabilità
+   Argomentare non applicabilità
+
+5. RISERVA ECONOMICA
+   ─────────────────
+   Riserva iniziale + tutti aggiornamenti
+   Tutti pagamenti dettagliati
+   Riserva residua calcolata
+
+6. PROSSIMI STEP
+   ─────────────
+   Sempre indicare azioni con scadenze
+   Responsabile identificato
+   Documentazione mancante elencata
+
+7. LEZIONI APPRESE
+   ───────────────
+   Mai omettere questa sezione
+   Valore aggiunto gestione
+   Azioni preventive concrete
+
+8. TIMELINE COMPLETA
+   ─────────────────
+   Tutti eventi rilevanti in ordine cronologico
+   Da evento dannoso a oggi
+   Comunicazioni formali documentate
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI BASE SINISTRO
+───────────────────────────
+
+Da denuncia sinistro:
+- Numero sinistro, date
+- Polizza, contraente, assicurato
+- Dinamica evento
+
+STEP 2: ANALISI POLIZZA
+────────────────────────
+
+Da polizza RC:
+- Garanzie applicabili
+- Massimali, franchigie
+- Tipo trigger
+- Esclusioni
+
+STEP 3: VALUTAZIONE RESPONSABILITÀ
+───────────────────────────────────
+
+Da documentazione:
+- Tipo responsabilità
+- Percentuale colpa
+- Terzi coinvolti
+- Concorso
+
+STEP 4: DOCUMENTAZIONE
+──────────────────────
+
+Verificare presenza:
+- Foto, video
+- Perizie tecniche
+- Verbali autorità
+- Corrispondenza
+
+STEP 5: GESTIONE
+────────────────
+
+Stato avanzamento:
+- Fase gestionale
+- Perito nominato
+- Documentazione raccolta/mancante
+- Prossimi step
+
+STEP 6: ECONOMICO
+─────────────────
+
+Da pratica:
+- Riserva iniziale + aggiornamenti
+- Pagamenti effettuati
+- Stima chiusura
+- Rivalsa potenziale
+
+STEP 7: VALORE AGGIUNTO
+────────────────────────
+
+Analizzare:
+- Criticità emerse
+- Raccomandazioni cliente
+- Azioni preventive
+- Lezioni apprese
+- Impatto portfolio
+
+STEP 8: CRONOLOGIA
+──────────────────
+
+Ricostruire timeline completa:
+- Evento → Denuncia → Gestione → Chiusura
+- Tutte comunicazioni formali
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_sinistro_rc_finale.html
+2. Sostituire TUTTI i placeholder
+3. Per sezioni dinamiche (testimoni, danni, pagamenti, cronologia):
+   - Generare HTML dinamico
+   - Inserire nel punto corretto
+4. Alert box:
+   - Selezionare classe corretta in base criticità
+   - Compilare titolo e messaggio
+5. Checklist:
+   - "checked" per documenti acquisiti
+   - "" per documenti non acquisiti
+6. Verificare:
+   - Tutti placeholder sostituiti
+   - Timeline cronologica corretta
+   - Calcoli economici corretti (riserva residua)
+   - HTML valido
+
+DELIVERABLE:
+File HTML completo, professionale, strumento operativo gestione sinistro.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

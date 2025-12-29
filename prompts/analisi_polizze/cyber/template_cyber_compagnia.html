@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richiesta Quotazione Cyber Risk - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --primary-dark: #1e293b;
+            --primary-medium: #475569;
+            --bg-light: #f8fafc;
+            --border-blue: #3b82f6;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --accent-blue: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 11px;
+        }
+
+        .header-meta-label {
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .header-meta-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subsection-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 20px 0 12px 0;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 12px 16px;
+        }
+
+        .info-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        th {
+            background: var(--bg-light);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+            color: var(--primary-dark);
+            border: 1px solid #cbd5e1;
+        }
+
+        td {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* CHECKBOX */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 6px;
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #dbeafe;
+            border-left: 3px solid var(--accent-blue);
+            padding: 14px 18px;
+            margin: 20px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .note-box strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* LIST */
+        ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* TEXTAREA */
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            resize: vertical;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>RICHIESTA QUOTAZIONE CYBER RISK</h1>
+            <p class="header-subtitle">Questionario Tecnico per Valutazione Rischio Informatico</p>
+            
+            <div class="header-meta">
+                <div>
+                    <div class="header-meta-label">Contraente</div>
+                    <div class="header-meta-value">[CONTRAENTE]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Broker</div>
+                    <div class="header-meta-value">[BROKER]</div>
+                </div>
+                <div>
+                    <div class="header-meta-label">Data Richiesta</div>
+                    <div class="header-meta-value">[DATA_RICHIESTA]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 1: DATI CONTRAENTE -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Contraente</h2>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Ragione Sociale</div>
+                    <div class="info-value">[RAGIONE_SOCIALE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Partita IVA</div>
+                    <div class="info-value">[PARTITA_IVA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Sede Legale</div>
+                    <div class="info-value">[SEDE_LEGALE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Sedi Operative</div>
+                    <div class="info-value">[SEDI_OPERATIVE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Referente</div>
+                    <div class="info-value">[REFERENTE_NOME]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email / Telefono</div>
+                    <div class="info-value">[REFERENTE_CONTATTI]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Profilo Aziendale</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Settore Attività (ATECO)</div>
+                    <div class="info-value">[SETTORE_ATECO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Descrizione Attività</div>
+                    <div class="info-value">[DESCRIZIONE_ATTIVITA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Fatturato Annuo</div>
+                    <div class="info-value">[FATTURATO_ANNUO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Numero Dipendenti</div>
+                    <div class="info-value">[NUMERO_DIPENDENTI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Presenza Internazionale</div>
+                    <div class="info-value">[PRESENZA_INTERNAZIONALE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Quotata in Borsa</div>
+                    <div class="info-value">[QUOTATA_BORSA]</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 2: INFRASTRUTTURA IT -->
+        <div class="section">
+            <h2 class="section-title">2. Infrastruttura IT</h2>
+
+            <h3 class="subsection-title">Sistemi e Architettura</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Numero Server</div>
+                    <div class="info-value">[NUMERO_SERVER]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Numero Workstation</div>
+                    <div class="info-value">[NUMERO_WORKSTATION]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Sistema Operativo Server</div>
+                    <div class="info-value">[SO_SERVER]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Sistema Operativo Workstation</div>
+                    <div class="info-value">[SO_WORKSTATION]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Architettura e Hosting</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Componente</th>
+                        <th style="width:20%">Utilizzato</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Datacenter Locale</strong></td>
+                        <td class="col-center">[DATACENTER_LOCALE]</td>
+                        <td>[DATACENTER_LOCALE_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Computing</strong></td>
+                        <td class="col-center">[CLOUD]</td>
+                        <td>[CLOUD_PROVIDER]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hosting Esterno</strong></td>
+                        <td class="col-center">[HOSTING_ESTERNO]</td>
+                        <td>[HOSTING_PROVIDER]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Colocation</strong></td>
+                        <td class="col-center">[COLOCATION]</td>
+                        <td>[COLOCATION_PROVIDER]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Dati Gestiti</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Volume Dati Totale</div>
+                    <div class="info-value">[VOLUME_DATI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Database Principali</div>
+                    <div class="info-value">[DATABASE]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Tipologie Dati Gestiti</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DATI_PERSONALI]> Dati Personali Comuni
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DATI_SENSIBILI]> Dati Sensibili (Salute, Biometrici)
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DATI_FINANZIARI]> Dati Finanziari
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_CARTE_PAGAMENTO]> Carte di Pagamento
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_PROPRIETA_INTELLETTUALE]> Proprietà Intellettuale
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DATI_RISERVATI]> Dati Commerciali Riservati
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Numero Record Dati Personali</div>
+                    <div class="info-value">[NUMERO_RECORD_PERSONALI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Numero Carte Pagamento (se PCI DSS)</div>
+                    <div class="info-value">[NUMERO_CARTE_PAGAMENTO]</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 3: MISURE DI SICUREZZA -->
+        <div class="section">
+            <h2 class="section-title">3. Misure di Sicurezza</h2>
+
+            <h3 class="subsection-title">Protezione Perimetrale</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Misura</th>
+                        <th style="width:15%">Implementato</th>
+                        <th>Dettagli/Fornitore</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Firewall</strong></td>
+                        <td class="col-center">[FIREWALL]</td>
+                        <td>[FIREWALL_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IDS/IPS (Intrusion Detection/Prevention)</strong></td>
+                        <td class="col-center">[IDS_IPS]</td>
+                        <td>[IDS_IPS_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WAF (Web Application Firewall)</strong></td>
+                        <td class="col-center">[WAF]</td>
+                        <td>[WAF_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VPN per Accessi Remoti</strong></td>
+                        <td class="col-center">[VPN]</td>
+                        <td>[VPN_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DDoS Protection</strong></td>
+                        <td class="col-center">[DDOS_PROTECTION]</td>
+                        <td>[DDOS_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Protezione Endpoint</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Misura</th>
+                        <th style="width:15%">Implementato</th>
+                        <th>Dettagli/Fornitore</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Antivirus/Antimalware</strong></td>
+                        <td class="col-center">[ANTIVIRUS]</td>
+                        <td>[ANTIVIRUS_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EDR (Endpoint Detection & Response)</strong></td>
+                        <td class="col-center">[EDR]</td>
+                        <td>[EDR_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Patch Management Automatico</strong></td>
+                        <td class="col-center">[PATCH_MGMT]</td>
+                        <td>[PATCH_MGMT_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Device Encryption</strong></td>
+                        <td class="col-center">[DEVICE_ENCRYPTION]</td>
+                        <td>[DEVICE_ENCRYPTION_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Backup e Business Continuity</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Backup Dati</div>
+                    <div class="info-value">[BACKUP_IMPLEMENTATO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Frequenza Backup</div>
+                    <div class="info-value">[BACKUP_FREQUENZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Backup Off-Site</div>
+                    <div class="info-value">[BACKUP_OFFSITE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Test Ripristino</div>
+                    <div class="info-value">[BACKUP_TEST_RIPRISTINO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Disaster Recovery Plan</div>
+                    <div class="info-value">[DR_PLAN]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">RTO Obiettivo</div>
+                    <div class="info-value">[RTO]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Autenticazione e Accessi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Misura</th>
+                        <th style="width:15%">Implementato</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Multi-Factor Authentication (MFA)</strong></td>
+                        <td class="col-center">[MFA]</td>
+                        <td>[MFA_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Single Sign-On (SSO)</strong></td>
+                        <td class="col-center">[SSO]</td>
+                        <td>[SSO_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Privileged Access Management</strong></td>
+                        <td class="col-center">[PAM]</td>
+                        <td>[PAM_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Password Policy Robusta</strong></td>
+                        <td class="col-center">[PASSWORD_POLICY]</td>
+                        <td>[PASSWORD_POLICY_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Monitoraggio e Logging</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">SIEM (Security Information Event Management)</div>
+                    <div class="info-value">[SIEM]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">SOC (Security Operations Center)</div>
+                    <div class="info-value">[SOC]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Log Retention</div>
+                    <div class="info-value">[LOG_RETENTION]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Security Monitoring H24</div>
+                    <div class="info-value">[MONITORING_H24]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Email Security</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:35%">Misura</th>
+                        <th style="width:15%">Implementato</th>
+                        <th>Dettagli</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Anti-Spam/Anti-Phishing</strong></td>
+                        <td class="col-center">[ANTISPAM]</td>
+                        <td>[ANTISPAM_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email Gateway Security</strong></td>
+                        <td class="col-center">[EMAIL_GATEWAY]</td>
+                        <td>[EMAIL_GATEWAY_DETTAGLI]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DMARC/SPF/DKIM</strong></td>
+                        <td class="col-center">[DMARC]</td>
+                        <td>[DMARC_DETTAGLI]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Formazione e Awareness</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Security Awareness Training</div>
+                    <div class="info-value">[SECURITY_TRAINING]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Frequenza Training</div>
+                    <div class="info-value">[TRAINING_FREQUENZA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phishing Simulation</div>
+                    <div class="info-value">[PHISHING_SIMULATION]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Incident Response Plan</div>
+                    <div class="info-value">[INCIDENT_RESPONSE_PLAN]</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 4: STORICO INCIDENTI -->
+        <div class="section">
+            <h2 class="section-title">4. Storico Incidenti Cyber</h2>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Incidenti Ultimi 3 Anni</div>
+                    <div class="info-value">[INCIDENTI_3_ANNI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Data Breach Subiti</div>
+                    <div class="info-value">[DATA_BREACH_SUBITI]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Dettaglio Incidenti Significativi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">Data</th>
+                        <th style="width:20%">Tipo Incidente</th>
+                        <th style="width:30%">Descrizione</th>
+                        <th style="width:20%">Impatto</th>
+                        <th>Risoluzione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[DATA_INCIDENTE_1]</td>
+                        <td>[TIPO_INCIDENTE_1]</td>
+                        <td>[DESCRIZIONE_INCIDENTE_1]</td>
+                        <td>[IMPATTO_INCIDENTE_1]</td>
+                        <td>[RISOLUZIONE_INCIDENTE_1]</td>
+                    </tr>
+                    <!-- Ripetere per altri incidenti se presenti -->
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Nota:</strong>
+                Se negli ultimi 3 anni non si sono verificati incidenti significativi, indicare "Nessun incidente significativo registrato".
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 5: COPERTURE RICHIESTE -->
+        <div class="section">
+            <h2 class="section-title">5. Coperture Richieste</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:30%">Garanzia</th>
+                        <th style="width:15%">Richiesta</th>
+                        <th style="width:25%">Massimale</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Breach (GDPR)</strong></td>
+                        <td class="col-center">[RIC_DATA_BREACH]</td>
+                        <td>[RIC_DATA_BREACH_MASSIMALE]</td>
+                        <td>[RIC_DATA_BREACH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Extortion (Ransomware)</strong></td>
+                        <td class="col-center">[RIC_EXTORTION]</td>
+                        <td>[RIC_EXTORTION_MASSIMALE]</td>
+                        <td>[RIC_EXTORTION_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Interruption</strong></td>
+                        <td class="col-center">[RIC_BI]</td>
+                        <td>[RIC_BI_MASSIMALE]</td>
+                        <td>[RIC_BI_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>System Damage</strong></td>
+                        <td class="col-center">[RIC_SYSTEM]</td>
+                        <td>[RIC_SYSTEM_MASSIMALE]</td>
+                        <td>[RIC_SYSTEM_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cyber Crime</strong></td>
+                        <td class="col-center">[RIC_CRIME]</td>
+                        <td>[RIC_CRIME_MASSIMALE]</td>
+                        <td>[RIC_CRIME_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal Defense</strong></td>
+                        <td class="col-center">[RIC_LEGAL]</td>
+                        <td>[RIC_LEGAL_MASSIMALE]</td>
+                        <td>[RIC_LEGAL_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notification Costs</strong></td>
+                        <td class="col-center">[RIC_NOTIF]</td>
+                        <td>[RIC_NOTIF_MASSIMALE]</td>
+                        <td>[RIC_NOTIF_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PR Crisis Management</strong></td>
+                        <td class="col-center">[RIC_PR]</td>
+                        <td>[RIC_PR_MASSIMALE]</td>
+                        <td>[RIC_PR_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Forensic Investigation</strong></td>
+                        <td class="col-center">[RIC_FORENSIC]</td>
+                        <td>[RIC_FORENSIC_MASSIMALE]</td>
+                        <td>[RIC_FORENSIC_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PCI DSS Fines</strong></td>
+                        <td class="col-center">[RIC_PCI]</td>
+                        <td>[RIC_PCI_MASSIMALE]</td>
+                        <td>[RIC_PCI_NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Preferenze Franchigie</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Franchigia Preferita</div>
+                    <div class="info-value">[FRANCHIGIA_PREFERITA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Franchigia Temporale BI</div>
+                    <div class="info-value">[FRANCHIGIA_BI_ORE]</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 6: ESPOSIZIONI SPECIFICHE -->
+        <div class="section">
+            <h2 class="section-title">6. Esposizioni Specifiche</h2>
+
+            <h3 class="subsection-title">E-commerce e Transazioni Online</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Attività E-commerce</div>
+                    <div class="info-value">[ECOMMERCE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Fatturato E-commerce Annuo</div>
+                    <div class="info-value">[ECOMMERCE_FATTURATO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Piattaforma E-commerce</div>
+                    <div class="info-value">[ECOMMERCE_PIATTAFORMA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Gateway Pagamento</div>
+                    <div class="info-value">[PAYMENT_GATEWAY]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Conformità PCI DSS</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Gestione Carte Pagamento</div>
+                    <div class="info-value">[GESTIONE_CARTE]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Certificazione PCI DSS</div>
+                    <div class="info-value">[PCI_DSS_CERT]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Livello PCI DSS</div>
+                    <div class="info-value">[PCI_DSS_LIVELLO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Ultimo Audit PCI</div>
+                    <div class="info-value">[PCI_DSS_ULTIMO_AUDIT]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Servizi Cloud e SaaS</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Servizio</th>
+                        <th style="width:30%">Provider</th>
+                        <th style="width:30%">Criticità</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>[SERVIZIO_CLOUD_1]</td>
+                        <td>[PROVIDER_CLOUD_1]</td>
+                        <td>[CRITICITA_CLOUD_1]</td>
+                    </tr>
+                    <tr>
+                        <td>[SERVIZIO_CLOUD_2]</td>
+                        <td>[PROVIDER_CLOUD_2]</td>
+                        <td>[CRITICITA_CLOUD_2]</td>
+                    </tr>
+                    <tr>
+                        <td>[SERVIZIO_CLOUD_3]</td>
+                        <td>[PROVIDER_CLOUD_3]</td>
+                        <td>[CRITICITA_CLOUD_3]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- SEZIONE 7: CONFORMITÀ NORMATIVA -->
+        <div class="section">
+            <h2 class="section-title">7. Conformità Normativa</h2>
+
+            <h3 class="subsection-title">GDPR</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">DPO Nominato</div>
+                    <div class="info-value">[DPO_NOMINATO]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Registro Trattamenti</div>
+                    <div class="info-value">[REGISTRO_TRATTAMENTI]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">DPIA Effettuate</div>
+                    <div class="info-value">[DPIA]</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Incident Response Procedure GDPR</div>
+                    <div class="info-value">[INCIDENT_RESPONSE_GDPR]</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Altre Conformità</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_ISO_27001]> ISO 27001
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_NIS2]> NIS2 Directive
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_SOC2]> SOC 2
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_HIPAA]> HIPAA (Sanità)
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_PSD2]> PSD2 (Pagamenti)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 8: ALLEGATI -->
+        <div class="section">
+            <h2 class="section-title">8. Allegati e Documentazione</h2>
+
+            <h3 class="subsection-title">Documentazione Allegata</h3>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_SECURITY_POLICY]> Security Policy Aziendale
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_NETWORK_DIAGRAM]> Network Diagram
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_DISASTER_RECOVERY]> Disaster Recovery Plan
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_VULNERABILITY_ASSESSMENT]> Vulnerability Assessment (ultimo)
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_PENETRATION_TEST]> Penetration Test (ultimo)
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_ISO_27001]> Certificazione ISO 27001
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_PCI_DSS]> Certificazione PCI DSS
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" [CHECK_DOC_REGISTRO_TRATTAMENTI]> Registro Trattamenti GDPR
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Note Aggiuntive</h3>
+            <textarea placeholder="Inserire eventuali note aggiuntive o specificazioni particolari...">[NOTE_AGGIUNTIVE]</textarea>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Documento confidenziale - Riservato esclusivamente alla valutazione assicurativa</p>
+            <p style="margin-top:8px">Broker: [BROKER] | Data: [DATA_RICHIESTA]</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

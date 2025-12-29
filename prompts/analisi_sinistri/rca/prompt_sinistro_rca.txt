@@ -1,0 +1,899 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: ANALISI SINISTRO RCA - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML di analisi e gestione sinistro RCA 
+(Responsabilità Civile Auto) per uso interno broker/agente/risk manager.
+
+DESTINATARIO: Broker, agente, risk manager
+TEMPLATE: template_sinistro_rca_finale.html (1078 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da pratica
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS VEICOLO E STRADA
+   - Dati completi veicoli coinvolti
+   - Dinamica stradale dettagliata
+   - CAI (Constatazione Amichevole)
+   - Responsabilità percentuali
+
+2. GESTIONE RCA SPECIFICA
+   - Procedura CARD se applicabile
+   - Garanzie accessorie (Kasko, Cristalli, ecc.)
+   - Franchigie RCA
+   - Impatto classe merito
+
+3. OPERATIVITÀ
+   - Timeline gestione
+   - Perizie e riparazioni
+   - Prossimi step
+   - Comunicazioni parti
+
+4. VALORE AGGIUNTO
+   - Lezioni apprese
+   - Raccomandazioni conducente
+   - Impatto bonus/malus
+   - Azioni preventive
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI SINISTRO
+SEZIONE 2: DESCRIZIONE SINISTRO
+SEZIONE 3: DANNI E RESPONSABILITÀ
+SEZIONE 4: COPERTURA ASSICURATIVA
+SEZIONE 5: GESTIONE E AZIONI
+SEZIONE 6: VALUTAZIONE ECONOMICA
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+SEZIONE 8: CRONOLOGIA
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER + ALERT BOX
+═══════════════════════════════════════════════════════════════════════════════
+
+[NUMERO_SINISTRO]
+Numero sinistro (formato "RCA-2024-0234")
+
+[DATA_SINISTRO]
+Data sinistro formato "gg/mm/aaaa"
+
+[STATUS_SINISTRO]
+Status: "Aperto", "In liquidazione", "In CARD", "Chiuso"
+
+[TARGA]
+Targa veicolo nostro
+
+ALERT BOX
+─────────
+
+[ALERT_CLASS]
+Classe CSS:
+- "alert-critical" → Responsabilità 100%, danni gravi, contenzioso
+- "alert-warning" → Responsabilità parziale, documentazione incompleta
+- "alert-info" → Gestione standard CARD
+- "alert-success" → Chiuso positivamente
+
+[ALERT_TITLE]
+Titolo alert
+
+[ALERT_MESSAGE]
+Messaggio (2-3 righe)
+Esempio: "Responsabilità 70% nostro conducente. Danni veicolo € 8.500. 
+Procedura CARD avviata. Malus stimato 2 classi."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI SINISTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: IDENTIFICATIVI
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_SINISTRO_COMP]
+Numero sinistro compagnia
+
+[NUMERO_PRATICA_BROKER]
+Numero pratica broker (formato "BR-RCA-2024-0234")
+
+[NUMERO_CAI]
+Numero CAI se compilato
+Se non compilato: "Non compilato"
+
+[DATA_SINISTRO]
+Data sinistro formato "gg/mm/aaaa"
+
+[DATA_DENUNCIA]
+Data denuncia formato "gg/mm/aaaa"
+
+[ORA_SINISTRO]
+Ora sinistro formato "HH:MM"
+
+SUBSECTION: STATUS GESTIONE
+───────────────────────────────────────────────────────────────────────────────
+
+[STATUS_BADGE]
+Badge HTML:
+<span class="status-badge status-aperto">Aperto</span>
+<span class="status-badge status-liquidazione">In Liquidazione</span>
+<span class="status-badge status-card">In CARD</span>
+<span class="status-badge status-chiuso">Chiuso</span>
+
+[TIPO_GESTIONE]
+Tipo gestione:
+- "CARD - Convenzione Risarcimento Diretto"
+- "Ordinaria - Gestione diretta compagnia"
+- "Contenzioso - Gestione legale"
+
+SUBSECTION: POLIZZA E VEICOLO NOSTRO
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA]
+Compagnia assicuratrice
+
+[NUMERO_POLIZZA]
+Numero polizza
+
+[CONTRAENTE]
+Contraente polizza
+
+[CONDUCENTE]
+Nome cognome conducente al momento sinistro
+
+[TARGA]
+Targa veicolo
+
+[VEICOLO]
+Marca modello (es. "Fiat Panda 1.2")
+
+SUBSECTION: GESTORI
+───────────────────────────────────────────────────────────────────────────────
+
+[BROKER_REFERENTE]
+Nome broker
+
+[LIQUIDATORE_COMPAGNIA]
+Nome liquidatore
+
+[CARROZZIERE]
+Nome carrozziere fiduciario
+Se non ancora identificato: "Da nominare"
+
+[PERITO]
+Nome perito o CID (Centro Indennizzo Diretto)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: DESCRIZIONE SINISTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DINAMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[DINAMICA_SINISTRO]
+Descrizione dettagliata (10-15 righe)
+
+Includere:
+- Sequenza cronologica eventi
+- Manovra veicolo nostro
+- Manovra veicolo controparte
+- Punto impatto
+- Conseguenze immediate
+
+Esempio:
+"Il giorno 15/04/2024 ore 17:30, il veicolo targato AB123CD (Fiat Panda) 
+condotto da Mario Rossi percorreva Via Roma in direzione centro città. 
+All'incrocio con Via Verdi, il conducente, avendo diritto di precedenza 
+(strada principale), attraversava incrocio a velocità regolare (40 km/h). 
+Contemporaneamente, dalla Via Verdi (strada secondaria con STOP), il veicolo 
+controparte targato XY789ZW (VW Golf) non rispettava segnale di STOP e 
+impegnava incrocio senza arrestarsi. Collisione lato anteriore destro veicolo 
+nostro con lato anteriore sinistro veicolo controparte. Urto violento con 
+scatto airbag entrambi veicoli. Nessun ferito. Traffico intenso ore punta. 
+Asfalto asciutto. Visibilità ottima. Presenti testimoni. Forze ordine 
+intervenute (Polizia Municipale verbale n. 456/2024)."
+
+SUBSECTION: LUOGO E CIRCOSTANZE
+───────────────────────────────────────────────────────────────────────────────
+
+[LUOGO_SINISTRO]
+Indirizzo completo (via, comune, provincia)
+
+[TIPO_STRADA]
+Tipo:
+- "Urbana - Strada comunale"
+- "Extraurbana - Strada statale"
+- "Autostrada"
+- "Area privata - Parcheggio"
+
+[CONDIZIONI_METEO]
+Condizioni meteo:
+- "Sereno, asciutto"
+- "Pioggia"
+- "Nebbia"
+- "Neve/ghiaccio"
+
+[CONDIZIONI_TRAFFICO]
+Traffico:
+- "Intenso"
+- "Normale"
+- "Scarso"
+
+SUBSECTION: CAI - CONSTATAZIONE AMICHEVOLE
+───────────────────────────────────────────────────────────────────────────────
+
+[CAI_COMPILATO]
+"Sì" oppure "No"
+
+[CAI_FIRME]
+Se CAI compilato:
+- "Sì - Entrambe le parti hanno firmato"
+- "No - Solo una firma"
+- "No - CAI non firmato"
+
+[CAI_CASELLE_NOSTRO]
+Caselle barrate veicolo nostro (es. "1, 5, 12")
+Le 17 caselle CAI rappresentano manovre/circostanze
+
+[CAI_CASELLE_CONTRO]
+Caselle barrate veicolo controparte (es. "2, 7, 13")
+
+Logica responsabilità CAI:
+- Caselle corrispondenti = concorso colpa
+- Caselle non corrispondenti = valutare dinamica
+
+SUBSECTION: FORZE DELL'ORDINE E TESTIMONI
+───────────────────────────────────────────────────────────────────────────────
+
+[FORZE_ORDINE]
+Intervento forze ordine:
+- "Sì - Polizia Municipale"
+- "Sì - Carabinieri"
+- "Sì - Polizia Stradale"
+- "No"
+
+[VERBALE_ACQUISITO]
+Se intervento:
+- "Sì - Verbale n. XXX del gg/mm/aaaa"
+- "No - In richiesta"
+- "Non applicabile"
+
+[TESTIMONI_IDENTIFICATI]
+Testimoni: "Sì - 2 testimoni" oppure "No"
+
+[DICHIARAZIONI_RACCOLTE]
+"Sì" oppure "No" oppure "Parzialmente"
+
+SUBSECTION: DOCUMENTAZIONE ACQUISITA
+───────────────────────────────────────────────────────────────────────────────
+
+[CHECK_CAI]
+"checked" se acquisito
+
+[DETTAGLI_CAI]
+Dettagli (es. "CAI firmato entrambe parti, caselle 1,5 nostro - 2,7 contro")
+
+Ripetere per:
+- CHECK_FOTO_VEICOLI / DETTAGLI_FOTO_VEICOLI
+- CHECK_FOTO_LUOGO / DETTAGLI_FOTO_LUOGO
+- CHECK_VERBALE / DETTAGLI_VERBALE
+- CHECK_PREVENTIVI / DETTAGLI_PREVENTIVI
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: DANNI E RESPONSABILITÀ
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DANNI VEICOLO NOSTRO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI parte danneggiata
+
+[PARTE_DANNEGGIATA_N]
+Parte veicolo
+Esempi: "Paraurti anteriore dx", "Parafango anteriore dx", "Sportello anteriore dx"
+
+[TIPO_DANNO_N]
+Tipo: "Ammaccatura", "Rottura", "Graffio", "Deformazione"
+
+[DETTAGLIO_DANNO_N]
+Dettaglio (es. "Rottura completa con necessità sostituzione")
+
+SUBSECTION: VALUTAZIONE DANNI VEICOLO NOSTRO
+───────────────────────────────────────────────────────────────────────────────
+
+[PREVENTIVO_RIPARAZIONE]
+Preventivo carrozziere formato "€ X.XXX"
+
+[STIMA_PERITO]
+Stima perito/CID formato "€ X.XXX"
+
+[RIPARAZIONE_ECONOMICA]
+Riparazione economica:
+- "Sì" se costo riparazione < 80% valore veicolo
+- "No - Danneggiamento totale economico" se > 80%
+
+[VALORE_COMMERCIALE]
+Valore commerciale pre-sinistro formato "€ XX.XXX"
+
+SUBSECTION: DANNI CONTROPARTE
+───────────────────────────────────────────────────────────────────────────────
+
+[VEICOLO_CONTROPARTE]
+Marca modello (es. "VW Golf 1.6 TDI")
+
+[TARGA_CONTROPARTE]
+Targa controparte
+
+[DANNI_DICHIARATI_CONTRO]
+Descrizione danni dichiarati
+Esempio: "Paraurti ant. sx, parafango ant. sx, faro ant. sx"
+
+[RICHIESTA_RISARCIMENTO]
+Importo richiesto formato "€ X.XXX"
+Se non ancora quantificato: "Non ancora quantificato"
+
+SUBSECTION: LESIONI A PERSONE
+───────────────────────────────────────────────────────────────────────────────
+
+[LESIONI_NOSTRI]
+Lesioni occupanti veicolo nostro:
+- "Nessuna"
+- "Conducente: contusione torace, prognosi 7 gg"
+- "Passeggero: distorsione cervicale, prognosi 15 gg"
+
+[LESIONI_CONTRO]
+Lesioni occupanti controparte:
+- "Nessuna"
+- "Conducente: lesioni lievi prognosi X gg"
+
+[PROGNOSI_LESIONI]
+Prognosi totale (somma tutti feriti)
+
+[CERT_MEDICI]
+Certificati medici: "Acquisiti" oppure "In richiesta"
+
+SUBSECTION: ANALISI RESPONSABILITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[RESPONSABILITA_PRINCIPALE]
+Chi è responsabile:
+- "Controparte 100%"
+- "Nostro conducente 100%"
+- "Concorsuale"
+
+[PERCENTUALI_COLPA]
+Percentuali stimate
+Esempi:
+- "Nostro 0% - Controparte 100%"
+- "Nostro 30% - Controparte 70%"
+- "Nostro 50% - Controparte 50%"
+
+[BASE_GIURIDICA]
+Base giuridica responsabilità
+Esempi:
+- "Art. 145 CdS - Mancato rispetto STOP"
+- "Art. 141 CdS - Mancato rispetto precedenza"
+- "Art. 140 CdS - Eccesso velocità"
+- "Art. 154 CdS - Inversione a U pericolosa"
+
+[CONCORSO_COLPA]
+Concorso: "Sì" oppure "No"
+
+[VALUTAZIONE_RESPONSABILITA]
+Valutazione articolata (5-10 righe)
+
+Esempio:
+"Responsabilità 100% controparte. Veicolo controparte proveniente da strada 
+secondaria (Via Verdi) con segnale STOP non rispettato. Nostro veicolo 
+percorreva strada principale (Via Roma) con diritto precedenza. Caselle CAI 
+confermano dinamica: casella 2 barrata controparte ('non ho rispettato STOP'). 
+Verbale Polizia Municipale conferma violazione art. 145 CdS controparte. 
+Testimoni presenti confermano mancato arresto controparte. Nessun elemento 
+concorso colpa nostro conducente: velocità adeguata, attenzione normale, 
+manovra corretta. Compagnia controparte ha già riconosciuto responsabilità."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: COPERTURA ASSICURATIVA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: GARANZIE RCA
+───────────────────────────────────────────────────────────────────────────────
+
+[MASSIMALE_PERSONE]
+Massimale danni persone formato "€ 7.500.000"
+
+[MASSIMALE_COSE]
+Massimale danni cose formato "€ 1.500.000"
+
+[FRANCHIGIA_RCA]
+Franchigia RCA formato "€ XXX" o "Nessuna"
+
+[SCOPERTO_RCA]
+Scoperto RCA formato "10%" o "Nessuno"
+
+SUBSECTION: GARANZIE ACCESSORIE APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe (Kasko, Cristalli, Tutela Legale, Infortuni Conducente)
+
+Per CIASCUNA garanzia:
+
+[NOME_INCLUSA]
+"Sì" oppure "No"
+
+[NOME_MASSIMALE]
+Massimale formato "€ XX.XXX" o "Valore veicolo"
+
+[NOME_FRANCHIGIA]
+Franchigia formato "€ XXX" o "10%"
+
+[NOME_APPLICABILITA]
+Applicabilità:
+- "Operante" se garanzia inclusa e sinistro coperto
+- "Non operante" se esclusioni applicabili
+- "Non inclusa" se garanzia non presente
+
+Esempi:
+
+Kasko/Collisione:
+- Inclusa: Sì
+- Massimale: € 18.000 (valore veicolo)
+- Franchigia: € 500
+- Applicabilità: Operante se nostro veicolo danneggiato
+
+Cristalli:
+- Inclusa: Sì
+- Massimale: € 1.000
+- Franchigia: Nessuna
+- Applicabilità: Non operante (nessun danno cristalli)
+
+SUBSECTION: VALUTAZIONE OPERATIVITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[RCA_OPERANTE]
+Garanzia RCA: "Sì" oppure "No" oppure "In verifica"
+
+[CONDUCENTE_GARANTITO]
+Conducente garantito:
+- "Sì - Guida libera"
+- "Sì - Conducente rientra in età guida esperta"
+- "No - Conducente non autorizzato"
+
+[VALIDITA_TERRITORIALE]
+Territorio: "Italia" / "UE" / "Europa + Carta Verde"
+
+[USO_CONFORME]
+Uso veicolo conforme:
+- "Sì - Uso privato conforme polizza"
+- "No - Uso commerciale non coperto"
+
+SUBSECTION: ESCLUSIONI POTENZIALI
+───────────────────────────────────────────────────────────────────────────────
+
+Elencare 3 esclusioni potenziali con valutazione
+
+[ESCLUSIONE_POTENZIALE_N]
+
+Esempi:
+"Art. 12.1 CG - Guida in stato ebbrezza: Non applicabile. Nessun elemento 
+suggerisce ebbrezza conducente. Verbale forze ordine non riporta test alcolico."
+
+"Art. 12.5 CG - Gare: Non applicabile. Sinistro su strada pubblica durante 
+normale circolazione."
+
+[VALUTAZIONE_COPERTURA]
+Valutazione complessiva (5-8 righe)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: GESTIONE E AZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: STATUS ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[FASE_GESTIONALE]
+Fase:
+- "Denuncia e raccolta documentazione"
+- "Valutazione responsabilità"
+- "Perizia danni"
+- "Liquidazione in corso"
+- "Chiusura"
+
+[ULTIMO_AGGIORNAMENTO]
+Data formato "gg/mm/aaaa"
+
+[PERITO_INCARICATO]
+Nome perito o CID
+
+[DATA_PERIZIA]
+Data perizia formato "gg/mm/aaaa"
+Se non ancora effettuata: "Da programmare"
+
+SUBSECTION: GESTIONE CARD
+───────────────────────────────────────────────────────────────────────────────
+
+[CARD_APPLICABILE]
+CARD applicabile:
+- "Sì" se sinistro Italia, 2 veicoli, danni solo cose < € 50.000, compagnie aderenti
+- "No" + motivazione
+
+[COMPAGNIA_CONTROPARTE]
+Nome compagnia controparte
+
+[CARD_INVIATA]
+Richiesta CARD: "Sì - Data gg/mm/aaaa" oppure "No"
+
+[CARD_RISPOSTA]
+Risposta:
+- "Accettata - Responsabilità XX%"
+- "Rifiutata - Motivazione"
+- "In attesa risposta"
+
+SUBSECTION: DOCUMENTAZIONE RACCOLTA
+───────────────────────────────────────────────────────────────────────────────
+
+Checklist 7 voci:
+
+[CHECK_DOC_DENUNCIA]
+"checked" o ""
+
+Ripetere per:
+- CHECK_DOC_CAI_ORIG
+- CHECK_DOC_POLIZZA
+- CHECK_DOC_LIBRETTO
+- CHECK_DOC_PATENTE
+- CHECK_DOC_PREVENTIVO
+- CHECK_DOC_PERIZIA
+
+SUBSECTION: DOCUMENTAZIONE NECESSARIA
+───────────────────────────────────────────────────────────────────────────────
+
+[DOC_NECESSARIA_N]
+Elencare max 3 documenti mancanti
+
+SUBSECTION: PROSSIMI STEP
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per azione
+
+[SCADENZA_AZIONE_N]
+[AZIONE_N]
+[RESPONSABILE_N]
+[NOTE_AZIONE_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: VALUTAZIONE ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RISERVA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_INIZIALE]
+[DATA_RISERVA_INIZIALE]
+[RISERVA_ATTUALE]
+[DATA_AGG_RISERVA]
+
+SUBSECTION: DETTAGLIO COSTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 righe:
+
+1. Riparazione veicolo nostro
+[COSTO_RIPARAZIONE_NOSTRO]
+[NOTE_RIP_NOSTRO]
+
+2. Risarcimento controparte
+[COSTO_CONTROPARTE]
+[NOTE_CONTRO]
+
+3. Spese peritali
+[COSTO_PERITALI]
+
+4. Spese legali
+[COSTO_LEGALI]
+
+5. TOTALE
+[TOTALE_COSTI]
+
+SUBSECTION: PAGAMENTI EFFETTUATI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per pagamento
+
+[DATA_PAG_N]
+[BENEF_PAG_N]
+[IMPORTO_PAG_N]
+[CAUSALE_PAG_N]
+
+[TOTALE_PAGATO]
+
+SUBSECTION: SINTESI ECONOMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_RESIDUA]
+Calcolo: Riserva attuale - Totale pagato
+
+[STIMA_CHIUSURA]
+Stima importo finale
+
+[RIVALSA_CONTROPARTE]
+Se nostro veicolo danneggiato e responsabilità controparte:
+Importo rivalsa formato "€ X.XXX"
+
+[CARICO_ASSICURATO]
+Importo a carico assicurato (franchigie)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CRITICITÀ EMERSE
+───────────────────────────────────────────────────────────────────────────────
+
+[CRITICITA_N]
+
+Esempi:
+- "CAI compilato male: caselle contraddittorie"
+- "Documentazione fotografica insufficiente"
+- "Testimoni non identificati tempestivamente"
+
+SUBSECTION: RACCOMANDAZIONI ASSICURATO
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONI_ASSICURATO]
+Raccomandazioni (5-10 righe)
+
+Esempio:
+"Si raccomanda all'assicurato di:
+1. Compilare sempre CAI in modo completo e corretto
+2. Fotografare veicoli da 4 angolazioni + luogo sinistro
+3. Identificare testimoni e raccogliere contatti
+4. Non ammettere responsabilità verbalmente sul posto
+5. Contattare broker entro 24h da sinistro
+6. Valutare installazione dashcam per sinistri futuri"
+
+SUBSECTION: AZIONI PREVENTIVE FUTURE
+───────────────────────────────────────────────────────────────────────────────
+
+[AZIONE_PREVENTIVA_N]
+
+Esempi:
+- "Corso guida difensiva per conducente"
+- "Installazione dashcam"
+- "Verifica copertura Kasko per veicolo di valore"
+
+SUBSECTION: LEZIONI APPRESE
+───────────────────────────────────────────────────────────────────────────────
+
+[LEZIONI_APPRESE]
+Analisi (5-10 righe)
+
+Esempio:
+"Sinistro evidenzia:
+- Importanza CAI ben compilato: ha facilitato riconoscimento responsabilità
+- Valore documentazione fotografica immediata
+- Utilità verbale forze ordine per dinamica contestata
+- Procedura CARD efficace: liquidazione in 30 giorni
+Per portfolio: verificare che clienti abbiano kit emergenza in auto (CAI, 
+fotocamera, numeri utili)."
+
+SUBSECTION: IMPATTO PORTFOLIO
+───────────────────────────────────────────────────────────────────────────────
+
+[IMPATTO_LOSS_RATIO]
+Impatto loss ratio polizza
+
+[IMPATTO_CLASSE_MERITO]
+Impatto classe bonus/malus
+
+Esempi:
+- "Nessun impatto - Responsabilità 0%"
+- "Malus 2 classi - Da CU 1 a CU 3"
+
+[IMPATTO_RINNOVO]
+Impatto rinnovo
+Esempi:
+- "Nessun impatto su premio - Sinistro non addebitato"
+- "Aumento premio stimato +25% da € 800 a € 1.000"
+
+[MALUS_STIMATO]
+Malus classe merito stimato
+Esempi: "2 classi", "Nessuno"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: CRONOLOGIA
+═══════════════════════════════════════════════════════════════════════════════
+
+Timeline + Comunicazioni
+
+[DATA_EVENTO_CRONOL_N]
+[TITOLO_EVENTO_N]
+[DESCRIZIONE_EVENTO_N]
+
+[DATA_COM_N]
+[TIPO_COM_N]
+[OGGETTO_COM_N]
+
+[RIFERIMENTO_ARCHIVIO]
+[PERCORSO_ARCHIVIO]
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CAI FONDAMENTALE
+   ────────────────
+   Sempre verificare se CAI compilato
+   Caselle barrate determinano responsabilità
+   Entrambe firme = valore probatorio
+
+2. DINAMICA STRADALE
+   ─────────────────
+   Minimo 10 righe descrizione
+   Manovra veicolo nostro + controparte
+   Punto impatto
+   Riferimenti Codice Strada
+
+3. RESPONSABILITÀ PERCENTUALI
+   ──────────────────────────
+   Sempre indicare percentuali stimate
+   Base giuridica (articoli CdS)
+   Valutazione argomentata
+
+4. PROCEDURA CARD
+   ──────────────
+   Verificare applicabilità CARD
+   Se applicabile: stato richiesta
+   Risposta compagnia controparte
+
+5. GARANZIE ACCESSORIE
+   ───────────────────
+   Verificare Kasko/Collisione
+   Cristalli
+   Tutela Legale
+   Infortuni Conducente
+
+6. IMPATTO CLASSE MERITO
+   ─────────────────────
+   Sempre calcolare malus
+   Da classe X a classe Y
+   Stima impatto premio
+
+7. DANNI DETTAGLIATI
+   ─────────────────
+   Ogni parte veicolo danneggiata
+   Tipo danno
+   Riparazione economica vs totale
+
+8. LEZIONI APPRESE
+   ───────────────
+   Focus prevenzione sinistri futuri
+   Raccomandazioni concrete
+   Impatto portfolio
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI BASE
+─────────────────
+
+Da denuncia:
+- Numero sinistro, date
+- Targa, veicolo, conducente
+- Luogo, ora
+
+STEP 2: CAI
+───────────
+
+Da CAI se presente:
+- Caselle barrate entrambi veicoli
+- Firme presenti
+- Dinamica descritta
+- Schizzi
+
+STEP 3: DINAMICA
+────────────────
+
+Da CAI + denuncia + verbale:
+- Ricostruire sequenza cronologica
+- Manovra veicolo nostro
+- Manovra controparte
+- Punto impatto
+
+STEP 4: RESPONSABILITÀ
+──────────────────────
+
+Valutare:
+- Caselle CAI
+- Verbale forze ordine
+- Testimoni
+- Codice Strada applicabile
+- Percentuali colpa
+
+STEP 5: DANNI
+─────────────
+
+Da preventivo + perizia:
+- Parti veicolo danneggiate
+- Costo riparazione
+- Riparazione economica?
+- Danni controparte
+
+STEP 6: COPERTURA
+─────────────────
+
+Da polizza:
+- Massimali RCA
+- Garanzie accessorie
+- Franchigie
+- Esclusioni applicabili
+
+STEP 7: CARD
+────────────
+
+Verificare:
+- Applicabilità procedura CARD
+- Compagnia controparte aderente
+- Stato richiesta
+- Risposta ricevuta
+
+STEP 8: GESTIONE
+────────────────
+
+Stato:
+- Fase gestionale attuale
+- Perito nominato
+- Documentazione raccolta
+- Prossimi step
+
+STEP 9: ECONOMICO
+─────────────────
+
+Calcolare:
+- Riserva costituita
+- Costi stimati
+- Pagamenti effettuati
+- Rivalsa potenziale
+
+STEP 10: IMPATTO
+────────────────
+
+Valutare:
+- Malus classe merito
+- Da classe X a classe Y
+- Impatto premio rinnovo
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_sinistro_rca_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle dinamiche:
+   - Danni veicolo (tutte parti)
+   - Garanzie accessorie (4 righe)
+   - Costi (5 voci)
+   - Pagamenti (tutti)
+4. CAI:
+   - Caselle barrate correttamente
+   - Firme presenti/assenti
+5. Calcoli:
+   - Malus: da classe CU X a CU Y
+   - Riserva residua
+   - Carico assicurato (franchigie)
+6. Alert box:
+   - Classe in base gravità/responsabilità
+7. Checklist:
+   - "checked" documenti acquisiti
+8. Timeline cronologica
+9. HTML valido
+
+DELIVERABLE:
+File HTML completo, professionale, strumento operativo gestione sinistro RCA.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT - PORTFOLIO COMPLETO!
+═══════════════════════════════════════════════════════════════════════════════

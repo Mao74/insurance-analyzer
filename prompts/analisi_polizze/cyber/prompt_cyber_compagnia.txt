@@ -1,0 +1,791 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: RICHIESTA QUOTAZIONE CYBER RISK COMPAGNIA - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare documento HTML richiesta quotazione Cyber Risk per compagnia.
+
+DESTINATARIO: Compagnia assicuratrice
+TEMPLATE: template_cyber_compagnia_finale.html (953 righe)
+APPROCCIO: Template-first - riempire placeholder con dati raccolti
+
+STILE: Professionale, tecnico, corporate
+COLORI: Blu corporate #1e40af, Grigio #1e293b
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA TECNICA
+   - Tutti dati infrastruttura IT
+   - Misure sicurezza implementate
+   - Dettaglio architettura sistemi
+   - Conformità normative
+
+2. ACCURATEZZA
+   - Numeri precisi (server, workstation, dati)
+   - Fornitori specifici (cloud, antivirus, ecc.)
+   - Date certificazioni
+   - Versioni sistemi operativi
+
+3. TRASPARENZA
+   - Storico incidenti completo
+   - Vulnerabilità note
+   - Gap sicurezza identificati
+   - Misure non implementate
+
+4. CHIAREZZA RISCHI
+   - Esposizioni specifiche evidenziate
+   - E-commerce, PCI DSS, dati sensibili
+   - Presenza internazionale
+   - Cloud provider utilizzati
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI CONTRAENTE
+SEZIONE 2: INFRASTRUTTURA IT
+SEZIONE 3: MISURE DI SICUREZZA
+SEZIONE 4: STORICO INCIDENTI
+SEZIONE 5: COPERTURE RICHIESTE
+SEZIONE 6: ESPOSIZIONI SPECIFICHE
+SEZIONE 7: CONFORMITÀ NORMATIVA
+SEZIONE 8: ALLEGATI
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Ragione sociale contraente
+
+[BROKER]
+Nome broker intermediario
+
+[DATA_RICHIESTA]
+Data richiesta formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI CONTRAENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ANAGRAFICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RAGIONE_SOCIALE]
+Ragione sociale completa
+
+[PARTITA_IVA]
+P.IVA formato "IT12345678901"
+
+[SEDE_LEGALE]
+Indirizzo completo sede legale
+
+[SEDI_OPERATIVE]
+Numero e località sedi operative
+Esempio: "3 sedi (Milano, Roma, Torino)"
+
+[REFERENTE_NOME]
+Nome cognome referente tecnico
+
+[REFERENTE_CONTATTI]
+Email e telefono
+Formato: "mario.rossi@azienda.it | +39 XXX XXX XXXX"
+
+SUBSECTION: PROFILO AZIENDALE
+───────────────────────────────────────────────────────────────────────────────
+
+[SETTORE_ATECO]
+Codice e descrizione ATECO
+Esempio: "62.01 - Produzione di software non connesso all'edizione"
+
+[DESCRIZIONE_ATTIVITA]
+Descrizione dettagliata attività (3-5 righe)
+Esempio: "Sviluppo software gestionale cloud-based per PMI. Gestione dati 
+clienti, hosting applicazioni SaaS, supporto tecnico H24."
+
+[FATTURATO_ANNUO]
+Fatturato formato "€ X.XXX.XXX"
+
+[NUMERO_DIPENDENTI]
+Numero dipendenti (formato "XXX dipendenti")
+
+[PRESENZA_INTERNAZIONALE]
+Presenza internazionale:
+- "Solo Italia"
+- "Europa (specificare paesi)"
+- "Mondo (specificare paesi)"
+
+[QUOTATA_BORSA]
+Quotazione borsa: "Sì" oppure "No"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: INFRASTRUTTURA IT
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: SISTEMI E ARCHITETTURA
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_SERVER]
+Numero server (formato "XX server")
+
+[NUMERO_WORKSTATION]
+Numero workstation (formato "XXX workstation")
+
+[SO_SERVER]
+Sistema operativo server
+Esempi: "Windows Server 2022", "Linux Ubuntu 22.04", "Mix Windows/Linux"
+
+[SO_WORKSTATION]
+Sistema operativo workstation
+Esempi: "Windows 11", "macOS", "Mix Windows/Mac"
+
+SUBSECTION: ARCHITETTURA E HOSTING
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe
+
+Per CIASCUN componente:
+
+[NOME_COMPONENTE]
+"✓" se utilizzato, "✗" se non utilizzato
+
+[NOME_DETTAGLI]
+Dettagli implementazione
+
+Esempi:
+
+[DATACENTER_LOCALE]
+"✓"
+
+[DATACENTER_LOCALE_DETTAGLI]
+"Datacenter aziendale Milano - 20 server fisici + storage NAS 100TB"
+
+[CLOUD]
+"✓"
+
+[CLOUD_PROVIDER]
+"AWS (EC2, S3, RDS) + Microsoft Azure (backup)"
+
+[HOSTING_ESTERNO]
+"✗"
+
+[HOSTING_PROVIDER]
+"-"
+
+[COLOCATION]
+"✗"
+
+[COLOCATION_PROVIDER]
+"-"
+
+SUBSECTION: DATI GESTITI
+───────────────────────────────────────────────────────────────────────────────
+
+[VOLUME_DATI]
+Volume totale dati gestiti
+Formato: "XX TB" o "XXX GB"
+
+[DATABASE]
+Database principali utilizzati
+Esempio: "PostgreSQL, MySQL, MongoDB"
+
+SUBSECTION: TIPOLOGIE DATI GESTITI
+───────────────────────────────────────────────────────────────────────────────
+
+Checkbox per CIASCUNA tipologia:
+
+[CHECK_DATI_PERSONALI]
+"checked" se gestiti
+
+Tipologie:
+- CHECK_DATI_PERSONALI (comuni)
+- CHECK_DATI_SENSIBILI (salute, biometrici)
+- CHECK_DATI_FINANZIARI
+- CHECK_CARTE_PAGAMENTO
+- CHECK_PROPRIETA_INTELLETTUALE
+- CHECK_DATI_RISERVATI (commerciali)
+
+[NUMERO_RECORD_PERSONALI]
+Numero record dati personali
+Formato: "XXX.XXX record"
+
+[NUMERO_CARTE_PAGAMENTO]
+Numero carte pagamento gestite/anno (se PCI DSS)
+Formato: "XX.XXX transazioni/anno"
+Se non applicabile: "Non applicabile"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: MISURE DI SICUREZZA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: PROTEZIONE PERIMETRALE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 righe
+
+Per CIASCUNA misura:
+
+[NOME_MISURA]
+"✓" se implementato, "✗" se non implementato
+
+[NOME_DETTAGLI]
+Dettagli implementazione
+
+Esempi:
+
+[FIREWALL]
+"✓"
+
+[FIREWALL_DETTAGLI]
+"Fortinet FortiGate 200E + pfSense ridondante"
+
+[IDS_IPS]
+"✓"
+
+[IDS_IPS_DETTAGLI]
+"Suricata IDS su tutti segmenti rete"
+
+[WAF]
+"✓"
+
+[WAF_DETTAGLI]
+"Cloudflare WAF per applicazioni web pubbliche"
+
+[VPN]
+"✓"
+
+[VPN_DETTAGLI]
+"OpenVPN con autenticazione certificato + MFA"
+
+[DDOS_PROTECTION]
+"✓"
+
+[DDOS_DETTAGLI]
+"Cloudflare DDoS Protection layer 3/4/7"
+
+SUBSECTION: PROTEZIONE ENDPOINT
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe
+
+[ANTIVIRUS]
+[ANTIVIRUS_DETTAGLI]
+Esempio: "Microsoft Defender + CrowdStrike Falcon"
+
+[EDR]
+[EDR_DETTAGLI]
+Esempio: "CrowdStrike Falcon EDR su tutti endpoint"
+
+[PATCH_MGMT]
+[PATCH_MGMT_DETTAGLI]
+Esempio: "WSUS Windows + Ansible Linux - patch critiche entro 7gg"
+
+[DEVICE_ENCRYPTION]
+[DEVICE_ENCRYPTION_DETTAGLI]
+Esempio: "BitLocker Windows, FileVault macOS - 100% laptop"
+
+SUBSECTION: BACKUP E BUSINESS CONTINUITY
+───────────────────────────────────────────────────────────────────────────────
+
+[BACKUP_IMPLEMENTATO]
+"Sì" oppure "No"
+
+[BACKUP_FREQUENZA]
+Frequenza backup
+Esempi: "Giornaliero incrementale + Settimanale completo"
+
+[BACKUP_OFFSITE]
+Backup off-site: "Sì" oppure "No"
+Se sì, specificare dove
+
+[BACKUP_TEST_RIPRISTINO]
+Test ripristino: "Sì - Frequenza" oppure "No"
+Esempio: "Sì - Trimestrale"
+
+[DR_PLAN]
+Disaster Recovery Plan: "Sì" oppure "No"
+
+[RTO]
+RTO (Recovery Time Objective)
+Esempio: "4 ore per sistemi critici, 24h per altri"
+
+SUBSECTION: AUTENTICAZIONE E ACCESSI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe
+
+[MFA]
+[MFA_DETTAGLI]
+Esempio: "Microsoft Authenticator su tutti accessi amministrativi + VPN"
+
+[SSO]
+[SSO_DETTAGLI]
+Esempio: "Azure AD SSO per applicazioni cloud"
+
+[PAM]
+[PAM_DETTAGLI]
+Esempio: "CyberArk per accessi privilegiati infrastruttura critica"
+
+[PASSWORD_POLICY]
+[PASSWORD_POLICY_DETTAGLI]
+Esempio: "Minimo 12 caratteri, complessità, rotazione 90gg, no riuso ultimi 10"
+
+SUBSECTION: MONITORAGGIO E LOGGING
+───────────────────────────────────────────────────────────────────────────────
+
+[SIEM]
+SIEM implementato
+Esempio: "Splunk Enterprise" oppure "Non implementato"
+
+[SOC]
+SOC attivo
+Esempio: "SOC interno H24" oppure "SOC esterno (provider XYZ)" oppure "Non presente"
+
+[LOG_RETENTION]
+Retention log
+Esempio: "12 mesi online, 7 anni archivio"
+
+[MONITORING_H24]
+Monitoring H24: "Sì" oppure "No"
+
+SUBSECTION: EMAIL SECURITY
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 3 righe
+
+[ANTISPAM]
+[ANTISPAM_DETTAGLI]
+Esempio: "Proofpoint Email Protection"
+
+[EMAIL_GATEWAY]
+[EMAIL_GATEWAY_DETTAGLI]
+Esempio: "Microsoft Defender for Office 365"
+
+[DMARC]
+[DMARC_DETTAGLI]
+Esempio: "DMARC policy=quarantine, SPF, DKIM attivi"
+
+SUBSECTION: FORMAZIONE E AWARENESS
+───────────────────────────────────────────────────────────────────────────────
+
+[SECURITY_TRAINING]
+Training attivo: "Sì" oppure "No"
+
+[TRAINING_FREQUENZA]
+Frequenza training
+Esempio: "Annuale obbligatorio per tutti dipendenti"
+
+[PHISHING_SIMULATION]
+Simulazioni phishing: "Sì - Frequenza" oppure "No"
+Esempio: "Sì - Trimestrale"
+
+[INCIDENT_RESPONSE_PLAN]
+Incident Response Plan: "Sì" oppure "No"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: STORICO INCIDENTI
+═══════════════════════════════════════════════════════════════════════════════
+
+[INCIDENTI_3_ANNI]
+Numero incidenti ultimi 3 anni
+Formato: "X incidenti" oppure "Nessun incidente"
+
+[DATA_BREACH_SUBITI]
+Data breach subiti: "Sì - N" oppure "No"
+
+SUBSECTION: DETTAGLIO INCIDENTI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI incidente significativo
+
+[DATA_INCIDENTE_N]
+Data formato "mm/aaaa"
+
+[TIPO_INCIDENTE_N]
+Tipo incidente
+Esempi: "Ransomware", "Data Breach", "Phishing", "DDoS", "Malware"
+
+[DESCRIZIONE_INCIDENTE_N]
+Descrizione sintetica (2-3 righe)
+
+[IMPATTO_INCIDENTE_N]
+Impatto
+Esempi: "Fermo 8h", "€ 50.000 costi", "5.000 record compromessi"
+
+[RISOLUZIONE_INCIDENTE_N]
+Risoluzione
+Esempio: "Ripristino backup, bonifica malware, cambio password"
+
+Se NESSUN incidente:
+Inserire riga unica: "Nessun incidente significativo registrato negli ultimi 3 anni"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: COPERTURE RICHIESTE
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella 10 righe - tutte garanzie cyber
+
+Per CIASCUNA garanzia:
+
+[RIC_NOME]
+Richiesta: "✓" oppure "✗"
+
+[RIC_NOME_MASSIMALE]
+Massimale richiesto formato "€ XXX.XXX"
+
+[RIC_NOME_NOTE]
+Note specifiche
+
+Garanzie:
+1. Data Breach (GDPR)
+2. Cyber Extortion (Ransomware)
+3. Business Interruption
+4. System Damage
+5. Cyber Crime
+6. Legal Defense
+7. Notification Costs
+8. PR Crisis Management
+9. Forensic Investigation
+10. PCI DSS Fines
+
+SUBSECTION: PREFERENZE FRANCHIGIE
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCHIGIA_PREFERITA]
+Franchigia preferita
+Esempio: "€ 5.000" oppure "€ 10.000"
+
+[FRANCHIGIA_BI_ORE]
+Franchigia temporale Business Interruption
+Esempio: "12 ore" oppure "24 ore"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: ESPOSIZIONI SPECIFICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: E-COMMERCE
+───────────────────────────────────────────────────────────────────────────────
+
+[ECOMMERCE]
+Attività e-commerce: "Sì" oppure "No"
+
+[ECOMMERCE_FATTURATO]
+Fatturato e-commerce annuo formato "€ X.XXX.XXX"
+Se non applicabile: "Non applicabile"
+
+[ECOMMERCE_PIATTAFORMA]
+Piattaforma e-commerce
+Esempio: "Shopify", "WooCommerce", "Magento", "Custom"
+
+[PAYMENT_GATEWAY]
+Gateway pagamento
+Esempio: "Stripe", "PayPal", "Nexi"
+
+SUBSECTION: CONFORMITÀ PCI DSS
+───────────────────────────────────────────────────────────────────────────────
+
+[GESTIONE_CARTE]
+Gestione carte pagamento: "Sì" oppure "No"
+
+[PCI_DSS_CERT]
+Certificazione PCI DSS: "Sì" oppure "No"
+
+[PCI_DSS_LIVELLO]
+Livello PCI DSS
+Esempio: "Level 1" (>6M transazioni), "Level 2", "Level 3", "Level 4"
+
+[PCI_DSS_ULTIMO_AUDIT]
+Data ultimo audit formato "mm/aaaa"
+
+SUBSECTION: SERVIZI CLOUD E SAAS
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 3 righe - principali servizi cloud
+
+[SERVIZIO_CLOUD_N]
+Nome servizio
+Esempio: "Email & Collaboration", "CRM", "ERP Cloud"
+
+[PROVIDER_CLOUD_N]
+Provider
+Esempio: "Microsoft 365", "Salesforce", "SAP S/4HANA Cloud"
+
+[CRITICITA_CLOUD_N]
+Criticità business
+Esempio: "Critico", "Alta", "Media"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: CONFORMITÀ NORMATIVA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: GDPR
+───────────────────────────────────────────────────────────────────────────────
+
+[DPO_NOMINATO]
+DPO nominato: "Sì - Interno" oppure "Sì - Esterno" oppure "No"
+
+[REGISTRO_TRATTAMENTI]
+Registro trattamenti: "Sì" oppure "No"
+
+[DPIA]
+DPIA effettuate: "Sì - N DPIA" oppure "No"
+
+[INCIDENT_RESPONSE_GDPR]
+Procedura Incident Response GDPR: "Sì" oppure "No"
+
+SUBSECTION: ALTRE CONFORMITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+Checkbox per ciascuna:
+
+[CHECK_ISO_27001]
+"checked" se certificato
+
+Conformità:
+- CHECK_ISO_27001 (Information Security Management)
+- CHECK_NIS2 (Direttiva sicurezza reti/sistemi informativi)
+- CHECK_SOC2 (Service Organization Control)
+- CHECK_HIPAA (Health Insurance Portability - sanità USA)
+- CHECK_PSD2 (Payment Services Directive - pagamenti)
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: ALLEGATI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DOCUMENTAZIONE ALLEGATA
+───────────────────────────────────────────────────────────────────────────────
+
+Checkbox per CIASCUN documento:
+
+[CHECK_DOC_NOME]
+"checked" se allegato
+
+Documenti:
+- CHECK_DOC_SECURITY_POLICY
+- CHECK_DOC_NETWORK_DIAGRAM
+- CHECK_DOC_DISASTER_RECOVERY
+- CHECK_DOC_VULNERABILITY_ASSESSMENT
+- CHECK_DOC_PENETRATION_TEST
+- CHECK_DOC_ISO_27001
+- CHECK_DOC_PCI_DSS
+- CHECK_DOC_REGISTRO_TRATTAMENTI
+
+[NOTE_AGGIUNTIVE]
+Note aggiuntive (textarea)
+Eventuali specificazioni, gap noti, progetti miglioramento sicurezza
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DATI NUMERICI PRECISI
+   ─────────────────────
+   Server, workstation, volumi dati
+   Record dati personali
+   Transazioni carte pagamento
+   Fatturato e-commerce
+
+2. FORNITORI SPECIFICI
+   ───────────────────
+   Sempre nome fornitore soluzione
+   Versione se rilevante
+   Provider cloud specifici
+
+3. SISTEMI OPERATIVI
+   ─────────────────
+   Versione precisa SO
+   No sistemi obsoleti (Windows XP, 2008)
+   Se legacy, evidenziare in note
+
+4. BACKUP DETTAGLIATO
+   ──────────────────
+   Frequenza precisa
+   Off-site obbligatorio
+   Test ripristino critico
+   RTO definito
+
+5. STORICO INCIDENTI COMPLETO
+   ──────────────────────────
+   Tutti incidenti ultimi 3 anni
+   Anche se minori
+   Descrizione onesta
+   Costi se disponibili
+
+6. CONFORMITÀ DOCUMENTATA
+   ─────────────────────
+   Certificazioni con date
+   Audit recenti
+   DPO se GDPR applicabile
+
+7. E-COMMERCE E PCI DSS
+   ────────────────────
+   Se gestione carte: PCI DSS obbligatorio
+   Livello PCI in base volumi
+   Ultimo audit
+
+8. CLOUD PROVIDER
+   ──────────────
+   Tutti provider elencati
+   Servizi critici identificati
+   Responsabilità shared security
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: ANAGRAFICA
+──────────────────
+
+Da visura camerale:
+- Ragione sociale, P.IVA
+- Sede legale
+- ATECO
+
+Da questionario:
+- Fatturato, dipendenti
+- Sedi operative
+- Presenza internazionale
+
+STEP 2: INFRASTRUTTURA
+───────────────────────
+
+Da IT assessment:
+- Conteggio server/workstation
+- SO versioni
+- Datacenter locale vs cloud
+- Provider cloud utilizzati
+- Volume dati gestiti
+
+STEP 3: DATI
+────────────
+
+Da data inventory:
+- Tipologie dati gestiti (checkbox)
+- Numero record dati personali
+- Se carte pagamento: quante
+
+STEP 4: MISURE SICUREZZA
+─────────────────────────
+
+Da security assessment:
+- Firewall, IDS/IPS, WAF
+- Antivirus, EDR
+- MFA, SSO, PAM
+- SIEM, SOC
+- Email security
+- Backup: frequenza, off-site, test
+
+Per OGNI misura:
+- ✓/✗ se implementata
+- Nome fornitore/soluzione
+- Dettagli configurazione
+
+STEP 5: FORMAZIONE
+──────────────────
+
+Da HR/Security:
+- Training awareness
+- Frequenza training
+- Phishing simulation
+- Incident Response Plan
+
+STEP 6: INCIDENTI
+─────────────────
+
+Da incident log ultimi 3 anni:
+- Data, tipo, descrizione
+- Impatto (tempo, costi, dati)
+- Risoluzione
+
+Se NESSUNO: dichiarare esplicitamente
+
+STEP 7: COPERTURE
+─────────────────
+
+Da discussione broker/cliente:
+- 10 garanzie: quali richieste (✓/✗)
+- Massimali desiderati
+- Franchigia preferita
+
+STEP 8: ESPOSIZIONI
+───────────────────
+
+E-commerce:
+- Fatturato e-commerce
+- Piattaforma, gateway
+
+PCI DSS:
+- Certificazione, livello, audit
+
+Cloud:
+- Top 3 servizi critici
+- Provider ciascuno
+
+STEP 9: CONFORMITÀ
+──────────────────
+
+GDPR:
+- DPO, registro, DPIA
+- Incident response procedure
+
+Altre:
+- ISO 27001, NIS2, SOC2, ecc.
+
+STEP 10: ALLEGATI
+─────────────────
+
+Verificare disponibilità:
+- Security policy
+- Network diagram
+- DR plan
+- Vulnerability assessment
+- Penetration test
+- Certificazioni
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_cyber_compagnia_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle:
+   - Architettura hosting (4 righe)
+   - Protezione perimetrale (5 righe)
+   - Protezione endpoint (4 righe)
+   - Autenticazione (4 righe)
+   - Email security (3 righe)
+   - Incidenti (variabile, min 1 riga "nessuno")
+   - Coperture richieste (10 righe)
+   - Servizi cloud (3 righe)
+4. Checkbox:
+   - Tipologie dati (6)
+   - Conformità (5)
+   - Allegati (8)
+5. Info grid:
+   - Dati contraente
+   - Profilo aziendale
+   - Sistemi IT
+   - Backup
+   - Monitoraggio
+   - GDPR
+6. Numeri precisi:
+   - Server, workstation
+   - Volume dati
+   - Record personali
+   - Transazioni
+7. Fornitori specifici:
+   - Cloud provider
+   - Security vendor
+   - Software utilizzati
+8. HTML valido
+
+DELIVERABLE:
+File HTML completo, tecnico, professionale, questionario dettagliato per 
+sottoscrizione polizza Cyber Risk.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

@@ -549,24 +549,27 @@ def full_analysis_pipeline(
         if not safe_policy_type:
             safe_policy_type = "rc_generale"
         
-        # Se livello è "sinistro", usa cartella sinistri_{policy_type}
+        # Determina la cartella base e il tipo di polizza
         if analysis_level == "sinistro":
-            prompt_folder = f"sinistri_{safe_policy_type}"
+            base_folder = "analisi_sinistri"
+            # Rimuovi "rc_generale" -> "rc" per sinistri
+            folder_type = safe_policy_type.replace("rc_generale", "rc")
         else:
-            prompt_folder = safe_policy_type
+            base_folder = "analisi_polizze"
+            folder_type = safe_policy_type
         
-        prompt_path = f"prompts/{prompt_folder}/{analysis_level}.txt"
+        prompt_path = f"prompts/{base_folder}/{folder_type}/{analysis_level}.txt"
         if not os.path.exists(prompt_path):
-            prompt_path = f"prompts/{prompt_folder}/base.txt"
+            prompt_path = f"prompts/{base_folder}/{folder_type}/base.txt"
         
         with open(prompt_path, "r", encoding="utf-8") as f:
             prompt_template = f.read()
         
-        template_path = f"prompts/{prompt_folder}/template_{analysis_level}.html"
+        template_path = f"prompts/{base_folder}/{folder_type}/template_{analysis_level}.html"
         if not os.path.exists(template_path):
-            template_path = f"prompts/{prompt_folder}/template.html"
+            template_path = f"prompts/{base_folder}/{folder_type}/template.html"
             if not os.path.exists(template_path):
-                template_path = f"prompts/{prompt_folder}/Template.html"
+                template_path = f"prompts/{base_folder}/{folder_type}/Template.html"
         
         print(f"DEBUG: Using prompt: {prompt_path}")
         print(f"DEBUG: Using template: {template_path}")

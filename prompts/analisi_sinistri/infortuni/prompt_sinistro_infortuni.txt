@@ -1,0 +1,846 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: ANALISI SINISTRO INFORTUNI - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML di analisi e gestione sinistro Infortuni 
+Extra-Professionali per uso interno broker/agente/risk manager.
+
+DESTINATARIO: Broker, agente, risk manager
+TEMPLATE: template_sinistro_infortuni_finale.html (1031 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da pratica
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. FOCUS PERSONA
+   - Dati completi infortunato
+   - Percorso sanitario dettagliato
+   - Evoluzione lesioni e prognosi
+   - Consolidamento danno biologico
+
+2. VALUTAZIONE MEDICO-LEGALE
+   - Invalidità Permanente (IP)
+   - Inabilità Temporanea (IT)
+   - Franchigie e carenze
+   - Rapporti con INAIL
+
+3. GESTIONE OPERATIVA
+   - Documentazione medica completa
+   - Timeline cure e visite
+   - Prossimi step con scadenze
+   - Comunicazioni con parti
+
+4. VALORE AGGIUNTO
+   - Lezioni apprese
+   - Raccomandazioni assicurato
+   - Azioni preventive
+   - Impatto portfolio
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (8 SEZIONI)
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI SINISTRO
+SEZIONE 2: DESCRIZIONE INFORTUNIO
+SEZIONE 3: DANNI ALLA PERSONA
+SEZIONE 4: COPERTURA ASSICURATIVA
+SEZIONE 5: GESTIONE E AZIONI
+SEZIONE 6: VALUTAZIONE ECONOMICA
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+SEZIONE 8: CRONOLOGIA
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER + ALERT BOX
+═══════════════════════════════════════════════════════════════════════════════
+
+[NUMERO_SINISTRO]
+Numero sinistro (formato "INF-2024-0089")
+
+[DATA_INFORTUNIO]
+Data infortunio formato "gg/mm/aaaa"
+
+[STATUS_SINISTRO]
+Status: "Aperto", "In consolidamento", "In liquidazione", "Chiuso"
+
+[INFORTUNATO]
+Nome cognome infortunato
+
+ALERT BOX
+─────────
+
+[ALERT_CLASS]
+Classe CSS:
+- "alert-critical" → IP grave >50%, complicanze
+- "alert-warning" → IP 20-50%, consolidamento lungo
+- "alert-info" → Gestione standard
+- "alert-success" → Chiuso, prestazioni erogate
+
+[ALERT_TITLE]
+Titolo alert
+
+[ALERT_MESSAGE]
+Messaggio (2-3 righe)
+Esempio: "IP stimata 35%. Attesa consolidamento maggio 2025. Possibile 
+contenzioso su percentuale invalidità."
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 1: DATI SINISTRO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: IDENTIFICATIVI
+───────────────────────────────────────────────────────────────────────────────
+
+[NUMERO_SINISTRO_COMP]
+Numero sinistro compagnia
+
+[NUMERO_PRATICA_BROKER]
+Numero pratica broker (formato "BR-INF-2024-0089")
+
+[DATA_INFORTUNIO]
+Data infortunio formato "gg/mm/aaaa"
+
+[DATA_DENUNCIA]
+Data denuncia formato "gg/mm/aaaa"
+
+[ORA_INFORTUNIO]
+Ora infortunio formato "HH:MM"
+
+[STATUS_BADGE]
+Badge HTML:
+<span class="status-badge status-aperto">Aperto</span>
+<span class="status-badge status-consolidamento">In Consolidamento</span>
+<span class="status-badge status-liquidazione">In Liquidazione</span>
+<span class="status-badge status-chiuso">Chiuso</span>
+
+SUBSECTION: POLIZZA COINVOLTA
+───────────────────────────────────────────────────────────────────────────────
+
+[COMPAGNIA]
+Compagnia assicuratrice
+
+[NUMERO_POLIZZA]
+Numero polizza
+
+[CONTRAENTE]
+Contraente polizza
+
+[TIPO_POLIZZA]
+Tipo:
+- "Collettiva Cumulativa"
+- "Collettiva Nominativa"
+- "Individuale"
+
+[MASSIMALE_MORTE]
+Massimale caso morte formato "€ XXX.XXX"
+
+[MASSIMALE_IP]
+Massimale invalidità permanente formato "€ XXX.XXX"
+
+SUBSECTION: GESTORI
+───────────────────────────────────────────────────────────────────────────────
+
+[BROKER_REFERENTE]
+Nome broker
+
+[LIQUIDATORE_COMPAGNIA]
+Nome liquidatore
+
+[MEDICO_LEGALE]
+Nome medico legale compagnia
+
+[LEGALE]
+Nome legale (se coinvolto)
+Se non coinvolto: "-"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 2: DESCRIZIONE INFORTUNIO
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: INFORTUNATO
+───────────────────────────────────────────────────────────────────────────────
+
+[INFORTUNATO]
+Nome cognome
+
+[DATA_NASCITA_INFORT]
+Data nascita formato "gg/mm/aaaa"
+
+[ETA_INFORT]
+Età al momento infortunio (formato "45 anni")
+
+[PROFESSIONE_INFORT]
+Professione esercitata
+
+SUBSECTION: DINAMICA INFORTUNIO
+───────────────────────────────────────────────────────────────────────────────
+
+[DINAMICA_INFORTUNIO]
+Descrizione dettagliata (10-15 righe)
+
+Includere:
+- Sequenza cronologica evento
+- Attività svolta al momento
+- Cause immediate
+- Fattori contribuenti
+
+Esempio:
+"Il giorno 12/03/2024 ore 15:30, l'assicurato Mario Rossi stava effettuando 
+escursione in montagna sul sentiero CAI 102 in località Monte Bianco. Durante 
+discesa su tratto roccioso, ha perso equilibrio a causa pietra mobile, cadendo 
+per circa 3 metri su pietraia sottostante. Impatto con lato destro corpo. 
+Presenti altri escursionisti che hanno immediatamente allertato soccorso alpino. 
+Condizioni meteo buone, sentiero asciutto. Calzature adeguate (scarponi trekking). 
+Infortunato cosciente, dolore acuto spalla destra e bacino. Soccorso alpino 
+intervenuto ore 16:15, trasporto con elicottero a Ospedale Valle ore 17:00."
+
+SUBSECTION: LUOGO E CIRCOSTANZE
+───────────────────────────────────────────────────────────────────────────────
+
+[LUOGO_INFORTUNIO]
+Indirizzo o località precisa
+
+[ATTIVITA_SVOLTA]
+Attività al momento infortunio
+Esempi: "Escursionismo", "Sport invernali", "Ciclismo", "Attività domestica"
+
+[CIRCOSTANZE]
+Circostanze (2-3 righe)
+Esempio: "Sentiero montano ben segnalato. Condizioni meteo normali. Presenza 
+altri escursionisti. Nessun fattore esterno anomalo."
+
+[TESTIMONI_PRESENTI]
+"Sì - 3 escursionisti" oppure "No"
+
+SUBSECTION: PRIMO SOCCORSO E TRASPORTO
+───────────────────────────────────────────────────────────────────────────────
+
+[PRIMO_SOCCORSO]
+Chi ha prestato primo soccorso
+Esempio: "Soccorso alpino", "118", "Testimoni presenti"
+
+[TRASPORTO]
+Modalità trasporto
+Esempio: "Elicottero soccorso alpino", "Ambulanza 118", "Mezzi propri"
+
+[STRUTTURA_SANITARIA]
+Nome ospedale/pronto soccorso
+
+[PROGNOSI_INIZIALE]
+Prognosi PS iniziale (formato "30 giorni s.c.")
+s.c. = salvo complicazioni
+
+SUBSECTION: DOCUMENTAZIONE ACQUISITA
+───────────────────────────────────────────────────────────────────────────────
+
+[CHECK_REFERTO_PS]
+"checked" se acquisito, "" se non acquisito
+
+[DETTAGLI_REFERTO_PS]
+Dettagli (es. "Referto PS 12/03/2024 - Frattura omero dx")
+
+Ripetere per:
+- CHECK_CERT_MEDICI / DETTAGLI_CERT_MEDICI
+- CHECK_ESAMI / DETTAGLI_ESAMI
+- CHECK_FOTO / DETTAGLI_FOTO
+- CHECK_VERBALE / DETTAGLI_VERBALE
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 3: DANNI ALLA PERSONA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: LESIONI RISCONTRATE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI lesione
+
+[TIPO_LESIONE_N]
+Tipo lesione medicale
+Esempi: "Frattura composta", "Lussazione", "Distorsione", "Contusione"
+
+[LOCALIZ_LESIONE_N]
+Localizzazione anatomica precisa
+Esempi: "Omero destro terzo prossimale", "Caviglia sinistra", "Rachide L3-L4"
+
+[GRAVITA_LESIONE_N]
+Gravità: "Lieve", "Moderata", "Grave"
+
+[NOTE_LESIONE_N]
+Note cliniche
+
+SUBSECTION: PERCORSO SANITARIO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per OGNI accesso sanitario
+
+[DATA_PERCORSO_N]
+Data formato "gg/mm/aaaa"
+
+[STRUTTURA_PERCORSO_N]
+Nome struttura sanitaria
+
+[TRATTAMENTO_N]
+Trattamento effettuato
+Esempi: "Riduzione frattura", "Intervento chirurgico ORIF", "Fisioterapia"
+
+[ESITO_N]
+Esito/prognosi
+Esempio: "Prognosi 45 gg s.c."
+
+SUBSECTION: INABILITÀ TEMPORANEA
+───────────────────────────────────────────────────────────────────────────────
+
+[DATA_INIZIO_IT]
+Data inizio IT formato "gg/mm/aaaa"
+
+[DATA_FINE_IT]
+Data fine IT formato "gg/mm/aaaa"
+Se ancora in IT: "In corso"
+
+[GIORNI_IT]
+Totale giorni IT (formato "45 giorni")
+
+[TIPO_IT]
+Tipo IT:
+- "IT Assoluta"
+- "IT Parziale"
+- "IT Assoluta + Parziale"
+
+SUBSECTION: INVALIDITÀ PERMANENTE
+───────────────────────────────────────────────────────────────────────────────
+
+[IP_STIMATA_INIZIALE]
+IP stimata iniziale (formato "25-30%")
+Prima valutazione medica
+
+[IP_ML_COMPAGNIA]
+IP valutata da medico legale compagnia (formato "22%")
+
+[IP_ML_PARTE]
+IP valutata da medico legale parte (formato "35%")
+Se non presente: "Non richiesta"
+
+[IP_DEFINITIVA]
+IP concordata/definitiva (formato "28%")
+Se non ancora definita: "In fase di accertamento"
+
+[VALUTAZIONE_MEDICO_LEGALE]
+Valutazione articolata ML (5-10 righe)
+
+Esempio:
+"Lesioni: frattura composta omero destro terzo prossimale, contusione bacino.
+Trattamento: riduzione incruenta, immobilizzazione gessata 45 giorni, 
+fisioterapia 3 mesi.
+Esiti: limitazione funzionale articolazione spalla destra (flessione 120°, 
+abduzione 110°). Lieve deficit forza. Persistente dolenzia sotto sforzo.
+IP secondo Tabella ANIA: deficit mobilità spalla 15% + algìe persistenti 3% 
+= IP totale 18%.
+Consolidamento raggiunto 10/09/2024. Nessuna complicanza."
+
+SUBSECTION: CONSOLIDAMENTO DANNO
+───────────────────────────────────────────────────────────────────────────────
+
+[DATA_PREV_CONSOLIDAMENTO]
+Data prevista consolidamento formato "gg/mm/aaaa"
+
+[DATA_EFF_CONSOLIDAMENTO]
+Data effettiva consolidamento formato "gg/mm/aaaa"
+Se non ancora consolidato: "Da definire"
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 4: COPERTURA ASSICURATIVA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: GARANZIE APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe fisse
+
+[MASSIMALE_MORTE_GAR]
+Massimale morte formato "€ XXX.XXX"
+
+[FRANCHIGIA_MORTE]
+Franchigia morte (solitamente "Nessuna")
+
+[APPLICABILITA_MORTE]
+"Non applicabile" (se infortunato vivo)
+"Operante" (se decesso)
+
+[MASSIMALE_IP_GAR]
+Massimale IP formato "€ XXX.XXX"
+
+[FRANCHIGIA_IP]
+Franchigia IP
+Esempio: "3%", "5%", "Nessuna"
+
+[APPLICABILITA_IP]
+"Operante" se IP > franchigia
+"Non operante" se IP < franchigia
+
+[MASSIMALE_IT_GAR]
+Massimale IT formato "€ XX/giorno" o "€ XX.XXX totale"
+
+[FRANCHIGIA_IT]
+Franchigia IT (carenza)
+Esempio: "3 giorni", "7 giorni"
+
+[APPLICABILITA_IT]
+"Operante" oppure "Non applicabile"
+
+[MASSIMALE_SPESE_GAR]
+Massimale spese mediche formato "€ X.XXX"
+
+[FRANCHIGIA_SPESE]
+Franchigia spese
+Esempio: "€ 100", "10%", "Nessuna"
+
+[APPLICABILITA_SPESE]
+"Operante" oppure "Non applicabile"
+
+SUBSECTION: VALUTAZIONE OPERATIVITÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[POLIZZA_OPERANTE]
+"Sì" oppure "No" oppure "In verifica"
+
+[TIPO_COPERTURA]
+Tipo copertura:
+- "H24 - Infortuni professionali ed extra-professionali"
+- "Extra-professionale - Solo tempo libero"
+- "Professionale - Solo durante lavoro"
+
+[ATTIVITA_COPERTE]
+Attività coperte
+Esempio: "Tutte le attività extra-professionali escluse attività ad alto rischio"
+
+[VALIDITA_TERRITORIALE]
+Territorio:
+- "Mondo intero"
+- "Europa"
+- "Italia"
+
+SUBSECTION: ESCLUSIONI POTENZIALI
+───────────────────────────────────────────────────────────────────────────────
+
+[ESCLUSIONE_POTENZIALE_N]
+Elencare 3 esclusioni potenziali con valutazione
+
+Esempio:
+"Art. 7.3 CG - Sport pericolosi: Non applicabile. Escursionismo non rientra 
+tra sport ad alto rischio elencati in polizza (alpinismo, paracadutismo, ecc.)"
+
+[VALUTAZIONE_COPERTURA]
+Valutazione complessiva (5-8 righe)
+
+SUBSECTION: FRANCHIGIE APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCHIGIA_IP_APPLICABILE]
+Franchigia IP (es. "3%")
+Se IP 18% e franchigia 3% → Indennizzabile 15%
+
+[CARENZA_IT_APPLICABILE]
+Carenza IT (es. "3 giorni")
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 5: GESTIONE E AZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: STATUS ATTUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[FASE_GESTIONALE]
+Fase:
+- "Denuncia e costituzione riserva"
+- "Raccolta documentazione medica"
+- "Attesa consolidamento"
+- "Valutazione medico-legale"
+- "Liquidazione in corso"
+- "Chiusura"
+
+[ULTIMO_AGGIORNAMENTO]
+Data formato "gg/mm/aaaa"
+
+[ML_INCARICATO]
+Nome medico legale
+
+[DATA_VISITA_ML]
+Data visita ML formato "gg/mm/aaaa"
+Se non ancora effettuata: "Da programmare"
+
+SUBSECTION: DOCUMENTAZIONE RACCOLTA
+───────────────────────────────────────────────────────────────────────────────
+
+Checklist 7 voci:
+
+[CHECK_DOC_DENUNCIA]
+"checked" o ""
+
+Ripetere per:
+- CHECK_DOC_POLIZZA
+- CHECK_DOC_CERT_MED
+- CHECK_DOC_ESAMI
+- CHECK_DOC_FATTURE_SPESE
+- CHECK_DOC_RELAZIONE_ML
+- CHECK_DOC_INAIL
+
+SUBSECTION: DOCUMENTAZIONE NECESSARIA
+───────────────────────────────────────────────────────────────────────────────
+
+[DOC_NECESSARIA_N]
+Elencare 3 max documenti mancanti
+
+SUBSECTION: RAPPORTI CON INAIL
+───────────────────────────────────────────────────────────────────────────────
+
+[INAIL_COINVOLTO]
+"Sì" oppure "No"
+
+[DENUNCIA_INAIL]
+Data denuncia INAIL formato "gg/mm/aaaa"
+Se non coinvolto: "Non applicabile"
+
+[IP_INAIL]
+IP riconosciuta INAIL (formato "12%")
+Se non ancora definita: "In valutazione"
+
+[INDENNIZZO_INAIL]
+Importo indennizzo INAIL formato "€ XX.XXX"
+Se non ancora liquidato: "Non ancora liquidato"
+
+SUBSECTION: PROSSIMI STEP
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per azione
+
+[SCADENZA_AZIONE_N]
+[AZIONE_N]
+[RESPONSABILE_N]
+[NOTE_AZIONE_N]
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 6: VALUTAZIONE ECONOMICA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: RISERVA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_INIZIALE]
+Riserva iniziale formato "€ XX.XXX"
+
+[DATA_RISERVA_INIZIALE]
+Data formato "gg/mm/aaaa"
+
+[RISERVA_ATTUALE]
+Riserva attuale formato "€ XX.XXX"
+
+[DATA_AGG_RISERVA]
+Data ultimo aggiornamento formato "gg/mm/aaaa"
+
+SUBSECTION: DETTAGLIO PRESTAZIONI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe (IP, IT, Spese, Totale)
+
+[BASE_CALC_IP]
+Base calcolo IP
+Formato: "IP 18% su € 100.000"
+
+[IMPORTO_IP]
+Importo IP formato "€ XX.XXX"
+Calcolo esempio: 18% × € 100.000 = € 18.000
+
+[NOTE_IP]
+Note (es. "Dedotta franchigia 3%: IP indennizzabile 15%")
+
+[BASE_CALC_IT]
+Base calcolo IT
+Formato: "42 giorni × € 50/giorno"
+
+[IMPORTO_IT]
+Importo IT formato "€ X.XXX"
+
+[NOTE_IT]
+Note (es. "Dedotta carenza 3 giorni")
+
+[IMPORTO_SPESE]
+Importo spese mediche rimborsabili formato "€ X.XXX"
+
+[NOTE_SPESE]
+Note spese
+
+[TOTALE_PRESTAZIONI]
+Somma IP + IT + Spese formato "€ XX.XXX"
+
+SUBSECTION: PAGAMENTI EFFETTUATI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella - 1 riga per pagamento
+
+[DATA_PAG_N]
+[PRESTAZIONE_PAG_N]
+Tipo: "Acconto IP", "IT", "Rimborso spese mediche", "Saldo IP"
+
+[IMPORTO_PAG_N]
+[NOTE_PAG_N]
+
+[TOTALE_PAGATO]
+Somma tutti pagamenti
+
+SUBSECTION: SINTESI ECONOMICA
+───────────────────────────────────────────────────────────────────────────────
+
+[RISERVA_RESIDUA]
+Riserva residua = Riserva attuale - Totale pagato
+
+[STIMA_CHIUSURA]
+Stima importo finale
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 7: NOTE E RACCOMANDAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CRITICITÀ EMERSE
+───────────────────────────────────────────────────────────────────────────────
+
+[CRITICITA_N]
+Elencare 3 criticità
+
+Esempi:
+- "Documentazione medica incompleta ritarda valutazione IP"
+- "Discrepanza valutazione ML compagnia (22%) vs ML parte (35%)"
+- "Complicanze post-operatorie hanno prolungato IT"
+
+SUBSECTION: RACCOMANDAZIONI ASSICURATO
+───────────────────────────────────────────────────────────────────────────────
+
+[RACCOMANDAZIONI_ASSICURATO]
+Raccomandazioni (5-10 righe)
+
+Esempio:
+"Si raccomanda all'assicurato di:
+1. Proseguire fisioterapia come da prescrizione ortopedica
+2. Conservare tutte fatture spese mediche per rimborso
+3. Informare tempestivamente broker di ogni nuova visita medica
+4. Non sottoscrivere transazioni con terzi senza preventivo parere broker
+5. Valutare incremento massimale IP a € 150.000 al rinnovo polizza"
+
+SUBSECTION: AZIONI PREVENTIVE FUTURE
+───────────────────────────────────────────────────────────────────────────────
+
+[AZIONE_PREVENTIVA_N]
+
+Esempi:
+- "Valutare copertura sport invernali se praticati abitualmente"
+- "Verificare copertura attività ciclistiche agonistiche"
+
+SUBSECTION: LEZIONI APPRESE
+───────────────────────────────────────────────────────────────────────────────
+
+[LEZIONI_APPRESE]
+Analisi (5-10 righe)
+
+Esempio:
+"Sinistro evidenzia:
+- Importanza denuncia tempestiva (effettuata entro 48h da evento)
+- Utilità documentazione fotografica lesioni (acquisita in PS)
+- Valore consulenza medico-legale di parte (differenza 13% IP)
+- Adeguatezza massimale IP € 100.000 per infortunio di questa gravità
+Per portfolio: verificare adeguatezza massimali clienti praticanti escursionismo."
+
+SUBSECTION: IMPATTO PORTFOLIO
+───────────────────────────────────────────────────────────────────────────────
+
+[IMPATTO_LOSS_RATIO]
+Impatto loss ratio
+
+[IMPATTO_RINNOVO]
+Impatto rinnovo
+
+═══════════════════════════════════════════════════════════════════════════════
+SEZIONE 8: CRONOLOGIA
+═══════════════════════════════════════════════════════════════════════════════
+
+Timeline eventi + Comunicazioni compagnia
+
+[DATA_EVENTO_CRONOL_N]
+[TITOLO_EVENTO_N]
+[DESCRIZIONE_EVENTO_N]
+
+Tabella comunicazioni:
+[DATA_COM_N]
+[TIPO_COM_N]
+[OGGETTO_COM_N]
+
+[RIFERIMENTO_ARCHIVIO]
+[PERCORSO_ARCHIVIO]
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DATI INFORTUNATO COMPLETI
+   ──────────────────────────
+   Nome, data nascita, età, professione
+   SEMPRE presenti
+
+2. DINAMICA DETTAGLIATA
+   ────────────────────
+   Minimo 10 righe
+   Sequenza cronologica chiara
+   Cause e circostanze
+
+3. PERCORSO SANITARIO COMPLETO
+   ────────────────────────────
+   Tutte visite, esami, trattamenti
+   Timeline cure
+   Prognosi evoluzione
+
+4. IP E IT PRECISE
+   ───────────────
+   Percentuali IP sempre indicate
+   Giorni IT sempre calcolati
+   Franchigie/carenze applicate
+
+5. CONSOLIDAMENTO
+   ──────────────
+   Data prevista sempre stimata
+   Data effettiva quando avvenuto
+   Fondamentale per liquidazione IP
+
+6. INAIL
+   ─────
+   Sempre verificare se coinvolto
+   Se sì: IP INAIL e indennizzo
+   Importante per calcolo differenziale
+
+7. CALCOLI ECONOMICI
+   ─────────────────
+   IP: percentuale × massimale
+   IT: giorni × diaria
+   Dedurre franchigie e carenze
+
+8. LEZIONI APPRESE
+   ───────────────
+   Mai omettere
+   Focus prevenzione
+   Azioni concrete
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI INFORTUNATO
+─────────────────────────
+
+Da anagrafica:
+- Nome, cognome, data nascita
+- Calcolare età al momento infortunio
+- Professione
+
+STEP 2: DINAMICA
+────────────────
+
+Da denuncia e testimonianze:
+- Ricostruire sequenza cronologica
+- Attività svolta
+- Cause evento
+- Primi soccorsi
+
+STEP 3: DOCUMENTAZIONE MEDICA
+──────────────────────────────
+
+Raccogliere:
+- Referto PS
+- Certificati medici tutti
+- Esami diagnostici (RX, TAC, RM)
+- Referti visite specialistiche
+
+STEP 4: LESIONI E CURE
+───────────────────────
+
+Da documentazione medica:
+- Elencare tutte lesioni
+- Ricostruire percorso cure
+- Timeline visite e trattamenti
+
+STEP 5: IT E IP
+───────────────
+
+Calcolare:
+- IT: data inizio → data fine
+- Giorni totali IT
+- IP: valutazione ML compagnia vs parte
+- IP definitiva concordata
+
+STEP 6: CONSOLIDAMENTO
+──────────────────────
+
+Stimare:
+- Data prevista (medico curante)
+- Data effettiva (visita ML finale)
+
+STEP 7: COPERTURA
+─────────────────
+
+Da polizza:
+- Massimali IP, IT, Spese
+- Franchigie e carenze
+- Esclusioni applicabili
+- Validità territoriale
+
+STEP 8: INAIL
+─────────────
+
+Verificare:
+- Se infortunio anche professionale
+- Denuncia INAIL fatta?
+- IP INAIL riconosciuta
+- Indennizzo INAIL
+
+STEP 9: CALCOLI PRESTAZIONI
+────────────────────────────
+
+Calcolare:
+- IP: percentuale × massimale
+- Detrarre franchigia IP
+- IT: giorni × diaria
+- Detrarre carenza IT
+- Spese: totale fatture rimborsabili
+
+STEP 10: CRONOLOGIA
+───────────────────
+
+Ricostruire:
+- Infortunio → PS → Visite → Consolidamento → Liquidazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_sinistro_infortuni_finale.html
+2. Sostituire TUTTI placeholder
+3. Tabelle dinamiche:
+   - Lesioni (quante necessarie)
+   - Percorso sanitario (tutti accessi)
+   - Pagamenti (tutti effettuati)
+4. Calcoli economici:
+   - IP = percentuale × massimale - franchigia
+   - IT = giorni × diaria - carenza
+   - Verificare correttezza
+5. Alert box:
+   - Classe in base gravità IP
+   - Messaggio appropriato
+6. Checklist:
+   - "checked" per documenti acquisiti
+7. Timeline cronologica corretta
+8. HTML valido
+
+DELIVERABLE:
+File HTML completo, professionale, strumento operativo gestione sinistro infortuni.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

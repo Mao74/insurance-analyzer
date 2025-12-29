@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richiesta Quotazione RCA - [TARGA]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --color-increase: #16a34a;
+            --color-same: #ca8a04;
+            --color-decrease: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* HEADER */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 15px 0 10px 0;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* COMPARISON TABLE */
+        .comparison-table th {
+            width: 33.33%;
+        }
+
+        .comparison-table .col-increase {
+            background: #f0fdf4;
+            font-weight: 600;
+            color: var(--color-increase);
+        }
+
+        .comparison-table .col-same {
+            background: #fffbeb;
+        }
+
+        .comparison-table .col-decrease {
+            background: #fef2f2;
+            font-weight: 600;
+            color: var(--color-decrease);
+        }
+
+        /* NOTE BOX */
+        .note-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .note-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* LIST */
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .report-container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>RICHIESTA QUOTAZIONE</h1>
+            <p>Polizza RCA Auto + Garanzie Accessorie</p>
+            
+            <div class="header-meta">
+                <div class="header-meta-item">
+                    <strong>BROKER</strong>
+                    Eramo & Associati S.r.l.
+                </div>
+                <div class="header-meta-item">
+                    <strong>RIFERIMENTO</strong>
+                    [RIFERIMENTO_BROKER]
+                </div>
+                <div class="header-meta-item">
+                    <strong>DATA RICHIESTA</strong>
+                    [DATA_RICHIESTA]
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 1: DATI CONTRAENTE -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Contraente</h2>
+
+            <h3 class="subsection-title">Anagrafica</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Contraente</span>
+                    <span class="info-value">[CONTRAENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo</span>
+                    <span class="info-value">[TIPO_CONTRAENTE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data Nascita / Costituzione</span>
+                    <span class="info-value">[DATA_NASCITA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Codice Fiscale / P.IVA</span>
+                    <span class="info-value">[CF_PIVA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Residenza / Sede</span>
+                    <span class="info-value">[INDIRIZZO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Attività</span>
+                    <span class="info-value">[ATTIVITA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Uso Veicolo</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Destinazione Uso</span>
+                    <span class="info-value">[USO_VEICOLO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">KM Annui Stimati</span>
+                    <span class="info-value">[KM_ANNUI]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 2: SITUAZIONE ATTUALE -->
+        <div class="section">
+            <h2 class="section-title">2. Situazione Attuale</h2>
+
+            <h3 class="subsection-title">Polizza in Essere</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Compagnia Attuale</span>
+                    <span class="info-value">[COMPAGNIA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Polizza</span>
+                    <span class="info-value">[NUMERO_POLIZZA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scadenza</span>
+                    <span class="info-value">[SCADENZA_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Premio Lordo Attuale</span>
+                    <span class="info-value">[PREMIO_ATTUALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Anni Continuità</span>
+                    <span class="info-value">[ANNI_CONTINUITA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Classe Merito Attuale</span>
+                    <span class="info-value">[CLASSE_ATTUALE]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Massimali RCA Attuali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Persone</span>
+                    <span class="info-value">[MASS_ATT_PERSONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Cose</span>
+                    <span class="info-value">[MASS_ATT_COSE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia RCA</span>
+                    <span class="info-value">[FRANCH_ATT_RCA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto RCA</span>
+                    <span class="info-value">[SCOP_ATT_RCA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Garanzie Accessorie Attuali</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:15%">Inclusa</th>
+                        <th style="width:20%">Massimale</th>
+                        <th style="width:20%">Franchigia</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Furto e Incendio</strong></td>
+                        <td class="col-center">[FURTO_ATT_INCL]</td>
+                        <td class="col-curr">[FURTO_ATT_MASS]</td>
+                        <td class="col-center">[FURTO_ATT_FRANCH]</td>
+                        <td>[FURTO_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td class="col-center">[KASKO_ATT_INCL]</td>
+                        <td class="col-curr">[KASKO_ATT_MASS]</td>
+                        <td class="col-center">[KASKO_ATT_FRANCH]</td>
+                        <td>[KASKO_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td class="col-center">[CRIST_ATT_INCL]</td>
+                        <td class="col-curr">[CRIST_ATT_MASS]</td>
+                        <td class="col-center">[CRIST_ATT_FRANCH]</td>
+                        <td>[CRIST_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td class="col-center">[EVENTI_ATT_INCL]</td>
+                        <td class="col-curr">[EVENTI_ATT_MASS]</td>
+                        <td class="col-center">[EVENTI_ATT_FRANCH]</td>
+                        <td>[EVENTI_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td class="col-center">[VANDAL_ATT_INCL]</td>
+                        <td class="col-curr">[VANDAL_ATT_MASS]</td>
+                        <td class="col-center">[VANDAL_ATT_FRANCH]</td>
+                        <td>[VANDAL_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td class="col-center">[TUTELA_ATT_INCL]</td>
+                        <td class="col-curr">[TUTELA_ATT_MASS]</td>
+                        <td class="col-center">[TUTELA_ATT_FRANCH]</td>
+                        <td>[TUTELA_ATT_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assistenza Stradale</strong></td>
+                        <td class="col-center">[ASSIST_ATT_INCL]</td>
+                        <td class="col-curr">[ASSIST_ATT_SERV]</td>
+                        <td class="col-center">-</td>
+                        <td>[ASSIST_ATT_NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Condizioni Attuali</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Conducenti Garantiti</span>
+                    <span class="info-value">[CONDUCENTI_ATT]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Validità Territoriale</span>
+                    <span class="info-value">[TERRITORIO_ATT]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 3: VEICOLO ASSICURATO -->
+        <div class="section">
+            <h2 class="section-title">3. Veicolo Assicurato</h2>
+
+            <h3 class="subsection-title">Dati Tecnici</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Targa</span>
+                    <span class="info-value">[TARGA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Marca e Modello</span>
+                    <span class="info-value">[MARCA] [MODELLO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Anno Immatricolazione</span>
+                    <span class="info-value">[ANNO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Allestimento</span>
+                    <span class="info-value">[ALLESTIMENTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Potenza</span>
+                    <span class="info-value">[POTENZA_KW] kW ([POTENZA_CV] CV)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Cilindrata</span>
+                    <span class="info-value">[CILINDRATA] cc</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Alimentazione</span>
+                    <span class="info-value">[ALIMENTAZIONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Numero Telaio</span>
+                    <span class="info-value">[TELAIO]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Valore e Sicurezza</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Valore Commerciale</span>
+                    <span class="info-value">[VALORE_COMMERCIALE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Valore da Assicurare</span>
+                    <span class="info-value">[VALORE_ASSICURATO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Antifurto</span>
+                    <span class="info-value">[ANTIFURTO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">GPS / Localizzatore</span>
+                    <span class="info-value">[GPS]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Attestato di Rischio</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Classe Merito CU</span>
+                    <span class="info-value">[CLASSE_MERITO]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Sinistri con Colpa Ultimi 5 Anni</span>
+                    <span class="info-value">[NUMERO_SINISTRI_5Y]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 4: STORICO SINISTRI -->
+        <div class="section">
+            <h2 class="section-title">4. Storico Sinistri</h2>
+
+            <h3 class="subsection-title">Andamento Ultimi 5 Anni</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Anno</th>
+                        <th style="width:22%">Premio Lordo</th>
+                        <th style="width:22%">Sinistri Pagati</th>
+                        <th style="width:22%">Sinistri Riservati</th>
+                        <th style="width:15%">Loss Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_1]</strong></td>
+                        <td class="col-curr">[PREMIO_1]</td>
+                        <td class="col-curr">[SIN_PAG_1]</td>
+                        <td class="col-curr">[SIN_RIS_1]</td>
+                        <td class="col-curr">[LOSS_1]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_2]</strong></td>
+                        <td class="col-curr">[PREMIO_2]</td>
+                        <td class="col-curr">[SIN_PAG_2]</td>
+                        <td class="col-curr">[SIN_RIS_2]</td>
+                        <td class="col-curr">[LOSS_2]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_3]</strong></td>
+                        <td class="col-curr">[PREMIO_3]</td>
+                        <td class="col-curr">[SIN_PAG_3]</td>
+                        <td class="col-curr">[SIN_RIS_3]</td>
+                        <td class="col-curr">[LOSS_3]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_4]</strong></td>
+                        <td class="col-curr">[PREMIO_4]</td>
+                        <td class="col-curr">[SIN_PAG_4]</td>
+                        <td class="col-curr">[SIN_RIS_4]</td>
+                        <td class="col-curr">[LOSS_4]</td>
+                    </tr>
+                    <tr>
+                        <td class="col-center"><strong>[ANNO_5]</strong></td>
+                        <td class="col-curr">[PREMIO_5]</td>
+                        <td class="col-curr">[SIN_PAG_5]</td>
+                        <td class="col-curr">[SIN_RIS_5]</td>
+                        <td class="col-curr">[LOSS_5]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Dettaglio Sinistri (Tutti - Aperti e Chiusi)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:10%">Data</th>
+                        <th style="width:15%">Garanzia</th>
+                        <th style="width:30%">Descrizione</th>
+                        <th style="width:15%">Riservato</th>
+                        <th style="width:15%">Pagato</th>
+                        <th style="width:15%">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ripetere per OGNI sinistro -->
+                    <tr>
+                        <td class="col-center">[DATA_SIN_1]</td>
+                        <td>[GAR_SIN_1]</td>
+                        <td>[DESC_SIN_1]</td>
+                        <td class="col-curr">[RIS_SIN_1]</td>
+                        <td class="col-curr">[PAG_SIN_1]</td>
+                        <td>[STATUS_SIN_1]</td>
+                    </tr>
+                    <!-- ... altri sinistri ... -->
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Note Sinistralità:</strong><br>
+                [NOTE_SINISTRALITA]
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 5: CONDIZIONI RICHIESTE -->
+        <div class="section">
+            <h2 class="section-title">5. Condizioni Richieste</h2>
+
+            <h3 class="subsection-title">Massimali RCA Richiesti</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Persone</span>
+                    <span class="info-value">[MASS_RICH_PERSONE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Massimale Danni a Cose</span>
+                    <span class="info-value">[MASS_RICH_COSE]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Franchigia RCA</span>
+                    <span class="info-value">[FRANCH_RICH_RCA]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Scoperto RCA</span>
+                    <span class="info-value">[SCOP_RICH_RCA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Garanzie Accessorie Richieste</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:25%">Garanzia</th>
+                        <th style="width:15%">Inclusa</th>
+                        <th style="width:20%">Massimale</th>
+                        <th style="width:20%">Franchigia</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Furto e Incendio</strong></td>
+                        <td class="col-center">[FURTO_RICH_INCL]</td>
+                        <td class="col-curr">[FURTO_RICH_MASS]</td>
+                        <td class="col-center">[FURTO_RICH_FRANCH]</td>
+                        <td>[FURTO_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td class="col-center">[KASKO_RICH_INCL]</td>
+                        <td class="col-curr">[KASKO_RICH_MASS]</td>
+                        <td class="col-center">[KASKO_RICH_FRANCH]</td>
+                        <td>[KASKO_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td class="col-center">[CRIST_RICH_INCL]</td>
+                        <td class="col-curr">[CRIST_RICH_MASS]</td>
+                        <td class="col-center">[CRIST_RICH_FRANCH]</td>
+                        <td>[CRIST_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td class="col-center">[EVENTI_RICH_INCL]</td>
+                        <td class="col-curr">[EVENTI_RICH_MASS]</td>
+                        <td class="col-center">[EVENTI_RICH_FRANCH]</td>
+                        <td>[EVENTI_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atti Vandalici</strong></td>
+                        <td class="col-center">[VANDAL_RICH_INCL]</td>
+                        <td class="col-curr">[VANDAL_RICH_MASS]</td>
+                        <td class="col-center">[VANDAL_RICH_FRANCH]</td>
+                        <td>[VANDAL_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td class="col-center">[TUTELA_RICH_INCL]</td>
+                        <td class="col-curr">[TUTELA_RICH_MASS]</td>
+                        <td class="col-center">[TUTELA_RICH_FRANCH]</td>
+                        <td>[TUTELA_RICH_NOTE]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assistenza Stradale</strong></td>
+                        <td class="col-center">[ASSIST_RICH_INCL]</td>
+                        <td class="col-curr">[ASSIST_RICH_SERV]</td>
+                        <td class="col-center">-</td>
+                        <td>[ASSIST_RICH_NOTE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Condizioni Richieste</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Conducenti Garantiti</span>
+                    <span class="info-value">[CONDUCENTI_RICH]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Validità Territoriale</span>
+                    <span class="info-value">[TERRITORIO_RICH]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Premio Obiettivo</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Premio Attuale</span>
+                    <span class="info-value">[PREMIO_ATTUALE_RIF]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Budget Massimo</span>
+                    <span class="info-value">[BUDGET_MASSIMO]</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 6: CONFRONTO SINTETICO -->
+        <div class="section">
+            <h2 class="section-title">6. Confronto Sintetico Attuale vs Richiesto</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Attuale</th>
+                        <th>Richiesto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Massimale Persone</strong></td>
+                        <td>[CONF_PERS_ATT]</td>
+                        <td class="[CLASSE_CONF_PERS]">[CONF_PERS_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Massimale Cose</strong></td>
+                        <td>[CONF_COSE_ATT]</td>
+                        <td class="[CLASSE_CONF_COSE]">[CONF_COSE_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Furto e Incendio</strong></td>
+                        <td>[CONF_FURTO_ATT]</td>
+                        <td class="[CLASSE_CONF_FURTO]">[CONF_FURTO_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kasko / Collisione</strong></td>
+                        <td>[CONF_KASKO_ATT]</td>
+                        <td class="[CLASSE_CONF_KASKO]">[CONF_KASKO_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cristalli</strong></td>
+                        <td>[CONF_CRIST_ATT]</td>
+                        <td class="[CLASSE_CONF_CRIST]">[CONF_CRIST_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventi Naturali</strong></td>
+                        <td>[CONF_EVENTI_ATT]</td>
+                        <td class="[CLASSE_CONF_EVENTI]">[CONF_EVENTI_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tutela Legale</strong></td>
+                        <td>[CONF_TUTELA_ATT]</td>
+                        <td class="[CLASSE_CONF_TUTELA]">[CONF_TUTELA_RICH]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Conducenti</strong></td>
+                        <td>[CONF_COND_ATT]</td>
+                        <td class="[CLASSE_CONF_COND]">[CONF_COND_RICH]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- SEZIONE 7: INFORMAZIONI TECNICHE -->
+        <div class="section">
+            <h2 class="section-title">7. Informazioni Tecniche</h2>
+
+            <h3 class="subsection-title">Utilizzo Veicolo</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">KM Percorsi Annui</span>
+                    <span class="info-value">[KM_ANNUI_DET]</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Rimessa Abituale</span>
+                    <span class="info-value">[RIMESSA]</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Conducenti Abituali</h3>
+            <ul>
+                <li>[CONDUCENTE_1]</li>
+                <li>[CONDUCENTE_2]</li>
+                <li>[CONDUCENTE_3]</li>
+            </ul>
+
+            <h3 class="subsection-title">Impianti Sicurezza</h3>
+            <ul>
+                <li>[SICUREZZA_1]</li>
+                <li>[SICUREZZA_2]</li>
+                <li>[SICUREZZA_3]</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Note Particolari:</strong><br>
+                [NOTE_PARTICOLARI]
+            </div>
+
+        </div>
+
+        <!-- SEZIONE 8: ALLEGATI -->
+        <div class="section">
+            <h2 class="section-title">8. Documentazione Allegata</h2>
+
+            <ul>
+                <li>✓ Polizza attuale completa</li>
+                <li>✓ Attestato di rischio</li>
+                <li>✓ Libretto di circolazione</li>
+                <li>✓ Borderò sinistri ultimi 5 anni</li>
+                <li>[ALTRO_ALLEGATO_1]</li>
+                <li>[ALTRO_ALLEGATO_2]</li>
+            </ul>
+
+            <div class="note-box" style="margin-top:20px;">
+                <strong>Per informazioni o chiarimenti contattare:</strong><br>
+                Eramo & Associati S.r.l.<br>
+                Email: [EMAIL_CONTATTO]<br>
+                Tel: [TEL_CONTATTO]
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

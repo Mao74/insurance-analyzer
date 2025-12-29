@@ -1,0 +1,908 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: REPORT INFORTUNI CLIENTE - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML per CLIENTE finale basato su polizza Infortuni 
+(Cumulativa o Nominativa).
+
+TEMPLATE: template_infortuni_cliente_finale.html (1010 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da polizza
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA ASSOLUTA
+   - TUTTE le categorie professionali (se cumulativa)
+   - TUTTE le persone assicurate (se nominativa)
+   - TUTTE le garanzie (base + aggiuntive)
+   - TUTTE le esclusioni e limitazioni
+
+2. DATI OGGETTIVI
+   - Zero interpretazioni soggettive
+   - Zero giudizi di valore
+   - Solo fatti estratti da polizza
+   - Numeri precisi (massimali, franchigie, tassi)
+
+3. LOGICA ADATTIVA
+   - Template si adatta a tipo polizza (Cumulativa vs Nominativa)
+   - Sezioni presenti solo se applicabili
+   - HTML generato dinamicamente per liste variabili
+
+4. CHIAREZZA CLIENTE
+   - Linguaggio comprensibile (non tecnicismi eccessivi)
+   - Badge visivi per garanzie (verde = attiva, grigio = non inclusa)
+   - Highlight box per informazioni cruciali
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (6 TAB)
+═══════════════════════════════════════════════════════════════════════════════
+
+TAB 1: SINTESI POLIZZA
+TAB 2: GARANZIE & MASSIMALI
+TAB 3: ASSICURATI
+TAB 4: CALCOLO PREMIO
+TAB 5: ESCLUSIONI & LIMITAZIONI
+TAB 6: GESTIONE SINISTRI
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: SINTESI POLIZZA
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI GENERALI
+───────────────────────────────────────────────────────────────────────────────
+
+[CONTRAENTE]
+Ragione sociale contraente (chi paga il premio)
+
+[ASSICURATO]
+Ragione sociale assicurato (può essere = contraente o diverso)
+Se uguale a contraente: ripetere stesso nome
+
+[COMPAGNIA]
+Compagnia assicuratrice completa (es. "Generali Italia S.p.A.")
+
+[NUMERO_POLIZZA]
+Numero polizza alfanumerico
+
+[DECORRENZA]
+Data decorrenza formato gg/mm/aaaa
+
+[SCADENZA]
+Data scadenza formato gg/mm/aaaa
+
+[PREMIO_LORDO]
+Premio lordo annuo totale formato "€ XX.XXX,XX"
+
+[FRAZIONAMENTO]
+Modalità pagamento: Annuale / Semestrale / Trimestrale / Mensile
+Se presente sovrapprezzo: "Semestrale (+2%)"
+
+[TERMINI_DISDETTA]
+Estrarre da art. "Durata" o "Rinnovo"
+Formato: "60 giorni prima scadenza tramite raccomandata A/R"
+Se non specificato: "Rinnovo tacito (verificare condizioni generali)"
+
+[TERMINI_MORA]
+Estrarre da art. "Pagamento premio"
+Formato: "15 giorni" o "30 giorni"
+Se non specificato: "30 giorni (art. 1901 C.C.)"
+
+[ATTIVITA]
+Attività economica svolta (es. "Produzione macchinari industriali")
+Estrarre da: oggetto assicurazione, descrizione attività
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: TIPO POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+[TIPO_POLIZZA]
+"Cumulativa" oppure "Nominativa"
+
+Come determinare:
+- Cumulativa: polizza indica categorie professionali senza elenco nomi
+- Nominativa: polizza contiene elenco nominativo persone assicurate
+
+[DESCRIZIONE_TIPO_POLIZZA]
+Spiegazione breve (2-3 righe) del tipo polizza
+
+Se Cumulativa:
+"Polizza cumulativa che copre un numero variabile di persone appartenenti alle 
+categorie professionali indicate. Il numero di assicurati può variare nel corso 
+dell'anno senza necessità di comunicazione preventiva alla compagnia."
+
+Se Nominativa:
+"Polizza nominativa che copre esclusivamente le persone elencate nell'apposita 
+sezione. Ogni variazione (inserimento o cancellazione) richiede appendice 
+contrattuale con conseguente conguaglio premio."
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: AMBITO ASSICURATIVO
+───────────────────────────────────────────────────────────────────────────────
+
+[AMBITO_TEMPORALE]
+Quando opera la copertura
+
+Opzioni comuni:
+- "24 ore su 24" (professionale + extraprofessionale)
+- "Durante orario di lavoro" (solo professionale)
+- "Professionale 24h + extraprofessionale limitato"
+
+[INFORTUNI_PROFESSIONALI]
+Dettagli copertura infortuni professionali
+
+Formato: "Operativa - Coperti infortuni durante attività lavorativa, in itinere, 
+trasferte di lavoro"
+
+Se non operativa: "Non inclusa"
+
+[INFORTUNI_EXTRAPROFESSIONALI]
+Dettagli copertura infortuni extra-professionali
+
+Formato: "Operativa - Coperti infortuni durante vita privata con esclusione 
+sport pericolosi e attività aeree"
+
+Se non operativa: "Non inclusa"
+Se limitata: Specificare limitazioni
+
+[VALIDITA_TERRITORIALE]
+Ambito geografico copertura
+
+Esempi:
+- "Mondo Intero senza esclusioni"
+- "Europa e Paesi del bacino Mediterraneo"
+- "Italia ed estero limitatamente a trasferte di lavoro massimo 90 giorni"
+- "Mondo Intero con esclusione USA, Canada, Giappone"
+
+Estrarre dalla polizza, essere SPECIFICI
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 4: RIEPILOGO ASSICURATI
+───────────────────────────────────────────────────────────────────────────────
+
+[TIPO_COPERTURA_RIEP]
+"Cumulativa" o "Nominativa"
+
+[NUMERO_ASSICURATI_RIEP]
+Se Cumulativa: "XX categorie professionali, circa YY persone"
+Se Nominativa: "XX persone nominate"
+
+Esempio Cumulativa: "3 categorie professionali, circa 85 persone"
+Esempio Nominativa: "12 persone nominate"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: GARANZIE & MASSIMALI
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: GARANZIE BASE
+───────────────────────────────────────────────────────────────────────────────
+
+Per ogni garanzia base (5 totali), compilare:
+
+MORTE
+─────
+[MORTE_INCLUSA]
+Badge: <span class="badge badge-active">Sì</span>
+Oppure: <span class="badge badge-inactive">No</span>
+
+[MORTE_MASSIMALE]
+Capitale assicurato formato "€ XXX.XXX"
+Se non inclusa: "-"
+
+[MORTE_FRANCHIGIA]
+Franchigia (solitamente assente per morte)
+Formato: "Nessuna" o "-"
+
+[MORTE_SCOPERTO]
+Scoperto percentuale (solitamente assente)
+Formato: "-" o "X%"
+
+[MORTE_LIMITAZIONI]
+Eventuali limitazioni specifiche
+Esempi:
+- "Riduzione 50% se età > 70 anni"
+- "Esclusa morte per malattia"
+- "Nessuna limitazione particolare"
+
+INVALIDITÀ PERMANENTE (IP)
+───────────────────────────
+[IP_INCLUSA]
+Badge Sì/No
+
+[IP_MASSIMALE]
+Formato "€ XXX.XXX"
+
+[IP_FRANCHIGIA]
+Franchigia percentuale invalidità
+Formato: "3%" (significa paga solo se IP > 3%)
+Se assente: "Nessuna" o "1° euro"
+
+[IP_SCOPERTO]
+Scoperto (raro in IP)
+Formato: "-" o "10%"
+
+[IP_LIMITAZIONI]
+Esempi:
+- "Indennizzo secondo tabella INAIL"
+- "Massimo 100% del capitale anche per più infortuni"
+- "Riduzione 50% per invalidità preesistenti"
+
+INABILITÀ TEMPORANEA TOTALE (ITT)
+──────────────────────────────────
+[ITT_INCLUSA]
+Badge Sì/No
+
+[ITT_MASSIMALE]
+Diaria giornaliera formato "€ XX / giorno"
+Es: "€ 50 / giorno"
+
+[ITT_FRANCHIGIA]
+Franchigia temporale (giorni di carenza)
+Formato: "3 giorni" (paga dal 4° giorno)
+Se assente: "Nessuna"
+
+[ITT_SCOPERTO]
+Scoperto (raro in ITT)
+Formato: "-"
+
+[ITT_LIMITAZIONI]
+Esempi:
+- "Massimo 365 giorni per evento"
+- "Indennizzo proporzionale a percentuale inabilità"
+- "Non cumulabile con retribuzione"
+
+INABILITÀ TEMPORANEA PARZIALE (ITP)
+────────────────────────────────────
+[ITP_INCLUSA]
+Badge Sì/No
+
+[ITP_MASSIMALE]
+Percentuale della diaria ITT
+Formato: "50% diaria ITT" o "€ XX / giorno"
+
+[ITP_FRANCHIGIA]
+Formato: "3 giorni" o "Nessuna"
+
+[ITP_SCOPERTO]
+Formato: "-"
+
+[ITP_LIMITAZIONI]
+Esempi:
+- "Riconosciuta solo se certificata da medico curante"
+- "Massimo 180 giorni"
+
+SPESE MEDICHE
+─────────────
+[SPESE_INCLUSA]
+Badge Sì/No
+
+[SPESE_MASSIMALE]
+Massimale rimborso formato "€ X.XXX"
+
+[SPESE_FRANCHIGIA]
+Franchigia economica
+Formato: "€ 100" (spese > €100)
+Se assente: "Nessuna"
+
+[SPESE_SCOPERTO]
+Scoperto percentuale
+Formato: "10%" (rimborsa 90%)
+Se assente: "-"
+
+[SPESE_LIMITAZIONI]
+Esempi:
+- "Solo spese documentate con fatture"
+- "Esclude ticket SSN"
+- "Include anche fisioterapia max € 500"
+
+NOTE GARANZIE BASE
+──────────────────
+[NOTE_GARANZIE_BASE]
+Note aggiuntive rilevanti (2-3 righe max)
+
+Esempio:
+"Tutte le garanzie si intendono per infortunio. L'indennizzo per Invalidità 
+Permanente viene liquidato a consolidamento danno biologico (solitamente 12-18 
+mesi dall'evento)."
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: GARANZIE AGGIUNTIVE
+───────────────────────────────────────────────────────────────────────────────
+
+Per ogni garanzia aggiuntiva (5 totali), compilare:
+
+DIARIA DA RICOVERO
+──────────────────
+[DIARIA_RIC_INCLUSA]
+Badge Sì/No
+
+[DIARIA_RIC_IMPORTO]
+Importo giornaliero formato "€ XX / giorno"
+
+[DIARIA_RIC_FRANCHIGIA]
+Giorni carenza
+Formato: "3 giorni" o "Nessuna"
+
+[DIARIA_RIC_CONDIZIONI]
+Condizioni particolari
+Esempio: "Solo ricovero ospedaliero superiore a 24h, max 90 giorni/anno"
+
+DIARIA DA GESSATURA
+───────────────────
+[DIARIA_GESS_INCLUSA]
+Badge Sì/No
+
+[DIARIA_GESS_IMPORTO]
+Formato "€ XX / giorno"
+
+[DIARIA_GESS_FRANCHIGIA]
+Formato: "Nessuna" (solitamente assente)
+
+[DIARIA_GESS_CONDIZIONI]
+Esempio: "Solo gessature prescritte da struttura ospedaliera, max 60 giorni"
+
+INVALIDITÀ DA MALATTIA
+──────────────────────
+[INV_MAL_INCLUSA]
+Badge Sì/No
+
+[INV_MAL_MASSIMALE]
+Capitale formato "€ XXX.XXX"
+
+[INV_MAL_FRANCHIGIA]
+Franchigia percentuale
+Formato: "25%" (paga solo se IP > 25%)
+
+[INV_MAL_CONDIZIONI]
+Esempio: "Solo malattie insorte durante vigenza polizza, IP accertata da medico 
+fiduciario compagnia"
+
+MORTE DA MALATTIA
+─────────────────
+[MORTE_MAL_INCLUSA]
+Badge Sì/No
+
+[MORTE_MAL_MASSIMALE]
+Capitale formato "€ XXX.XXX"
+
+[MORTE_MAL_FRANCHIGIA]
+Solitamente "-"
+
+[MORTE_MAL_CONDIZIONI]
+Esempio: "Solo malattie insorte durante vigenza polizza, franchigia temporale 
+30 giorni"
+
+ASSISTENZA (SOS)
+────────────────
+[ASSIST_INCLUSA]
+Badge Sì/No
+
+[ASSIST_DETTAGLI]
+Non è massimale, descrivere servizi
+Formato: "Centrale operativa H24, soccorso stradale, rientro sanitario"
+
+[ASSIST_CONDIZIONI]
+Esempio: "Attiva H24 chiamando numero verde, valida mondo intero"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: ASSICURATI
+═══════════════════════════════════════════════════════════════════════════════
+
+LOGICA ADATTIVA:
+
+IF tipo polizza = "Cumulativa":
+    MOSTRARE sezione Categorie Professionali
+    OMETTERE sezione Elenco Nominativo
+
+IF tipo polizza = "Nominativa":
+    OMETTERE sezione Categorie Professionali
+    MOSTRARE sezione Elenco Nominativo
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE A: CATEGORIE PROFESSIONALI (solo se Cumulativa)
+───────────────────────────────────────────────────────────────────────────────
+
+Generare 1 riga per OGNI categoria professionale
+
+<tr>
+    <td><strong>[CATEGORIA_1]</strong></td>
+    <td class="col-center">[N_PERSONE_1]</td>
+    <td class="col-center">[CLASSE_RISCHIO_1]</td>
+    <td>[DESCRIZIONE_ATT_1]</td>
+</tr>
+
+PLACEHOLDER:
+
+[CATEGORIA_N]
+Nome categoria professionale
+Esempi: "Operai addetti produzione", "Impiegati amministrativi", "Autisti"
+ESSERE SPECIFICI, non generici
+
+[N_PERSONE_N]
+Numero preventivato persone (formato "XX")
+
+[CLASSE_RISCHIO_N]
+Classe di rischio INAIL o compagnia
+Formato: "Classe 3" o "Rischio Medio" o "8‰"
+Se non specificata: "-"
+
+[DESCRIZIONE_ATT_N]
+Descrizione attività svolta dalla categoria (1 riga)
+Esempio: "Addetti a macchinari stampa, movimentazione bobine carta, pulizia impianti"
+
+RIGA TOTALE:
+[N_PERSONE_TOTALE]
+Somma persone tutte categorie
+
+REGOLA CRITICA:
+Se polizza indica 5 categorie, generare 5 righe.
+MAI omettere categorie.
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE B: ELENCO NOMINATIVO (solo se Nominativa)
+───────────────────────────────────────────────────────────────────────────────
+
+Generare 1 riga per OGNI persona assicurata
+
+<tr>
+    <td class="col-center">1</td>
+    <td>[NOME_1]</td>
+    <td class="col-center">[DATA_NASC_1]</td>
+    <td>[PROFESSIONE_1]</td>
+    <td class="col-curr">[MASS_MORTE_1]</td>
+    <td class="col-curr">[MASS_IP_1]</td>
+</tr>
+
+PLACEHOLDER:
+
+[NOME_N]
+Cognome e Nome completo
+Formato: "ROSSI Mario"
+
+[DATA_NASC_N]
+Data nascita formato "gg/mm/aaaa"
+
+[PROFESSIONE_N]
+Qualifica/mansione
+Esempio: "Amministratore Delegato", "Operaio specializzato", "Impiegato commerciale"
+
+[MASS_MORTE_N]
+Massimale morte persona N
+Formato: "€ XXX.XXX"
+Se uguale per tutti: ripetere stesso valore
+Se diversificato: valore specifico persona
+
+[MASS_IP_N]
+Massimale IP persona N
+Formato: "€ XXX.XXX"
+
+REGOLA CRITICA:
+Se polizza nominativa con 50 persone, generare 50 righe.
+TUTTE le persone devono essere riportate.
+MAI omettere persone.
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: CALCOLO PREMIO
+═══════════════════════════════════════════════════════════════════════════════
+
+LOGICA ADATTIVA:
+
+IF tipo polizza = "Cumulativa":
+    MOSTRARE sezione Preventivo Retribuzioni
+    OMETTERE sezione Riepilogo Premio
+
+IF tipo polizza = "Nominativa":
+    OMETTERE sezione Preventivo Retribuzioni
+    MOSTRARE sezione Riepilogo Premio
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE A: PREVENTIVO RETRIBUZIONI (solo se Cumulativa)
+───────────────────────────────────────────────────────────────────────────────
+
+IMPORTANTISSIMO: Questo è il metodo standard calcolo premio infortuni cumulativi
+
+FORMULA:
+Premio Imponibile = (Retribuzioni Annue / 1.000) × Tasso ‰
+
+Generare 1 riga per OGNI categoria professionale
+
+<tr>
+    <td><strong>[CATEGORIA_CALC_1]</strong></td>
+    <td class="col-center">[N_PERS_CALC_1]</td>
+    <td class="col-curr">[RETRIB_1]</td>
+    <td class="col-center">[TASSO_1]</td>
+    <td class="col-curr">[PREMIO_IMP_1]</td>
+    <td class="col-curr">[IMPOSTE_1]</td>
+</tr>
+
+PLACEHOLDER:
+
+[CATEGORIA_CALC_N]
+Nome categoria (deve corrispondere a TAB 3)
+
+[N_PERS_CALC_N]
+Numero persone preventivato (formato "XX")
+
+[RETRIB_N]
+Retribuzioni annue previste per categoria
+Formato: "€ XXX.XXX"
+
+COME ESTRARRE:
+- Cercare in polizza "preventivo retribuzioni" o "monte salari"
+- Oppure calcolare: N. persone × retribuzione media annua
+- Es: 25 operai × € 25.000 = € 625.000
+
+[TASSO_N]
+Tasso per mille applicato
+Formato: "X‰" o "X,X‰"
+Es: "8‰" o "12,5‰"
+
+Estrarre da: tariffario allegato o condizioni particolari
+Varia in base a rischio attività
+
+[PREMIO_IMP_N]
+Premio imponibile categoria
+Calcolo: (Retribuzioni / 1.000) × Tasso
+Formato: "€ X.XXX,XX"
+
+Esempio calcolo:
+Retribuzioni: € 500.000
+Tasso: 8‰
+Premio = (500.000 / 1.000) × 8 = € 4.000,00
+
+[IMPOSTE_N]
+Imposte su premio categoria (2,5%)
+Calcolo: Premio Imponibile × 0,025
+Formato: "€ XXX,XX"
+
+RIGA TOTALE:
+[RETRIB_TOTALE]        Somma retribuzioni tutte categorie
+[PREMIO_IMP_TOTALE]    Somma premi imponibili
+[IMPOSTE_TOTALE]       Somma imposte
+
+[PREMIO_LORDO_CALC]
+Premio lordo = Premio Imponibile Totale + Imposte Totali
+Formato: "€ XX.XXX,XX"
+
+DEVE corrispondere a [PREMIO_LORDO] in TAB 1
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE B: RIEPILOGO PREMIO (solo se Nominativa)
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_IMP_NOM]
+Premio imponibile formato "€ XX.XXX,XX"
+
+[IMPOSTE_NOM]
+Imposte 2,5% formato "€ X.XXX,XX"
+
+[PREMIO_LORDO_NOM]
+Premio lordo totale formato "€ XX.XXX,XX"
+DEVE corrispondere a [PREMIO_LORDO] in TAB 1
+
+[FRAZ_NOM]
+Frazionamento (ripetere da TAB 1)
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: ESCLUSIONI & LIMITAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: ESCLUSIONI STANDARD
+───────────────────────────────────────────────────────────────────────────────
+
+Elencare 5+ esclusioni principali dalla polizza
+
+[ESCLUSIONE_1]
+[ESCLUSIONE_2]
+[ESCLUSIONE_3]
+[ESCLUSIONE_4]
+[ESCLUSIONE_5]
+
+ESCLUSIONI TIPICHE (estrarre da condizioni generali):
+- "Infortuni causati da stato di ubriachezza o uso di stupefacenti"
+- "Guerra, insurrezione, terrorismo, sommosse popolari"
+- "Dolo dell'assicurato"
+- "Infortuni derivanti da fenomeni di energia nucleare"
+- "Partecipazione a competizioni sportive agonistiche"
+- "Infortuni durante guida senza patente o con patente scaduta"
+- "Malattie mentali, nevrosi, psicosi"
+
+Estrarre testualmente dalla polizza, max 1 riga per esclusione
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: LIMITAZIONI SPECIFICHE
+───────────────────────────────────────────────────────────────────────────────
+
+[LIMIT_SPORT]
+Limitazioni sport pericolosi
+Esempio: "Esclusi: alpinismo oltre 3.500m, sport aerei (paracadutismo, deltaplano), 
+immersioni oltre 20m profondità, sport motoristici"
+Se nessuna limitazione: "Nessuna limitazione particolare"
+
+[LIMIT_AEREE]
+Limitazioni attività aeree
+Esempio: "Coperto solo volo passeggero linee regolari, escluso volo privato, 
+pilotaggio, paracadutismo"
+
+[LIMIT_MOTOVEICOLI]
+Limitazioni guida motoveicoli
+Esempio: "Coperta guida auto/moto con patente valida, escluse gare e competizioni"
+
+[LIMIT_MALATTIE]
+Limitazioni malattie preesistenti
+Esempio: "Escluse invalidità derivanti da patologie preesistenti alla stipula polizza"
+
+[LIMIT_ETA]
+Età massima copertura
+Esempio: "Copertura fino a 75 anni compiuti, oltre tale età polizza decade automaticamente"
+Se nessun limite: "Nessun limite di età"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: FRANCHIGIE PARTICOLARI PER CATEGORIA
+───────────────────────────────────────────────────────────────────────────────
+
+Elencare franchigie diverse per categoria/attività (se presenti)
+
+<tr>
+    <td>[FRANCH_PART_CAT_1]</td>
+    <td>[FRANCH_PART_GAR_1]</td>
+    <td class="col-center">[FRANCH_PART_VAL_1]</td>
+    <td>[FRANCH_PART_NOTE_1]</td>
+</tr>
+
+PLACEHOLDER:
+
+[FRANCH_PART_CAT_N]
+Categoria o attività con franchigia particolare
+Es: "Autisti", "Addetti manutenzione impianti"
+
+[FRANCH_PART_GAR_N]
+Garanzia interessata
+Es: "Invalidità Permanente", "Spese Mediche"
+
+[FRANCH_PART_VAL_N]
+Valore franchigia
+Es: "5%" o "€ 200"
+
+[FRANCH_PART_NOTE_N]
+Note esplicative
+Es: "Applicabile solo per infortuni stradali"
+
+SE NESSUNA FRANCHIGIA PARTICOLARE:
+Generare riga unica:
+<tr><td colspan="4">Nessuna franchigia particolare per categoria</td></tr>
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: GESTIONE SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DENUNCIA SINISTRO
+───────────────────────────────────────────────────────────────────────────────
+
+[TERMINE_DENUNCIA]
+Termine denuncia dalla polizza
+Formato: "3 giorni dall'evento" o "5 giorni dalla conoscenza"
+
+Estrarre da condizioni generali art. "Denuncia sinistro"
+Se non specificato: "3 giorni dall'evento o dalla conoscenza"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: DOCUMENTAZIONE NECESSARIA
+───────────────────────────────────────────────────────────────────────────────
+
+Per ogni tipo sinistro, elencare documenti richiesti
+
+[DOC_MORTE]
+Documenti per caso morte
+Esempio: "Certificato di morte, atto di notorietà eredi, referto autoptico (se presente), 
+verbale autorità (se morte violenta), documento identità beneficiari"
+
+[DOC_IP]
+Documenti invalidità permanente
+Esempio: "Certificato consolidamento danno biologico rilasciato da medico curante, 
+eventuale perizia medico-legale di parte, documentazione clinica completa (referti, 
+cartelle cliniche, esami diagnostici)"
+
+[DOC_ITT]
+Documenti inabilità temporanea
+Esempio: "Certificati medici continuativi attestanti inabilità, prognosi iniziale, 
+certificato guarigione clinica, documentazione sanitaria"
+
+[DOC_SPESE]
+Documenti spese mediche
+Esempio: "Fatture e ricevute originali in carta intestata con timbro struttura, 
+prescrizioni mediche, referto pronto soccorso, documentazione clinica giustificativa"
+
+[DOC_DIARIE]
+Documenti diarie
+Esempio: "Certificato ricovero ospedaliero con date ingresso/uscita, certificato 
+applicazione/rimozione gesso, documentazione medica giustificativa"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: TIMELINE LIQUIDAZIONE
+───────────────────────────────────────────────────────────────────────────────
+
+Timeline in tabella (5 righe fisse + placeholder termine denuncia)
+
+Fase 1: Giorno 0 - Evento
+Fase 2: Entro [TERMINE_DENUNCIA] - Denuncia
+Fase 3: Entro 15 giorni - Presa in carico
+Fase 4: Variabile - Istruttoria
+Fase 5: Consolidamento - Liquidazione
+
+[TERMINE_DENUNCIA] viene ripetuto dalla sezione precedente
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE - DA RISPETTARE SEMPRE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA ASSICURATI
+   ─────────────────────
+   Se Cumulativa con 7 categorie:
+   - TAB 3: Tabella con 7 righe categorie
+   - TAB 4: Tabella premio con 7 righe
+   
+   Se Nominativa con 50 persone:
+   - TAB 3: Tabella con 50 righe nominativi
+   
+   MAI omettere categorie o persone
+
+2. COMPLETEZZA GARANZIE
+   ─────────────────────
+   TAB 2: Compilare TUTTE le 10 garanzie
+   - 5 base (sempre presenti in tabella)
+   - 5 aggiuntive (sempre presenti in tabella)
+   
+   Usare badge Sì/No per indicare se attiva
+   Se non attiva: massimale = "-"
+
+3. LOGICA ADATTIVA CORRETTA
+   ────────────────────────
+   Se Cumulativa:
+   - TAB 3: Mostra categorie, ometti nominativi
+   - TAB 4: Mostra preventivo retribuzioni, ometti riepilogo
+   
+   Se Nominativa:
+   - TAB 3: Ometti categorie, mostra nominativi
+   - TAB 4: Ometti preventivo retribuzioni, mostra riepilogo
+
+4. COERENZA MATEMATICA
+   ───────────────────
+   TAB 4 Cumulativa:
+   - Verificare formula: (Retrib / 1.000) × Tasso = Premio Imp
+   - Somma premi categorie = Premio totale
+   - Premio lordo TAB 4 = Premio lordo TAB 1
+
+5. FORMATO VALUTE UNIFORME
+   ───────────────────────
+   Importi: "€ XX.XXX,XX" (punto migliaia, virgola decimali)
+   Diarie: "€ XX / giorno"
+   Percentuali: "X%" o "X,X%"
+   Tassi: "X‰" (per mille)
+
+6. BADGE CORRETTI
+   ──────────────
+   Garanzia attiva: <span class="badge badge-active">Sì</span>
+   Garanzia non attiva: <span class="badge badge-inactive">No</span>
+   
+   Badge garanzie:
+   - badge-morte (rosso)
+   - badge-ip (giallo)
+   - badge-itt (blu)
+   - badge-spese (viola)
+
+7. HTML VALIDO
+   ───────────
+   - Chiudere tutti tag
+   - Rispettare indentazione
+   - Usare classi CSS corrette
+
+8. DATI OGGETTIVI
+   ──────────────
+   - Estrarre solo da polizza
+   - NO interpretazioni
+   - Se dato manca: "-" o "Non specificato"
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: IDENTIFICARE TIPO POLIZZA
+──────────────────────────────────
+
+Leggere polizza e determinare:
+
+A. Tipo polizza
+   - Cerca elenco nominativo persone → Nominativa
+   - Cerca categorie professionali senza nomi → Cumulativa
+
+B. Ambito copertura
+   - 24h oppure solo professionale?
+   - Territorio: Italia, Europa, Mondo?
+
+C. Garanzie operative
+   - Leggere tutte garanzie in condizioni particolari
+   - Flag Sì/No per ciascuna
+
+STEP 2: ESTRARRE DATI BASE
+───────────────────────────
+
+Da frontespizio polizza:
+- Contraente, assicurato
+- Numero polizza, date, premio
+- Compagnia
+
+Da condizioni particolari:
+- Massimali tutte garanzie
+- Franchigie tutte garanzie
+- Limitazioni specifiche
+
+STEP 3: ESTRARRE ASSICURATI
+────────────────────────────
+
+Se Cumulativa:
+- Cercare sezione categorie professionali
+- Per ogni categoria: nome, n. persone, attività, classe rischio
+- Estrarre TUTTE le categorie indicate
+
+Se Nominativa:
+- Cercare elenco nominativo
+- Per ogni persona: nome, data nascita, professione, massimali
+- Estrarre TUTTE le persone elencate
+
+STEP 4: ESTRARRE CALCOLO PREMIO
+────────────────────────────────
+
+Se Cumulativa:
+- Cercare "preventivo retribuzioni" o "monte salari"
+- Per ogni categoria estrarre: retribuzioni, tasso
+- Calcolare premi con formula
+- Verificare coerenza somme
+
+Se Nominativa:
+- Estrarre premio imponibile totale
+- Calcolare imposte (2,5%)
+
+STEP 5: ESTRARRE ESCLUSIONI
+────────────────────────────
+
+Da condizioni generali:
+- Leggere articolo "Esclusioni"
+- Estrarre 5+ esclusioni principali
+- Estrarre limitazioni specifiche (sport, età, ecc.)
+
+STEP 6: ESTRARRE GESTIONE SINISTRI
+───────────────────────────────────
+
+Da condizioni generali:
+- Termine denuncia
+- Documentazione richiesta per tipo sinistro
+- Obblighi assicurato
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_infortuni_cliente_finale.html
+2. Sostituire TUTTI i placeholder [XXX]
+3. Per sezioni con logica adattiva:
+   - Se Cumulativa: rimuovere sezione Nominativa
+   - Se Nominativa: rimuovere sezione Cumulativa
+4. Per sezioni con numero variabile (categorie, nominativi, franchigie particolari):
+   - Generare HTML dinamico ripetendo <tr>...</tr>
+   - Inserire nel punto corretto
+5. Verificare:
+   - Tutti placeholder sostituiti
+   - Logica adattiva corretta
+   - HTML valido
+   - Badge corretti
+   - Calcoli matematici corretti
+
+DELIVERABLE:
+File HTML completo, funzionante, con TAB navigabili, pronto per apertura browser.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

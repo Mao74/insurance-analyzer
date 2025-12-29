@@ -1,0 +1,764 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: REPORT RCA CLIENTE - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare report HTML per CLIENTE finale basato su polizza RCA 
+(Responsabilità Civile Auto) + Garanzie Accessorie.
+
+DESTINATARIO: Contraente/Assicurato (proprietario veicolo)
+TEMPLATE: template_rca_cliente_finale.html (997 righe)
+APPROCCIO: Template-first - riempire placeholder con dati estratti da polizza
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA ASSOLUTA
+   - Tutti dati veicolo (targa, marca, modello, anno, potenza, valore)
+   - Tutte garanzie (RCA + 8 accessorie)
+   - Classe merito dettagliata
+   - Procedura sinistri per ogni tipo
+
+2. CHIAREZZA CLIENTE
+   - Linguaggio comprensibile
+   - Badge visivi per garanzie
+   - Highlight box informazioni critiche
+   - Spiegazioni pratiche
+
+3. OPERATIVITÀ
+   - Focus su "cosa fare in caso di sinistro"
+   - CAI (Constatazione Amichevole)
+   - Procedura per tipo sinistro
+   - Timeline liquidazione
+
+4. DATI OGGETTIVI
+   - Zero interpretazioni soggettive
+   - Solo fatti estratti da polizza
+   - Numeri precisi (massimali, franchigie)
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA REPORT (6 TAB)
+═══════════════════════════════════════════════════════════════════════════════
+
+TAB 1: SINTESI POLIZZA
+TAB 2: GARANZIE RCA
+TAB 3: GARANZIE ACCESSORIE
+TAB 4: MASSIMALI & FRANCHIGIE
+TAB 5: ESCLUSIONI & LIMITAZIONI
+TAB 6: GESTIONE SINISTRI
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[TARGA]
+Targa veicolo (formato "AB123CD")
+
+[MARCA]
+Marca veicolo (es. "Fiat", "Volkswagen", "Mercedes-Benz")
+
+[MODELLO]
+Modello completo (es. "500 1.2 Lounge", "Golf 1.5 TSI", "Classe A 180d")
+
+[COMPAGNIA]
+Compagnia assicuratrice completa (es. "Generali Italia S.p.A.")
+
+[SCADENZA]
+Data scadenza formato gg/mm/aaaa
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: SINTESI POLIZZA
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DATI GENERALI
+───────────────────────────────────────────────────────────────────────────────
+
+[CONTRAENTE]
+Ragione sociale o nome cognome contraente (chi paga il premio)
+
+[COMPAGNIA]
+Compagnia assicuratrice (ripetere da header)
+
+[NUMERO_POLIZZA]
+Numero polizza alfanumerico
+
+[DECORRENZA]
+Data decorrenza formato gg/mm/aaaa
+
+[SCADENZA]
+Data scadenza formato gg/mm/aaaa (ripetere da header)
+
+[PREMIO_LORDO]
+Premio lordo annuo totale formato "€ XXX,XX"
+
+[FRAZIONAMENTO]
+Modalità pagamento: Annuale / Semestrale / Mensile
+Se sovrapprezzo: "Semestrale (+3%)"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: DATI VEICOLO
+───────────────────────────────────────────────────────────────────────────────
+
+[TARGA]
+Targa (ripetere da header)
+
+[MARCA]
+Marca (ripetere da header)
+
+[MODELLO]
+Modello completo (ripetere da header)
+
+[ANNO]
+Anno immatricolazione (formato "2020")
+
+[POTENZA_KW]
+Potenza in kW (formato "75")
+
+[POTENZA_CV]
+Potenza in CV (formato "102")
+Conversione: CV = kW × 1.36
+
+[CILINDRATA]
+Cilindrata motore (formato "1.598" per 1598 cc)
+
+[ALIMENTAZIONE]
+Tipo alimentazione: Benzina / Diesel / GPL / Metano / Ibrido / Elettrico
+
+[VALORE_VEICOLO]
+Valore commerciale/assicurato formato "€ XX.XXX"
+
+[USO_VEICOLO]
+Tipo utilizzo:
+- "Uso privato"
+- "Uso promiscuo" (privato + occasionale lavoro)
+- "Uso aziendale"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: CLASSE DI MERITO
+───────────────────────────────────────────────────────────────────────────────
+
+[CLASSE_MERITO]
+Classe bonus/malus (formato "CU 1", "CU 5", "CU 14")
+
+CU = Classe Universale
+Valori: da CU 1 (migliore) a CU 18 (peggiore)
+
+[DESCRIZIONE_CLASSE]
+Descrizione classe (2 righe)
+
+Esempi:
+CU 1: "Classe di merito migliore. Nessun sinistro con colpa negli ultimi 5 anni. 
+Premio ridotto al minimo."
+
+CU 5: "Classe intermedia. Storico sinistralità buono con qualche sinistro minore 
+in passato."
+
+CU 14: "Classe penalizzante. Presenza di sinistri con colpa recenti. Premio maggiorato."
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 4: RIEPILOGO COPERTURE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 8 garanzie
+
+Per ogni garanzia:
+
+[NOME_GARANZIA_INCLUSA]
+Badge: <span class="badge badge-active">Sì</span>
+Oppure: <span class="badge badge-inactive">No</span>
+
+[NOME_GARANZIA_MASSIMALE]
+Se inclusa: valore massimale
+Se non inclusa: "-"
+
+GARANZIE (ordine fisso):
+
+1. RCA
+   [Non ha badge inclusa, sempre presente]
+   [MASS_RCA_PERS] / [MASS_RCA_COSE]
+   Formato: "Persone: € 7.500.000 / Cose: € 1.500.000"
+
+2. Furto e Incendio
+   [FURTO_INCLUSA]
+   [FURTO_MASSIMALE]
+
+3. Kasko / Collisione
+   [KASKO_INCLUSA]
+   [KASKO_MASSIMALE]
+
+4. Cristalli
+   [CRISTALLI_INCLUSA]
+   [CRISTALLI_MASSIMALE]
+
+5. Eventi Naturali
+   [EVENTI_NAT_INCLUSA]
+   [EVENTI_NAT_MASSIMALE]
+
+6. Atti Vandalici
+   [VANDAL_INCLUSA]
+   [VANDAL_MASSIMALE]
+
+7. Tutela Legale
+   [TUTELA_INCLUSA]
+   [TUTELA_MASSIMALE]
+
+8. Assistenza Stradale
+   [ASSISTENZA_INCLUSA]
+   [ASSISTENZA_DETTAGLI]
+   Formato: "Servizio H24 attivo"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: GARANZIE RCA
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: MASSIMALI LEGALI
+───────────────────────────────────────────────────────────────────────────────
+
+[MASS_RCA_PERSONE]
+Massimale danni a persone
+DEFAULT legale 2024: "€ 7.500.000"
+Formato: "€ 7.500.000"
+
+[MASS_RCA_COSE]
+Massimale danni a cose
+DEFAULT legale 2024: "€ 1.500.000"
+Formato: "€ 1.500.000"
+
+Se polizza prevede massimali superiori: usare quelli
+Se polizza non specifica: usare minimi legali
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: FRANCHIGIE E SCOPERTI RCA
+───────────────────────────────────────────────────────────────────────────────
+
+[FRANCH_RCA_PERSONE]
+Franchigia danni persone
+Solitamente: "Nessuna"
+Se presente: "€ XXX"
+
+[SCOP_RCA_PERSONE]
+Scoperto danni persone
+Solitamente: "-"
+Se presente: "10%"
+
+[NOTE_RCA_PERSONE]
+Note particolari danni persone
+Esempi:
+- "Nessuna limitazione"
+- "Riduzione 50% se conducente età < 26 anni"
+
+[FRANCH_RCA_COSE]
+Franchigia danni cose
+Comune: "€ 500", "€ 1.000", "Nessuna"
+
+[SCOP_RCA_COSE]
+Scoperto danni cose
+Comune: "10%", "-"
+
+[NOTE_RCA_COSE]
+Note particolari danni cose
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: VALIDITÀ TERRITORIALE
+───────────────────────────────────────────────────────────────────────────────
+
+[TERRITORIO_RCA]
+Ambito geografico copertura RCA
+
+Opzioni comuni:
+- "Italia"
+- "Italia + Paesi Unione Europea"
+- "Europa (Italia + UE + Svizzera + Norvegia + Islanda)"
+- "Europa + Paesi Carta Verde"
+
+SEMPRE verificare in polizza, essere specifici
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 4: CONDUCENTI GARANTITI
+───────────────────────────────────────────────────────────────────────────────
+
+[CONDUCENTI_GARANTITI]
+Chi può guidare il veicolo
+
+Opzioni comuni:
+- "Guida libera - Qualsiasi conducente con patente valida"
+- "Guida esperta - Solo conducenti età > 25 anni con patente da almeno 2 anni"
+- "Guida esclusiva - Solo contraente [NOME]"
+- "Guida nominativa - Solo: [NOME1], [NOME2], [NOME3]"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: GARANZIE ACCESSORIE
+═══════════════════════════════════════════════════════════════════════════════
+
+Per CIASCUNA delle 7 garanzie accessorie, compilare:
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 1: FURTO E INCENDIO
+───────────────────────────────────────────────────────────────────────────────
+
+[FURTO_INCLUSA]
+Badge Sì/No
+
+[FURTO_MASSIMALE]
+Massimale furto/incendio
+Solitamente = valore veicolo
+Formato: "€ XX.XXX"
+Se non inclusa: "-"
+
+[FURTO_FRANCHIGIA]
+Franchigia furto
+Comune: "€ 500", "10%", "Nessuna"
+
+[FURTO_SCOPERTO]
+Scoperto furto
+Comune: "10%", "-"
+
+[FURTO_DESCRIZIONE]
+Descrizione copertura (2-3 righe)
+Esempio: "Copre furto totale, furto parziale (es. ruote, autoradio), tentato furto, 
+incendio doloso o colposo. Massimale pari al valore commerciale veicolo."
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 2: KASKO / COLLISIONE
+───────────────────────────────────────────────────────────────────────────────
+
+[KASKO_INCLUSA]
+Badge Sì/No
+
+[KASKO_TIPO]
+Tipo kasko:
+- "Kasko Totale" (tutti danni anche senza terzi identificati)
+- "Kasko Parziale" (solo collisione con terzi identificati)
+- "Mini Kasko" (solo eventi specifici)
+- "Collisione" (solo urto con altro veicolo identificato)
+
+[KASKO_MASSIMALE]
+Massimale kasko
+Formato: "€ XX.XXX"
+Se non inclusa: "-"
+
+[KASKO_FRANCHIGIA]
+Franchigia kasko
+Comune: "€ 500", "€ 1.000", "€ 1.500"
+
+[KASKO_DESCRIZIONE]
+Descrizione copertura (2-3 righe)
+Esempio Kasko Totale: "Copre tutti i danni al veicolo anche senza identificazione 
+del responsabile. Include uscita di strada, urto con animali, danni da parcheggio."
+
+Esempio Collisione: "Copre danni da collisione con altro veicolo identificato. 
+Richiede dati del terzo o testimoni."
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 3: CRISTALLI
+───────────────────────────────────────────────────────────────────────────────
+
+[CRISTALLI_INCLUSA]
+Badge Sì/No
+
+[CRISTALLI_MASSIMALE]
+Massimale cristalli
+Formato: "€ XXX" o "€ X.XXX"
+Comune: "€ 500", "€ 1.000"
+
+[CRISTALLI_FRANCHIGIA]
+Franchigia cristalli
+Comune: "€ 100", "Nessuna"
+
+[CRISTALLI_SCOPERTO]
+Scoperto cristalli
+Comune: "10%", "-"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 4: EVENTI NATURALI
+───────────────────────────────────────────────────────────────────────────────
+
+[EVENTI_NAT_INCLUSA]
+Badge Sì/No
+
+[EVENTI_NAT_MASSIMALE]
+Massimale eventi naturali
+Formato: "€ XX.XXX"
+
+[EVENTI_NAT_FRANCHIGIA]
+Franchigia eventi naturali
+Comune: "€ 500", "10%"
+
+[EVENTI_NAT_EVENTI]
+Eventi coperti
+Esempio: "Grandine, alluvione, inondazione, frana, terremoto, fulmine, valanga"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 5: ATTI VANDALICI
+───────────────────────────────────────────────────────────────────────────────
+
+[VANDAL_INCLUSA]
+Badge Sì/No
+
+[VANDAL_MASSIMALE]
+Massimale atti vandalici
+Formato: "€ XX.XXX"
+
+[VANDAL_FRANCHIGIA]
+Franchigia vandalismi
+Comune: "€ 300", "€ 500"
+
+[VANDAL_SCOPERTO]
+Scoperto vandalismi
+Comune: "10%", "-"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 6: TUTELA LEGALE
+───────────────────────────────────────────────────────────────────────────────
+
+[TUTELA_INCLUSA]
+Badge Sì/No
+
+[TUTELA_MASSIMALE]
+Massimale tutela legale
+Comune: "€ 25.000", "€ 50.000"
+Formato: "€ XX.XXX"
+
+[TUTELA_FRANCHIGIA]
+Franchigia tutela
+Comune: "€ 250", "Nessuna"
+
+[TUTELA_AMBITO]
+Ambito tutela
+Esempio: "Penale, civile, amministrativo per sinistri stradali"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 7: ASSISTENZA STRADALE
+───────────────────────────────────────────────────────────────────────────────
+
+[ASSISTENZA_INCLUSA]
+Badge Sì/No
+
+[ASSISTENZA_SERVIZI]
+Servizi inclusi (breve)
+Esempio: "Soccorso H24, traino, auto sostitutiva"
+
+[ASSISTENZA_DETTAGLI]
+Dettagli servizi (3-4 righe)
+Esempio: "Centrale operativa H24 attiva in Italia ed Europa. Include: soccorso 
+stradale entro 50 km, traino officina convenzionata, auto sostitutiva 48h, 
+rientro sanitario conducente."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: MASSIMALI & FRANCHIGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+Tabella riepilogativa 8 righe
+
+Per ogni garanzia:
+
+[NOME_GARANZIA_MASSIMALE]  (già compilato in TAB precedenti)
+[NOME_GARANZIA_FRANCHIGIA] (già compilato)
+[NOME_GARANZIA_SCOPERTO]   (già compilato)
+[NOME_GARANZIA_NOTE]       (note aggiuntive se presenti)
+
+Ripetere valori da TAB 2 e TAB 3
+
+Se garanzia non inclusa:
+- Massimale: "-"
+- Franchigia: "-"
+- Scoperto: "-"
+- Note: "Garanzia non inclusa"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: ESCLUSIONI & LIMITAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: ESCLUSIONI RCA STANDARD
+───────────────────────────────────────────────────────────────────────────────
+
+Elencare 5 esclusioni principali RCA
+
+[ESCLUSIONE_RCA_1]
+[ESCLUSIONE_RCA_2]
+[ESCLUSIONE_RCA_3]
+[ESCLUSIONE_RCA_4]
+[ESCLUSIONE_RCA_5]
+
+ESCLUSIONI TIPICHE RCA:
+- "Danni causati da guida in stato di ebbrezza (tasso alcolemico > limite legale)"
+- "Danni causati da guida sotto effetto stupefacenti"
+- "Danni causati da gare o competizioni sportive"
+- "Danni causati da guida senza patente o con patente scaduta/sospesa"
+- "Danni a cose trasportate sul veicolo"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: ESCLUSIONI GARANZIE ACCESSORIE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con esclusioni specifiche per garanzia
+
+[ESCL_FURTO]
+Esclusioni furto/incendio
+Esempio: "Furto con chiavi lasciate nel veicolo, furto senza denuncia entro 24h, 
+componenti non di serie"
+
+[ESCL_KASKO]
+Esclusioni kasko
+Esempio: "Danni da usura, danni intenzionali, danni con veicolo non circolante"
+
+[ESCL_CRISTALLI]
+Esclusioni cristalli
+Esempio: "Danni a fari, specchietti, lunotto posteriore (se non specificato)"
+
+[ESCL_EVENTI_NAT]
+Esclusioni eventi naturali
+Esempio: "Danni se veicolo parcheggiato in zona alluvione nota"
+
+[ESCL_VANDAL]
+Esclusioni vandalismi
+Esempio: "Danni senza denuncia alle autorità, rigature superficiali"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: LIMITAZIONI
+───────────────────────────────────────────────────────────────────────────────
+
+[LIMITAZIONI_CONDUCENTI]
+Limitazioni conducenti (2-3 righe)
+Ripetere da [CONDUCENTI_GARANTITI] con eventuale dettaglio aggiuntivo
+
+[LIMITAZIONI_TERRITORIALI]
+Limitazioni territoriali (2-3 righe)
+Ripetere da [TERRITORIO_RCA] con dettagli
+
+[LIMITAZIONI_USO]
+Limitazioni uso veicolo (2-3 righe)
+Esempio: "Veicolo assicurato per uso privato. Escluso utilizzo commerciale, 
+trasporto merci, noleggio con conducente."
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: GESTIONE SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+SEZIONE 1: DENUNCIA SINISTRO
+───────────────────────────────────────────────────────────────────────────────
+
+[TERMINE_DENUNCIA]
+Termine denuncia
+RCA: "3 giorni dall'evento"
+Furto: "Immediata (stesso giorno)"
+Altre: "3 giorni dalla conoscenza"
+
+[MODALITA_DENUNCIA]
+Modalità denuncia
+Esempio: "Tramite broker via email/telefono, oppure direttamente a compagnia via 
+portale web o app mobile"
+
+[TEL_BROKER]
+Telefono broker (es. "+39 02 1234567")
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 2: DOCUMENTAZIONE PER TIPO SINISTRO
+───────────────────────────────────────────────────────────────────────────────
+
+[DOC_RCA]
+Documenti sinistro RCA
+Esempio: "Modulo CAI compilato e firmato da entrambi conducenti, foto danni, 
+patente e libretto circolazione, attestato rischio, eventuale verbale forze 
+dell'ordine"
+
+[DOC_FURTO]
+Documenti furto totale
+Esempio: "Denuncia furto alle autorità, originale libretto circolazione, 
+certificato proprietà, chiavi originali veicolo, ultima fattura assicurazione"
+
+[DOC_INCENDIO]
+Documenti incendio
+Esempio: "Denuncia alle autorità, relazione Vigili del Fuoco (se intervenuti), 
+foto danni, libretto circolazione"
+
+[DOC_KASKO]
+Documenti kasko/collisione
+Esempio: "Foto danni dettagliate da più angolazioni, eventuale CAI se altro 
+veicolo coinvolto, verbale polizia se richiesto, preventivo riparazione"
+
+[DOC_CRISTALLI]
+Documenti cristalli
+Esempio: "Foto danno parabrezza/lunotto, preventivo sostituzione officina 
+convenzionata"
+
+[DOC_EVENTI]
+Documenti eventi naturali
+Esempio: "Foto danni, documentazione evento (es. bollettino meteo per grandine), 
+preventivo riparazione"
+
+[DOC_VANDAL]
+Documenti vandalismi
+Esempio: "Denuncia alle autorità, foto danni, eventuale videosorveglianza se 
+disponibile"
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 3: CONSTATAZIONE AMICHEVALE (CAI)
+───────────────────────────────────────────────────────────────────────────────
+
+Testo fisso, già in template
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 4: TIMELINE LIQUIDAZIONE
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 righe (già strutturata in template)
+
+[TERMINE_DENUNCIA]
+Ripetere da SEZIONE 1
+
+───────────────────────────────────────────────────────────────────────────────
+SEZIONE 5: ATTIVAZIONE ASSISTENZA STRADALE
+───────────────────────────────────────────────────────────────────────────────
+
+[PROCEDURA_ASSISTENZA]
+Procedura attivazione assistenza (3-4 righe)
+Esempio: "In caso di guasto o incidente, chiamare numero verde assistenza 
+800.XXX.XXX attivo H24. Fornire: targa veicolo, numero polizza, posizione GPS. 
+Operatore invia soccorso stradale entro 30-60 minuti."
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPLETEZZA GARANZIE
+   ─────────────────────
+   TAB 3: Compilare TUTTE le 7 garanzie accessorie
+   Usare badge Sì/No per indicare se inclusa
+   Se non inclusa: massimale = "-"
+
+2. CLASSE MERITO
+   ──────────────
+   SEMPRE includere classe bonus/malus
+   Spiegare significato in modo comprensibile
+   Dato critico per cliente
+
+3. MASSIMALI RCA LEGALI
+   ─────────────────────
+   Verificare massimali polizza vs minimi legali
+   Se polizza non specifica: usare minimi legali 2024
+   Persone: € 7.500.000
+   Cose: € 1.500.000
+
+4. FORMATO VALUTE
+   ──────────────
+   RCA massimali grandi: "€ 7.500.000" (punto migliaia)
+   Altre garanzie: "€ XX.XXX"
+   Franchigie: "€ XXX" o "€ X.XXX"
+
+5. BADGE CORRETTI
+   ──────────────
+   Garanzia inclusa: <span class="badge badge-active">Sì</span>
+   Garanzia non inclusa: <span class="badge badge-inactive">No</span>
+
+6. DATI VEICOLO COMPLETI
+   ─────────────────────
+   Tutti campi: targa, marca, modello, anno, kW, CV, cilindrata
+   Conversione: CV = kW × 1.36 (arrotondare)
+   Valore veicolo essenziale per furto/kasko
+
+7. DOCUMENTAZIONE SINISTRI
+   ────────────────────────
+   Specifica per OGNI tipo sinistro
+   Pratica e operativa
+   Include CAI per RCA
+
+8. DATI OGGETTIVI
+   ──────────────
+   Estrarre solo da polizza
+   NO interpretazioni
+   Se dato manca: "-" o "Non specificato"
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: IDENTIFICARE DATI VEICOLO
+──────────────────────────────────
+
+Da libretto circolazione o polizza:
+- Targa
+- Marca e modello completo
+- Anno immatricolazione
+- Potenza (kW e CV)
+- Cilindrata
+- Alimentazione
+- Valore commerciale (da polizza o stima)
+
+STEP 2: ESTRARRE DATI POLIZZA BASE
+───────────────────────────────────
+
+Da frontespizio polizza:
+- Contraente, compagnia
+- Numero polizza, date
+- Premio lordo, frazionamento
+
+STEP 3: ESTRARRE CLASSE MERITO
+───────────────────────────────
+
+Da attestato rischio o polizza:
+- Classe bonus/malus (CU X)
+- Storico sinistri ultimi 5 anni
+
+STEP 4: ESTRARRE MASSIMALI RCA
+───────────────────────────────
+
+Da condizioni particolari:
+- Massimale persone
+- Massimale cose
+- Franchigie e scoperti RCA
+- Conducenti garantiti
+- Territorio
+
+STEP 5: ESTRARRE GARANZIE ACCESSORIE
+─────────────────────────────────────
+
+Per CIASCUNA delle 7 garanzie:
+- Verificare se inclusa (Sì/No)
+- Se inclusa:
+  - Massimale
+  - Franchigia
+  - Scoperto
+  - Condizioni particolari
+
+STEP 6: ESTRARRE ESCLUSIONI
+────────────────────────────
+
+Da condizioni generali:
+- Esclusioni RCA standard
+- Esclusioni specifiche per garanzia accessoria
+- Limitazioni conducenti/territorio/uso
+
+STEP 7: ESTRARRE GESTIONE SINISTRI
+───────────────────────────────────
+
+Da condizioni generali:
+- Termine denuncia
+- Modalità denuncia
+- Documentazione richiesta
+- Procedura assistenza
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_rca_cliente_finale.html
+2. Sostituire TUTTI i placeholder [XXX]
+3. Per garanzie accessorie:
+   - Badge Sì se inclusa, No se non inclusa
+   - Se non inclusa: massimale/franchigia = "-"
+4. Verificare:
+   - Tutti placeholder sostituiti
+   - Badge corretti
+   - Conversione kW → CV corretta
+   - Massimali RCA conformi a legge
+   - HTML valido
+
+DELIVERABLE:
+File HTML completo, funzionante, con TAB navigabili, pronto per cliente.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════

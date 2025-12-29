@@ -1,0 +1,846 @@
+═══════════════════════════════════════════════════════════════════════════════
+PROMPT: POLIZZA CYBER RISK CLIENTE - VERSIONE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+OBIETTIVO: Generare documento HTML leggibile polizza Cyber Risk per cliente finale.
+
+DESTINATARIO: Cliente (contraente/assicurato)
+TEMPLATE: template_cyber_cliente_finale.html (1163 righe)
+APPROCCIO: Template-first - riempire placeholder con dati polizza
+
+STILE: Elegante, rassicurante, oro premium
+COLORI: Oro #d4af37, Nero #1a1a1a, Azzurro cyber #0ea5e9
+
+═══════════════════════════════════════════════════════════════════════════════
+PRINCIPI GUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CHIAREZZA ASSOLUTA
+   - Linguaggio semplice, NO tecnicismos eccessivo
+   - Spiegare termini cyber (ransomware, data breach, ecc.)
+   - Focus su "cosa sei coperto" non su clausole
+
+2. RASSICURAZIONE
+   - Sottolineare servizi H24
+   - Evidenziare supporto immediato
+   - Panel esperti pre-attivati
+
+3. URGENZA DENUNCIA
+   - Ripetere più volte: denuncia immediata (24h)
+   - Hotline H24 ben visibile
+   - Procedure chiare per ogni evento
+
+4. NAVIGABILITÀ
+   - 6 TAB colorate
+   - Info grid visive
+   - Coverage card con icone
+
+═══════════════════════════════════════════════════════════════════════════════
+STRUTTURA (6 TAB)
+═══════════════════════════════════════════════════════════════════════════════
+
+TAB 1: SINTESI POLIZZA
+TAB 2: COPERTURE CYBER
+TAB 3: ESCLUSIONI & LIMITAZIONI
+TAB 4: FRANCHIGIE & SCOPERTI
+TAB 5: GESTIONE SINISTRI
+TAB 6: SERVIZI ASSISTENZA
+
+═══════════════════════════════════════════════════════════════════════════════
+HEADER
+═══════════════════════════════════════════════════════════════════════════════
+
+[CONTRAENTE]
+Nome/ragione sociale contraente
+
+[COMPAGNIA]
+Nome compagnia assicuratrice
+
+[SCADENZA]
+Data scadenza formato "gg/mm/aaaa"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 1: SINTESI POLIZZA
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: DATI GENERALI
+───────────────────────────────────────────────────────────────────────────────
+
+[CONTRAENTE]
+Nome contraente
+
+[CF_PIVA]
+Codice fiscale o P.IVA
+
+[COMPAGNIA]
+Compagnia assicuratrice
+
+[NUMERO_POLIZZA]
+Numero polizza
+
+[DECORRENZA]
+Data decorrenza formato "gg/mm/aaaa"
+
+[SCADENZA]
+Data scadenza formato "gg/mm/aaaa"
+
+[PREMIO_LORDO]
+Premio lordo annuo formato "€ XX.XXX"
+
+[FRAZIONAMENTO]
+Frazionamento premio:
+- "Annuale"
+- "Semestrale"
+- "Trimestrale"
+- "Mensile"
+
+SUBSECTION: PROFILO AZIENDALE
+───────────────────────────────────────────────────────────────────────────────
+
+[SETTORE_ATTIVITA]
+Settore attività
+Esempi: "Software Development", "E-commerce", "Sanità", "Finanza"
+
+[FATTURATO]
+Fatturato annuo formato "€ X.XXX.XXX"
+
+[NUMERO_DIPENDENTI]
+Numero dipendenti (formato "XX dipendenti")
+
+[SISTEMI_IT]
+Sistemi IT gestiti
+Esempi: "Cloud AWS + datacenter locale", "Microsoft 365 + server interni"
+
+SUBSECTION: MASSIMALI PRINCIPALI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 6 righe - garanzie principali
+
+Per CIASCUNA garanzia:
+
+[NOME_INCLUSA]
+"✓" se inclusa, "✗" se non inclusa
+
+[NOME_MASSIMALE]
+Massimale formato "€ XXX.XXX"
+
+Garanzie:
+1. Data Breach
+2. Cyber Extortion
+3. Business Interruption
+4. System Damage
+5. Cyber Crime
+6. Legal Defense (GDPR)
+
+[HOTLINE_H24]
+Numero hotline emergenza H24
+Formato: "+39 XXX XXX XXXX"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 2: COPERTURE CYBER
+═══════════════════════════════════════════════════════════════════════════════
+
+10 Coverage Card (grid 2 colonne)
+
+Per CIASCUNA garanzia:
+
+[NOME_BADGE_CLASS]
+Classe CSS badge:
+- "badge-active" se inclusa
+- "badge-inactive" se non inclusa
+
+[NOME_STATUS]
+Status: "INCLUSO" oppure "NON INCLUSO"
+
+[NOME_DESCRIZIONE]
+Descrizione garanzia (3-5 righe, linguaggio semplice)
+
+[NOME_MASSIMALE]
+Massimale formato "€ XXX.XXX"
+
+[NOME_FRANCHIGIA]
+Franchigia formato "€ X.XXX" o "Nessuna"
+
+[NOME_WAITING]
+Waiting period (solo Data Breach)
+Formato: "30 giorni" o "Nessuno"
+
+[NOME_INCLUDE]
+Cosa include (lista breve)
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 1: DATA BREACH
+───────────────────────────────────────────────────────────────────────────────
+
+[DATA_BREACH_BADGE_CLASS]
+[DATA_BREACH_STATUS]
+
+[DATA_BREACH_DESCRIZIONE]
+Esempio:
+"Copre i costi derivanti da violazione di dati personali (GDPR): notifiche 
+obbligatorie al Garante Privacy, comunicazioni agli interessati, assistenza 
+legale, servizi di credit monitoring per vittime, gestione crisi reputazionale."
+
+[DATA_BREACH_MASSIMALE]
+[DATA_BREACH_FRANCHIGIA]
+
+[DATA_BREACH_WAITING]
+Waiting period tipico: "30 giorni"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 2: CYBER EXTORTION
+───────────────────────────────────────────────────────────────────────────────
+
+[EXTORTION_BADGE_CLASS]
+[EXTORTION_STATUS]
+
+[EXTORTION_DESCRIZIONE]
+Esempio:
+"Copre pagamento riscatto ransomware e costi associati: negoziazione con 
+cybercriminali, pagamento riscatto (se autorizzato), costi recupero dati, 
+consulenza tecnica specializzata."
+
+[EXTORTION_MASSIMALE]
+[EXTORTION_FRANCHIGIA]
+
+[EXTORTION_INCLUDE]
+Esempio: "Negoziazione + Pagamento riscatto + Consulenza"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 3: BUSINESS INTERRUPTION
+───────────────────────────────────────────────────────────────────────────────
+
+[BI_BADGE_CLASS]
+[BI_STATUS]
+
+[BI_DESCRIZIONE]
+Esempio:
+"Copre perdita di fatturato durante fermo operativo causato da attacco cyber: 
+mancato guadagno, costi fissi continuativi, costi extra per ripristino urgente."
+
+[BI_MASSIMALE]
+[BI_FRANCHIGIA_TEMP]
+Franchigia temporale (formato "X ore")
+Tipico: "8 ore", "12 ore", "24 ore"
+
+[BI_PERIODO]
+Periodo indennizzo massimo
+Esempio: "30 giorni", "60 giorni", "90 giorni"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 4: SYSTEM DAMAGE
+───────────────────────────────────────────────────────────────────────────────
+
+[SYSTEM_BADGE_CLASS]
+[SYSTEM_STATUS]
+
+[SYSTEM_DESCRIZIONE]
+Esempio:
+"Copre costi ripristino sistemi informatici danneggiati: reinstallazione 
+software, recupero dati, ricostruzione database, sostituzione hardware 
+compromesso."
+
+[SYSTEM_MASSIMALE]
+[SYSTEM_FRANCHIGIA]
+
+[SYSTEM_COPERTURA]
+Esempio: "Software + Hardware + Dati"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 5: CYBER CRIME
+───────────────────────────────────────────────────────────────────────────────
+
+[CRIME_BADGE_CLASS]
+[CRIME_STATUS]
+
+[CRIME_DESCRIZIONE]
+Esempio:
+"Copre perdite finanziarie da frodi informatiche: trasferimenti fraudolenti, 
+phishing, business email compromise (BEC), furto credenziali bancarie."
+
+[CRIME_MASSIMALE]
+[CRIME_FRANCHIGIA]
+
+[CRIME_TIPOLOGIE]
+Esempio: "Phishing + BEC + Furto credenziali"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 6: LEGAL DEFENSE (GDPR)
+───────────────────────────────────────────────────────────────────────────────
+
+[LEGAL_BADGE_CLASS]
+[LEGAL_STATUS]
+
+[LEGAL_DESCRIZIONE]
+Esempio:
+"Copre spese legali per difesa da violazioni GDPR: assistenza legale 
+specializzata, difesa contro sanzioni Garante Privacy, consulenza procedimenti 
+amministrativi."
+
+[LEGAL_MASSIMALE]
+[LEGAL_FRANCHIGIA]
+
+[LEGAL_INCLUDE]
+Esempio: "Difesa + Consulenza + Spese legali"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 7: NOTIFICATION COSTS
+───────────────────────────────────────────────────────────────────────────────
+
+[NOTIF_BADGE_CLASS]
+[NOTIF_STATUS]
+
+[NOTIF_DESCRIZIONE]
+Esempio:
+"Copre costi notifiche obbligatorie dopo data breach: comunicazioni scritte 
+agli interessati, call center dedicato, servizi postali, traduzione 
+comunicazioni."
+
+[NOTIF_MASSIMALE]
+[NOTIF_FRANCHIGIA]
+
+[NOTIF_SERVIZI]
+Esempio: "Lettere + Call center + Email"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 8: PR CRISIS MANAGEMENT
+───────────────────────────────────────────────────────────────────────────────
+
+[PR_BADGE_CLASS]
+[PR_STATUS]
+
+[PR_DESCRIZIONE]
+Esempio:
+"Copre gestione crisi reputazionale post-incidente: consulenza PR 
+specializzata, comunicati stampa, gestione media, monitoraggio reputazione 
+online."
+
+[PR_MASSIMALE]
+[PR_FRANCHIGIA]
+
+[PR_DURATA]
+Durata servizio
+Esempio: "3 mesi", "6 mesi"
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 9: FORENSIC INVESTIGATION
+───────────────────────────────────────────────────────────────────────────────
+
+[FORENSIC_BADGE_CLASS]
+[FORENSIC_STATUS]
+
+[FORENSIC_DESCRIZIONE]
+Esempio:
+"Copre perizia tecnica post-incidente: analisi forensic sistemi compromessi, 
+identificazione vettore attacco, assessment danni, relazione tecnica."
+
+[FORENSIC_MASSIMALE]
+[FORENSIC_FRANCHIGIA]
+
+[FORENSIC_PROVIDER]
+Nome provider panel
+Esempio: "Cybersecurity Italia S.p.A."
+
+───────────────────────────────────────────────────────────────────────────────
+GARANZIA 10: PCI DSS FINES
+───────────────────────────────────────────────────────────────────────────────
+
+[PCI_BADGE_CLASS]
+[PCI_STATUS]
+
+[PCI_DESCRIZIONE]
+Esempio:
+"Copre multe PCI DSS dopo compromissione dati carte pagamento: sanzioni 
+circuiti internazionali (Visa, Mastercard), costi ripristino conformità, 
+assessment."
+
+[PCI_MASSIMALE]
+[PCI_FRANCHIGIA]
+
+[PCI_COPERTURA]
+Esempio: "Multe + Assessment + Ripristino"
+
+───────────────────────────────────────────────────────────────────────────────
+
+[RETROATTIVITA]
+Data retroattività polizza
+Formato: "gg/mm/aaaa"
+Se nessuna: "Nessuna retroattività"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 3: ESCLUSIONI & LIMITAZIONI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: ESCLUSIONI PRINCIPALI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 8 righe
+
+Per CIASCUNA esclusione:
+
+[ESCL_NOME]
+Descrizione esclusione (5-10 righe, linguaggio chiaro)
+
+Esempi:
+
+[ESCL_ATTI_DOLOSI]
+"Esclusi danni causati volontariamente da dipendenti o amministratori con 
+intento fraudolento o doloso."
+
+[ESCL_GUERRA_TERRORISMO]
+"Esclusi danni derivanti da guerra, invasione, atti di terrorismo, insurrezione."
+
+[ESCL_SANZIONI]
+"Escluse multe e sanzioni regolamentari (GDPR, ecc.) salvo ove espressamente 
+coperto da garanzia Legal Defense."
+
+[ESCL_SISTEMI_LEGACY]
+"Esclusi danni a sistemi operativi non più supportati dal produttore (es. 
+Windows XP, Windows Server 2008)."
+
+[ESCL_MISURE_SICUREZZA]
+"Esclusi danni se l'assicurato non ha implementato misure minime di sicurezza 
+elencate in polizza (firewall, antivirus, backup)."
+
+[ESCL_INFRASTRUTTURE]
+"Esclusi danni a infrastrutture critiche nazionali se non espressamente 
+dichiarate e accettate."
+
+[ESCL_IP]
+"Escluse violazioni proprietà intellettuale, brevetti, diritti d'autore."
+
+[ESCL_CONTRATTUALE]
+"Escluse responsabilità contrattuali eccedenti quanto previsto per legge."
+
+SUBSECTION: LIMITAZIONI TERRITORIALI
+───────────────────────────────────────────────────────────────────────────────
+
+[VALIDITA_TERRITORIALE]
+Territorio validità
+Esempi:
+- "Mondo intero"
+- "Europa"
+- "Italia"
+
+[ESCLUSIONI_GEOGRAFICHE]
+Esclusioni geografiche specifiche
+Esempio: "Esclusi USA e Canada salvo sublimite € 100.000"
+
+SUBSECTION: REQUISITI MINIMI SICUREZZA
+───────────────────────────────────────────────────────────────────────────────
+
+Elenco 5 requisiti
+
+[REQ_SICUREZZA_N]
+
+Esempi:
+"Firewall attivo su tutti i sistemi connessi a internet"
+"Antivirus aggiornato su tutti i workstation e server"
+"Backup dati giornaliero con copia off-site"
+"Autenticazione multi-fattore (MFA) per accessi amministrativi"
+"Aggiornamenti sicurezza (patch) applicati entro 30 giorni dal rilascio"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 4: FRANCHIGIE & SCOPERTI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: FRANCHIGIE PER GARANZIA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 8 righe
+
+Per CIASCUNA garanzia:
+
+[NOME_FRANCHIGIA]
+Franchigia formato "€ X.XXX" o "Nessuna"
+
+[NOME_SCOPERTO]
+Scoperto formato "10%" o "Nessuno"
+
+[NOME_NOTE_FRANCH]
+Note franchigia
+
+Esempi:
+
+Data Breach:
+- Franchigia: € 2.500
+- Scoperto: Nessuno
+- Note: "Franchigia applicabile a totalità costi evento"
+
+Business Interruption:
+- Franchigia: 24 ore
+- Scoperto: Nessuno
+- Note: "Prime 24h fermo non indennizzate"
+
+SUBSECTION: SUBLIMITI APPLICABILI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella sublimiti specifici
+
+[SUBLIMITE_FORENSIC_EVENTO]
+Sublimite forensic per evento
+Formato: "€ XX.XXX per evento"
+
+[SUBLIMITE_LEGAL_PROCEDIMENTO]
+Sublimite legale per procedimento
+Formato: "€ XX.XXX per procedimento"
+
+[SUBLIMITE_PR_EVENTO]
+Sublimite PR per evento
+Formato: "€ XX.XXX per evento"
+
+[SUBLIMITE_RANSOMWARE]
+Sublimite pagamento ransomware
+Formato: "€ XX.XXX" o "50% massimale Extortion"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 5: GESTIONE SINISTRI
+═══════════════════════════════════════════════════════════════════════════════
+
+SUBSECTION: CONTATTI EMERGENZA H24
+───────────────────────────────────────────────────────────────────────────────
+
+[HOTLINE_H24]
+Numero hotline H24
+Formato: "+39 XXX XXX XXXX"
+
+[EMAIL_EMERGENZA]
+Email emergenza
+Formato: "cyber@compagnia.it"
+
+[BROKER_NOME]
+Nome broker referente
+
+[BROKER_TEL]
+Telefono broker
+
+SUBSECTION: PROCEDURA DENUNCIA PER TIPO EVENTO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 righe
+
+Per CIASCUN tipo evento:
+
+[DOC_NOME_EVENTO]
+Documentazione necessaria
+
+Esempi:
+
+[DOC_DATA_BREACH]
+"Descrizione evento, dati compromessi, numero interessati, log sistemi, 
+timeline scoperta, azioni contenimento"
+
+[DOC_RANSOMWARE]
+"Screenshot richiesta riscatto, sistemi cifrati, backup disponibili, contatti 
+cybercriminali"
+
+[DOC_DDOS]
+"Log attacco, durata, origine traffico, impatto servizi"
+
+[DOC_BI]
+"Fatturato storico, costi fissi, durata fermo, azioni ripristino"
+
+[DOC_CRIME]
+"Transazioni fraudolente, screenshot comunicazioni, denuncia forze ordine"
+
+SUBSECTION: TIMELINE GESTIONE SINISTRO
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 5 fasi
+
+Per CIASCUNA fase:
+
+[FASE_NOME]
+Attività fase
+
+Esempi:
+
+[FASE_DISCOVERY]
+"Scoperta incidente, chiamata hotline H24, apertura pratica, attivazione panel 
+esperti"
+
+[FASE_CONTENIMENTO]
+"Isolamento sistemi compromessi, blocco accessi non autorizzati, salvataggio 
+evidenze forensic"
+
+[FASE_INVESTIGATION]
+"Perizia forensic, identificazione vettore attacco, valutazione scope 
+compromissione"
+
+[FASE_RECOVERY]
+"Ripristino sistemi, bonifica malware, test sicurezza, rientro operatività"
+
+[FASE_NOTIFICHE]
+"Notifica Garante Privacy (se GDPR), comunicazioni interessati, credit 
+monitoring, PR"
+
+SUBSECTION: OBBLIGHI GDPR
+───────────────────────────────────────────────────────────────────────────────
+
+[VALUTAZIONE_GRAVITA]
+Come valutare gravità breach
+Esempio: "Alto rischio se: dati sensibili, numero elevato interessati, danni 
+reputazionali"
+
+[NOTIFICA_GARANTE_SE]
+Quando notificare Garante
+Esempio: "Sempre entro 72h se rischio per diritti interessati"
+
+[COMUNICAZIONE_INTERESSATI_SE]
+Quando comunicare a interessati
+Esempio: "Se alto rischio per diritti e libertà individui"
+
+[ASSISTENZA_LEGALE_INCLUSA]
+Assistenza legale inclusa
+Esempio: "Sì, panel legali GDPR pre-attivato"
+
+═══════════════════════════════════════════════════════════════════════════════
+TAB 6: SERVIZI ASSISTENZA
+═══════════════════════════════════════════════════════════════════════════════
+
+6 Coverage Card servizi
+
+Per CIASCUN servizio:
+
+[SERV_NOME_DESCRIZIONE]
+Descrizione servizio (3-5 righe)
+
+[SERV_NOME_PROVIDER]
+Nome provider
+
+[SERV_NOME_DISPONIBILITA] o [SERV_NOME_SPECIAL] o [SERV_NOME_SERVIZI]
+Dettagli aggiuntivi
+
+Esempi:
+
+[SERV_FORENSIC_DESCRIZIONE]
+"Analisi tecnica specialistica post-incidente per identificare vettore attacco, 
+sistemi compromessi, dati esposti. Report forensic utilizzabile per denunce e 
+difesa legale."
+
+[SERV_FORENSIC_PROVIDER]
+"Cybersecurity Italia S.p.A."
+
+[SERV_FORENSIC_DISPONIBILITA]
+"H24/7 - Intervento entro 4 ore"
+
+SUBSECTION: PANEL FORNITORI PRE-APPROVATI
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella 4 righe
+
+[PANEL_NOME_SERVIZIO_NOME]
+Nome provider panel
+
+[PANEL_NOME_SERVIZIO_CONTATTO]
+Contatto provider
+Formato: "Tel: +39 XXX | Email: xxx@provider.it"
+
+Servizi:
+- Forensic Investigation
+- Legal GDPR
+- PR Agency
+- IT Recovery
+
+SUBSECTION: SERVIZI PREVENTIVI (OPZIONALI)
+───────────────────────────────────────────────────────────────────────────────
+
+[SERV_PREV_N]
+Elenco 4 servizi preventivi opzionali
+
+Esempi:
+"Vulnerability Assessment trimestrale"
+"Penetration Test annuale"
+"Security Awareness Training dipendenti"
+"Dark Web Monitoring continuo"
+
+═══════════════════════════════════════════════════════════════════════════════
+FOOTER
+═══════════════════════════════════════════════════════════════════════════════
+
+[BROKER_TEL]
+Telefono broker
+
+[BROKER_EMAIL]
+Email broker
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE CRITICHE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. LINGUAGGIO SEMPLICE
+   ───────────────────
+   Spiegare termini cyber
+   NO tecnicismi eccessivi
+   Focus su cosa è coperto
+
+2. HOTLINE H24 VISIBILE
+   ────────────────────
+   Ripetere numero più volte
+   Evidenziare in alert box
+   "Denuncia immediata" ripetuto
+
+3. DESCRIZIONI GARANZIE CHIARE
+   ───────────────────────────
+   3-5 righe per garanzia
+   Esempi concreti
+   Cosa include
+
+4. ESCLUSIONI COMPRENSIBILI
+   ────────────────────────
+   Linguaggio piano
+   Spiegare "perché"
+   Esempi se utile
+
+5. PROCEDURA SINISTRI STEP-BY-STEP
+   ────────────────────────────────
+   Timeline chiara
+   Cosa fare quando
+   Chi chiamare
+
+6. GDPR SPIEGATO
+   ─────────────
+   72 ore Garante
+   Quando notificare
+   Assistenza inclusa
+
+7. BADGE COVERAGE
+   ──────────────
+   badge-active = INCLUSO
+   badge-inactive = NON INCLUSO
+   Sempre coerente
+
+8. MASSIMALI CHIARI
+   ────────────────
+   Formato € XX.XXX
+   Famiglia 'JetBrains Mono'
+   Ben evidenziati
+
+═══════════════════════════════════════════════════════════════════════════════
+STRATEGIA ESTRAZIONE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: DATI BASE
+─────────────────
+
+Da polizza:
+- Contraente, compagnia
+- Numero polizza, date
+- Premio, frazionamento
+
+STEP 2: PROFILO AZIENDALE
+──────────────────────────
+
+Da questionario:
+- Settore, fatturato
+- Dipendenti
+- Sistemi IT gestiti
+
+STEP 3: GARANZIE
+────────────────
+
+Per CIASCUNA delle 10 garanzie:
+- Verificare se inclusa (✓/✗)
+- Estrarre massimale
+- Estrarre franchigia
+- Scrivere descrizione chiara
+- Specificare cosa include
+
+STEP 4: ESCLUSIONI
+──────────────────
+
+Da condizioni generali:
+- 8 esclusioni principali
+- Riscrivere in linguaggio piano
+- Validità territoriale
+- Requisiti sicurezza minimi
+
+STEP 5: FRANCHIGIE
+──────────────────
+
+Per ogni garanzia:
+- Franchigia economica
+- Franchigia temporale (se BI)
+- Scoperto
+- Note specifiche
+
+STEP 6: SUBLIMITI
+─────────────────
+
+Estrarre:
+- Forensic per evento
+- Legal per procedimento
+- PR per evento
+- Ransomware payment
+
+STEP 7: CONTATTI
+────────────────
+
+Estrarre:
+- Hotline H24
+- Email emergenza
+- Broker referente + contatti
+
+STEP 8: SERVIZI
+───────────────
+
+Per ogni servizio assistenza:
+- Descrizione servizio
+- Provider panel
+- Disponibilità/dettagli
+
+STEP 9: GDPR
+────────────
+
+Spiegare:
+- Obbligo 72h Garante
+- Quando notificare
+- Quando comunicare interessati
+- Assistenza legale disponibile
+
+STEP 10: PANEL FORNITORI
+─────────────────────────
+
+Estrarre:
+- 4 provider panel
+- Contatti ciascuno
+- Specializzazione
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FINALE
+═══════════════════════════════════════════════════════════════════════════════
+
+Generare file HTML completo:
+
+1. Prendere template_cyber_cliente_finale.html
+2. Sostituire TUTTI placeholder
+3. Coverage card (10):
+   - Badge class corretto (active/inactive)
+   - Descrizioni chiare e semplici
+   - Massimali ben formattati
+4. Tabelle:
+   - Massimali principali (6 garanzie)
+   - Esclusioni (8)
+   - Franchigie (8 garanzie)
+   - Sublimiti (4)
+   - Procedura denuncia (5 eventi)
+   - Timeline gestione (5 fasi)
+   - Panel fornitori (4)
+5. Alert box:
+   - Denuncia immediata (ripetere)
+   - GDPR 72h
+   - Requisiti sicurezza
+6. Contatti H24:
+   - Hotline ripetuta più volte
+   - Email emergenza
+   - Broker
+7. HTML valido
+8. Colori oro elegante coerenti
+
+DELIVERABLE:
+File HTML completo, elegante, rassicurante, navigabile, strumento comunicazione 
+cliente polizza Cyber Risk.
+
+═══════════════════════════════════════════════════════════════════════════════
+FINE PROMPT
+═══════════════════════════════════════════════════════════════════════════════
