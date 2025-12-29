@@ -30,7 +30,10 @@ def mask_document(text: str, sensitive_data: dict) -> tuple[str, list[dict], dic
         'contraente': '[CONTRAENTE_XXX]',
         'partita_iva': '[PIVA_XXX]',
         'codice_fiscale': '[CF_XXX]',
-        'assicurato': '[ASSICURATO_XXX]'
+        'assicurato': '[ASSICURATO_XXX]',
+        'indirizzo': '[INDIRIZZO_XXX]',
+        'citta': '[CITTA_XXX]',
+        'cap': '[CAP_XXX]'
     }
     
     for field, mask in field_masks.items():
