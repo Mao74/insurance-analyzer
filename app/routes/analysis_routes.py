@@ -554,22 +554,32 @@ def full_analysis_pipeline(
             base_folder = "analisi_sinistri"
             # Rimuovi "rc_generale" -> "rc" per sinistri
             folder_type = safe_policy_type.replace("rc_generale", "rc")
+            # Nuova convenzione: prompt_sinistro_{type}.txt
+            prompt_path = f"prompts/{base_folder}/{folder_type}/prompt_sinistro_{folder_type}.txt"
+            template_path = f"prompts/{base_folder}/{folder_type}/template_sinistro_{folder_type}.html"
         else:
             base_folder = "analisi_polizze"
             folder_type = safe_policy_type
+            # Nuova convenzione: prompt_{type}_{level}.txt
+            prompt_path = f"prompts/{base_folder}/{folder_type}/prompt_{folder_type}_{analysis_level}.txt"
+            template_path = f"prompts/{base_folder}/{folder_type}/template_{folder_type}_{analysis_level}.html"
         
-        prompt_path = f"prompts/{base_folder}/{folder_type}/{analysis_level}.txt"
+        # Fallback per file non trovati
         if not os.path.exists(prompt_path):
-            prompt_path = f"prompts/{base_folder}/{folder_type}/base.txt"
+            # Prova con nome generico base.txt
+            fallback_prompt = f"prompts/{base_folder}/{folder_type}/base.txt"
+            if os.path.exists(fallback_prompt):
+                prompt_path = fallback_prompt
+            else:
+                print(f"WARNING: Prompt file not found: {prompt_path}")
         
-        with open(prompt_path, "r", encoding="utf-8") as f:
-            prompt_template = f.read()
-        
-        template_path = f"prompts/{base_folder}/{folder_type}/template_{analysis_level}.html"
         if not os.path.exists(template_path):
-            template_path = f"prompts/{base_folder}/{folder_type}/template.html"
-            if not os.path.exists(template_path):
-                template_path = f"prompts/{base_folder}/{folder_type}/Template.html"
+            # Prova con nome generico template.html
+            fallback_template = f"prompts/{base_folder}/{folder_type}/template.html"
+            if os.path.exists(fallback_template):
+                template_path = fallback_template
+            else:
+                print(f"WARNING: Template file not found: {template_path}")
         
         print(f"DEBUG: Using prompt: {prompt_path}")
         print(f"DEBUG: Using template: {template_path}")
