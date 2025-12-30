@@ -395,14 +395,16 @@ def extract_image_with_doctr(file_path: str) -> str:
 
 def process_image(file_path: str) -> tuple[str, str]:
     """Process an image file using Doctr (primary) then Tesseract."""
-    # Step 1: Try Doctr (handles rotation and tables better)
-    try:
-        print("Processing image with Doctr...")
-        text_doctr = extract_image_with_doctr(file_path)
-        if text_doctr and word_count(text_doctr) > 5:
-            return text_doctr, 'ocr_image_doctr'
-    except Exception as e:
-        print(f"Doctr image OCR failed (falling back to Tesseract): {e}")
+    # Step 1: Try Doctr (DISABLED FOR STABILITY ON SMALL VPS)
+    # try:
+    #     print("Processing image with Doctr...")
+    #     text_doctr = extract_image_with_doctr(file_path)
+    #     if text_doctr and word_count(text_doctr) > 5:
+    #         return text_doctr, 'ocr_image_doctr'
+    # except Exception as e:
+    #     print(f"Doctr image OCR failed (falling back to Tesseract): {e}")
+
+    print("Skipping Doctr (optimization). using Tesseract...")
 
     # Step 2: Fallback to Tesseract
     try:

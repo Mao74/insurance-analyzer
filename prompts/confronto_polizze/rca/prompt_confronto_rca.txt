@@ -1,4 +1,45 @@
 ═══════════════════════════════════════════════════════════════════════════════
+⚠️⚠️⚠️ REGOLA AUREA - PRIORITÀ ASSOLUTA ⚠️⚠️⚠️
+═══════════════════════════════════════════════════════════════════════════════
+
+ESTRAZIONE DATI FEDELE - ZERO TOLLERANZA PER INVENZIONI
+
+1. OGNI DATO deve provenire ESATTAMENTE dai documenti fonte (PDF/HTML/JSON)
+2. NON INVENTARE mai dati mancanti
+3. NON STIMARE mai valori
+4. NON INFERIRE mai da pattern di altre polizze
+5. Se un dato manca → scrivere "Non specificato" o "-" nel campo
+6. Se un dato è ambiguo → riportarlo testualmente e segnalare in nota
+
+DATI CRITICI RCA (VERIFICA TRIPLA OBBLIGATORIA):
+- Massimali RCA (persone/cose) → fonte: sezione "Massimali" polizza
+- Premio totale → fonte: riepilogo economico polizza
+- Franchigie per garanzia → fonte: condizioni specifiche garanzia
+- Scoperti → fonte: condizioni specifiche garanzia
+- Classe CU → fonte: attestato rischio o frontespizio polizza
+- Garanzie incluse/escluse → fonte: elenco garanzie polizza
+
+PROCEDURA ESTRAZIONE:
+a) Leggere INTERO documento polizza
+b) Identificare sezione contenente dato richiesto
+c) Estrarre valore ESATTO (numero, testo, formula)
+d) Verificare coerenza con altre sezioni documento
+e) Se incoerenza o dubbio → segnalare in [NOTE]
+
+ESEMPI CORRETTI:
+✓ "Massimale persone: € 7.500.000" (se presente nel doc)
+✓ "Franchigia Kasko: € 500" (se presente nel doc)
+✓ "Furto: Non specificato" (se assente nel doc)
+✓ "Scoperto: 10% con min. € 250" (se formula presente)
+
+ESEMPI VIETATI:
+✗ "Massimale persone: € 6.070.000" (se non presente ma è minimo legale)
+✗ "Franchigia Kasko: € 1.000" (se non presente ma è media mercato)
+✗ "Furto: Inclusa" (se non menzionata ma polizza è completa)
+
+SE HAI DUBBI → MEGLIO LASCIARE VUOTO CHE INVENTARE
+
+═══════════════════════════════════════════════════════════════════════════════
 PROMPT: CONFRONTO POLIZZE RCA - VERSIONE DINAMICA FINALE
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -811,24 +852,82 @@ Estrarre:
 STEP 3: ECONOMICO PER POLIZZA
 ──────────────────────────────
 
+⚠️ ESTRAZIONE FEDELE OBBLIGATORIA - NON CALCOLARE, NON STIMARE
+
 Per OGNI polizza:
-- Premio RCA base
-- Premio garanzie accessorie (dettaglio)
-- SSN
-- Lordo totale
-- Frazionamento, rata
-- Sconti applicati
+
+a) CERCARE sezione "Riepilogo economico" o "Premio" nel documento
+b) ESTRARRE valori ESATTI:
+   - Premio RCA base → cerca "Premio base RCA" o "RCA puro"
+   - Premio garanzie accessorie → somma garanzie elencate o voce "Accessorie"
+   - SSN → cerca "SSN" o "Contributo SSN"
+   - Lordo totale → cerca "Premio totale lordo" o "Totale da pagare"
+
+c) VERIFICARE somma: Base + Accessorie + SSN = Totale
+   Se NON quadra → SEGNALARE in nota, usare valore "Totale" del documento
+
+d) Frazionamento → cercare "Pagamento" o "Frazionamento"
+e) Rata → calcolare SOLO se presente frazionamento (Totale / rate)
+f) Sconti → cercare sezione "Sconti applicati" o note commerciali
+
+⚠️ SE UN VALORE NON È PRESENTE NEL DOCUMENTO:
+- Premio accessorie non dettagliato → scrivere valore unico + "(dettaglio non disponibile)"
+- Sconto non menzionato → "Nessuno sconto indicato"
+- Frazionamento non specificato → "Annuale (presunto)"
+
+FONTI ACCETTABILI:
+✓ Sezione economica polizza/preventivo
+✓ Frontespizio con riepilogo
+✓ Appendice con dettaglio premi
+✗ Calcoli propri
+✗ Stime da mercato
+✗ Inferenze da altre polizze
 
 STEP 4: MASSIMALI RCA
 ─────────────────────
 
+⚠️ DATO CRITICO - VERIFICA TRIPLA OBBLIGATORIA
+
 Per OGNI polizza:
-- Danni a persone
-- Danni a cose
-- Tipo (unici / separati)
+
+a) CERCARE sezione "Massimali RCA" o "Responsabilità Civile" nel documento
+
+b) ESTRARRE valori ESATTI:
+   - Cerca "Danni a persone" o "Lesioni personali" → [MASS_PERSONE]
+   - Cerca "Danni a cose" o "Danni materiali" → [MASS_COSE]
+   - Verifica se "Massimale unico" → usare stesso valore per entrambi
+
+c) VERIFICARE formato numero:
+   - € 6.070.000 (formato corretto)
+   - € 6.070.000,00 (convertire a formato sopra)
+   - Attenzione a punti/virgole (IT: 6.070.000 = 6 milioni)
+
+d) DETERMINARE tipo massimali:
+   - Se due valori diversi → "Separati: Persone € X / Cose € Y"
+   - Se un valore unico → "Unici € X"
+   - Se formula tipo "€ 6.070.000 + € 1.000.000" → sommare e indicare formula
+
+e) ⚠️ NON ASSUMERE MAI:
+   ✗ "Massimale non indicato quindi uso minimo legale € 6.070.000"
+   ✗ "Polizza completa quindi massimali devono essere € 7.500.000"
+   ✗ "Compagnia X solitamente usa massimali Y"
+
+f) SE MASSIMALE NON PRESENTE:
+   → Scrivere "Non specificato nel documento"
+   → Aggiungere nota: "ATTENZIONE: Massimale RCA non trovato nel documento fornito. Verificare con compagnia."
+
+FONTI ACCETTABILI:
+✓ Sezione "Massimali" polizza
+✓ Frontespizio con tabella massimali
+✓ Condizioni particolari
+✗ Condizioni generali (troppo generiche)
+✗ Assunzioni da normativa
+✗ Standard di mercato
 
 STEP 5: GARANZIE ACCESSORIE
 ────────────────────────────
+
+⚠️ VERIFICA DOCUMENTO - NON INFERIRE DA TIPOLOGIA POLIZZA
 
 Per OGNI polizza verificare 9 garanzie:
 1. Furto e Incendio
@@ -841,26 +940,143 @@ Per OGNI polizza verificare 9 garanzie:
 8. Assistenza Stradale
 9. Infortuni Conducente
 
-Per CIASCUNA: Inclusa/Esclusa/Opzionale + Massimale
+PROCEDURA PER CIASCUNA GARANZIA:
+
+a) CERCARE nel documento:
+   - Sezione "Garanzie" o "Coperture"
+   - Elenco garanzie incluse
+   - Tabella riepilogo coperture
+
+b) VERIFICARE stato garanzia:
+   - INCLUSA: se presente nell'elenco garanzie attive
+   - ESCLUSA: se NON presente o espressamente esclusa
+   - OPZIONALE: se indicata "a richiesta" con premio aggiuntivo
+
+c) ESTRARRE massimale se inclusa:
+   - Cerca valore specifico: "Furto: € 30.000"
+   - Cerca formula: "Valore commerciale", "Valore a nuovo"
+   - Se massimale non specificato → "Inclusa (massimale non specificato)"
+
+d) ⚠️ REGOLE CRITICHE:
+   ✗ NON assumere garanzia inclusa se non esplicitamente menzionata
+   ✗ NON assumere "polizza completa = tutte le garanzie"
+   ✗ NON usare "solitamente Kasko include..."
+   
+   ✓ Se garanzia NON trovata → "Esclusa"
+   ✓ Se dubbio su inclusione → "Non specificato nel documento"
+   ✓ Se presente ma senza dettagli → "Inclusa (dettagli da verificare)"
+
+ESEMPIO ESTRAZIONE CORRETTA:
+Documento dice: "Garanzie incluse: RCA, Furto e Incendio, Cristalli"
+→ Furto: Inclusa
+→ Kasko: Esclusa (non menzionata)
+→ Cristalli: Inclusa
+→ Eventi Naturali: Esclusa (non menzionata)
+
+ESEMPIO ERRATO:
+Documento dice: "Polizza completa con tutte le coperture"
+→ NON assumere tutte le 9 garanzie incluse
+→ Cercare elenco specifico o scrivere "Dettaglio garanzie non specificato"
 
 STEP 6: FRANCHIGIE E SCOPERTI
 ──────────────────────────────
 
+⚠️ DATO CRITICO - IMPATTO DIRETTO SU INDENNIZZO
+
 Per OGNI garanzia e polizza:
-- Franchigia (€)
-- Scoperto (%)
-- Distinguere Kasko con/senza responsabilità
+
+a) CERCARE sezione specifica garanzia nel documento:
+   - "Furto e Incendio - Franchigia"
+   - "Kasko - Condizioni di indennizzo"
+   - "Cristalli - Scoperto"
+
+b) DISTINGUERE franchigia vs scoperto:
+   - FRANCHIGIA: importo fisso in € (es. "€ 500")
+   - SCOPERTO: percentuale del danno (es. "10% con minimo € 250")
+
+c) ESTRARRE valore ESATTO:
+   - Franchigia fissa: "€ 500", "€ 1.000"
+   - Scoperto: "10%", "5% minimo € 150"
+   - Formula complessa: riportare testualmente (es. "10% con massimo € 1.500")
+   - Nessuna franchigia: "Nessuna" o "€ 0"
+
+d) PER KASKO verificare distinzione:
+   - Con responsabilità (colpa del conducente)
+   - Senza responsabilità (colpa di terzi)
+   - Se non specificato → usare valore unico
+
+e) ⚠️ REGOLE CRITICHE:
+   ✗ NON assumere franchigia standard di mercato
+   ✗ NON usare "solitamente Kasko ha € 1.000"
+   ✗ NON calcolare franchigia da altre garanzie
+   
+   ✓ Se franchigia non specificata → "Non specificato"
+   ✓ Se garanzia esclusa → "-" o "N/A"
+   ✓ Se formula ambigua → riportare testuale + nota
+
+ESEMPIO ESTRAZIONE CORRETTA:
+Documento dice: "Kasko - franchigia € 500 con responsabilità, € 250 senza"
+→ [FRANCH_KASKO]: "€ 500 (con resp.) / € 250 (senza resp.)"
+→ [SCOPERTO_KASKO_RESP]: "Nessuno"
+→ [SCOPERTO_KASKO_NORESP]: "Nessuno"
+
+Documento dice: "Furto - scoperto 10% del valore con minimo € 200"
+→ [FRANCH_FURTO]: "Nessuna"
+→ [SCOPERTO_FURTO]: "10% minimo € 200"
+
+ESEMPIO ERRATO:
+Documento non menziona franchigia Kasko
+→ ✗ Assumere "€ 1.000" (standard)
+→ ✓ Scrivere "Non specificato nel documento"
 
 STEP 7: CLASSE MERITO
 ──────────────────────
 
+⚠️ DATO CRITICO - VERIFICARE ATTESTATO RISCHIO O FRONTESPIZIO
+
 Per OGNI polizza:
-- Classe CU attuale/assegnazione
-- Provenienza
-- Classe interna
-- Simulazione bonus (CU dopo anno OK)
-- Simulazione malus (CU dopo sinistro)
-- Impatto premio malus
+
+a) CERCARE attestato rischio o sezione "Classe di merito":
+   - Attestato rischio allegato
+   - Frontespizio polizza sezione "CU"
+   - Riepilogo contraente
+
+b) ESTRARRE dati ESATTI:
+   - Classe CU attuale: "CU 1", "CU 5", "CU 14"
+   - Classe CU assegnazione: verificare se diversa da attuale
+   - Provenienza: "Attestato [Compagnia]", "Legge Bersani", "Prima immatricolazione"
+
+c) CLASSE INTERNA compagnia:
+   - Cercare "Classe interna" o "Classe di merito interna"
+   - Formato: "1/18", "5/20", etc.
+   - Se non presente → "Non specificato"
+
+d) SIMULAZIONE BONUS/MALUS:
+   ⚠️ USARE SOLO SE PRESENTE TABELLA BONUS/MALUS NEL DOCUMENTO
+   - Cercare "Tabella evoluzione classe"
+   - Bonus: classe dopo anno senza sinistri
+   - Malus: classe dopo 1 sinistro con colpa
+   - Impatto premio: se indicato nel documento
+
+e) ⚠️ REGOLE CRITICHE:
+   ✗ NON assumere evoluzione standard (CU 5 → CU 4)
+   ✗ NON calcolare impatto premio da percentuali generiche
+   ✗ NON usare tabella CU universale se compagnia ha classe interna
+   
+   ✓ Se tabella bonus/malus assente → "Evoluzione non specificata"
+   ✓ Se impatto premio non indicato → "Da calcolare"
+   ✓ Se classe interna assente → usare solo CU universale
+
+ESEMPIO ESTRAZIONE CORRETTA:
+Documento dice: "CU 5 - Classe interna 8/20 - Da attestato Allianz"
+→ [CLASSE_CU_ATT]: "CU 5"
+→ [CLASSE_INTERNA]: "8/20"
+→ [PROVENIENZA_CU]: "Attestato Allianz"
+
+Documento NON ha tabella evoluzione:
+→ [CLASSE_BONUS]: "Non specificato nel documento"
+→ [CLASSE_MALUS]: "Non specificato nel documento"
+→ [IMPATTO_PREMIO_MALUS]: "Da verificare con compagnia"
 
 STEP 8: COMPARAZIONE CROSS-POLIZZE
 ───────────────────────────────────
@@ -908,36 +1124,96 @@ Sulla base di:
 
 Formulare raccomandazione con motivazione
 
+STEP 13: VERIFICA QUALITÀ DATI PRE-CONSEGNA
+────────────────────────────────────────────
+
+⚠️ OBBLIGATORIO - CHECKLIST DI CONTROLLO FINALE
+
+Prima di generare HTML finale, VERIFICARE:
+
+□ MASSIMALI RCA:
+  - Ogni polizza ha valori numerici ESTRATTI da documento?
+  - Presenza di "€ 6.070.000" senza verifica documento = ERRORE
+  - Se un massimale non è nel doc → deve essere "Non specificato"
+
+□ FRANCHIGIE:
+  - Ogni franchigia è ESTRATTA da condizioni garanzia?
+  - Presenza di "€ 500" o "€ 1.000" senza verifica = ERRORE
+  - Se franchigia non nel doc → deve essere "Non specificato"
+
+□ GARANZIE:
+  - Ogni garanzia "Inclusa" è MENZIONATA nel documento?
+  - Se doc non lista garanzie → devono essere "Da verificare"
+  - Non inferire da "polizza completa"
+
+□ PREMI:
+  - Premio totale corrisponde a valore nel documento?
+  - Somma delle voci = totale documento?
+  - Se dettaglio mancante → indicare "(dettaglio non disponibile)"
+
+□ CLASSE MERITO:
+  - CU proviene da attestato o frontespizio?
+  - Evoluzione bonus/malus presente in documento?
+  - Se tabella assente → "Non specificato"
+
+□ CONFRONTI:
+  - Highlighting verde/rosso basato su DATI REALI estratti?
+  - Se un dato mancante → cella deve essere "-" o "N/A"
+  - Nessun calcolo su dati inventati
+
+⚠️ SE ANCHE UN SOLO CHECK FALLISCE:
+→ TORNARE al documento e ri-estrarre
+→ NON proseguire con generazione HTML
+→ MEGLIO report incompleto che report con dati falsi
+
+REGOLA AUREA FINALE:
+"SE HAI INVENTATO ANCHE UN SOLO NUMERO → REPORT DA RIFARE"
+
 ═══════════════════════════════════════════════════════════════════════════════
 OUTPUT FINALE
 ═══════════════════════════════════════════════════════════════════════════════
 
+⚠️⚠️⚠️ PRIMA DI GENERARE HTML: VERIFICA STEP 13 COMPLETATO ⚠️⚠️⚠️
+
 Generare file HTML completo:
 
 1. ⚠️ PRIMA: Contare polizze N e preparare lista nomi
-2. Template template_confronto_rca_finale.html come BASE
-3. ⚠️ ESPANDERE tutte le tabelle da 2 a N colonne:
+2. ⚠️ SECONDA: Verificare che TUTTI i dati siano ESTRATTI da documenti (STEP 13)
+3. Template template_confronto_rca_finale.html come BASE
+4. ⚠️ ESPANDERE tutte le tabelle da 2 a N colonne:
    - Aggiungere <th> per ogni polizza oltre la seconda
    - Aggiungere <td> per ogni polizza oltre la seconda
    - Mantenere allineamento colonne in TUTTE le righe
-4. Sostituire TUTTI placeholder [CAMPO_X] per X da 1 a N
-5. Ripetere blocchi dinamici (Top 3 diff, Pro/Contro, Score cards) N volte
-6. Highlighting CSS corretto per TUTTE le N polizze
-7. Calcoli precisi con comparazioni cross N-polizze
-8. HTML valido e navigabile
+5. Sostituire TUTTI placeholder [CAMPO_X] per X da 1 a N con DATI REALI
+6. Ripetere blocchi dinamici (Top 3 diff, Pro/Contro, Score cards) N volte
+7. Highlighting CSS SOLO su dati realmente estratti e confrontabili
+8. Calcoli precisi con comparazioni cross N-polizze
+9. HTML valido e navigabile
 
-⚠️ CHECKLIST PRE-CONSEGNA:
+⚠️ CHECKLIST PRE-CONSEGNA OBBLIGATORIA:
 □ Ogni tabella ha esattamente N+1 colonne (voce + N polizze)
+□ ⚠️ ZERO dati inventati - ogni numero proviene da documento fonte
+□ Celle con dati mancanti mostrano "Non specificato" o "-"
 □ Nessun placeholder [CAMPO_N] rimasto vuoto se N <= numero polizze
 □ Sezione "Top 3 Differenze" presente per tutte le N polizze
 □ Sezione "Pro e Contro" presente per tutte le N polizze  
 □ Score cards presenti per tutte le N polizze
 □ Tab "SINTESI ECONOMICA" ha Delta per N-1 polizze (esclusa attuale)
 □ Tutti i confronti usano la polizza attuale come baseline
+□ ⚠️ Note segnalano ESPLICITAMENTE ogni dato non trovato nei documenti
+
+⚠️ REGOLA AUREA CONSEGNA:
+"MEGLIO UN REPORT CON 50 CELLE 'NON SPECIFICATO' CHE UN REPORT CON 1 DATO FALSO"
+
+LIVELLO QUALITÀ ATTESO:
+- Accuratezza dati: 100% (PhD level - zero invenzioni)
+- Completezza: variabile in base a documenti forniti
+- Trasparenza: massima su dati mancanti o ambigui
 
 DELIVERABLE:
 File HTML completo, navigabile, con sistema completamente scalabile da 2 a N 
-polizze, decisionale per confronto RCA con N preventivi simultanei.
+polizze, decisionale per confronto RCA con N preventivi simultanei, basato 
+ESCLUSIVAMENTE su dati reali estratti fedelmente dai documenti fonte.
 
 ═══════════════════════════════════════════════════════════════════════════════
 FINE PROMPT - RCA CONFRONTO
