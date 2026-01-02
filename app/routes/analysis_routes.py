@@ -1,12 +1,12 @@
 import os
 import json
 from datetime import datetime
-from playwright.sync_api import sync_playwright
 from fastapi import APIRouter, Request, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import Response, JSONResponse
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List, Dict
+from weasyprint import HTML
 from ..database import get_db
 from .. import models, masking, llm_client
 from ..config import settings
@@ -367,48 +367,74 @@ def download_analysis_pdf(
     if analysis.title:
         safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
         filename = f"{safe_title}{suffix}.pdf"
-    
-    base_url = str(request.base_url)
-    
-    # Use Playwright for PDF generation
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        
-        # Inject base tag
-        if "<head>" in html_content:
-            html_content = html_content.replace("<head>", f'<head><base href="{base_url}">')
-        else:
-            html_content = f'<base href="{base_url}">' + html_content
-        
-        page.set_content(html_content, wait_until="networkidle")
-        
-        # Print CSS
-        page.add_style_tag(content="""
-            @page { margin: 15mm 10mm; size: A4; }
-            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .tab-content { display: block !important; opacity: 1 !important; visibility: visible !important; height: auto !important; margin-bottom: 20px; }
-            .tabs, .header-navigation, #edit-toolbar, .print-btn, .btn, button, .navbar { display: none !important; }
-            h1, h2, h3, h4, h5, h6 { page-break-after: avoid; break-after: avoid; }
-            .card, .section { page-break-inside: avoid; break-inside: avoid; }
-            table { width: 100% !important; border-collapse: collapse; }
-            td, th { padding: 6px 4px; font-size: 9pt; vertical-align: top; word-wrap: break-word; border: 1px solid #e2e8f0; }
-            .report-container { max-width: 100% !important; width: 100% !important; border: none !important; box-shadow: none !important; }
-        """)
-        
-        page.evaluate("() => { if(window.Chart) { Chart.defaults.animation = false; } }")
-        page.wait_for_timeout(1000)
-        
-        pdf_data = page.pdf(
-            format="A4",
-            print_background=True,
-            margin={"top": "15mm", "bottom": "15mm", "left": "10mm", "right": "10mm"}
-        )
-        
-        browser.close()
-    
+
+    # Add print-specific CSS to HTML for PDF generation
+    print_css = """
+    <style>
+        @page {
+            margin: 15mm 10mm;
+            size: A4;
+        }
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .tab-content {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            height: auto !important;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .tabs, .header-navigation, #edit-toolbar, .print-btn, .btn, button, .navbar {
+            display: none !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        .card, .section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        table {
+            width: 100% !important;
+            border-collapse: collapse;
+            page-break-inside: auto;
+        }
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        td, th {
+            padding: 6px 4px;
+            font-size: 9pt;
+            vertical-align: top;
+            word-wrap: break-word;
+            word-break: break-word;
+            border: 1px solid #e2e8f0;
+        }
+        .report-container {
+            max-width: 100% !important;
+            width: 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    """
+
+    # Inject print CSS into HTML
+    if "</head>" in html_content:
+        html_content = html_content.replace("</head>", f"{print_css}</head>")
+    else:
+        html_content = print_css + html_content
+
+    # Generate PDF using WeasyPrint
+    pdf_bytes = HTML(string=html_content).write_pdf()
+
     return Response(
-        content=pdf_data,
+        content=pdf_bytes,
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
@@ -622,6 +648,8 @@ def full_analysis_pipeline(
         analysis.status = models.AnalysisStatus.COMPLETED
         analysis.completed_at = datetime.utcnow()
         analysis.total_tokens = input_tokens + output_tokens  # Total for analysis
+        analysis.input_tokens = input_tokens  # Store input tokens separately
+        analysis.output_tokens = output_tokens  # Store output tokens separately
         
         # 6. Update user's token counters (separate for cost calculation)
         user = db.query(models.User).filter(models.User.id == user_id).first()

@@ -5,7 +5,7 @@ PROMPT: REPORT RC CLIENTE - VERSIONE FINALE V5
 OBIETTIVO: Generare report HTML per CLIENTE finale basato su polizza RC 
 (Responsabilità Civile Terzi, Operai, Prodotti).
 
-TEMPLATE: template_rc_cliente_finale.html (973 righe)
+TEMPLATE: template_rc_cliente.html (973 righe)
 APPROCCIO: Template-first - riempire placeholder con dati estratti da polizza
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -17,6 +17,7 @@ PRINCIPI GUIDA
    - TUTTE le garanzie/condizioni particolari devono essere riportate
    - TUTTI i sinistri storici devono essere riportati
    - MAI omettere informazioni presenti in polizza
+   - MAI scrivere informazioni non presenti in polizza
 
 2. DATI OGGETTIVI
    - Zero interpretazioni soggettive
@@ -89,13 +90,13 @@ Se presente sovrapprezzo indicare: "Semestrale (+2%)"
 
 [TERMINI_DISDETTA]
 Estrarre da art. "Durata" o "Rinnovo"
-Formato: "60 giorni prima scadenza tramite raccomandata A/R"
+Formato: "60 giorni prima scadenza tramite raccomandata A/R o PEC"
 Se non specificato: "Rinnovo tacito (verificare condizioni generali)"
 
 [TERMINI_MORA]
 Estrarre da art. "Pagamento premio" o riferimento art. 1901 C.C.
-Formato: "15 giorni" o "30 giorni"
-Se non specificato: "30 giorni (art. 1901 C.C.)"
+Formato: "15 giorni" o "30 giorni" o "Senza Tacito Rinnovo"
+Se non specificato: "15 giorni (art. 1901 C.C.)"
 
 ───────────────────────────────────────────────────────────────────────────────
 SEZIONE 2: ENTITÀ ASSICURATE
@@ -364,112 +365,255 @@ Es: "Interviene per differenze condizioni o limiti superiori rispetto polizze lo
 Limite DIC (es. "Secondo massimali polizza italiana")
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 3: CALCOLO PREMIO
+TAB 3: CALCOLO PREMIO (VERSIONE ANALITICA)
 ═══════════════════════════════════════════════════════════════════════════════
 
+OBIETTIVO: Mostrare il conteggio analitico del premio per OGNI società assicurata,
+con formula esplicita: PARAMETRO × TASSO = PREMIO IMPONIBILE
+
 LOGICA ADATTIVA:
+- Generare 1 CARD per OGNI società in polizza
+- Ogni card contiene tabella con 2 aree geografiche
+- Se dato non presente in polizza: inserire "-" (MAI inventare)
 
-IF numero società = 1:
-    FORMATO LINEARE (calcolo semplice)
+AREE GEOGRAFICHE (2 aree):
+1. USA / Canada → tasso specifico (tipicamente maggiorato)
+2. Resto del Mondo → include Italia, Europa e tutti gli altri paesi
+
+───────────────────────────────────────────────────────────────────────────────
+STRUTTURA CARD SOCIETÀ
+───────────────────────────────────────────────────────────────────────────────
+
+Ripetere per OGNI società assicurata:
+
+<div class="premio-societa-card">
+    📋 [NOME_SOCIETA_N]
     
-IF numero società >= 2:
-    FORMATO TABELLA ENTITÀ
+    Parametro a preventivo: [TIPO_PARAMETRO_N]
+    
+    | Area Geografica  | Parametro         | Tasso         | Premio Imponibile   |
+    |------------------|-------------------|---------------|---------------------|
+    | USA/Canada       | [PARAMETRO_USA_N] | [TASSO_USA_N] | [PREMIO_IMP_USA_N]  |
+    | Resto del Mondo  | [PARAMETRO_ROW_N] | [TASSO_ROW_N] | [PREMIO_IMP_ROW_N]  |
+    |------------------|-------------------|---------------|---------------------|
+    | Totale Imponibile Società           |               | [TOTALE_IMPONIBILE_N] |
+    | Imposte ([ALIQUOTA_IMPOSTE_N])      |               | [IMPOSTE_N]           |
+    | PREMIO LORDO SOCIETÀ                |               | [PREMIO_LORDO_SOC_N]  |
+</div>
 
 ───────────────────────────────────────────────────────────────────────────────
-FORMATO A: TABELLA ENTITÀ (Polizza Master)
+PLACEHOLDER DETTAGLIO PER SOCIETÀ
 ───────────────────────────────────────────────────────────────────────────────
 
-Generare tabella con 1 riga per OGNI società + riga TOTALE
+[NOME_SOCIETA_N]
+Nome completo società (es. "OMET S.r.l.")
 
-<table>
-    <tr>
-        <td>[SOCIETA_1]</td>
-        <td class="col-curr">[FATTURATO_USA_1]</td>
-        <td class="col-curr">[FATTURATO_ROW_1]</td>
-        <td class="col-curr">[PREMIO_IMPONIBILE_1]</td>
-        <td class="col-curr">[IMPOSTE_1]</td>
-        <td class="col-curr">[PREMIO_LORDO_1]</td>
-    </tr>
-    <!-- Ripetere per ogni società -->
-    <tr style="font-weight:700; background:#f1f5f9;">
-        <td>TOTALE POLIZZA</td>
-        <td class="col-curr">[FATTURATO_USA_TOT]</td>
-        <td class="col-curr">[FATTURATO_ROW_TOT]</td>
-        <td class="col-curr">[PREMIO_IMPONIBILE_TOT]</td>
-        <td class="col-curr">[IMPOSTE_TOT]</td>
-        <td class="col-curr">[PREMIO_LORDO_TOT]</td>
-    </tr>
-</table>
+[TIPO_PARAMETRO_N]
+Tipo di parametro utilizzato per il calcolo. Valori possibili:
+- "Fatturato" (standard)
+- "Retribuzioni lorde"
+- "Numero addetti"
+Estrarre ESATTAMENTE da polizza. Se non specificato: "-"
 
-PLACEHOLDER:
+───────────────────────────────────────────────────────────────────────────────
+AREE GEOGRAFICHE (2 AREE)
+───────────────────────────────────────────────────────────────────────────────
 
-[SOCIETA_N]
-Nome società
+Per OGNI area geografica, estrarre:
 
-[FATTURATO_USA_N]
-Fatturato USA/Canada (se applicabile)
-Formato "€ XX.XXX.XXX"
-Se non applicabile: "€ 0" o "-"
+USA/CANADA (tasso maggiorato):
 
-[FATTURATO_ROW_N]
-Fatturato Rest of World (escluso USA/Canada)
-Formato "€ XX.XXX.XXX"
+[PARAMETRO_USA_N]
+Valore parametro per USA/Canada
+Formato in base a tipo:
+- Fatturato: "€ XX.XXX.XXX" (es. "€ 8.000.000")
+- Retribuzioni: "€ X.XXX.XXX" (es. "€ 500.000")
+- Addetti: "XX" (es. "5")
+Se società non opera in USA/Canada: "-"
 
-[PREMIO_IMPONIBILE_N]
-Premio imponibile società
-Formato "€ XX.XXX,XX"
+[TASSO_USA_N]
+Tasso applicato USA/Canada (tipicamente maggiorato rispetto a ROW)
+Formato: "X,XX‰" (per mille) o "X,XX%" (percentuale)
+Es: "0,35‰", "0,50‰"
+ATTENZIONE: Distinguere per mille (‰) da percento (%)
+Se non presente: "-"
+
+[PREMIO_IMP_USA_N]
+Premio imponibile USA/Canada = Parametro × Tasso
+Formato: "€ XX.XXX,XX"
+Se parametro o tasso non disponibili: "-"
+MAI calcolare se dati mancanti
+
+RESTO DEL MONDO (include Italia, Europa e altri paesi):
+
+[PARAMETRO_ROW_N]
+Valore parametro per Resto del Mondo (tutto tranne USA/Canada)
+Include: Italia, Europa, Asia, Africa, Sudamerica, Oceania
+Formato in base a tipo:
+- Fatturato: "€ XX.XXX.XXX" (es. "€ 45.000.000")
+- Retribuzioni: "€ X.XXX.XXX" (es. "€ 2.500.000")
+- Addetti: "XX" (es. "25")
+Se non presente in polizza: "-"
+
+[TASSO_ROW_N]
+Tasso applicato Resto del Mondo
+Formato: "X,XX‰" (per mille) o "X,XX%" (percentuale)
+Es: "0,12‰", "0,15‰"
+Se non presente: "-"
+
+[PREMIO_IMP_ROW_N]
+Premio imponibile Resto del Mondo = Parametro × Tasso
+Formato: "€ XX.XXX,XX"
+Se parametro o tasso non disponibili: "-"
+
+───────────────────────────────────────────────────────────────────────────────
+TOTALI SOCIETÀ
+───────────────────────────────────────────────────────────────────────────────
+
+[TOTALE_IMPONIBILE_N]
+Somma premi imponibili tutte le aree geografiche (USA + ROW)
+Formato: "€ XX.XXX,XX"
+Se impossibile calcolare: estrarre da polizza o "-"
+
+[ALIQUOTA_IMPOSTE_N]
+Aliquota imposte applicata
+- Italia standard: "22,25%"
+- Programmi multinazionali: estrarre da polizza (può variare)
+Formato: "XX,XX%"
 
 [IMPOSTE_N]
-Contributi + Imposte (SSN + Imposta assicurazioni)
-Formato "€ X.XXX,XX"
+Importo imposte = Totale Imponibile × Aliquota
+Formato: "€ X.XXX,XX"
+Se non calcolabile: estrarre da polizza o "-"
 
-[PREMIO_LORDO_N]
-Premio lordo = Imponibile + Imposte
-Formato "€ XX.XXX,XX"
-
-REGOLA CRITICA:
-Somma premi singoli = Premio totale polizza
-Verificare coerenza matematica
+[PREMIO_LORDO_SOC_N]
+Premio lordo società = Totale Imponibile + Imposte
+Formato: "€ XX.XXX,XX"
 
 ───────────────────────────────────────────────────────────────────────────────
-FORMATO B: CALCOLO LINEARE (Polizza Standard)
+RIEPILOGO TOTALE POLIZZA
 ───────────────────────────────────────────────────────────────────────────────
 
-Se 1 società, usare questo formato (decommentare nel template):
+[TOTALE_IMPONIBILE_POLIZZA]
+Somma totali imponibili TUTTE le società
+Formato: "€ XX.XXX,XX"
 
-Premio Imponibile:           [PREMIO_IMPONIBILE]
-+ Contributo SSN (3,5%):     [SSN]
-+ Contrib. Addizionale SSN:  [SSN_ADD]
-+ Imposta Assicurazioni:     [IMPOSTA]
-─────────────────────────────────────────────
-PREMIO LORDO ANNUO:          [PREMIO_LORDO]
+[TOTALE_IMPOSTE_POLIZZA]
+Somma imposte TUTTE le società
+Formato: "€ X.XXX,XX"
 
-PLACEHOLDER:
-[PREMIO_IMPONIBILE]  Formato "€ XX.XXX,XX"
-[SSN]                3,5% su imponibile, formato "€ X.XXX,XX"
-[SSN_ADD]            Contributo addizionale fisso, formato "€ XX,XX"
-[IMPOSTA]            22,25% su (imponibile + SSN), formato "€ X.XXX,XX"
-[PREMIO_LORDO]       Somma totale, formato "€ XX.XXX,XX"
+[PREMIO_LORDO_POLIZZA]
+Premio lordo complessivo polizza
+Formato: "€ XX.XXX,XX"
+DEVE corrispondere a somma premi lordi singole società
+DEVE corrispondere a premio lordo in header polizza
+
+[NOTE_CALCOLO_PREMIO]
+Note esplicative sul calcolo (opzionale)
+Includere se presenti:
+- Sconti applicati
+- Minimo di premio
+- Regolazione premio precedente
+- Premi fissi aggiuntivi (es. garanzie specifiche)
+- Arrotondamenti
+Se nessuna nota rilevante: "Calcolo standard senza note particolari."
+
+───────────────────────────────────────────────────────────────────────────────
+REGOLE CRITICHE TAB 3
+───────────────────────────────────────────────────────────────────────────────
+
+1. MAI INVENTARE DATI
+   Se parametro, tasso o premio non presente in polizza → "-"
+   Meglio celle vuote che dati inventati
+   
+2. VERIFICARE COERENZA MATEMATICA
+   Parametro × Tasso = Premio Imponibile (con tolleranza arrotondamento)
+   Somma premi società = Premio totale polizza
+   
+3. ESTRARRE TASSI ESATTI
+   Cercare in: appendice tariffaria, condizioni particolari, riepilogo premio
+   Attenzione a: per mille (‰) vs percento (%)
+   
+4. AREE GEOGRAFICHE (2 AREE)
+   - USA/Canada: tasso maggiorato, mostrare se società opera in questi paesi
+   - Resto del Mondo: include Italia, Europa e tutti gli altri paesi
+   Se società opera solo in ROW → riga USA/Canada con "-"
+   Non mostrare righe con tutti "-"
+
+5. ALIQUOTA IMPOSTE
+   Italia standard: 22,25%
+   Verificare sempre in polizza per programmi internazionali
+
+6. NUMERO SOCIETÀ
+   Generare esattamente N card per N società in polizza
+   MAI omettere società
+   MAI aggregare società
+
+───────────────────────────────────────────────────────────────────────────────
+ESEMPIO OUTPUT
+───────────────────────────────────────────────────────────────────────────────
+
+Società 1: ALFA S.p.A.
+Parametro: Fatturato
+
+| Area           | Parametro      | Tasso   | Premio Imponibile |
+|----------------|----------------|---------|-------------------|
+| USA/Canada     | € 8.000.000    | 0,35‰   | € 2.800,00        |
+| Resto Mondo    | € 45.000.000   | 0,12‰   | € 5.400,00        |
+|----------------|----------------|---------|-------------------|
+| Totale Imponibile              |         | € 8.200,00        |
+| Imposte (22,25%)               |         | € 1.824,50        |
+| PREMIO LORDO SOCIETÀ           |         | € 10.024,50       |
+
+Società 2: BETA S.r.l.
+Parametro: Retribuzioni lorde
+
+| Area           | Parametro      | Tasso   | Premio Imponibile |
+|----------------|----------------|---------|-------------------|
+| USA/Canada     | -              | -       | -                 |
+| Resto Mondo    | € 1.200.000    | 0,80‰   | € 960,00          |
+|----------------|----------------|---------|-------------------|
+| Totale Imponibile              |         | € 960,00          |
+| Imposte (22,25%)               |         | € 213,60          |
+| PREMIO LORDO SOCIETÀ           |         | € 1.173,60        |
+
+RIEPILOGO POLIZZA:
+Totale Imponibile: € 9.160,00
+Totale Imposte: € 2.038,10
+Premio Lordo: € 11.198,10
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: SINISTRI & PREMI
 ═══════════════════════════════════════════════════════════════════════════════
 
+IMPORTANTE: In tutto il Tab 4 utilizzare PREMI IMPONIBILI (non lordi)
+
 ───────────────────────────────────────────────────────────────────────────────
 SEZIONE 1: GRAFICO STORICO
 ───────────────────────────────────────────────────────────────────────────────
 
-Generare dati per grafico Chart.js (ultimi 5 anni)
+Generare dati per grafico Chart.js
 
-PLACEHOLDER JAVASCRIPT:
+REGOLA ANNI: Mostrare SOLO anni con copertura effettiva
+- Primo anno = anno successivo alla decorrenza prima polizza
+- Es: Decorrenza 31/12/2022 → Prima barra = 2023
+- Es: Decorrenza 01/07/2021 → Prima barra = 2021
+- NON mostrare anni precedenti alla prima copertura
 
-labels: ['[ANNO_1]', '[ANNO_2]', '[ANNO_3]', '[ANNO_4]', '[ANNO_5]']
-premi:  [[PREMIO_1], [PREMIO_2], [PREMIO_3], [PREMIO_4], [PREMIO_5]]
-sinistri: [[SINISTRI_1], [SINISTRI_2], [SINISTRI_3], [SINISTRI_4], [SINISTRI_5]]
+PLACEHOLDER JAVASCRIPT (dinamici):
 
-[ANNO_N]      Anno competenza (es. "2020", "2021")
-[PREMIO_N]    Premio lordo anno (VALORE NUMERICO senza simbolo €, es. 65000)
-[SINISTRI_N]  Sinistri pagati/riservati anno (VALORE NUMERICO, es. 12500)
+[CHART_LABELS]
+Array di anni con copertura
+Formato: '2023', '2024', '2025'
+Es: "'2023', '2024', '2025'"
+
+[CHART_PREMI_IMP]
+Array premi IMPONIBILI per anno (valori numerici senza €)
+Es: "15000, 16500, 17200"
+
+[CHART_SINISTRI]
+Array sinistri pagati per anno (valori numerici senza €)
+Es: "3200, 0, 8500"
 
 REGOLA ANNI COMPETENZA:
 Per polizze con decorrenza/scadenza 31/12-31/12:
@@ -489,20 +633,24 @@ Se polizza 31/12/2023-31/12/2024:
 SEZIONE 2: LOSS RATIO
 ───────────────────────────────────────────────────────────────────────────────
 
-Tabella con loss ratio per anno
+Tabella con loss ratio per anno (PREMI IMPONIBILI)
 
 <table>
     <tr>
         <td>[ANNO_1]</td>
-        <td class="col-curr">[PREMIO_1]</td>
+        <td class="col-curr">[PREMIO_IMP_ANNO_1]</td>
         <td class="col-curr">[SINISTRI_1]</td>
         <td class="col-curr">[LOSS_RATIO_1]</td>
     </tr>
-    <!-- Ripetere per ogni anno -->
+    <!-- Ripetere per ogni anno di copertura -->
 </table>
 
+[PREMIO_IMP_ANNO_N]
+Premio IMPONIBILE anno (non lordo)
+Formato: "€ XX.XXX,XX"
+
 [LOSS_RATIO_N]
-Calcolo: (Sinistri / Premio) × 100
+Calcolo: (Sinistri / Premio Imponibile) × 100
 Formato: "XX,X%" (es. "18,5%")
 
 ───────────────────────────────────────────────────────────────────────────────
@@ -543,6 +691,18 @@ TAB 5: PROCEDURA SINISTRI
 
 QUESTA SEZIONE È QUASI TUTTA STATICA (hardcoded nel template)
 
+DOCUMENTI DA CONSERVARE (ordine fisso):
+1. Richiesta di risarcimento del danneggiato
+2. Residui del sinistro: segnalare al danneggiato di conservare...
+3. Fatture e preventivi relativi ai beni coinvolti
+4. Corrispondenza
+5. Fotografie
+6. Testimonianze
+
+TIMELINE (semplificata):
+- Giorno 0: Ricezione richiesta di risarcimento del danneggiato
+- Entro 3 giorni: DENUNCIA OBBLIGATORIA a broker
+
 Solo pochi placeholder da compilare se presenti termini specifici in polizza:
 
 - Termini denuncia (se diversi da 3 giorni standard)
@@ -553,7 +713,7 @@ ALTRIMENTI: Lasciare testo statico del template che include:
 ✓ Denuncia sempre a Eramo & Associati (fisso)
 ✓ Email: sinistri@eramoassociati.it (fisso)
 ✓ Tel: 0332 283123 (fisso)
-✓ Timeline standard
+✓ Timeline semplificata (Giorno 0 + Entro 3 giorni)
 ✓ Obblighi standard assicurato
 
 ═══════════════════════════════════════════════════════════════════════════════

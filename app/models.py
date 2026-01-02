@@ -80,6 +80,8 @@ class Analysis(Base):
     prompt_level = Column(String(20))  # base, avanzato
     llm_model = Column(String(50))
     total_tokens = Column(Integer, default=0)
+    input_tokens = Column(Integer, default=0)  # Track input tokens separately
+    output_tokens = Column(Integer, default=0)  # Track output tokens separately
     masked_text_path = Column(String(255))  # Path al testo mascherato
     masking_skipped = Column(Boolean, default=False)  # True se utente ha saltato
     reverse_mapping_json = Column(Text)  # JSON {placeholder: valore_originale}

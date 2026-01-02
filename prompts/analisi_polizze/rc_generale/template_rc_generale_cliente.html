@@ -361,9 +361,6 @@
         <!-- TAB 1: SINTESI CONTRATTUALE -->
         <!-- ========================================= -->
         <div id="Sintesi" class="tab-content active">
-            <button class="print-btn"
-                style="float:right; background:var(--primary-main); color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;"
-                onclick="window.print()">📄 Stampa Report</button>
 
             <h3>Dati Generali e Contrattuali</h3>
 
@@ -677,83 +674,157 @@
         </div>
 
         <!-- ========================================= -->
-        <!-- TAB 3: CALCOLO PREMIO -->
+        <!-- TAB 3: CALCOLO PREMIO (VERSIONE ANALITICA) -->
         <!-- ========================================= -->
         <div id="Premio" class="tab-content">
 
-            <h3>Dettaglio Premio per Entità</h3>
+            <h3>Calcolo Analitico del Premio</h3>
 
-            <!-- FORMATO MASTER: Mostrare tabella se multiple società -->
-            <!-- Se polizza Standard (1 società): usare formato lineare sotto -->
+            <p style="color: var(--text-muted); margin-bottom: 25px;">
+                Dettaglio del conteggio premio per ciascuna società assicurata, con suddivisione per area geografica.
+            </p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Società</th>
-                        <th style="width:18%">Fatturato USA/Can</th>
-                        <th style="width:18%">Fatturato ROW</th>
-                        <th style="width:15%">Premio Imponibile</th>
-                        <th style="width:12%">Imposte (22,25%)</th>
-                        <th style="width:15%">Premio Lordo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Ripetere per OGNI società -->
-                    <tr>
-                        <td>[SOCIETA_1]</td>
-                        <td class="col-curr">[FATTURATO_USA_1]</td>
-                        <td class="col-curr">[FATTURATO_ROW_1]</td>
-                        <td class="col-curr">[PREMIO_IMPONIBILE_1]</td>
-                        <td class="col-curr">[IMPOSTE_1]</td>
-                        <td class="col-curr">[PREMIO_LORDO_1]</td>
-                    </tr>
-                    <tr>
-                        <td>[SOCIETA_2]</td>
-                        <td class="col-curr">[FATTURATO_USA_2]</td>
-                        <td class="col-curr">[FATTURATO_ROW_2]</td>
-                        <td class="col-curr">[PREMIO_IMPONIBILE_2]</td>
-                        <td class="col-curr">[IMPOSTE_2]</td>
-                        <td class="col-curr">[PREMIO_LORDO_2]</td>
-                    </tr>
-                    <!-- ... altre società ... -->
-                    <tr style="font-weight:700; background:#f1f5f9;">
-                        <td>TOTALE POLIZZA</td>
-                        <td class="col-curr">[FATTURATO_USA_TOT]</td>
-                        <td class="col-curr">[FATTURATO_ROW_TOT]</td>
-                        <td class="col-curr">[PREMIO_IMPONIBILE_TOT]</td>
-                        <td class="col-curr">[IMPOSTE_TOT]</td>
-                        <td class="col-curr">[PREMIO_LORDO_TOT]</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- ============================================ -->
+            <!-- RIPETERE QUESTO BLOCCO PER OGNI SOCIETÀ -->
+            <!-- ============================================ -->
+            
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
+                <div style="background: #0f172a; color: white; padding: 12px 20px; font-weight: 700; font-size: 14px;">
+                    📋 [NOME_SOCIETA_1]
+                </div>
+                <div style="padding: 20px;">
+                    
+                    <!-- Info Parametro -->
+                    <div style="margin-bottom: 15px; padding: 10px 15px; background: #eff6ff; border-radius: 4px;">
+                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a preventivo:</span>
+                        <strong style="margin-left: 10px;">[TIPO_PARAMETRO_1]</strong>
+                    </div>
 
-            <!-- FORMATO STANDARD: Se 1 società, usare questo invece della tabella -->
-            <!--
-            <div style="background:#f8fafc; padding:20px; border:1px solid var(--border-subtle); border-radius:6px;">
-                <table style="border:none; margin:0;">
-                    <tr style="background:transparent;">
-                        <td style="border:none; padding:8px 0;">Premio Imponibile</td>
-                        <td class="col-curr" style="border:none; padding:8px 0;">[PREMIO_IMPONIBILE]</td>
-                    </tr>
-                    <tr style="background:transparent;">
-                        <td style="border:none; padding:8px 0;">+ Contributo SSN (3,5%)</td>
-                        <td class="col-curr" style="border:none; padding:8px 0;">[SSN]</td>
-                    </tr>
-                    <tr style="background:transparent;">
-                        <td style="border:none; padding:8px 0;">+ Contributo Addizionale SSN</td>
-                        <td class="col-curr" style="border:none; padding:8px 0;">[SSN_ADD]</td>
-                    </tr>
-                    <tr style="background:transparent;">
-                        <td style="border:none; padding:8px 0;">+ Imposta Assicurazioni (22,25%)</td>
-                        <td class="col-curr" style="border:none; padding:8px 0;">[IMPOSTA]</td>
-                    </tr>
-                    <tr style="background:transparent; border-top:2px solid var(--primary-dark);">
-                        <td style="border:none; padding:12px 0 0 0;"><strong>PREMIO LORDO ANNUO</strong></td>
-                        <td class="col-curr" style="border:none; padding:12px 0 0 0;"><strong>[PREMIO_LORDO]</strong></td>
-                    </tr>
-                </table>
+                    <table style="margin-bottom: 0;">
+                        <thead>
+                            <tr>
+                                <th style="width:25%; background:#e2e8f0;">Area Geografica</th>
+                                <th style="width:25%; background:#e2e8f0;">Parametro</th>
+                                <th style="width:20%; background:#e2e8f0;">Tasso</th>
+                                <th style="width:30%; background:#e2e8f0;">Premio Imponibile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Riga USA/Canada -->
+                            <tr>
+                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA / Canada</span></td>
+                                <td class="col-curr">[PARAMETRO_USA_1]</td>
+                                <td class="col-curr">[TASSO_USA_1]</td>
+                                <td class="col-curr">[PREMIO_IMP_USA_1]</td>
+                            </tr>
+                            <!-- Riga Resto del Mondo (include Italia, Europa e resto) -->
+                            <tr>
+                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto del Mondo</span></td>
+                                <td class="col-curr">[PARAMETRO_ROW_1]</td>
+                                <td class="col-curr">[TASSO_ROW_1]</td>
+                                <td class="col-curr">[PREMIO_IMP_ROW_1]</td>
+                            </tr>
+                            <!-- Subtotale Imponibile -->
+                            <tr style="background: #f1f5f9 !important; font-weight: 600;">
+                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong></td>
+                                <td class="col-curr"><strong>[TOTALE_IMPONIBILE_1]</strong></td>
+                            </tr>
+                            <!-- Tasse -->
+                            <tr>
+                                <td colspan="3" style="text-align:right;">Imposte ([ALIQUOTA_IMPOSTE_1])</td>
+                                <td class="col-curr">[IMPOSTE_1]</td>
+                            </tr>
+                            <!-- Premio Lordo -->
+                            <tr style="background: #0f172a !important; color: white; font-weight: 700;">
+                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO SOCIETÀ</strong></td>
+                                <td class="col-curr" style="border:none; color:white;"><strong>[PREMIO_LORDO_SOC_1]</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            -->
+
+            <!-- SECONDA SOCIETÀ -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
+                <div style="background: #0f172a; color: white; padding: 12px 20px; font-weight: 700; font-size: 14px;">
+                    📋 [NOME_SOCIETA_2]
+                </div>
+                <div style="padding: 20px;">
+                    
+                    <div style="margin-bottom: 15px; padding: 10px 15px; background: #eff6ff; border-radius: 4px;">
+                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a preventivo:</span>
+                        <strong style="margin-left: 10px;">[TIPO_PARAMETRO_2]</strong>
+                    </div>
+
+                    <table style="margin-bottom: 0;">
+                        <thead>
+                            <tr>
+                                <th style="width:25%; background:#e2e8f0;">Area Geografica</th>
+                                <th style="width:25%; background:#e2e8f0;">Parametro</th>
+                                <th style="width:20%; background:#e2e8f0;">Tasso</th>
+                                <th style="width:30%; background:#e2e8f0;">Premio Imponibile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA / Canada</span></td>
+                                <td class="col-curr">[PARAMETRO_USA_2]</td>
+                                <td class="col-curr">[TASSO_USA_2]</td>
+                                <td class="col-curr">[PREMIO_IMP_USA_2]</td>
+                            </tr>
+                            <tr>
+                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto del Mondo</span></td>
+                                <td class="col-curr">[PARAMETRO_ROW_2]</td>
+                                <td class="col-curr">[TASSO_ROW_2]</td>
+                                <td class="col-curr">[PREMIO_IMP_ROW_2]</td>
+                            </tr>
+                            <tr style="background: #f1f5f9 !important; font-weight: 600;">
+                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong></td>
+                                <td class="col-curr"><strong>[TOTALE_IMPONIBILE_2]</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align:right;">Imposte ([ALIQUOTA_IMPOSTE_2])</td>
+                                <td class="col-curr">[IMPOSTE_2]</td>
+                            </tr>
+                            <tr style="background: #0f172a !important; color: white; font-weight: 700;">
+                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO SOCIETÀ</strong></td>
+                                <td class="col-curr" style="border:none; color:white;"><strong>[PREMIO_LORDO_SOC_2]</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- RIPETERE BLOCCO SOPRA PER SOCIETÀ 3, 4, ... N -->
+            <!-- ============================================ -->
+
+            <!-- RIEPILOGO TOTALE POLIZZA -->
+            <div style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color: white; padding: 25px; border-radius: 8px; margin-top: 30px;">
+                <h4 style="color: #b49b66; margin: 0 0 20px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">📊 Riepilogo Totale Polizza</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Totale Imponibile</div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">[TOTALE_IMPONIBILE_POLIZZA]</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Totale Imposte</div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">[TOTALE_IMPOSTE_POLIZZA]</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Premio Lordo Complessivo</div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #b49b66;">[PREMIO_LORDO_POLIZZA]</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTE CALCOLO -->
+            <div style="margin-top: 25px; padding: 15px; background: #fefce8; border-left: 4px solid #eab308; border-radius: 4px;">
+                <strong style="color: #854d0e;">📝 Note sul calcolo:</strong>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #713f12;">
+                    [NOTE_CALCOLO_PREMIO]
+                </p>
+            </div>
 
         </div>
 
@@ -774,16 +845,16 @@
                 <thead>
                     <tr>
                         <th>Anno</th>
-                        <th style="width:20%">Premio Lordo</th>
+                        <th style="width:20%">Premio Imponibile</th>
                         <th style="width:20%">Sinistri Pagati</th>
                         <th style="width:20%">Loss Ratio</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ripetere per ogni anno -->
+                    <!-- Ripetere per ogni anno di copertura -->
                     <tr>
                         <td>[ANNO_1]</td>
-                        <td class="col-curr">[PREMIO_1]</td>
+                        <td class="col-curr">[PREMIO_IMP_ANNO_1]</td>
                         <td class="col-curr">[SINISTRI_1]</td>
                         <td class="col-curr">[LOSS_RATIO_1]</td>
                     </tr>
@@ -832,8 +903,7 @@
                 <h4 style="margin-top:0; color:var(--accent-blue);">📧 DENUNCIA SEMPRE A:</h4>
                 <div style="font-size:15px; line-height:1.8;">
                     <strong>Eramo & Associati S.r.l.</strong><br>
-                    <strong>Email:</strong> <a href="mailto:sinistri@eramoassociati.it"
-                        style="color:var(--accent-blue);">sinistri@eramoassociati.it</a><br>
+                    <strong>Email:</strong> <a href="mailto:sinistri@eramoassociati.it" style="color:var(--accent-blue);">sinistri@eramoassociati.it</a><br>
                     <strong>Telefono:</strong> 0332 283123
                 </div>
             </div>
@@ -841,9 +911,9 @@
             <h3>Documenti da Conservare</h3>
 
             <ul style="font-size:13px; line-height:1.8;">
-                <li><strong>✓ Residui del sinistro:</strong> Conservare sempre il materiale danneggiato fino a perizia
-                    completata</li>
-                <li><strong>✓ Fatture e DDT:</strong> Relativi alla merce/lavorazione coinvolta</li>
+                <li><strong>✓ Richiesta di risarcimento del danneggiato:</strong> Conservare la comunicazione originale ricevuta</li>
+                <li><strong>✓ Residui del sinistro:</strong> Segnalare al danneggiato di conservare sempre il materiale danneggiato fino a perizia completata</li>
+                <li><strong>✓ Fatture e preventivi:</strong> Relativi ai beni coinvolti nel sinistro</li>
                 <li><strong>✓ Corrispondenza:</strong> Tutte le comunicazioni con terzi danneggiati</li>
                 <li><strong>✓ Fotografie:</strong> Scattare foto del danno appena possibile</li>
                 <li><strong>✓ Testimonianze:</strong> Raccogliere dichiarazioni di eventuali testimoni</li>
@@ -861,20 +931,12 @@
                 <tbody>
                     <tr>
                         <td><strong>Giorno 0</strong></td>
-                        <td>Sinistro si verifica. Mettere in sicurezza l'area e documentare con foto.</td>
+                        <td>Ricezione richiesta di risarcimento del danneggiato.</td>
                     </tr>
                     <tr>
                         <td><strong>Entro 3 giorni</strong></td>
                         <td><strong style="color:var(--accent-red);">DENUNCIA OBBLIGATORIA</strong> a broker via email
                             (sinistri@eramoassociati.it)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Entro 7 giorni</strong></td>
-                        <td>Invio documentazione completa (fatture, foto, corrispondenza)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Entro 30 giorni</strong></td>
-                        <td>Compagnia valuta pratica e nomina eventuale perito</td>
                     </tr>
                 </tbody>
             </table>
@@ -921,21 +983,22 @@
 
         // Chart.js - Grafico Premi e Sinistri
         // NOTA: I dati devono essere inseriti dal prompt AI
+        // Inserire SOLO gli anni con copertura effettiva (dal primo anno polizza)
         const ctx = document.getElementById('premiumClaimsChart');
         if (ctx) {
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['[ANNO_1]', '[ANNO_2]', '[ANNO_3]', '[ANNO_4]', '[ANNO_5]'],
+                    labels: [[CHART_LABELS]],
                     datasets: [{
-                        label: 'Premio Lordo',
-                        data: [[PREMIO_1], [PREMIO_2], [PREMIO_3], [PREMIO_4], [PREMIO_5]],
+                        label: 'Premio Imponibile',
+                        data: [[CHART_PREMI_IMP]],
                         backgroundColor: 'rgba(37, 99, 235, 0.7)',
                         borderColor: 'rgba(37, 99, 235, 1)',
                         borderWidth: 1
                     }, {
                         label: 'Sinistri Pagati',
-                        data: [[SINISTRI_1], [SINISTRI_2], [SINISTRI_3], [SINISTRI_4], [SINISTRI_5]],
+                        data: [[CHART_SINISTRI]],
                         backgroundColor: 'rgba(220, 38, 38, 0.7)',
                         borderColor: 'rgba(220, 38, 38, 1)',
                         borderWidth: 1
@@ -950,14 +1013,14 @@
                         },
                         title: {
                             display: true,
-                            text: 'Andamento Premi vs Sinistri'
+                            text: 'Andamento Premi Imponibili vs Sinistri'
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function (value) {
+                                callback: function(value) {
                                     return '€ ' + value.toLocaleString('it-IT');
                                 }
                             }
@@ -971,3 +1034,4 @@
 </body>
 
 </html>
+       

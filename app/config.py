@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseSettings):
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./insurance_analyzer.db")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     SECRET_KEY: str = os.getenv("SECRET_KEY", "changeme")

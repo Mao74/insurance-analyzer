@@ -57,6 +57,27 @@ ERRORI DA EVITARE:
 ✗ Modificare titoli e intestazioni fisse
 ✗ Aggiungere nuove sezioni non presenti nel template
 
+═══════════════════════════════════════════════════════════════════════════════
+⚠️  ISTRUZIONE CRITICA PER DATI SENSIBILI MASCHERATI:
+═══════════════════════════════════════════════════════════════════════════════
+
+Nel documento potresti trovare placeholder di mascheramento come:
+- [CONTRAENTE_XXX]
+- [POLIZZA_XXX]
+- [PIVA_XXX]
+- [CF_XXX]
+- [ASSICURATO_XXX]
+- [INDIRIZZO_XXX]
+- [DATO_OSCURATO_X]
+
+REGOLA FONDAMENTALE:
+Quando trovi questi placeholder nel documento, DEVI COPIARLI ESATTAMENTE nel report finale.
+NON sostituirli con dati dedotti, NON interpretarli, NON cercare di indovinare i valori originali.
+Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_XXX].
+
+✓ CORRETTO: "Contraente: [CONTRAENTE_XXX]"
+✗ SBAGLIATO: "Contraente: Mario Rossi" (anche se deducibile dal contesto)
+
 """
         # Count input tokens for debugging
         try:
@@ -121,7 +142,11 @@ ERRORI DA EVITARE:
                 # Strip markdown code block wrappers if present
                 report_masked = self._strip_markdown_wrappers(report_masked)
                 print(f"DEBUG: LLM Response processed. Final length: {len(report_masked)} chars")
-                
+
+                # Fix: Reinject <script> section if LLM omitted it
+                if "<script>" not in report_masked and template_path:
+                    report_masked = self._fix_missing_scripts(report_masked, template_path)
+
         except Exception as e:
             print(f"LLM API Error: {type(e).__name__}: {str(e)}")
             import traceback
@@ -140,7 +165,7 @@ ERRORI DA EVITARE:
     def _strip_markdown_wrappers(self, text: str) -> str:
         """Remove markdown code block wrappers and any preamble text from LLM response."""
         text = text.strip()
-        
+
         # If response contains ```html, extract only the HTML content
         if "```html" in text:
             start_idx = text.find("```html")
@@ -158,9 +183,42 @@ ERRORI DA EVITARE:
                 text = text[newline_after + 1:]
             else:
                 text = text[start_idx + 3:]
-        
+
         # Remove ending ```
         if text.rstrip().endswith("```"):
             text = text.rstrip()[:-3]
-        
+
         return text.strip()
+
+    def _fix_missing_scripts(self, html: str, template_path: str) -> str:
+        """Reinject <script> sections from template if LLM omitted them."""
+        try:
+            # Read original template
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template = f.read()
+
+            # Extract all <script>...</script> blocks from template
+            script_start = template.find("<script>")
+            if script_start == -1:
+                return html  # No scripts in template
+
+            script_end = template.rfind("</script>") + len("</script>")
+            if script_end == -1:
+                return html
+
+            scripts_section = template[script_start:script_end]
+
+            # Inject before closing </body> or </html>
+            if "</body>" in html:
+                html = html.replace("</body>", f"{scripts_section}\n</body>")
+            elif "</html>" in html:
+                html = html.replace("</html>", f"{scripts_section}\n</html>")
+            else:
+                html += f"\n{scripts_section}"
+
+            print(f"DEBUG: Reinjected {scripts_section.count('<script>')} script blocks from template")
+            return html
+
+        except Exception as e:
+            print(f"WARNING: Failed to reinject scripts: {e}")
+            return html

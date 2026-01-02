@@ -224,6 +224,8 @@ def comparison_pipeline(
         analysis.status = models.AnalysisStatus.COMPLETED
         analysis.completed_at = datetime.utcnow()
         analysis.total_tokens = input_tokens + output_tokens
+        analysis.input_tokens = input_tokens  # Store input tokens separately
+        analysis.output_tokens = output_tokens  # Store output tokens separately
         
         # 6. Update user token counters
         user = db.query(models.User).filter(models.User.id == user_id).first()

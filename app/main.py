@@ -90,12 +90,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
 app.add_middleware(AuthMiddleware)
 
 # Session Middleware - MUST be added LAST to run FIRST
+# max_age=None makes it a session cookie (deleted when browser closes)
 app.add_middleware(
-    SessionMiddleware, 
-    secret_key=settings.SECRET_KEY, 
-    max_age=settings.SESSION_TIMEOUT_HOURS * 3600,
-    https_only=False,  # Set True in production with SSL
-    same_site="lax"    # Revert to lax now that we use proxy (Same-Origin)
+    SessionMiddleware,
+    secret_key=settings.SECRET_KEY,
+    max_age=None,  # Session cookie - expires when browser closes
+    https_only=(settings.ENVIRONMENT == "production"),  # True in production, False in dev
+    same_site="lax"
 )
 
 # Static files (for uploaded files access if needed)

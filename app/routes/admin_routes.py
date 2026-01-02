@@ -2,9 +2,11 @@
 
 from fastapi import APIRouter, Request, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, date
+from decimal import Decimal
 from ..database import get_db
 from .. import models, auth
 
@@ -278,12 +280,152 @@ async def update_settings(
         settings.input_cost_per_million = payload.input_cost_per_million
     if payload.output_cost_per_million is not None:
         settings.output_cost_per_million = payload.output_cost_per_million
-    
+
     db.commit()
     db.refresh(settings)
-    
+
     return SettingsResponse(
         llm_model_name=settings.llm_model_name,
         input_cost_per_million=settings.input_cost_per_million,
         output_cost_per_million=settings.output_cost_per_million
+    )
+
+
+# Analytics Routes
+
+class DailyCostData(BaseModel):
+    date: str  # YYYY-MM-DD format
+    input_tokens: int
+    output_tokens: int
+    total_tokens: int
+    cost: float
+
+class MonthlyCostData(BaseModel):
+    month: str  # YYYY-MM format
+    input_tokens: int
+    output_tokens: int
+    total_tokens: int
+    cost: float
+
+class CostAnalyticsResponse(BaseModel):
+    today: DailyCostData
+    this_month: MonthlyCostData
+    total: DailyCostData  # All time
+    monthly_data: List[MonthlyCostData]  # Last 12 months
+
+@router.get("/analytics/costs", response_model=CostAnalyticsResponse)
+async def get_cost_analytics(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Get token usage and cost analytics (admin only)"""
+    require_admin(request, db)
+
+    # Get system settings for cost calculation
+    settings = db.query(models.SystemSettings).first()
+    if not settings:
+        settings = models.SystemSettings()
+
+    input_cost_per_million = float(settings.input_cost_per_million)
+    output_cost_per_million = float(settings.output_cost_per_million)
+
+    def calculate_cost(input_tokens: int, output_tokens: int) -> float:
+        """Calculate cost in USD"""
+        input_cost = (input_tokens / 1_000_000) * input_cost_per_million
+        output_cost = (output_tokens / 1_000_000) * output_cost_per_million
+        return round(input_cost + output_cost, 4)
+
+    # Get today's date
+    today = date.today()
+
+    # Query for today's data
+    today_data = db.query(
+        func.coalesce(func.sum(models.Analysis.input_tokens), 0).label('input_tokens'),
+        func.coalesce(func.sum(models.Analysis.output_tokens), 0).label('output_tokens')
+    ).filter(
+        func.date(models.Analysis.created_at) == today,
+        models.Analysis.status == models.AnalysisStatus.COMPLETED
+    ).first()
+
+    today_input = int(today_data.input_tokens) if today_data else 0
+    today_output = int(today_data.output_tokens) if today_data else 0
+
+    # Query for this month's data
+    this_month_start = today.replace(day=1)
+    this_month_data = db.query(
+        func.coalesce(func.sum(models.Analysis.input_tokens), 0).label('input_tokens'),
+        func.coalesce(func.sum(models.Analysis.output_tokens), 0).label('output_tokens')
+    ).filter(
+        func.date(models.Analysis.created_at) >= this_month_start,
+        models.Analysis.status == models.AnalysisStatus.COMPLETED
+    ).first()
+
+    month_input = int(this_month_data.input_tokens) if this_month_data else 0
+    month_output = int(this_month_data.output_tokens) if this_month_data else 0
+
+    # Query for all-time data
+    total_data = db.query(
+        func.coalesce(func.sum(models.Analysis.input_tokens), 0).label('input_tokens'),
+        func.coalesce(func.sum(models.Analysis.output_tokens), 0).label('output_tokens')
+    ).filter(
+        models.Analysis.status == models.AnalysisStatus.COMPLETED
+    ).first()
+
+    total_input = int(total_data.input_tokens) if total_data else 0
+    total_output = int(total_data.output_tokens) if total_data else 0
+
+    # Query for monthly breakdown (last 12 months)
+    monthly_data = db.query(
+        func.date_trunc('month', models.Analysis.created_at).label('month'),
+        func.coalesce(func.sum(models.Analysis.input_tokens), 0).label('input_tokens'),
+        func.coalesce(func.sum(models.Analysis.output_tokens), 0).label('output_tokens')
+    ).filter(
+        models.Analysis.status == models.AnalysisStatus.COMPLETED,
+        models.Analysis.created_at.isnot(None)
+    ).group_by(
+        func.date_trunc('month', models.Analysis.created_at)
+    ).order_by(
+        func.date_trunc('month', models.Analysis.created_at).desc()
+    ).limit(12).all()
+
+    monthly_list = []
+    for row in monthly_data:
+        month_date = row.month
+        month_str = month_date.strftime('%Y-%m') if month_date else ''
+        m_input = int(row.input_tokens)
+        m_output = int(row.output_tokens)
+        monthly_list.append(MonthlyCostData(
+            month=month_str,
+            input_tokens=m_input,
+            output_tokens=m_output,
+            total_tokens=m_input + m_output,
+            cost=calculate_cost(m_input, m_output)
+        ))
+
+    # Reverse to get chronological order
+    monthly_list.reverse()
+
+    return CostAnalyticsResponse(
+        today=DailyCostData(
+            date=today.isoformat(),
+            input_tokens=today_input,
+            output_tokens=today_output,
+            total_tokens=today_input + today_output,
+            cost=calculate_cost(today_input, today_output)
+        ),
+        this_month=MonthlyCostData(
+            month=today.strftime('%Y-%m'),
+            input_tokens=month_input,
+            output_tokens=month_output,
+            total_tokens=month_input + month_output,
+            cost=calculate_cost(month_input, month_output)
+        ),
+        total=DailyCostData(
+            date='all-time',
+            input_tokens=total_input,
+            output_tokens=total_output,
+            total_tokens=total_input + total_output,
+            cost=calculate_cost(total_input, total_output)
+        ),
+        monthly_data=monthly_list
     )
