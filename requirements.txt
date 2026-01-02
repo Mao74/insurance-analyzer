@@ -9,6 +9,7 @@ pytesseract==0.3.10
 PyMuPDF==1.23.8
 google-generativeai==0.8.3
 weasyprint==61.2
+pydyf==0.11.0
 python-dotenv==1.0.0
 itsdangerous==2.1.2
 python-magic==0.4.27
