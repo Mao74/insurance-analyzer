@@ -42,21 +42,37 @@ TEMPLATE HTML DA COMPILARE:
 {html_template}
 
 ═══════════════════════════════════════════════════════════════════════════════
-ISTRUZIONI CRITICHE PER IL TEMPLATE:
+⚠️⚠️⚠️ ISTRUZIONI CRITICHE - LEGGERE ATTENTAMENTE ⚠️⚠️⚠️
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. NON MODIFICARE LA STRUTTURA del template HTML in alcun modo
-2. NON aggiungere, rimuovere o riordinare i TAB
-3. NON cambiare il titolo, sottotitolo o intestazioni principali
-4. COMPILARE SOLO i placeholder tra parentesi quadre [PLACEHOLDER]
-5. Mantenere TUTTI gli elementi esistenti (tab, sezioni, tabelle)
-6. Restituire il template HTML compilato INTEGRALMENTE
+🚨 URGENTE: DEVI RESTITUIRE IL TEMPLATE HTML COMPLETO!
+🚨 L'OUTPUT DEVE INIZIARE CON: <!DOCTYPE html>
+🚨 L'OUTPUT DEVE TERMINARE CON: </html>
+🚨 NON restituire riassunti, note o testo semplice!
 
-ERRORI DA EVITARE:
-✗ Rimuovere tab esistenti
-✗ Cambiare l'ordine dei tab
-✗ Modificare titoli e intestazioni fisse
-✗ Aggiungere nuove sezioni non presenti nel template
+COSA DEVI FARE:
+1. Prendi il template HTML fornito sopra INTEGRALMENTE
+2. COMPILA SOLO i placeholder tra parentesi quadre [PLACEHOLDER]
+3. NON rimuovere alcuna sezione, tab, tabella o elemento
+4. Restituisci l'INTERO documento HTML dal DOCTYPE alla chiusura </html>
+
+ERRORI FATALI DA EVITARE:
+✗ NON restituire solo le "Note Tecniche" o un riassunto
+✗ NON restituire testo in formato markdown (---, **, etc.)
+✗ NON omettere i tab, le tabelle, i grafici, gli stili CSS
+✗ NON restituire solo una porzione del template
+
+ESEMPIO DI OUTPUT CORRETTO:
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    ... (tutto il CSS e head) ...
+</head>
+<body>
+    ... (tutte le sezioni, tab, tabelle compilate) ...
+</body>
+</html>
 
 ═══════════════════════════════════════════════════════════════════════════════
 ⚠️  ISTRUZIONE CRITICA PER DATI SENSIBILI MASCHERATI:
@@ -78,6 +94,8 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
 
 ✓ CORRETTO: "Contraente: [CONTRAENTE_XXX]"
 ✗ SBAGLIATO: "Contraente: Mario Rossi" (anche se deducibile dal contesto)
+
+🚨 RICORDA: RESTITUISCI L'INTERO HTML COMPLETO, NON UN RIASSUNTO! 🚨
 
 """
         # Count input tokens for debugging
@@ -144,6 +162,30 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
                 report_masked = self._strip_markdown_wrappers(report_masked)
                 print(f"DEBUG: LLM Response processed. Final length: {len(report_masked)} chars")
 
+                # CRITICAL: Validate that the response is actually HTML, not plain text
+                is_valid_html = self._validate_html_output(report_masked)
+                if not is_valid_html:
+                    print("ERROR: LLM returned plain text/markdown instead of HTML template!")
+                    print(f"DEBUG: First 500 chars of response: {report_masked[:500]}")
+                    # Create an error message HTML instead
+                    report_masked = f"""<!DOCTYPE html>
+<html lang="it">
+<head><meta charset="UTF-8"><title>Errore Generazione</title>
+<style>body{{font-family:sans-serif;padding:40px;}}h1{{color:#dc2626;}}.error-box{{background:#fef2f2;border:2px solid #dc2626;padding:20px;border-radius:8px;margin:20px 0;}}.raw-output{{background:#f1f5f9;padding:15px;border-radius:4px;white-space:pre-wrap;max-height:400px;overflow:auto;font-size:12px;}}</style>
+</head>
+<body>
+<h1>⚠️ Errore nella Generazione del Report</h1>
+<div class="error-box">
+<p><strong>L'LLM non ha generato il template HTML correttamente.</strong></p>
+<p>Invece di compilare il template HTML con i dati della polizza, ha restituito un riassunto testuale.</p>
+<p>Questo può accadere quando il documento è troppo grande o l'LLM non segue le istruzioni.</p>
+</div>
+<h2>Output ricevuto dall'LLM:</h2>
+<div class="raw-output">{report_masked[:5000]}</div>
+<p><strong>Suggerimento:</strong> Prova a rilanciare l'analisi o riduci la dimensione del documento.</p>
+</body>
+</html>"""
+
                 # Fix: Reinject <script> section if LLM omitted it
                 if "<script>" not in report_masked and template_path:
                     report_masked = self._fix_missing_scripts(report_masked, template_path)
@@ -166,6 +208,39 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
             report_display = report_masked
         
         return report_masked, report_display, input_tokens, output_tokens
+    
+    def _validate_html_output(self, text: str) -> bool:
+        """Check if the LLM output is valid HTML, not plain text or markdown."""
+        text_lower = text.lower().strip()
+        
+        # Check for HTML markers
+        has_doctype = '<!doctype html>' in text_lower or '<!doctype' in text_lower
+        has_html_tag = '<html' in text_lower
+        has_head = '<head' in text_lower
+        has_body = '<body' in text_lower
+        has_closing_html = '</html>' in text_lower
+        
+        # Check for markdown indicators (signs of wrong output)
+        starts_with_markdown = text.strip().startswith('---') or text.strip().startswith('# ') or text.strip().startswith('**')
+        
+        # Valid if has HTML structure and doesn't start with markdown
+        if starts_with_markdown:
+            return False
+        
+        # Require at least DOCTYPE + html tag OR body tag (some LLMs omit DOCTYPE)
+        if has_doctype and has_html_tag:
+            return True
+        if has_html_tag and has_body:
+            return True
+        if has_body and has_closing_html:
+            return True
+            
+        # If very short and no HTML markers, probably not valid
+        if len(text) < 1000 and not has_html_tag:
+            return False
+        
+        # Default to valid if we're unsure and it's long enough
+        return len(text) > 5000
     
     def _strip_markdown_wrappers(self, text: str) -> str:
         """Remove markdown code block wrappers and any preamble text from LLM response."""
