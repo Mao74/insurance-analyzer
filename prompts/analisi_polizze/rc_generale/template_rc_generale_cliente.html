@@ -271,58 +271,213 @@
             height: 350px;
         }
 
-        /* --- PRINT --- */
+        /* Hide chart container in normal view (only visible in PDF) */
+        .pdf-chart-container {
+            display: none;
+        }
+
+        /* --- PRINT (PDF GENERATION) --- */
+        /* --- PRINT (PDF GENERATION) --- */
+        /* --- PRINT (PDF GENERATION) --- */
+        @page {
+            /* Global margins for content */
+            margin: 25mm 12mm 20mm 12mm;
+            size: A4 portrait;
+
+            @top-center {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: "Pagina " counter(page) " di " counter(pages);
+                font-size: 9pt;
+                color: #64748b;
+            }
+        }
+
+        /* Specific page for cover - NO MARGINS */
+        @page cover {
+            margin: 0;
+            size: A4 portrait;
+
+            @top-center {
+                content: none;
+            }
+
+            @bottom-center {
+                content: none;
+            }
+        }
+
+        /* Header ricorrente */
+
+        /* Header ricorrente */
+        .page-header {
+            position: running(header);
+            font-size: 9pt;
+            color: #64748b;
+            padding-bottom: 5mm;
+            border-bottom: 0.5pt solid #cbd5e1;
+            width: 100%;
+            text-align: center;
+        }
+
         @media print {
+
+            /* Margin fix for collapsed elements after page break */
+            table {
+                margin-top: 5mm;
+            }
+
+            /* Extra spacing for report content wrapper */
+            .report-container {
+                padding-top: 5mm;
+            }
+
             body {
                 padding: 0;
-                background: white;
+                margin: 0;
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                orphans: 3;
+                widows: 3;
             }
 
-            .report-container {
-                border: none;
-                box-shadow: none;
-                width: 100%;
-                max-width: 100%;
-            }
-
+            /* HIDE SCREEN ELEMENTS */
             .tabs,
-            .print-btn {
-                display: none;
-            }
-
-            .tab-content {
+            .header-navigation,
+            #edit-toolbar,
+            .print-btn,
+            .btn,
+            button,
+            .navbar,
+            .header {
                 display: none !important;
             }
 
-            .tab-content.active {
+            /* FORCE SHOW CONTENT */
+            .tab-content {
                 display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                height: auto !important;
+                margin: 0;
+                padding: 15mm 10mm !important;
+                page-break-inside: auto;
             }
 
-            h1,
-            h2 {
+            /* PDF COVER PAGE */
+            .pdf-cover {
+                display: block !important;
+                page: cover;
+                /* Use the named page with 0 margins */
+                height: 100%;
+                /* Fill the page */
+                width: 100%;
+                position: relative;
+                page-break-after: always;
                 text-align: center;
+                padding-top: 60mm;
+                background: white;
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            /* HIDE CHART IN PDF - FORCE HIDE */
+            .chart-container,
+            #premiumClaimsChart,
+            canvas#premiumClaimsChart {
+                display: none !important;
+                height: 0 !important;
+                width: 0 !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+
+            .chart-placeholder-pdf {
+                display: none !important;
+                /* Hide fallback text, we use the image now */
+            }
+
+            .pdf-chart-container {
+                display: block !important;
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+
+            .pdf-no-break {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-before: auto;
+                page-break-after: auto;
+                display: block !important;
+                overflow: visible !important;
+            }
+
+            /* Specific fix for summary box */
+            .summary-total-box {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                background: #0f172a !important;
+                /* Solid color for PDF - avoid gradient rendering issues */
+                margin-top: 20px;
                 margin-bottom: 20px;
             }
 
+            /* LAYOUT ADJUSTMENTS */
+            .report-container {
+                border: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+                page-break-after: avoid;
+                color: #0f172a !important;
+            }
+
             table {
-                font-size: 8pt;
+                width: 100% !important;
+                font-size: 9pt;
+                page-break-inside: auto;
+                border-collapse: collapse !important;
+                margin-bottom: 15px;
+                margin-top: 10px;
             }
 
-            th,
-            tr,
-            td {
-                border-color: #ccc !important;
+            thead {
+                display: table-header-group;
             }
 
-            th {
-                background-color: #f0f0f0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                color: #000 !important;
+            tbody {
+                display: table-row-group;
             }
 
             tr {
                 page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 8px 12px !important;
+            }
+
+            td {
+                padding: 6px 12px !important;
             }
 
             .badge {
@@ -333,6 +488,35 @@
 </head>
 
 <body>
+
+    <!-- PDF RUNNING HEADER (Repeated on every page via CSS) -->
+    <div class="page-header">
+        Analisi Tecnica Polizza RC - [CONTRAENTE] • Rif: [NUMERO_POLIZZA]
+    </div>
+
+    <!-- PDF COVER PAGE (Visible only in Print/PDF) -->
+    <div class="pdf-cover" style="display: none;">
+        <img src="[LOGO_IMG]" style="width: 250px; margin-bottom: 60px;">
+        <h1 style="font-size: 32px; margin-bottom: 10px; color: #0f172a; font-family: 'Merriweather', serif;">Analisi
+            Tecnica Polizza RC</h1>
+        <h2
+            style="font-size: 16px; color: #b49b66; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 80px; font-family: 'Inter', sans-serif;">
+            Responsabilità Civile • Rischi Industriali</h2>
+
+        <div style="margin-bottom: 100px;">
+            <div
+                style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">
+                Azienda Contraente</div>
+            <div style="font-size: 28px; color: #0f172a; font-weight: 700;">[CONTRAENTE]</div>
+        </div>
+
+        <div style="position: absolute; bottom: 30mm; left: 0; right: 0; text-align: center;">
+            <div style="font-size: 11px; color: #94a3b8; line-height: 1.6;">
+                Documento generato da <strong>Insurance-Lab.ai</strong><br>
+                Rif: [NUMERO_POLIZZA]
+            </div>
+        </div>
+    </div>
 
     <div class="report-container">
 
@@ -476,7 +660,7 @@
 
             <h3>Validità Territoriale</h3>
 
-            <table>
+            <table class="pdf-no-break">
                 <thead>
                     <tr>
                         <th style="width:15%">Sezione</th>
@@ -658,12 +842,14 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>BCI</strong><br><span style="font-size:10px; font-weight:normal;">Business Continuity Interest</span></td>
+                        <td><strong>BCI</strong><br><span style="font-size:10px; font-weight:normal;">Business
+                                Continuity Interest</span></td>
                         <td>[DESCRIZIONE_BCI]<br><strong>Società:</strong> [ELENCO_SOCIETA_BCI]</td>
                         <td class="col-curr">[LIMITE_BCI]</td>
                     </tr>
                     <tr>
-                        <td><strong>DIC/DIL</strong><br><span style="font-size:10px; font-weight:normal;">Difference in Conditions/Limits</span></td>
+                        <td><strong>DIC/DIL</strong><br><span style="font-size:10px; font-weight:normal;">Difference in
+                                Conditions/Limits</span></td>
                         <td>[DESCRIZIONE_DIC]</td>
                         <td class="col-curr">[LIMITE_DIC]</td>
                     </tr>
@@ -687,16 +873,18 @@
             <!-- ============================================ -->
             <!-- RIPETERE QUESTO BLOCCO PER OGNI SOCIETÀ -->
             <!-- ============================================ -->
-            
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
+
+            <div
+                style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
                 <div style="background: #0f172a; color: white; padding: 12px 20px; font-weight: 700; font-size: 14px;">
                     📋 [NOME_SOCIETA_1]
                 </div>
                 <div style="padding: 20px;">
-                    
+
                     <!-- Info Parametro -->
                     <div style="margin-bottom: 15px; padding: 10px 15px; background: #eff6ff; border-radius: 4px;">
-                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a preventivo:</span>
+                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a
+                            preventivo:</span>
                         <strong style="margin-left: 10px;">[TIPO_PARAMETRO_1]</strong>
                     </div>
 
@@ -712,21 +900,26 @@
                         <tbody>
                             <!-- Riga USA/Canada -->
                             <tr>
-                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA / Canada</span></td>
+                                <td><span
+                                        style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA
+                                        / Canada</span></td>
                                 <td class="col-curr">[PARAMETRO_USA_1]</td>
                                 <td class="col-curr">[TASSO_USA_1]</td>
                                 <td class="col-curr">[PREMIO_IMP_USA_1]</td>
                             </tr>
                             <!-- Riga Resto del Mondo (include Italia, Europa e resto) -->
                             <tr>
-                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto del Mondo</span></td>
+                                <td><span
+                                        style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto
+                                        del Mondo</span></td>
                                 <td class="col-curr">[PARAMETRO_ROW_1]</td>
                                 <td class="col-curr">[TASSO_ROW_1]</td>
                                 <td class="col-curr">[PREMIO_IMP_ROW_1]</td>
                             </tr>
                             <!-- Subtotale Imponibile -->
                             <tr style="background: #f1f5f9 !important; font-weight: 600;">
-                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong></td>
+                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong>
+                                </td>
                                 <td class="col-curr"><strong>[TOTALE_IMPONIBILE_1]</strong></td>
                             </tr>
                             <!-- Tasse -->
@@ -736,8 +929,11 @@
                             </tr>
                             <!-- Premio Lordo -->
                             <tr style="background: #0f172a !important; color: white; font-weight: 700;">
-                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO SOCIETÀ</strong></td>
-                                <td class="col-curr" style="border:none; color:white;"><strong>[PREMIO_LORDO_SOC_1]</strong></td>
+                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO
+                                        SOCIETÀ</strong></td>
+                                <td class="col-curr" style="border:none; color:white;">
+                                    <strong>[PREMIO_LORDO_SOC_1]</strong>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -745,14 +941,16 @@
             </div>
 
             <!-- SECONDA SOCIETÀ -->
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
+            <div
+                style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px; overflow: hidden;">
                 <div style="background: #0f172a; color: white; padding: 12px 20px; font-weight: 700; font-size: 14px;">
                     📋 [NOME_SOCIETA_2]
                 </div>
                 <div style="padding: 20px;">
-                    
+
                     <div style="margin-bottom: 15px; padding: 10px 15px; background: #eff6ff; border-radius: 4px;">
-                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a preventivo:</span>
+                        <span style="font-size: 11px; color: #64748b; text-transform: uppercase;">Parametro a
+                            preventivo:</span>
                         <strong style="margin-left: 10px;">[TIPO_PARAMETRO_2]</strong>
                     </div>
 
@@ -767,19 +965,24 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA / Canada</span></td>
+                                <td><span
+                                        style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#fee2e2; color:#991b1b;">USA
+                                        / Canada</span></td>
                                 <td class="col-curr">[PARAMETRO_USA_2]</td>
                                 <td class="col-curr">[TASSO_USA_2]</td>
                                 <td class="col-curr">[PREMIO_IMP_USA_2]</td>
                             </tr>
                             <tr>
-                                <td><span style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto del Mondo</span></td>
+                                <td><span
+                                        style="display:inline-block; padding:2px 8px; border-radius:3px; font-size:10px; font-weight:600; text-transform:uppercase; background:#dbeafe; color:#1e40af;">Resto
+                                        del Mondo</span></td>
                                 <td class="col-curr">[PARAMETRO_ROW_2]</td>
                                 <td class="col-curr">[TASSO_ROW_2]</td>
                                 <td class="col-curr">[PREMIO_IMP_ROW_2]</td>
                             </tr>
                             <tr style="background: #f1f5f9 !important; font-weight: 600;">
-                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong></td>
+                                <td colspan="3" style="text-align:right;"><strong>Totale Imponibile Società</strong>
+                                </td>
                                 <td class="col-curr"><strong>[TOTALE_IMPONIBILE_2]</strong></td>
                             </tr>
                             <tr>
@@ -787,8 +990,11 @@
                                 <td class="col-curr">[IMPOSTE_2]</td>
                             </tr>
                             <tr style="background: #0f172a !important; color: white; font-weight: 700;">
-                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO SOCIETÀ</strong></td>
-                                <td class="col-curr" style="border:none; color:white;"><strong>[PREMIO_LORDO_SOC_2]</strong></td>
+                                <td colspan="3" style="text-align:right; border:none;"><strong>PREMIO LORDO
+                                        SOCIETÀ</strong></td>
+                                <td class="col-curr" style="border:none; color:white;">
+                                    <strong>[PREMIO_LORDO_SOC_2]</strong>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -800,26 +1006,40 @@
             <!-- ============================================ -->
 
             <!-- RIEPILOGO TOTALE POLIZZA -->
-            <div style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color: white; padding: 25px; border-radius: 8px; margin-top: 30px;">
-                <h4 style="color: #b49b66; margin: 0 0 20px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">📊 Riepilogo Totale Polizza</h4>
+            <div class="pdf-no-break summary-total-box"
+                style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color: white; padding: 25px; border-radius: 8px; margin-top: 30px;">
+                <h4
+                    style="color: #b49b66; margin: 0 0 20px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">
+                    📊 Riepilogo Totale Polizza</h4>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                     <div style="text-align: center;">
-                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Totale Imponibile</div>
-                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">[TOTALE_IMPONIBILE_POLIZZA]</div>
+                        <div
+                            style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">
+                            Totale Imponibile</div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">
+                            [TOTALE_IMPONIBILE_POLIZZA]</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Totale Imposte</div>
-                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">[TOTALE_IMPOSTE_POLIZZA]</div>
+                        <div
+                            style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">
+                            Totale Imposte</div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700;">
+                            [TOTALE_IMPOSTE_POLIZZA]</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Premio Lordo Complessivo</div>
-                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #b49b66;">[PREMIO_LORDO_POLIZZA]</div>
+                        <div
+                            style="font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">
+                            Premio Lordo Complessivo</div>
+                        <div
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #b49b66;">
+                            [PREMIO_LORDO_POLIZZA]</div>
                     </div>
                 </div>
             </div>
 
             <!-- NOTE CALCOLO -->
-            <div style="margin-top: 25px; padding: 15px; background: #fefce8; border-left: 4px solid #eab308; border-radius: 4px;">
+            <div class="pdf-no-break"
+                style="margin-top: 25px; padding: 15px; background: #fefce8; border-left: 4px solid #eab308; border-radius: 4px;">
                 <strong style="color: #854d0e;">📝 Note sul calcolo:</strong>
                 <p style="margin: 10px 0 0 0; font-size: 12px; color: #713f12;">
                     [NOTE_CALCOLO_PREMIO]
@@ -837,6 +1057,9 @@
 
             <div class="chart-container">
                 <canvas id="premiumClaimsChart"></canvas>
+            </div>
+            <div class="chart-placeholder-pdf" style="display:none;">
+                📊 Il grafico interattivo è disponibile nella versione online del report.
             </div>
 
             <h3>Loss Ratio per Anno</h3>
@@ -903,7 +1126,8 @@
                 <h4 style="margin-top:0; color:var(--accent-blue);">📧 DENUNCIA SEMPRE A:</h4>
                 <div style="font-size:15px; line-height:1.8;">
                     <strong>Eramo & Associati S.r.l.</strong><br>
-                    <strong>Email:</strong> <a href="mailto:sinistri@eramoassociati.it" style="color:var(--accent-blue);">sinistri@eramoassociati.it</a><br>
+                    <strong>Email:</strong> <a href="mailto:sinistri@eramoassociati.it"
+                        style="color:var(--accent-blue);">sinistri@eramoassociati.it</a><br>
                     <strong>Telefono:</strong> 0332 283123
                 </div>
             </div>
@@ -911,8 +1135,10 @@
             <h3>Documenti da Conservare</h3>
 
             <ul style="font-size:13px; line-height:1.8;">
-                <li><strong>✓ Richiesta di risarcimento del danneggiato:</strong> Conservare la comunicazione originale ricevuta</li>
-                <li><strong>✓ Residui del sinistro:</strong> Segnalare al danneggiato di conservare sempre il materiale danneggiato fino a perizia completata</li>
+                <li><strong>✓ Richiesta di risarcimento del danneggiato:</strong> Conservare la comunicazione originale
+                    ricevuta</li>
+                <li><strong>✓ Residui del sinistro:</strong> Segnalare al danneggiato di conservare sempre il materiale
+                    danneggiato fino a perizia completata</li>
                 <li><strong>✓ Fatture e preventivi:</strong> Relativi ai beni coinvolti nel sinistro</li>
                 <li><strong>✓ Corrispondenza:</strong> Tutte le comunicazioni con terzi danneggiati</li>
                 <li><strong>✓ Fotografie:</strong> Scattare foto del danno appena possibile</li>
@@ -958,6 +1184,12 @@
 
         </div>
 
+    </div>
+
+    <!-- ========================================= -->
+    <!-- PDF CHART (Visible only in Print/PDF when injected) -->
+    <div class="pdf-chart-container">
+        <img src="[CHART_IMG_SRC]" style="width: 100%; max-width: 800px; margin: 0 auto; display: block;">
     </div>
 
     <!-- ========================================= -->
@@ -1020,7 +1252,7 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return '€ ' + value.toLocaleString('it-IT');
                                 }
                             }
@@ -1034,4 +1266,3 @@
 </body>
 
 </html>
-       

@@ -1,0 +1,116 @@
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: insurance-lab-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: insurance_analyzer
+      POSTGRES_USER: insurance_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - insurance-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insurance_user -d insurance_analyzer"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: insurance-lab-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://insurance_user:${DB_PASSWORD}@postgres:5432/insurance_analyzer
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+      DEFAULT_USERS: ${DEFAULT_USERS}
+      ENVIRONMENT: production
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      APP_URL: https://app.insurance-lab.ai
+      SMTP_FROM_EMAIL: noreply@insurance-lab.ai
+      SMTP_FROM_NAME: Insurance Lab AI
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_PRICE_MONTHLY: ${STRIPE_PRICE_MONTHLY}
+      STRIPE_PRICE_ANNUAL: ${STRIPE_PRICE_ANNUAL}
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_outputs:/app/outputs
+    networks:
+      - insurance-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: insurance-lab-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: https://app.insurance-lab.ai/api
+    networks:
+      - insurance-net
+    depends_on:
+      - backend
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: insurance-lab-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./landing:/usr/share/nginx/html/landing:ro
+      - ./app:/usr/share/nginx/html/app:ro
+      - certbot_webroot:/var/www/certbot:ro
+      - certbot_certs:/etc/letsencrypt:ro
+    networks:
+      - insurance-net
+    depends_on:
+      - backend
+      - frontend
+
+  # Certbot for SSL
+  certbot:
+    image: certbot/certbot
+    container_name: insurance-lab-certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_webroot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_outputs:
+    driver: local
+  certbot_certs:
+    driver: local
+  certbot_webroot:
+    driver: local
+
+networks:
+  insurance-net:
+    driver: bridge

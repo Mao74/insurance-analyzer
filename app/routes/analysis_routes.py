@@ -1,5 +1,6 @@
 import os
 import json
+import base64
 from datetime import datetime
 from fastapi import APIRouter, Request, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import Response, JSONResponse
@@ -368,67 +369,93 @@ def download_analysis_pdf(
         safe_title = "".join([c for c in analysis.title if c.isalnum() or c in (' ', '-', '_')]).strip()
         filename = f"{safe_title}{suffix}.pdf"
 
-    # Add print-specific CSS to HTML for PDF generation
-    print_css = """
-    <style>
-        @page {
-            margin: 15mm 10mm;
-            size: A4;
-        }
-        body {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        .tab-content {
-            display: block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            height: auto !important;
-            margin-bottom: 20px;
-            page-break-inside: avoid;
-        }
-        .tabs, .header-navigation, #edit-toolbar, .print-btn, .btn, button, .navbar {
-            display: none !important;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-        .card, .section {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-        table {
-            width: 100% !important;
-            border-collapse: collapse;
-            page-break-inside: auto;
-        }
-        tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
-        }
-        td, th {
-            padding: 6px 4px;
-            font-size: 9pt;
-            vertical-align: top;
-            word-wrap: break-word;
-            word-break: break-word;
-            border: 1px solid #e2e8f0;
-        }
-        .report-container {
-            max-width: 100% !important;
-            width: 100% !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
-    </style>
-    """
 
-    # Inject print CSS into HTML
-    if "</head>" in html_content:
-        html_content = html_content.replace("</head>", f"{print_css}</head>")
-    else:
-        html_content = print_css + html_content
+
+    # Inject Logo for PDF Cover
+    try:
+        # Use direct path from app root
+        logo_path = "/app/static/img/logo-white.png"
+
+        if os.path.exists(logo_path):
+            with open(logo_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                logo_src = f"data:image/png;base64,{encoded_string}"
+                # Replace placeholder if exists, or prep for cover page injection
+                html_content = html_content.replace("[LOGO_IMG]", logo_src)
+                print(f"DEBUG: Logo injected from {logo_path}")
+        else:
+            print(f"WARNING: Logo not found at {logo_path}")
+    except Exception as e:
+        print(f"Error injecting logo: {e}")
+
+    # Inject Server-Side Chart for PDF (Matplotlib)
+    try:
+        # Import chart generation module locally to avoid circular imports or issues if unavailable
+        from ..charts import generate_bar_chart
+        import re
+
+        # Initialize default chart data
+        chart_labels = ['Anno 1', 'Anno 2', 'Anno 3']
+        chart_datasets = [
+            {
+                'label': 'Premio Imponibile',
+                'data': [0, 0, 0],
+                'color': '#36A2EB'
+            },
+            {
+                'label': 'Sinistri Pagati',
+                'data': [0, 0, 0],
+                'color': '#FF6384'
+            }
+        ]
+
+        # Robust Data Extraction for Chart
+        # We look for the JavaScript arrays injected by the prompt logic:
+        # labels: ['2023', '2024'], data: [15000, 16000], etc.
+
+        try:
+            # Extract Labels: labels: ['2023', '2024']
+            labels_match = re.search(r"labels:\s*\[(.*?)\]", html_content)
+            if labels_match:
+                labels_str = labels_match.group(1)
+                chart_labels = [label.strip().strip("'").strip('"') for label in labels_str.split(',')]
+
+            # Extract Premi: label: 'Premio Imponibile', data: [1000, 2000]
+            premi_match = re.search(r"label:\s*['\"]Premio.*?['\"],\s*data:\s*\[(.*?)\]", html_content, re.DOTALL)
+            if premi_match:
+                premi_data_str = premi_match.group(1)
+                chart_datasets[0]["data"] = [float(x.strip()) for x in premi_data_str.split(',') if x.strip()]
+
+            # Extract Sinistri: label: 'Sinistri Pagati', data: [0, 500]
+            sinistri_match = re.search(r"label:\s*['\"]Sinistri.*?['\"],\s*data:\s*\[(.*?)\]", html_content, re.DOTALL)
+            if sinistri_match:
+                sinistri_data_str = sinistri_match.group(1)
+                chart_datasets[1]["data"] = [float(x.strip()) for x in sinistri_data_str.split(',') if x.strip()]
+
+            print(f"DEBUG: Extracted Chart Data - Labels: {chart_labels}, Premi: {chart_datasets[0]['data']}, Sinistri: {chart_datasets[1]['data']}")
+
+        except Exception as e:
+            print(f"Error extracting chart data via regex: {e}")
+            # Fallback to defaults already initialized
+
+        # Generate the chart image
+        try:
+            chart_base64 = generate_bar_chart(
+                labels=chart_labels,
+                datasets=chart_datasets,
+                title="Storico Premi e Sinistri (Anteprima PDF)",
+                y_label="Importo (€)"
+            )
+            
+            # Inject the chart
+            html_content = html_content.replace("[CHART_IMG_SRC]", chart_base64)
+            
+        except Exception as e:
+             print(f"Error generating PDF chart image: {e}")
+
+    except Exception as e:
+        print(f"Error generating PDF chart: {e}")
+
 
     # Generate PDF using WeasyPrint
     pdf_bytes = HTML(string=html_content).write_pdf()
@@ -639,7 +666,8 @@ def full_analysis_pipeline(
             document_text=masked_text,
             prompt_template=prompt_template,
             html_template=html_template,
-            reverse_mapping=reverse_mapping if not is_skipped else None
+            reverse_mapping=reverse_mapping if not is_skipped else None,
+            template_path=template_path
         )
         
         # 5. Complete

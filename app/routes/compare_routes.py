@@ -215,7 +215,8 @@ def comparison_pipeline(
             document_text=masked_text,
             prompt_template=prompt_template,
             html_template=html_template,
-            reverse_mapping=reverse_mapping if not is_skipped else None
+            reverse_mapping=reverse_mapping if not is_skipped else None,
+            template_path=template_path
         )
         
         # 5. Save results

@@ -18,11 +18,12 @@ class LLMClient:
             return 0
     
     def analyze(
-        self, 
-        document_text: str, 
-        prompt_template: str, 
+        self,
+        document_text: str,
+        prompt_template: str,
         html_template: str,
-        reverse_mapping: dict = None
+        reverse_mapping: dict = None,
+        template_path: str = None
     ) -> tuple[str, str, int, int]:
         """
         Costruisce il prompt finale e chiama l'API.
@@ -147,6 +148,10 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
                 if "<script>" not in report_masked and template_path:
                     report_masked = self._fix_missing_scripts(report_masked, template_path)
 
+                # Fix: Reinject PDF cover page if LLM omitted it
+                if 'class="pdf-cover"' not in report_masked and template_path:
+                    report_masked = self._fix_missing_cover(report_masked, template_path)
+
         except Exception as e:
             print(f"LLM API Error: {type(e).__name__}: {str(e)}")
             import traceback
@@ -221,4 +226,74 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
 
         except Exception as e:
             print(f"WARNING: Failed to reinject scripts: {e}")
+            return html
+
+    def _fix_missing_cover(self, html: str, template_path: str) -> str:
+        """Reinject PDF cover page from template if LLM omitted it."""
+        try:
+            # Read original template
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template = f.read()
+
+            # Extract PDF cover page section
+            cover_start_marker = '<!-- PDF COVER PAGE'
+            cover_start = template.find(cover_start_marker)
+            if cover_start == -1:
+                return html  # No cover page in template
+
+            # Find the end of the cover div
+            # Look for the closing </div> after the pdf-cover div
+            cover_content_start = template.find('<div class="pdf-cover"', cover_start)
+            if cover_content_start == -1:
+                return html
+
+            # Find matching closing </div>
+            # Simple approach: find the next </div> after the opening comment
+            temp_pos = cover_content_start
+            div_count = 1
+            cover_end = -1
+
+            while div_count > 0 and temp_pos < len(template):
+                next_open = template.find("<div", temp_pos + 1)
+                next_close = template.find("</div>", temp_pos + 1)
+
+                if next_close == -1:
+                    break
+
+                if next_open != -1 and next_open < next_close:
+                    div_count += 1
+                    temp_pos = next_open
+                else:
+                    div_count -= 1
+                    temp_pos = next_close
+                    if div_count == 0:
+                        cover_end = next_close + len("</div>")
+                        break
+
+            if cover_end == -1:
+                print("WARNING: Could not find end of PDF cover section")
+                return html
+
+            cover_section = template[cover_start:cover_end]
+
+            # Inject before <div class="report-container">
+            report_container_marker = '<div class="report-container">'
+            if report_container_marker in html:
+                html = html.replace(report_container_marker, f"{cover_section}\n\n    {report_container_marker}")
+                print(f"DEBUG: Reinjected PDF cover page from template")
+            else:
+                # Fallback: inject after opening <body> tag
+                body_marker = "<body>"
+                if body_marker in html:
+                    html = html.replace(body_marker, f"{body_marker}\n{cover_section}\n")
+                    print(f"DEBUG: Reinjected PDF cover page after <body> tag")
+                else:
+                    print("WARNING: Could not find insertion point for PDF cover page")
+
+            return html
+
+        except Exception as e:
+            print(f"WARNING: Failed to reinject PDF cover page: {e}")
+            import traceback
+            traceback.print_exc()
             return html

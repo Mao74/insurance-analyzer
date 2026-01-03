@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Richiesta Quotazione RC - [CONTRAENTE]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-body: #f8fafc;
@@ -65,7 +67,7 @@
         .header-meta {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
@@ -265,24 +267,145 @@
             line-height: 1.5;
         }
 
-        /* --- PRINT --- */
+        /* --- PRINT (PDF GENERATION) --- */
+        @page {
+            /* Global margins for content */
+            margin: 25mm 12mm 20mm 12mm;
+            size: A4 portrait;
+
+            @top-center {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: "Pagina " counter(page) " di " counter(pages);
+                font-size: 9pt;
+                color: #64748b;
+            }
+        }
+
+        /* Specific page for cover - NO MARGINS */
+        @page cover {
+            margin: 0;
+            size: A4 portrait;
+
+            @top-center {
+                content: none;
+            }
+
+            @bottom-center {
+                content: none;
+            }
+        }
+
+        /* Header ricorrente */
+
+        /* Header ricorrente */
+        .page-header {
+            position: running(header);
+            font-size: 9pt;
+            color: #64748b;
+            padding-bottom: 5mm;
+            border-bottom: 0.5pt solid #cbd5e1;
+            width: 100%;
+            text-align: center;
+        }
+
         @media print {
+
+            /* Margin fix for collapsed elements after page break */
+            table {
+                margin-top: 5mm;
+            }
+
+            /* Extra spacing for report content wrapper */
+            .report-container {
+                padding-top: 5mm;
+            }
+
             body {
                 padding: 0;
+                margin: 0;
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                orphans: 3;
+                widows: 3;
+            }
+
+            /* HIDE SCREEN ELEMENTS */
+            .header,
+            .section {
+                page-break-inside: avoid;
+            }
+
+            /* HIDE STANDARD HEADER ON PRINT */
+            .header {
+                display: none !important;
+            }
+
+            /* PDF COVER PAGE */
+            .pdf-cover {
+                display: block !important;
+                page: cover;
+                /* Use the named page with 0 margins */
+                height: 100%;
+                /* Fill the page */
+                width: 100%;
+                position: relative;
+                page-break-after: always;
+                text-align: center;
+                padding-top: 60mm;
                 background: white;
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            .chart-placeholder-pdf {
+                display: none !important;
+            }
+
+            .pdf-chart-container {
+                display: block !important;
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+
+            .pdf-no-break {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-before: auto;
+                page-break-after: auto;
+                display: block !important;
+                overflow: visible !important;
+            }
+
+            /* Specific fix for summary box */
+            .summary-total-box {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                background: #0f172a !important;
+                margin-top: 20px;
+                margin-bottom: 20px;
             }
 
             .report-container {
-                border: none;
-                width: 100%;
-                max-width: 100%;
+                border: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 15mm 10mm !important;
             }
 
             table {
                 font-size: 8pt;
+                width: 100% !important;
             }
 
-            th, tr, td {
+            th,
+            tr,
+            td {
                 border-color: #ccc !important;
             }
 
@@ -290,6 +413,7 @@
                 background-color: #f0f0f0 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                color: #0f172a !important;
             }
 
             .badge {
@@ -301,15 +425,49 @@
 
 <body>
 
+    <!-- PDF RUNNING HEADER (Repeated on every page via CSS) -->
+    <div class="page-header">
+        Analisi Tecnica Polizza RC - [CONTRAENTE] • Rif: [NUMERO_POLIZZA]
+    </div>
+
+    <!-- PDF COVER PAGE (Visible only in Print/PDF) -->
+    <div class="pdf-cover" style="display: none;">
+        <img src="[LOGO_IMG]" style="width: 250px; margin-bottom: 60px;">
+        <h1 style="font-size: 36px; margin-bottom: 20px; color: #0f172a;">Richiesta Quotazione RC</h1>
+        <h2 style="font-size: 24px; color: #64748b; font-weight: 300; margin-bottom: 80px;">Responsabilità Civile Terzi
+            • Operai • Prodotti</h2>
+
+        <div style="margin-bottom: 100px;">
+            <div
+                style="font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                Contraente</div>
+            <div style="font-size: 28px; color: #0f172a; font-weight: 700;">[RAGIONE_SOCIALE]</div>
+        </div>
+
+        <div style="position: absolute; bottom: 30mm; left: 0; right: 0; text-align: center;">
+            <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                Generato da <strong>Insurance-Lab.ai</strong><br>
+                Rif: [RIFERIMENTO_BROKER] | Data: [DATA_RICHIESTA]
+            </div>
+        </div>
+    </div>
+
     <div class="report-container">
 
+        <!-- ========================================= -->
+        <!-- PDF CHART (Visible only in Print/PDF when injected) -->
+        <div class="pdf-chart-container" style="display: none;">
+            <img src="[CHART_IMG_SRC]" style="width: 100%; max-width: 800px; margin: 0 auto; display: block;">
+        </div>
+
+        <!-- SCRIPT -->
         <!-- ========================================= -->
         <!-- HEADER -->
         <!-- ========================================= -->
         <div class="header">
             <h1>RICHIESTA QUOTAZIONE</h1>
             <p>Responsabilità Civile Terzi • Operai • Prodotti</p>
-            
+
             <div class="header-meta">
                 <div class="header-meta-item">
                     <strong>BROKER</strong>
@@ -820,8 +978,8 @@
 
             <div class="note-box">
                 <strong>Legenda:</strong><br>
-                <span class="badge badge-increase">Verde</span> = Miglioramento richiesto | 
-                <span class="badge badge-same">Giallo</span> = Conferma condizioni | 
+                <span class="badge badge-increase">Verde</span> = Miglioramento richiesto |
+                <span class="badge badge-same">Giallo</span> = Conferma condizioni |
                 <span class="badge badge-decrease">Rosso</span> = Riduzione
             </div>
 

@@ -15,7 +15,8 @@ ssh "${VPS_USER}@${VPS_IP}" "cd ${DEPLOY_DIR} && cp -r backend backend.backup.`$
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Backup creato" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "⚠️  Backup fallito (continuo comunque)" -ForegroundColor Yellow
 }
 
@@ -41,6 +42,15 @@ if ($LASTEXITCODE -ne 0) {
 scp requirements.txt "${VPS_USER}@${VPS_IP}:${DEPLOY_DIR}/backend/"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Errore upload requirements.txt" -ForegroundColor Red
+    exit 1
+    exit 1
+}
+
+# Upload static directory
+Write-Host "  Uploading static directory..." -ForegroundColor Gray
+scp -r static "${VPS_USER}@${VPS_IP}:${DEPLOY_DIR}/backend/"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Errore upload directory static" -ForegroundColor Red
     exit 1
 }
 
@@ -83,7 +93,8 @@ $healthCheck = ssh "${VPS_USER}@${VPS_IP}" "curl -s http://localhost:8000/health
 
 if ($LASTEXITCODE -eq 0 -and $healthCheck -match "healthy") {
     Write-Host "✅ Backend is healthy!" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "⚠️  Health check failed or backend starting" -ForegroundColor Yellow
     Write-Host "Check logs with: ssh root@46.224.127.115 'docker logs insurance-lab-backend --tail 50'" -ForegroundColor Gray
 }

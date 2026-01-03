@@ -36,6 +36,49 @@ PRINCIPI GUIDA
    - HTML generato dinamicamente per liste variabili
 
 ═══════════════════════════════════════════════════════════════════════════════
+▓▓▓ REGOLA MANDATORIA #1 - ENTITÀ ASSICURATE ▓▓▓
+═══════════════════════════════════════════════════════════════════════════════
+
+PRIMA DI GENERARE QUALSIASI OUTPUT, CONTARE TUTTE LE ENTITÀ IN POLIZZA:
+
+Entità da includere (TUTTE, NESSUNA ESCLUSA):
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✓ Società italiane (capogruppo e controllate)                               │
+│ ✓ Società estere controllate                                                │
+│ ✓ Sedi locali / Branch / Filiali in regime BCI                              │
+│ ✓ Local Policy estere (anche se solo menzionate)                            │
+│ ✓ Joint venture se nominate                                                 │
+│ ✓ QUALSIASI entità che appare nell'elenco assicurati della polizza          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+PROCEDURA OBBLIGATORIA:
+1. Leggere INTEGRALMENTE l'elenco "Assicurati" o "Entità Assicurate" E l'elenco "Programma Internazionale" / "Sedi Estere".
+2. CERCARE SPECIFICATAMENTE entità in Cina, USA, o paesi BCI.
+3. CONTARE il numero totale N di entità (società + sedi locali + branch + BCI)
+4. Generare ESATTAMENTE N righe in Tab 1 "Entità Assicurate"
+5. Generare ESATTAMENTE N blocchi in Tab 3 "Calcolo Premio" (Copiare e incollare il blocco HTML N volte).
+
+⚠️ ATTENZIONE: Il template mostra solo 2 esempi. TU DEVI GENERARNE N.
+Se ci sono 5 società, devi creare 5 card HTML. NON FERMARTI A 2.
+
+ESEMPIO:
+Se polizza elenca:
+- ALFA S.p.A. (Italia)
+- BETA S.r.l. (Italia)  
+- GAMMA GmbH (Germania)
+- DELTA Inc. (USA)
+- Local Policy Francia (BCI)
+- Local Policy Spagna (BCI)
+
+→ N = 6 entità
+→ Tab 1: 6 righe nella tabella Entità Assicurate
+→ Tab 3: 6 blocchi card calcolo premio (replicare HTML 6 volte)
+
+⚠️ ERRORE TIPICO DA EVITARE:
+Il template HTML contiene 2 blocchi società come ESEMPIO.
+NON fermarsi a 2. Generare DINAMICAMENTE N blocchi copiando la struttura HTML.
+
+═══════════════════════════════════════════════════════════════════════════════
 STRUTTURA REPORT (5 TAB)
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -102,37 +145,50 @@ Se non specificato: "15 giorni (art. 1901 C.C.)"
 SEZIONE 2: ENTITÀ ASSICURATE
 ───────────────────────────────────────────────────────────────────────────────
 
+▶▶▶ APPLICARE REGOLA MANDATORIA #1 (vedi sopra) ◀◀◀
+
 LOGICA ADATTIVA:
 
-IF numero società = 1:
+IF numero entità = 1:
     OMETTERE completamente questa sezione
     (già presente campo Assicurato + Attività in Dati Generali)
 
-IF numero società >= 2:
-    MOSTRARE tabella con TUTTE le società
+IF numero entità >= 2:
+    MOSTRARE tabella con TUTTE le entità (società + sedi locali + BCI)
     
-FORMATO TABELLA (3 colonne):
+FORMATO TABELLA (3 colonne) - GENERARE N RIGHE PER N ENTITÀ:
 
 <table>
     <tr>
-        <td>[SOCIETA_1]</td>
+        <td>[ENTITA_1]</td>
         <td>[SEDE_1]</td>
-        <td>[ATTIVITA_1]</td>
+        <td>[TIPO_1]</td>
     </tr>
     <tr>
-        <td>[SOCIETA_2]</td>
+        <td>[ENTITA_2]</td>
         <td>[SEDE_2]</td>
-        <td>[ATTIVITA_2]</td>
+        <td>[TIPO_2]</td>
     </tr>
-    <!-- Ripetere per OGNI società -->
+    <!-- CONTINUARE PER OGNI ENTITÀ FINO A N -->
+    <tr>
+        <td>[ENTITA_N]</td>
+        <td>[SEDE_N]</td>
+        <td>[TIPO_N]</td>
+    </tr>
 </table>
 
-REGOLA CRITICA: MAI omettere società. Se polizza elenca 7 società, generare 7 righe.
-
 PLACEHOLDER:
-[SOCIETA_N]   Ragione sociale completa (es. "OMET S.r.l.")
-[SEDE_N]      Città e provincia (es. "Lecco (LC)")
-[ATTIVITA_N]  Attività specifica società (es. "Assemblaggio componenti")
+[ENTITA_N]    Ragione sociale o identificativo entità
+              Es: "OMET S.r.l." / "OMET Deutschland GmbH" / "Local Policy Francia"
+[SEDE_N]      Località e paese
+              Es: "Lecco (LC) - Italia" / "Monaco - Germania" / "Parigi - Francia"
+[TIPO_N]      Tipologia entità:
+              - "Capogruppo" (società principale)
+              - "Controllata Italia"
+              - "Controllata Estera"
+              - "Sede Locale BCI"
+              - "Branch"
+              - "Joint Venture"
 
 ───────────────────────────────────────────────────────────────────────────────
 SEZIONE 3: MASSIMALI PRINCIPALI
@@ -368,26 +424,47 @@ Limite DIC (es. "Secondo massimali polizza italiana")
 TAB 3: CALCOLO PREMIO (VERSIONE ANALITICA)
 ═══════════════════════════════════════════════════════════════════════════════
 
-OBIETTIVO: Mostrare il conteggio analitico del premio per OGNI società assicurata,
-con formula esplicita: PARAMETRO × TASSO = PREMIO IMPONIBILE
+▶▶▶ APPLICARE REGOLA MANDATORIA #1 (vedi sopra) ◀◀◀
+
+OBIETTIVO: Mostrare il conteggio analitico del premio per OGNI entità assicurata
+(società + sedi locali + BCI), con formula: PARAMETRO × TASSO = PREMIO IMPONIBILE
+
+PROCEDURA OBBLIGATORIA PER TAB 3:
+
+★★★ CROSS-CHECK OBBLIGATORIO ★★★
+PRIMA di generare le card del Tab 3, SCRIVI un commento HTML invisibile
+con l'ELENCO ESATTO delle entità da Tab 1, così:
+<!-- VERIFICA ENTITÀ TAB 3: 1) ALFA S.p.A. 2) BETA S.r.l. 3) ... N) ... -->
+
+Poi genera ESATTAMENTE N card, una per ogni entità elencata.
+Se hai elencato 5 entità nel commento, DEVI generare 5 card.
+NON SALTARE NESSUNA ENTITÀ.
+
+REGOLE:
+1. Recuperare il numero N di entità contate secondo REGOLA MANDATORIA #1
+2. SCRIVERE IL COMMENTO HTML di verifica (obbligatorio)
+3. Generare ESATTAMENTE N blocchi HTML (card) nel Tab 3
+4. Il template contiene 2 blocchi come ESEMPIO → replicare la struttura N volte
+5. Ogni entità deve avere la propria card anche se dati premio non disponibili
 
 LOGICA ADATTIVA:
-- Generare 1 CARD per OGNI società in polizza
+- Generare 1 CARD per OGNI entità in polizza (N card per N entità)
 - Ogni card contiene tabella con 2 aree geografiche
 - Se dato non presente in polizza: inserire "-" (MAI inventare)
+- Per sedi locali BCI: indicare "Premio incluso in Master" se non tariffato separatamente
 
 AREE GEOGRAFICHE (2 aree):
 1. USA / Canada → tasso specifico (tipicamente maggiorato)
 2. Resto del Mondo → include Italia, Europa e tutti gli altri paesi
 
 ───────────────────────────────────────────────────────────────────────────────
-STRUTTURA CARD SOCIETÀ
+STRUTTURA CARD ENTITÀ (REPLICARE N VOLTE)
 ───────────────────────────────────────────────────────────────────────────────
 
-Ripetere per OGNI società assicurata:
+Ripetere questo blocco HTML per OGNI entità assicurata (da 1 a N):
 
 <div class="premio-societa-card">
-    📋 [NOME_SOCIETA_N]
+    📋 [NOME_ENTITA_N]
     
     Parametro a preventivo: [TIPO_PARAMETRO_N]
     
@@ -401,18 +478,23 @@ Ripetere per OGNI società assicurata:
     | PREMIO LORDO SOCIETÀ                |               | [PREMIO_LORDO_SOC_N]  |
 </div>
 
+⚠️ ATTENZIONE: NON fermarsi a 2 card. Se N=6, generare 6 blocchi HTML completi.
+
 ───────────────────────────────────────────────────────────────────────────────
-PLACEHOLDER DETTAGLIO PER SOCIETÀ
+PLACEHOLDER DETTAGLIO PER ENTITÀ
 ───────────────────────────────────────────────────────────────────────────────
 
-[NOME_SOCIETA_N]
-Nome completo società (es. "OMET S.r.l.")
+[NOME_ENTITA_N]
+Nome completo entità (società o sede locale)
+Es: "OMET S.r.l." / "OMET Deutschland GmbH" / "Local Policy Francia (BCI)"
 
 [TIPO_PARAMETRO_N]
 Tipo di parametro utilizzato per il calcolo. Valori possibili:
 - "Fatturato" (standard)
 - "Retribuzioni lorde"
 - "Numero addetti"
+- "Premio fisso" (per sedi locali BCI)
+- "Incluso in Master" (se non tariffato separatamente)
 Estrarre ESATTAMENTE da polizza. Se non specificato: "-"
 
 ───────────────────────────────────────────────────────────────────────────────
@@ -544,16 +626,16 @@ REGOLE CRITICHE TAB 3
    Italia standard: 22,25%
    Verificare sempre in polizza per programmi internazionali
 
-6. NUMERO SOCIETÀ
-   Generare esattamente N card per N società in polizza
-   MAI omettere società
-   MAI aggregare società
+6. NUMERO ENTITÀ → VEDI REGOLA MANDATORIA #1
+   Applicare ESATTAMENTE quanto indicato nella REGOLA MANDATORIA #1 all'inizio
+   del prompt. Il numero di card nel Tab 3 DEVE coincidere con il numero di 
+   righe nel Tab 1 Entità Assicurate.
 
 ───────────────────────────────────────────────────────────────────────────────
-ESEMPIO OUTPUT
+ESEMPIO OUTPUT (6 ENTITÀ)
 ───────────────────────────────────────────────────────────────────────────────
 
-Società 1: ALFA S.p.A.
+Entità 1: ALFA S.p.A. (Capogruppo)
 Parametro: Fatturato
 
 | Area           | Parametro      | Tasso   | Premio Imponibile |
@@ -565,7 +647,7 @@ Parametro: Fatturato
 | Imposte (22,25%)               |         | € 1.824,50        |
 | PREMIO LORDO SOCIETÀ           |         | € 10.024,50       |
 
-Società 2: BETA S.r.l.
+Entità 2: BETA S.r.l. (Controllata Italia)
 Parametro: Retribuzioni lorde
 
 | Area           | Parametro      | Tasso   | Premio Imponibile |
@@ -577,10 +659,42 @@ Parametro: Retribuzioni lorde
 | Imposte (22,25%)               |         | € 213,60          |
 | PREMIO LORDO SOCIETÀ           |         | € 1.173,60        |
 
-RIEPILOGO POLIZZA:
-Totale Imponibile: € 9.160,00
-Totale Imposte: € 2.038,10
-Premio Lordo: € 11.198,10
+Entità 3: GAMMA GmbH (Controllata Estera)
+Parametro: Fatturato
+[... stessa struttura ...]
+
+Entità 4: DELTA Inc. (Controllata Estera)
+Parametro: Fatturato
+[... stessa struttura ...]
+
+Entità 5: Local Policy Francia (Sede Locale BCI)
+Parametro: Premio fisso
+
+| Area           | Parametro      | Tasso   | Premio Imponibile |
+|----------------|----------------|---------|-------------------|
+| USA/Canada     | -              | -       | -                 |
+| Resto Mondo    | Premio fisso   | -       | € 2.500,00        |
+|----------------|----------------|---------|-------------------|
+| Totale Imponibile              |         | € 2.500,00        |
+| Imposte (0% - estero)          |         | € 0,00            |
+| PREMIO LORDO SOCIETÀ           |         | € 2.500,00        |
+
+Entità 6: Local Policy Spagna (Sede Locale BCI)
+Parametro: Incluso in Master
+
+| Area           | Parametro      | Tasso   | Premio Imponibile |
+|----------------|----------------|---------|-------------------|
+| USA/Canada     | -              | -       | -                 |
+| Resto Mondo    | Incluso        | -       | Incluso in Master |
+|----------------|----------------|---------|-------------------|
+| Totale Imponibile              |         | -                 |
+| Imposte                        |         | -                 |
+| PREMIO LORDO SOCIETÀ           |         | Incluso in Master |
+
+RIEPILOGO POLIZZA (6 entità):
+Totale Imponibile: € XX.XXX,XX
+Totale Imposte: € X.XXX,XX
+Premio Lordo: € XX.XXX,XX
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: SINISTRI & PREMI
@@ -612,8 +726,10 @@ Array premi IMPONIBILI per anno (valori numerici senza €)
 Es: "15000, 16500, 17200"
 
 [CHART_SINISTRI]
-Array sinistri pagati per anno (valori numerici senza €)
-Es: "3200, 0, 8500"
+Array sinistri TOTALI per anno = Pagato + Riservato (valori numerici senza €)
+IMPORTANTE: Includere SEMPRE sia sinistri CHIUSI (pagati) che sinistri APERTI (a riserva)
+Il valore deve essere la SOMMA di tutti i sinistri dell'anno (indipendentemente dallo status)
+Es: "3200, 0, 8500" (dove ogni valore = somma pagato + somma riservato dell'anno)
 
 REGOLA ANNI COMPETENZA:
 Per polizze con decorrenza/scadenza 31/12-31/12:
@@ -650,7 +766,8 @@ Premio IMPONIBILE anno (non lordo)
 Formato: "€ XX.XXX,XX"
 
 [LOSS_RATIO_N]
-Calcolo: (Sinistri / Premio Imponibile) × 100
+Calcolo: (Sinistri Totali / Premio Imponibile) × 100
+Dove: Sinistri Totali = Pagato + Riservato (sinistri chiusi + sinistri a riserva)
 Formato: "XX,X%" (es. "18,5%")
 
 ───────────────────────────────────────────────────────────────────────────────
