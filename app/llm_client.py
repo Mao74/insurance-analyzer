@@ -227,20 +227,24 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
         if starts_with_markdown:
             return False
         
-        # Require at least DOCTYPE + html tag OR body tag (some LLMs omit DOCTYPE)
+        # STRICT VALIDATION: Must have closing tags to ensure completion
+        has_closing_body = '</body>' in text_lower
+        has_closing_html = '</html>' in text_lower
+        
+        # Must have at least one closing tag to be considered "finished"
+        if not (has_closing_body or has_closing_html):
+            print("VALIDATION ERROR: HTML output is truncated (missing </body> or </html>)")
+            return False
+        
+        # Require DOCTYPE + html tag to ensure it's a full document, not a fragment
         if has_doctype and has_html_tag:
             return True
-        if has_html_tag and has_body:
-            return True
+            
+        # If we have body and closing html, it's probably fine even without doctype (for fragments)
         if has_body and has_closing_html:
             return True
             
-        # If very short and no HTML markers, probably not valid
-        if len(text) < 1000 and not has_html_tag:
-            return False
-        
-        # Default to valid if we're unsure and it's long enough
-        return len(text) > 5000
+        return False
     
     def _strip_markdown_wrappers(self, text: str) -> str:
         """Remove markdown code block wrappers and any preamble text from LLM response."""
