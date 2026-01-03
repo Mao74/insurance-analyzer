@@ -230,6 +230,8 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
 
     def _fix_missing_cover(self, html: str, template_path: str) -> str:
         """Reinject PDF cover page from template if LLM omitted it."""
+        import re
+        
         try:
             # Read original template
             with open(template_path, 'r', encoding='utf-8') as f:
@@ -244,6 +246,9 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
             # Find the end of the cover div
             # Look for the closing </div> after the pdf-cover div
             cover_content_start = template.find('<div class="pdf-cover"', cover_start)
+            if cover_content_start == -1:
+                # Try single quotes
+                cover_content_start = template.find("<div class='pdf-cover'", cover_start)
             if cover_content_start == -1:
                 return html
 
@@ -276,20 +281,47 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
 
             cover_section = template[cover_start:cover_end]
 
-            # Inject before <div class="report-container">
-            report_container_marker = '<div class="report-container">'
-            if report_container_marker in html:
-                html = html.replace(report_container_marker, f"{cover_section}\n\n    {report_container_marker}")
-                print(f"DEBUG: Reinjected PDF cover page from template")
-            else:
-                # Fallback: inject after opening <body> tag
-                body_marker = "<body>"
-                if body_marker in html:
-                    html = html.replace(body_marker, f"{body_marker}\n{cover_section}\n")
-                    print(f"DEBUG: Reinjected PDF cover page after <body> tag")
-                else:
-                    print("WARNING: Could not find insertion point for PDF cover page")
-
+            # Try multiple methods to inject the cover page
+            
+            # Method 1: Find report-container with regex (handles quotes and extra attributes)
+            report_container_pattern = re.compile(r'<div\s+class=["\']report-container["\']', re.IGNORECASE)
+            match = report_container_pattern.search(html)
+            if match:
+                insert_pos = match.start()
+                html = html[:insert_pos] + cover_section + "\n\n    " + html[insert_pos:]
+                print(f"DEBUG: Reinjected PDF cover page before report-container")
+                return html
+            
+            # Method 2: Find <body> tag with regex (handles attributes)
+            body_pattern = re.compile(r'<body[^>]*>', re.IGNORECASE)
+            body_match = body_pattern.search(html)
+            if body_match:
+                insert_pos = body_match.end()
+                html = html[:insert_pos] + "\n" + cover_section + "\n" + html[insert_pos:]
+                print(f"DEBUG: Reinjected PDF cover page after <body> tag")
+                return html
+            
+            # Method 3: Find first <div after </head> or </style>
+            head_end = html.lower().find('</head>')
+            if head_end != -1:
+                first_div = html.find('<div', head_end)
+                if first_div != -1:
+                    html = html[:first_div] + cover_section + "\n\n    " + html[first_div:]
+                    print(f"DEBUG: Reinjected PDF cover page before first div after </head>")
+                    return html
+            
+            # Method 4: Last resort - inject at the very beginning after doctype/html
+            html_tag_match = re.search(r'<html[^>]*>', html, re.IGNORECASE)
+            if html_tag_match:
+                # Find </head> or first content
+                head_end = html.find('</head>')
+                if head_end != -1:
+                    insert_pos = head_end + len('</head>')
+                    html = html[:insert_pos] + "\n<body>\n" + cover_section + "\n" + html[insert_pos:]
+                    print(f"DEBUG: Reinjected PDF cover page with new body tag")
+                    return html
+            
+            print("WARNING: Could not find insertion point for PDF cover page (all methods failed)")
             return html
 
         except Exception as e:
@@ -297,3 +329,4 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
             import traceback
             traceback.print_exc()
             return html
+
