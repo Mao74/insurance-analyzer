@@ -50,21 +50,25 @@ class CompareAnalysisResponse(BaseModel):
 
 @router.post("/upload")
 async def upload_compare_documents(
+    request: Request,
     files: List[UploadFile] = File(...),
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
     Upload multiple documents for comparison.
     Returns list of document IDs.
     """
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
     from .upload_routes import process_upload_file
     
     document_ids = []
     
     for file in files:
         # Reuse existing upload logic
-        doc_id = await process_upload_file(file, "confronto", db, user_data.user_id)
+        doc_id = await process_upload_file(file, "confronto", db, user_data["id"])
         document_ids.append(doc_id)
     
     return {
@@ -76,14 +80,18 @@ async def upload_compare_documents(
 
 @router.get("/{analysis_id}", response_model=CompareAnalysisResponse)
 async def get_comparison_analysis(
+    request: Request,
     analysis_id: int,
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
     Get comparison analysis status and result.
     This endpoint is used by the frontend for polling.
     """
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
     analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
 
     if not analysis:
@@ -104,7 +112,7 @@ async def get_comparison_analysis(
             # Check if any of the documents belong to this user
             doc = db.query(models.Document).filter(
                 models.Document.id.in_(doc_ids),
-                models.Document.user_id == user_data.user_id
+                models.Document.user_id == user_data["id"]
             ).first()
 
             if not doc:
@@ -130,16 +138,18 @@ async def get_comparison_analysis(
 
 @router.post("/start", response_model=CompareStartResponse)
 async def start_comparison(
+    request: Request,
     payload: CompareStartRequest,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
     Start a comparison analysis on multiple documents.
     Supports grouping: multiple files can be treated as a single entity (Policy + Appendix).
     """
-    # user_data already provided by Depends(get_current_user) - no need to get from session again
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     
     # Normalize input to grouped structure
     groups = []
@@ -164,7 +174,7 @@ async def start_comparison(
 
     found_docs = db.query(models.Document).filter(
         models.Document.id.in_(all_doc_ids),
-        models.Document.user_id == user_data.user_id
+        models.Document.user_id == user_data["id"]
     ).all()
     
     if len(found_docs) != len(set(all_doc_ids)):
@@ -215,7 +225,7 @@ async def start_comparison(
         sensitive_data,
         payload.policy_type,
         payload.llm_model,
-        user_data.user_id
+        user_data["id"]
     )
     
     return CompareStartResponse(
@@ -394,12 +404,16 @@ class SaveRequest(BaseModel):
 
 @router.post("/{analysis_id}/save")
 async def save_comparison(
+    request: Request,
     analysis_id: int,
     payload: SaveRequest,
-    db: Session = Depends(get_db),
-    user_data: dict = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """Mark comparison analysis as saved (archive)"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
     print(f"DEBUG Archive Compare: Saving analysis {analysis_id}, title={payload.title}")
 
     analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
