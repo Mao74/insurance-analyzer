@@ -2,7 +2,7 @@
 Compare routes for policy comparison functionality.
 Handles upload of multiple documents and comparison analysis.
 """
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, BackgroundTasks, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
@@ -24,15 +24,28 @@ UPLOAD_DIR = "uploads"
 EXTRACTED_DIR = "extracted"
 
 class CompareStartRequest(BaseModel):
-    document_ids: List[int]
+    document_ids: List[int] = [] # Legacy support
+    grouped_document_ids: Optional[List[List[int]]] = None # New structure: [[1,2], [3]]
     policy_type: str = "rc_generale"
     masking_data: Optional[dict] = None
-    llm_model: str = "gemini-2.5-flash-preview-05-20"
+    llm_model: str = "gemini-3-flash-preview"
 
 class CompareStartResponse(BaseModel):
     analysis_id: int
     status: str
     message: str
+
+class CompareAnalysisResponse(BaseModel):
+    analysis_id: int
+    status: str
+    policy_type: str
+    analysis_level: str
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    report_html: Optional[str] = None
+    report_html_masked: Optional[str] = None
+    error: Optional[str] = None
+    title: Optional[str] = None
 
 
 @router.post("/upload")
@@ -51,7 +64,7 @@ async def upload_compare_documents(
     
     for file in files:
         # Reuse existing upload logic
-        doc_id = await process_upload_file(file, "confronto", db, user_data["id"])
+        doc_id = await process_upload_file(file, "confronto", db, user_data.user_id)
         document_ids.append(doc_id)
     
     return {
@@ -59,6 +72,60 @@ async def upload_compare_documents(
         "count": len(document_ids),
         "message": f"{len(document_ids)} documents uploaded successfully"
     }
+
+
+@router.get("/{analysis_id}", response_model=CompareAnalysisResponse)
+async def get_comparison_analysis(
+    analysis_id: int,
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_current_user)
+):
+    """
+    Get comparison analysis status and result.
+    This endpoint is used by the frontend for polling.
+    """
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Comparison analysis not found")
+
+    # Verify it's a comparison
+    if analysis.prompt_level != "confronto":
+        raise HTTPException(status_code=400, detail="Not a comparison analysis")
+
+    # Verify ownership - comparisons have document_id = NULL, so check source_document_ids
+    if analysis.source_document_ids:
+        try:
+            doc_ids = json.loads(analysis.source_document_ids)
+            # Handle grouped structure [[1,2], [3]] or flat [1,2,3]
+            if isinstance(doc_ids[0], list):
+                doc_ids = [item for sublist in doc_ids for item in sublist]
+
+            # Check if any of the documents belong to this user
+            doc = db.query(models.Document).filter(
+                models.Document.id.in_(doc_ids),
+                models.Document.user_id == user_data.user_id
+            ).first()
+
+            if not doc:
+                raise HTTPException(status_code=403, detail="Access denied")
+        except (json.JSONDecodeError, IndexError, TypeError):
+            raise HTTPException(status_code=403, detail="Access denied")
+    else:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    return CompareAnalysisResponse(
+        analysis_id=analysis.id,
+        status=analysis.status.value if analysis.status else "unknown",
+        policy_type=analysis.policy_type or "",
+        analysis_level=analysis.prompt_level or "",
+        created_at=analysis.created_at,
+        completed_at=analysis.completed_at,
+        report_html=analysis.report_html_display,
+        report_html_masked=analysis.report_html_masked,
+        error=analysis.error_message,
+        title=analysis.title
+    )
 
 
 @router.post("/start", response_model=CompareStartResponse)
@@ -70,25 +137,45 @@ async def start_comparison(
 ):
     """
     Start a comparison analysis on multiple documents.
+    Supports grouping: multiple files can be treated as a single entity (Policy + Appendix).
     """
-    if len(payload.document_ids) < 2:
-        raise HTTPException(status_code=400, detail="At least 2 documents required for comparison")
+    # user_data already provided by Depends(get_current_user) - no need to get from session again
     
-    if len(payload.document_ids) > 6:
-        raise HTTPException(status_code=400, detail="Maximum 6 documents for comparison")
+    # Normalize input to grouped structure
+    groups = []
     
-    # Verify all documents exist and belong to user
-    for doc_id in payload.document_ids:
-        doc = db.query(models.Document).filter(
-            models.Document.id == doc_id,
-            models.Document.user_id == user_data.user_id
-        ).first()
-        if not doc:
-            raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
+    if payload.grouped_document_ids:
+        groups = payload.grouped_document_ids
+    elif payload.document_ids:
+        # Legacy fallback: treat each doc as separate group
+        groups = [[doc_id] for doc_id in payload.document_ids]
+    
+    if len(groups) < 2:
+        raise HTTPException(status_code=400, detail="At least 2 comparison groups required")
+    
+    if len(groups) > 6:
+        raise HTTPException(status_code=400, detail="Maximum 6 comparison groups allowed")
+    
+    # Flatten IDs for verification
+    all_doc_ids = [doc_id for group in groups for doc_id in group]
+    
+    if not all_doc_ids:
+        raise HTTPException(status_code=400, detail="No documents provided")
+
+    found_docs = db.query(models.Document).filter(
+        models.Document.id.in_(all_doc_ids),
+        models.Document.user_id == user_data.user_id
+    ).all()
+    
+    if len(found_docs) != len(set(all_doc_ids)):
+        found_ids = {d.id for d in found_docs}
+        missing = set(all_doc_ids) - found_ids
+        raise HTTPException(status_code=404, detail=f"Documents not found or access denied: {missing}")
     
     # Create analysis record
+    # source_document_ids field (Text) can store the full JSON structure
     analysis = models.Analysis(
-        source_document_ids=json.dumps(payload.document_ids),
+        source_document_ids=json.dumps(groups),
         status=models.AnalysisStatus.ANALYZING,
         policy_type=payload.policy_type,
         prompt_level="confronto",  # Mark as comparison
@@ -124,7 +211,7 @@ async def start_comparison(
     background_tasks.add_task(
         comparison_pipeline,
         analysis.id,
-        payload.document_ids,
+        groups,
         sensitive_data,
         payload.policy_type,
         payload.llm_model,
@@ -140,7 +227,7 @@ async def start_comparison(
 
 def comparison_pipeline(
     analysis_id: int,
-    document_ids: List[int],
+    grouped_document_ids: List[List[int]],
     sensitive_data: dict,
     policy_type: str,
     llm_model: str,
@@ -148,6 +235,7 @@ def comparison_pipeline(
 ):
     """
     Background task to process comparison.
+    Merges texts within each group before comparison.
     """
     from ..database import SessionLocal  # Import here to avoid circular
     db = SessionLocal()
@@ -157,23 +245,34 @@ def comparison_pipeline(
         if not analysis:
             return
         
-        # 1. Collect all document texts
-        combined_texts = []
-        for i, doc_id in enumerate(document_ids, 1):
-            doc = db.query(models.Document).filter(models.Document.id == doc_id).first()
-            if doc and doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
-                with open(doc.extracted_text_path, "r", encoding="utf-8") as f:
-                    text = f.read()
-                combined_texts.append(f"=== DOCUMENTO {i}: {doc.original_filename} ===\n\n{text}")
+        # 1. Collect and merge texts for each group
+        combined_group_texts = []
         
-        if len(combined_texts) < 2:
+        for i, group in enumerate(grouped_document_ids, 1):
+            group_texts = []
+            group_filenames = []
+            
+            for doc_id in group:
+                doc = db.query(models.Document).filter(models.Document.id == doc_id).first()
+                if doc and doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+                    with open(doc.extracted_text_path, "r", encoding="utf-8") as f:
+                        text = f.read()
+                    group_texts.append(f"--- FILE: {doc.original_filename} ---\n{text}")
+                    group_filenames.append(doc.original_filename)
+            
+            if group_texts:
+                merged_text = "\n\n".join(group_texts)
+                file_list = ", ".join(group_filenames)
+                combined_group_texts.append(f"=== DOCUMENTO {i} (Files: {file_list}) ===\n\n{merged_text}")
+        
+        if len(combined_group_texts) < 2:
             analysis.status = models.AnalysisStatus.ERROR
-            analysis.error_message = "Could not read texts from at least 2 documents"
+            analysis.error_message = "Could not read texts from at least 2 comparison groups"
             db.commit()
             return
         
         # Combine all texts
-        full_text = "\n\n" + "="*60 + "\n\n".join(combined_texts)
+        full_text = "\n\n" + "="*60 + "\n\n".join(combined_group_texts)
         
         # 2. Apply masking if data provided
         reverse_mapping = {}
@@ -250,3 +349,82 @@ def comparison_pipeline(
             db.commit()
     finally:
         db.close()
+
+
+# Additional endpoints for Compare (reusing Analysis logic)
+
+class UpdateContentRequest(BaseModel):
+    html_content: str
+
+@router.post("/{analysis_id}/content")
+async def update_compare_content(
+    analysis_id: int,
+    payload: UpdateContentRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Update comparison report HTML content (for user edits)"""
+    # Use same auth pattern as update_analysis_content
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Comparison analysis not found")
+
+    # Verify it's a comparison (prompt_level = "confronto")
+    if analysis.prompt_level != "confronto":
+        raise HTTPException(status_code=400, detail="Not a comparison analysis")
+
+    # Check if html_content is valid
+    if not payload.html_content or len(payload.html_content) < 100:
+        raise HTTPException(status_code=400, detail="Invalid HTML content")
+
+    analysis.report_html_display = payload.html_content
+    analysis.last_updated = datetime.utcnow()
+    db.commit()
+
+    return {"status": "success", "message": "Comparison report updated"}
+
+
+class SaveRequest(BaseModel):
+    title: Optional[str] = None
+
+@router.post("/{analysis_id}/save")
+async def save_comparison(
+    analysis_id: int,
+    payload: SaveRequest,
+    db: Session = Depends(get_db),
+    user_data: dict = Depends(get_current_user)
+):
+    """Mark comparison analysis as saved (archive)"""
+    print(f"DEBUG Archive Compare: Saving analysis {analysis_id}, title={payload.title}")
+
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+
+    if not analysis:
+        print(f"ERROR Archive Compare: Analysis {analysis_id} not found")
+        raise HTTPException(status_code=404, detail="Comparison analysis not found")
+
+    # Verify it's a comparison
+    if analysis.prompt_level != "confronto":
+        raise HTTPException(status_code=400, detail="Not a comparison analysis")
+
+    try:
+        analysis.is_saved = True
+        if payload.title:
+            analysis.title = payload.title
+        analysis.last_updated = datetime.utcnow()
+        db.commit()
+        db.refresh(analysis)
+
+        print(f"SUCCESS Archive Compare: Analysis {analysis_id} saved with title '{analysis.title}', is_saved={analysis.is_saved}")
+
+        return {"status": "success", "message": "Comparison saved to archive"}
+    except Exception as e:
+        db.rollback()
+        print(f"ERROR Archive Compare: Database commit failed - {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to save comparison: {str(e)}")
+
