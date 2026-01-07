@@ -19,7 +19,26 @@
 
 ---
 
-## 🚀 DEPLOYMENT STEPS
+## 🚀 PROCEDURA DI DEPLOY STANDARD
+
+Utilizzare questi comandi per aggiornare l'ambiente di produzione:
+
+### 1. Frontend (React App)
+```powershell
+cd c:\Antigravity\insurance-lab-frontend
+npm run build
+.\deploy-production.ps1
+```
+
+### 2. Backend (API)
+```powershell
+cd c:\Antigravity\insurance-analyzer
+.\deploy-backend.ps1
+```
+
+---
+
+## 🚀 DEPLOYMENT STEPS (Security Updates)
 
 ### Step 1: Generate SECRET_KEY
 
