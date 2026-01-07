@@ -11,6 +11,13 @@ from weasyprint import HTML
 from ..database import get_db
 from .. import models, masking, llm_client
 from ..config import settings
+try:
+    from weasyprint import HTML
+    HAS_WEASYPRINT = True
+except (ImportError, OSError):
+    HAS_WEASYPRINT = False
+from xhtml2pdf import pisa
+from io import BytesIO
 
 router = APIRouter()
 
@@ -61,7 +68,7 @@ class StartAnalysisRequest(BaseModel):
     analysis_level: str = "cliente"  # cliente | compagnia
     masking_data: Optional[MaskingData] = None
     skip_masking: bool = False
-    llm_model: str = "gemini-3-flash-preview"
+    llm_model: Optional[str] = None
 
 class AnalysisResponse(BaseModel):
     analysis_id: int
@@ -73,6 +80,7 @@ class AnalysisResponse(BaseModel):
     report_html: Optional[str] = None
     report_html_masked: Optional[str] = None  # CRITICAL: Was missing!
     error: Optional[str] = None
+    title: Optional[str] = None  # For display in dashboard
 
 class AnalysisListItem(BaseModel):
     analysis_id: int
@@ -121,15 +129,57 @@ async def list_analyses(
     user_data = request.session.get("user")
     if not user_data:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    query = db.query(models.Analysis).join(models.Document).filter(
+
+    # Get analyses with document_id (normal analyses)
+    query = db.query(models.Analysis).outerjoin(models.Document, models.Analysis.document_id == models.Document.id).filter(
         models.Document.user_id == user_data["id"]
     )
-    
+
     if saved_only:
         query = query.filter(models.Analysis.is_saved == True)
-    
-    analyses = query.order_by(models.Analysis.created_at.desc()).limit(50).all()
+    else:
+        # Dashboard view: default to showing only visible items
+        # If specific filter params are added later, adjust here.
+        # For now, Dashboard (saved_only=False) should imply show_in_dashboard=True.
+        # However, checking if existing logic relies on listing everything?
+        # User request implies dashboard should HIDE items.
+        query = query.filter(models.Analysis.show_in_dashboard == True)
+
+    normal_analyses = query.all()
+
+    # Get comparisons (document_id is NULL, use source_document_ids)
+    comp_query = db.query(models.Analysis).filter(
+        models.Analysis.document_id == None,
+        models.Analysis.source_document_ids != None
+    )
+
+    if saved_only:
+        comp_query = comp_query.filter(models.Analysis.is_saved == True)
+
+    comparisons = comp_query.all()
+
+    # Filter comparisons by ownership (check if any document in source_document_ids belongs to user)
+    user_comparisons = []
+    for comp in comparisons:
+        if comp.source_document_ids:
+            try:
+                doc_ids = json.loads(comp.source_document_ids)
+                # Flatten if nested
+                if isinstance(doc_ids[0], list):
+                    doc_ids = [item for sublist in doc_ids for item in sublist]
+                # Check if any document belongs to user
+                doc = db.query(models.Document).filter(
+                    models.Document.id.in_(doc_ids),
+                    models.Document.user_id == user_data["id"]
+                ).first()
+                if doc:
+                    user_comparisons.append(comp)
+            except:
+                pass
+
+    # Combine and sort
+    analyses = normal_analyses + user_comparisons
+    analyses.sort(key=lambda a: a.created_at, reverse=True)
     
     return [
         AnalysisListItem(
@@ -182,14 +232,33 @@ async def start_analysis(
     ordered_docs = [docs_map[d_id] for d_id in payload.document_ids if d_id in docs_map]
     primary_doc = ordered_docs[0]
     
+    # 🔒 CRITICAL SECURITY: Validate document_ids before JSON serialization
+    # Prevents SQL injection via malicious JSON payload
+    if not all(isinstance(x, int) and x > 0 for x in payload.document_ids):
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid document IDs: must be positive integers"
+        )
+    
+    # Determine model to use
+    selected_model = payload.llm_model
+    if not selected_model:
+        # Fetch from SystemSettings
+        settings_obj = db.query(models.SystemSettings).first()
+        if settings_obj and settings_obj.llm_model_name:
+            selected_model = settings_obj.llm_model_name
+        else:
+             # Fallback default if no settings exist
+            selected_model = "gemini-3-flash-preview"
+
     # Create Analysis record
     analysis = models.Analysis(
         document_id=primary_doc.id,
-        source_document_ids=json.dumps(payload.document_ids),
+        source_document_ids=json.dumps(payload.document_ids),  # Now safe to serialize
         status=models.AnalysisStatus.ANALYZING,
         policy_type=payload.policy_type,
         prompt_level=payload.analysis_level,
-        llm_model=payload.llm_model,
+        llm_model=selected_model,
         masking_skipped=payload.skip_masking
     )
     db.add(analysis)
@@ -374,7 +443,8 @@ def download_analysis_pdf(
     # Inject Logo for PDF Cover
     try:
         # Use direct path from app root
-        logo_path = "/app/static/img/logo-white.png"
+        # logo_path = "/app/static/img/logo-white.png" # Linux/Docker only
+        logo_path = os.path.join(os.getcwd(), "static", "img", "logo-white.png")
 
         if os.path.exists(logo_path):
             with open(logo_path, "rb") as image_file:
@@ -458,7 +528,30 @@ def download_analysis_pdf(
 
 
     # Generate PDF using WeasyPrint
-    pdf_bytes = HTML(string=html_content).write_pdf()
+    # Generate PDF using WeasyPrint with Fallback to xhtml2pdf
+    pdf_bytes = None
+    
+    if HAS_WEASYPRINT:
+        try:
+            pdf_bytes = HTML(string=html_content).write_pdf()
+        except Exception as e:
+            print(f"WeasyPrint runtime error: {e}. Falling back to xhtml2pdf.")
+            # Fallback will trigger below
+            pdf_bytes = None
+
+    if pdf_bytes is None:
+        try:
+            print("Generating PDF with xhtml2pdf...")
+            buffer = BytesIO()
+            pisa_status = pisa.CreatePDF(html_content, dest=buffer)
+            if not pisa_status.err:
+                pdf_bytes = buffer.getvalue()
+            else:
+                print("xhtml2pdf error")
+                raise Exception("PDF generation failed with both engines")
+        except Exception as e:
+            print(f"xhtml2pdf Exception: {e}")
+            raise HTTPException(status_code=500, detail=f"PDF Generation failed: {str(e)}")
 
     return Response(
         content=pdf_bytes,
@@ -511,18 +604,29 @@ async def save_analysis(
     if not user_data:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
+    print(f"DEBUG Archive: Saving analysis {analysis_id}, title={payload.title}")
+    
     analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
     
     if not analysis:
+        print(f"ERROR Archive: Analysis {analysis_id} not found")
         raise HTTPException(status_code=404, detail="Analysis not found")
     
-    analysis.is_saved = True
-    if payload.title:
-        analysis.title = payload.title
-    analysis.last_updated = datetime.utcnow()
-    db.commit()
-    
-    return {"status": "success", "message": "Analysis saved to archive"}
+    try:
+        analysis.is_saved = True
+        if payload.title:
+            analysis.title = payload.title
+        analysis.last_updated = datetime.utcnow()
+        db.commit()
+        db.refresh(analysis)
+        
+        print(f"SUCCESS Archive: Analysis {analysis_id} saved with title '{analysis.title}', is_saved={analysis.is_saved}")
+        
+        return {"status": "success", "message": "Analysis saved to archive"}
+    except Exception as e:
+        db.rollback()
+        print(f"ERROR Archive: Database commit failed - {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to save analysis: {str(e)}")
 
 @router.delete("/{analysis_id}")
 async def delete_analysis(
@@ -553,6 +657,32 @@ async def delete_analysis(
     db.commit()
     
     return {"status": "success", "message": "Analysis deleted"}
+
+@router.post("/{analysis_id}/dismiss")
+async def dismiss_analysis_from_dashboard(
+    request: Request,
+    analysis_id: int,
+    db: Session = Depends(get_db)
+):
+    """Hide analysis from dashboard without deleting it (if archived/saved)"""
+    user_data = request.session.get("user")
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+    
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    # Verify ownership
+    doc = db.query(models.Document).filter(models.Document.id == analysis.document_id).first()
+    if doc and doc.user_id != user_data["id"]:
+        raise HTTPException(status_code=403, detail="Access denied")
+        
+    analysis.show_in_dashboard = False
+    db.commit()
+    
+    return {"status": "success", "message": "Analysis hidden from dashboard"}
 
 
 # Background Analysis Pipeline (unchanged core logic)
@@ -628,6 +758,18 @@ def full_analysis_pipeline(
             # Nuova convenzione: prompt_sinistro_{type}.txt
             prompt_path = f"prompts/{base_folder}/{folder_type}/prompt_sinistro_{folder_type}.txt"
             template_path = f"prompts/{base_folder}/{folder_type}/template_sinistro_{folder_type}.html"
+            
+        elif safe_policy_type == "analisi_economica":
+            base_folder = "analisi_economica"
+            folder_type = "standard" # Default folder for now
+            # Naming convention: prompt_{type}_{variant}.txt
+            prompt_path = f"prompts/{base_folder}/{folder_type}/prompt_analisi_economica_standard.txt"
+            template_path = f"prompts/{base_folder}/{folder_type}/template_analisi_economica_standard.html"
+        elif safe_policy_type == "analisi_capitolati":
+            base_folder = "analisi_capitolati"
+            folder_type = "standard" # Default folder for now
+            prompt_path = f"prompts/{base_folder}/{folder_type}/prompt_analisi_capitolati.txt"
+            template_path = f"prompts/{base_folder}/{folder_type}/template_analisi_capitolati.html"
         else:
             base_folder = "analisi_polizze"
             folder_type = safe_policy_type
@@ -756,7 +898,9 @@ async def correct_analysis(
                 except Exception as e:
                     print(f"Error loading text from {doc.extracted_text_path}: {e}")
     
-    current_html = analysis.report_html_display or ""
+    # Use masked version for LLM to protect sensitive data
+    # Falls back to display version if masked not available (shouldn't happen in production)
+    current_html = analysis.report_html_masked or analysis.report_html_display or ""
     
     # Identify which sections need regeneration based on keywords in correction message
     correction_lower = correction.correction_message.lower()

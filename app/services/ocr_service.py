@@ -40,19 +40,19 @@ def process_ocr_background(document_id: int, file_path: str, mime_type: str):
         try:
             client = llm_client.LLMClient()
             tokens = client.count_tokens(text)
-        except:
-            pass
+        except Exception as e:
+            print(f"Token counting failed: {e}")
         
-        # Update DB
-        db = SessionLocal()
+        # Update DB (use different variable name to avoid confusion)
+        db_update = SessionLocal()
         try:
-            doc = db.query(models.Document).filter(models.Document.id == document_id).first()
+            doc = db_update.query(models.Document).filter(models.Document.id == document_id).first()
             if doc:
                 doc.extracted_text_path = txt_path
                 doc.ocr_method = method
                 doc.token_count = tokens
-                db.commit()
+                db_update.commit()
         finally:
-            db.close()
+            db_update.close()
     except Exception as e:
         print(f"Error saving OCR output for {document_id}: {e}")

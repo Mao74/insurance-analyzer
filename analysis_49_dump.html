@@ -1,0 +1,399 @@
+ <!DOCTYPE html>                                                                                                                                                    +
+ <html lang="it">                                                                                                                                                   +
+                                                                                                                                                                    +
+ <head>                                                                                                                                                             +
+     <meta charset="UTF-8">                                                                                                                                         +
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">                                                                                         +
+     <title>Analisi Tecnica Polizza RC - SPM - S.P.A.</title>                                                                                                       +
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>                                                                                                  +
+                                                                                                                                                                    +
+     <link                                                                                                                                                          +
+         href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"+
+         rel="stylesheet">                                                                                                                                          +
+     <style>                                                                                                                                                        +
+         :root {                                                                                                                                                    +
+             --bg-body: #f4f6f8;                                                                                                                                    +
+             --bg-paper: #ffffff;                                                                                                                                   +
+             --primary-dark: #0f172a;                                                                                                                               +
+             --primary-main: #334155;                                                                                                                               +
+             --accent-gold: #b49b66;                                                                                                                                +
+             --accent-blue: #2563eb;                                                                                                                                +
+             --text-main: #0f172a;                                                                                                                                  +
+             --text-muted: #64748b;                                                                                                                                 +
+             --border-subtle: #e2e8f0;                                                                                                                              +
+             --border-strong: #cbd5e1;                                                                                                                              +
+             --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         * {                                                                                                                                                        +
+             box-sizing: border-box;                                                                                                                                +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         body {                                                                                                                                                     +
+             font-family: 'Inter', sans-serif;                                                                                                                      +
+             line-height: 1.5;                                                                                                                                      +
+             margin: 0;                                                                                                                                             +
+             padding: 30px;                                                                                                                                         +
+             background-color: var(--bg-body);                                                                                                                      +
+             color: var(--text-main);                                                                                                                               +
+             font-size: 13px;                                                                                                                                       +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .report-container {                                                                                                                                        +
+             max-width: 1280px;                                                                                                                                     +
+             margin: 0 auto;                                                                                                                                        +
+             background-color: var(--bg-paper);                                                                                                                     +
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);                                                                                                       +
+             border-radius: 8px;                                                                                                                                    +
+             overflow: hidden;                                                                                                                                      +
+             border: 1px solid var(--border-subtle);                                                                                                                +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- HEADER --- */                                                                                                                                       +
+         .header {                                                                                                                                                  +
+             padding: 30px 40px;                                                                                                                                    +
+             background: white;                                                                                                                                     +
+             border-bottom: 4px solid var(--primary-dark);                                                                                                          +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .header h1 {                                                                                                                                               +
+             font-family: 'Merriweather', serif;                                                                                                                    +
+             font-size: 28px;                                                                                                                                       +
+             margin: 0 0 5px 0;                                                                                                                                     +
+             color: var(--primary-dark);                                                                                                                            +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .header h2 {                                                                                                                                               +
+             font-family: 'Inter', sans-serif;                                                                                                                      +
+             font-size: 13px;                                                                                                                                       +
+             color: var(--accent-gold);                                                                                                                             +
+             text-transform: uppercase;                                                                                                                             +
+             letter-spacing: 1.5px;                                                                                                                                 +
+             margin: 0 0 20px 0;                                                                                                                                    +
+             font-weight: 700;                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- TABS --- */                                                                                                                                         +
+         .tabs {                                                                                                                                                    +
+             background: var(--primary-dark);                                                                                                                       +
+             padding: 0 20px;                                                                                                                                       +
+             display: flex;                                                                                                                                         +
+             overflow-x: auto;                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .tab-link {                                                                                                                                                +
+             background: transparent;                                                                                                                               +
+             color: rgba(255, 255, 255, 0.7);                                                                                                                       +
+             border: none;                                                                                                                                          +
+             padding: 16px 24px;                                                                                                                                    +
+             cursor: pointer;                                                                                                                                       +
+             font-family: 'Inter', sans-serif;                                                                                                                      +
+             font-size: 13px;                                                                                                                                       +
+             font-weight: 600;                                                                                                                                      +
+             transition: all 0.2s;                                                                                                                                  +
+             border-bottom: 3px solid transparent;                                                                                                                  +
+             white-space: nowrap;                                                                                                                                   +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .tab-link:hover {                                                                                                                                          +
+             color: white;                                                                                                                                          +
+             background: rgba(255, 255, 255, 0.05);                                                                                                                 +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .tab-link.active {                                                                                                                                         +
+             color: white;                                                                                                                                          +
+             border-bottom-color: var(--accent-gold);                                                                                                               +
+             background: rgba(255, 255, 255, 0.1);                                                                                                                  +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- CONTENT --- */                                                                                                                                      +
+         .tab-content {                                                                                                                                             +
+             display: none;                                                                                                                                         +
+             padding: 40px;                                                                                                                                         +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .tab-content.active {                                                                                                                                      +
+             display: block;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         h3 {                                                                                                                                                       +
+             color: var(--primary-main);                                                                                                                            +
+             border-bottom: 2px solid var(--border-subtle);                                                                                                         +
+             padding-bottom: 10px;                                                                                                                                  +
+             margin-top: 30px;                                                                                                                                      +
+             font-family: 'Merriweather', serif;                                                                                                                    +
+             font-size: 18px;                                                                                                                                       +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         h4 {                                                                                                                                                       +
+             color: var(--primary-dark);                                                                                                                            +
+             margin: 20px 0 10px 0;                                                                                                                                 +
+             font-size: 14px;                                                                                                                                       +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- INFO GRID --- */                                                                                                                                    +
+         .info-grid {                                                                                                                                               +
+             display: grid;                                                                                                                                         +
+             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));                                                                                          +
+             gap: 1px;                                                                                                                                              +
+             background: var(--border-strong);                                                                                                                      +
+             border: 1px solid var(--border-strong);                                                                                                                +
+             margin-bottom: 20px;                                                                                                                                   +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .info-item {                                                                                                                                               +
+             background: white;                                                                                                                                     +
+             padding: 12px 15px;                                                                                                                                    +
+             display: flex;                                                                                                                                         +
+             flex-direction: column;                                                                                                                                +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .info-label {                                                                                                                                              +
+             font-size: 10px;                                                                                                                                       +
+             text-transform: uppercase;                                                                                                                             +
+             color: var(--text-muted);                                                                                                                              +
+             font-weight: 700;                                                                                                                                      +
+             margin-bottom: 4px;                                                                                                                                    +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .info-value {                                                                                                                                              +
+             font-size: 13px;                                                                                                                                       +
+             font-weight: 500;                                                                                                                                      +
+             color: var(--primary-dark);                                                                                                                            +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .info-value.large {                                                                                                                                        +
+             font-size: 18px;                                                                                                                                       +
+             font-family: 'JetBrains Mono', monospace;                                                                                                              +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- TABELLE --- */                                                                                                                                      +
+         table {                                                                                                                                                    +
+             width: 100%;                                                                                                                                           +
+             border-collapse: collapse;                                                                                                                             +
+             margin-bottom: 20px;                                                                                                                                   +
+             font-size: 12px;                                                                                                                                       +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         th {                                                                                                                                                       +
+             background: #f1f5f9;                                                                                                                                   +
+             color: var(--primary-dark);                                                                                                                            +
+             font-weight: 700;                                                                                                                                      +
+             padding: 10px 12px;                                                                                                                                    +
+             text-align: left;                                                                                                                                      +
+             border: 1px solid var(--border-strong);                                                                                                                +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         td {                                                                                                                                                       +
+             padding: 8px 12px;                                                                                                                                     +
+             border: 1px solid var(--border-subtle);                                                                                                                +
+             vertical-align: middle;                                                                                                                                +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         tr:nth-child(even) {                                                                                                                                       +
+             background-color: #f8fafc;                                                                                                                             +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .col-curr {                                                                                                                                                +
+             text-align: right;                                                                                                                                     +
+             font-family: 'JetBrains Mono', monospace;                                                                                                              +
+             white-space: nowrap;                                                                                                                                   +
+             color: var(--primary-dark);                                                                                                                            +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .col-center {                                                                                                                                              +
+             text-align: center;                                                                                                                                    +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- BADGE --- */                                                                                                                                        +
+         .badge {                                                                                                                                                   +
+             display: inline-block;                                                                                                                                 +
+             padding: 4px 10px;                                                                                                                                     +
+             border-radius: 4px;                                                                                                                                    +
+             font-size: 11px;                                                                                                                                       +
+             font-weight: 700;                                                                                                                                      +
+             text-transform: uppercase;                                                                                                                             +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .badge-full {                                                                                                                                              +
+             background: #dcfce7;                                                                                                                                   +
+             color: #166534;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .badge-bci {                                                                                                                                               +
+             background: #fef3c7;                                                                                                                                   +
+             color: #92400e;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .badge-local {                                                                                                                                             +
+             background: #dbeafe;                                                                                                                                   +
+             color: #1e40af;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .badge-cm {                                                                                                                                                +
+             background: #fef3c7;                                                                                                                                   +
+             color: #92400e;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .badge-lo {                                                                                                                                                +
+             background: #dcfce7;                                                                                                                                   +
+             color: #166534;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- LISTE GARANZIE --- */                                                                                                                               +
+         .guarantee-list {                                                                                                                                          +
+             list-style: none;                                                                                                                                      +
+             padding: 0;                                                                                                                                            +
+             margin: 15px 0;                                                                                                                                        +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .guarantee-list li {                                                                                                                                       +
+             padding: 8px 12px;                                                                                                                                     +
+             margin-bottom: 6px;                                                                                                                                    +
+             background: #f8fafc;                                                                                                                                   +
+             border-left: 3px solid var(--accent-blue);                                                                                                             +
+             font-size: 12px;                                                                                                                                       +
+             line-height: 1.6;                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .guarantee-list li strong {                                                                                                                                +
+             color: var(--primary-dark);                                                                                                                            +
+             font-weight: 600;                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- CHART --- */                                                                                                                                        +
+         .chart-container {                                                                                                                                         +
+             background: #f8fafc;                                                                                                                                   +
+             border: 1px solid var(--border-subtle);                                                                                                                +
+             border-radius: 6px;                                                                                                                                    +
+             padding: 20px;                                                                                                                                         +
+             margin: 20px 0;                                                                                                                                        +
+             height: 350px;                                                                                                                                         +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* Hide chart container in normal view (only visible in PDF) */                                                                                            +
+         .pdf-chart-container {                                                                                                                                     +
+             display: none;                                                                                                                                         +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         /* --- PRINT (PDF GENERATION) --- */                                                                                                                       +
+         @page {                                                                                                                                                    +
+             margin: 25mm 12mm 20mm 12mm;                                                                                                                           +
+             size: A4 portrait;                                                                                                                                     +
+                                                                                                                                                                    +
+             @top-center {                                                                                                                                          +
+                 content: element(header);                                                                                                                          +
+             }                                                                                                                                                      +
+                                                                                                                                                                    +
+             @bottom-center {                                                                                                                                       +
+                 content: "Pagina " counter(page) " di " counter(pages);                                                                                            +
+                 font-size: 9pt;                                                                                                                                    +
+                 color: #64748b;                                                                                                                                    +
+             }                                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         @page cover {                                                                                                                                              +
+             margin: 0;                                                                                                                                             +
+             size: A4 portrait;                                                                                                                                     +
+                                                                                                                                                                    +
+             @top-center {                                                                                                                                          +
+                 content: none;                                                                                                                                     +
+             }                                                                                                                                                      +
+                                                                                                                                                                    +
+             @bottom-center {                                                                                                                                       +
+                 content: none;                                                                                                                                     +
+             }                                                                                                                                                      +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         .page-header {                                                                                                                                             +
+             position: running(header);                                                                                                                             +
+             font-size: 9pt;                                                                                                                                        +
+             color: #64748b;                                                                                                                                        +
+             padding-bottom: 5mm;                                                                                                                                   +
+             border-bottom: 0.5pt solid #cbd5e1;                                                                                                                    +
+             width: 100%;                                                                                                                                           +
+             text-align: center;                                                                                                                                    +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         @media print {                                                                                                                                             +
+             table {                                                                                                                                                +
+                 margin-top: 5mm;                                                                                                                                   +
+             }                                                                                                                                                      +
+                                                                                                                                                                    +
+             .report-container {                                                                                                                                    +
+                 padding-top: 5mm;                                                                                                                                  +
+             }                                                                                                                                                      +
+                                                                                                                                                                    +
+             body {                                                                                                                                                 +
+                 padding: 0;                                                                                                                                        +
+                 margin: 0;                                                                                                                                         +
+                 background-color: white !important;                                                                                                                +
+                 -webkit-                                                                                                                                           +
+ <script>                                                                                                                                                           +
+         // Tab switching                                                                                                                                           +
+         function openTab(evt, tabName) {                                                                                                                           +
+             var i, tabcontent, tablinks;                                                                                                                           +
+             tabcontent = document.getElementsByClassName("tab-content");                                                                                           +
+             for (i = 0; i < tabcontent.length; i++) {                                                                                                              +
+                 tabcontent[i].style.display = "none";                                                                                                              +
+                 tabcontent[i].classList.remove("active");                                                                                                          +
+             }                                                                                                                                                      +
+             tablinks = document.getElementsByClassName("tab-link");                                                                                                +
+             for (i = 0; i < tablinks.length; i++) {                                                                                                                +
+                 tablinks[i].classList.remove("active");                                                                                                            +
+             }                                                                                                                                                      +
+             document.getElementById(tabName).style.display = "block";                                                                                              +
+             document.getElementById(tabName).classList.add("active");                                                                                              +
+             evt.currentTarget.classList.add("active");                                                                                                             +
+         }                                                                                                                                                          +
+                                                                                                                                                                    +
+         // Chart.js - Grafico Premi e Sinistri                                                                                                                     +
+         // NOTA: I dati devono essere inseriti dal prompt AI                                                                                                       +
+         // Inserire SOLO gli anni con copertura effettiva (dal primo anno polizza)                                                                                 +
+         const ctx = document.getElementById('premiumClaimsChart');                                                                                                 +
+         if (ctx) {                                                                                                                                                 +
+             new Chart(ctx, {                                                                                                                                       +
+                 type: 'bar',                                                                                                                                       +
+                 data: {                                                                                                                                            +
+                     labels: [[CHART_LABELS]],                                                                                                                      +
+                     datasets: [{                                                                                                                                   +
+                         label: 'Premio Imponibile',                                                                                                                +
+                         data: [[CHART_PREMI_IMP]],                                                                                                                 +
+                         backgroundColor: 'rgba(37, 99, 235, 0.7)',                                                                                                 +
+                         borderColor: 'rgba(37, 99, 235, 1)',                                                                                                       +
+                         borderWidth: 1                                                                                                                             +
+                     }, {                                                                                                                                           +
+                         label: 'Sinistri Pagati',                                                                                                                  +
+                         data: [[CHART_SINISTRI]],                                                                                                                  +
+                         backgroundColor: 'rgba(220, 38, 38, 0.7)',                                                                                                 +
+                         borderColor: 'rgba(220, 38, 38, 1)',                                                                                                       +
+                         borderWidth: 1                                                                                                                             +
+                     }]                                                                                                                                             +
+                 },                                                                                                                                                 +
+                 options: {                                                                                                                                         +
+                     responsive: true,                                                                                                                              +
+                     maintainAspectRatio: false,                                                                                                                    +
+                     plugins: {                                                                                                                                     +
+                         legend: {                                                                                                                                  +
+                             position: 'top',                                                                                                                       +
+                         },                                                                                                                                         +
+                         title: {                                                                                                                                   +
+                             display: true,                                                                                                                         +
+                             text: 'Andamento Premi Imponibili vs Sinistri'                                                                                         +
+                         }                                                                                                                                          +
+                     },                                                                                                                                             +
+                     scales: {                                                                                                                                      +
+                         y: {                                                                                                                                       +
+                             beginAtZero: true,                                                                                                                     +
+                             ticks: {                                                                                                                               +
+                                 callback: function (value) {                                                                                                       +
+                                     return '€ ' + value.toLocaleString('it-IT');                                                                                   +
+                                 }                                                                                                                                  +
+                             }                                                                                                                                      +
+                         }                                                                                                                                          +
+                     }                                                                                                                                              +
+                 }                                                                                                                                                  +
+             });                                                                                                                                                    +
+         }                                                                                                                                                          +
+     </script>
+

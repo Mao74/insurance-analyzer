@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Prospect - [RAGIONE_SOCIALE]</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-paper: #ffffff;
+            --primary-dark: #1e293b;
+            --primary-main: #334155;
+            --accent-blue: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --color-increase: #16a34a;
+            --color-same: #ca8a04;
+            --color-decrease: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border: 1px solid var(--border-strong);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 20px 30px;
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .header-meta {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            font-size: 11px;
+        }
+
+        .header-meta-item strong {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 3px;
+        }
+
+        /* --- SECTION --- */
+        .section {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-main);
+            margin: 15px 0 10px 0;
+        }
+
+        /* --- INFO GRID --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border-strong);
+            border: 1px solid var(--border-strong);
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        /* --- TABLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 8px 10px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .col-curr {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .col-center {
+            text-align: center;
+        }
+
+        /* --- BADGE --- */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* --- PDF Generation --- */
+        @page {
+            margin: 25mm 12mm 20mm 12mm;
+            size: A4 portrait;
+
+            @top-center {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: "Pagina " counter(page) " di " counter(pages);
+                font-size: 9pt;
+                color: #64748b;
+            }
+        }
+
+        .page-header {
+            position: running(header);
+            font-size: 9pt;
+            color: #64748b;
+            padding-bottom: 5mm;
+            border-bottom: 0.5pt solid #cbd5e1;
+            width: 100%;
+            text-align: center;
+        }
+
+        @media print {
+            .header {
+                display: none !important;
+            }
+
+            .report-container {
+                border: none !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+
+            table {
+                font-size: 8pt;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER PDF -->
+    <div class="page-header">Analisi Prospect - [RAGIONE_SOCIALE] • Data: [DATA_ANALISI]</div>
+
+    <div class="report-container">
+        <!-- HEADER WEB -->
+        <div class="header">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h1>[RAGIONE_SOCIALE]</h1>
+                    <p>Report Analisi Aziendale</p>
+                </div>
+                <div><span class="badge [BADGE_CLASS]">[STATO_ATTIVITA]</span></div>
+            </div>
+
+            <div class="header-meta">
+                <div class="header-meta-item"><strong>PARTITA IVA</strong>[PIVA]</div>
+                <div class="header-meta-item"><strong>DATA ANALISI</strong>[DATA_ANALISI]</div>
+                <div class="header-meta-item"><strong>TIPO SERVIZIO</strong>[TIPO_SERVIZIO]</div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 1: ANAGRAFICA -->
+        <div class="section">
+            <h2 class="section-title">1. Dati Anagrafici</h2>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">Ragione Sociale</span><span
+                        class="info-value">[RAGIONE_SOCIALE]</span></div>
+                <div class="info-item"><span class="info-label">Partita IVA</span><span class="info-value">[PIVA]</span>
+                </div>
+                <div class="info-item"><span class="info-label">Codice Fiscale</span><span
+                        class="info-value">[CODICE_FISCALE]</span></div>
+                <div class="info-item"><span class="info-label">CCIAA / REA</span><span
+                        class="info-value">[CCIAA_REA]</span></div>
+                <div class="info-item"><span class="info-label">Forma Giuridica</span><span
+                        class="info-value">[FORMA_GIURIDICA]</span></div>
+                <div class="info-item"><span class="info-label">Data Costituzione</span><span
+                        class="info-value">[DATA_COSTITUZIONE]</span></div>
+            </div>
+
+            <h3 class="subsection-title">Sede Legale</h3>
+            <p style="margin:0;">[INDIRIZZO_SEDE] - <a href="https://maps.google.com/?q=[INDIRIZZO_ENCODED]"
+                    target="_blank">Apri in Maps</a></p>
+        </div>
+
+        <!-- SEZIONE 2: ATTIVITA -->
+        <div class="section">
+            <h2 class="section-title">2. Attività Economica</h2>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">Codice ATECO</span><span
+                        class="info-value">[CODICE_ATECO]</span></div>
+                <div class="info-item"><span class="info-label">Descrizione</span><span
+                        class="info-value">[DESCRIZIONE_ATTIVITA]</span></div>
+                <div class="info-item"><span class="info-label">Dipendenti</span><span
+                        class="info-value">[NUMERO_DIPENDENTI]</span></div>
+                <div class="info-item"><span class="info-label">Fatturato (Ultimo)</span><span
+                        class="info-value">[ULTIMO_FATTURATO]</span></div>
+            </div>
+        </div>
+
+        <!-- SEZIONE 3: CONTATTI -->
+        <div class="section">
+            <h2 class="section-title">3. Contatti</h2>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">PEC</span><span class="info-value">[PEC]</span></div>
+                <div class="info-item"><span class="info-label">Codice SDI</span><span
+                        class="info-value">[CODICE_SDI]</span></div>
+                <!-- FULL ONLY -->
+                [FULL_CONTACTS_START]
+                <div class="info-item"><span class="info-label">Telefono</span><span
+                        class="info-value">[TELEFONO]</span></div>
+                <div class="info-item"><span class="info-label">Sito Web</span><span
+                        class="info-value">[SITO_WEB]</span></div>
+                [FULL_CONTACTS_END]
+            </div>
+        </div>
+
+        <!-- SEZIONE 4: DATI ECONOMICI -->
+        <div class="section">
+            <h2 class="section-title">4. Dati Economici</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Anno</th>
+                        <th>Fatturato</th>
+                        <th>Dipendenti</th>
+                        <th>Capitale Sociale</th>
+                        <th>Utile/Perdita</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [ROWS_BILANCIO]
+                </tbody>
+            </table>
+
+            <!-- FULL ONLY: BILANCIO DETTAGLIATO -->
+            [FULL_BILANCIO_START]
+            <h3 class="subsection-title">Bilancio Dettagliato (Ultimi 2 anni)</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Voce</th>
+                        <th>[ANNO_N]</th>
+                        <th>[ANNO_N_1]</th>
+                        <th>Var %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ricavi</td>
+                        <td class="col-curr">[RICAVI_N]</td>
+                        <td class="col-curr">[RICAVI_N_1]</td>
+                        <td class="col-curr">[VAR_RICAVI]</td>
+                    </tr>
+                    <tr>
+                        <td>EBITDA</td>
+                        <td class="col-curr">[EBITDA_N]</td>
+                        <td class="col-curr">[EBITDA_N_1]</td>
+                        <td class="col-curr">[VAR_EBITDA]</td>
+                    </tr>
+                    <tr>
+                        <td>EBIT</td>
+                        <td class="col-curr">[EBIT_N]</td>
+                        <td class="col-curr">[EBIT_N_1]</td>
+                        <td class="col-curr">[VAR_EBIT]</td>
+                    </tr>
+                    <tr>
+                        <td>Utile Netto</td>
+                        <td class="col-curr">[UTILE_N]</td>
+                        <td class="col-curr">[UTILE_N_1]</td>
+                        <td class="col-curr">[VAR_UTILE]</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Indici Finanziari</h3>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">ROE</span><span class="info-value">[ROE]%</span></div>
+                <div class="info-item"><span class="info-label">ROI</span><span class="info-value">[ROI]%</span></div>
+                <div class="info-item"><span class="info-label">ROS</span><span class="info-value">[ROS]%</span></div>
+                <div class="info-item"><span class="info-label">Leverage</span><span
+                        class="info-value">[LEVERAGE]</span></div>
+            </div>
+            [FULL_BILANCIO_END]
+        </div>
+
+        <!-- SEZIONE 5: GOVERNANCE -->
+        <div class="section">
+            <h2 class="section-title">5. Governance</h2>
+            <h3 class="subsection-title">Soci</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CF / P.IVA</th>
+                        <th>Quota</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [ROWS_SOCI]
+                </tbody>
+            </table>
+
+            <!-- FULL ONLY: AMMINISTRATORI -->
+            [FULL_GOVERNANCE_START]
+            <h3 class="subsection-title">Amministratori</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CF</th>
+                        <th>Ruolo</th>
+                        <th>Data Nomina</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [ROWS_AMMINISTRATORI]
+                </tbody>
+            </table>
+            [FULL_GOVERNANCE_END]
+        </div>
+    </div>
+</body>
+
+</html>

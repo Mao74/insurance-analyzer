@@ -4,15 +4,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from .config import settings
 from .database import engine, Base, init_db
-from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes, compare_routes
+from .routes import auth_routes, upload_routes, analysis_routes, claims_routes, admin_routes, stripe_routes, compare_routes, prospect_routes, chat_routes
 import uvicorn
+
+# 🔒 SECURITY: Rate limiting to prevent DOS attacks
+limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(title="Insurance-Lab.ai API", version="2.0.0")
 
+# Attach limiter to app state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # CORS Configuration - MUST be added first (will be outermost)
+# 🔒 SECURITY: Explicit domains only, no wildcards
 origins = [
+    # Development
     "http://localhost:3000",
     "http://localhost:5173",  # Vite dev server
     "http://localhost:5174",  # Vite alternate port
@@ -23,8 +35,10 @@ origins = [
     "http://127.0.0.1:5174",
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8001",
+    # Production - NO wildcards for security
     "https://app.insurance-lab.ai",
-    "https://*.insurance-lab.ai",
+    "https://www.insurance-lab.ai",
+    "https://insurance-lab.ai",
 ]
 
 app.add_middleware(
@@ -86,7 +100,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
 # 2. AuthMiddleware (added second-to-last, runs after session is available)
 # 3. CORSMiddleware (added first, runs last - handles CORS headers)
 
-# Add AuthMiddleware
+# 🔒 SECURITY: Session inactivity timeout (2 hours)
+from .middleware.session_timeout import SessionInactivityMiddleware
+app.add_middleware(SessionInactivityMiddleware)
+
+# Auth Middleware - MUST be added AFTER session timeout
 app.add_middleware(AuthMiddleware)
 
 # Session Middleware - MUST be added LAST to run FIRST
@@ -116,6 +134,8 @@ app.include_router(claims_routes.router, prefix="/api/claims", tags=["Claims"])
 app.include_router(admin_routes.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(stripe_routes.router, prefix="/api/stripe", tags=["Stripe"])
 app.include_router(compare_routes.router, prefix="/api/compare", tags=["Compare"])
+app.include_router(prospect_routes.router) # Router already has prefix /api/prospect defined in file
+app.include_router(chat_routes.router, prefix="/api/chat", tags=["Chat"])
 
 @app.on_event("startup")
 def on_startup():

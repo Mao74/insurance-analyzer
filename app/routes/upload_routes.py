@@ -1,22 +1,22 @@
 import os
 import uuid
+import shutil
+import json
 from datetime import datetime
 from fastapi import APIRouter, Request, UploadFile, File, Form, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+import magic  # python-magic for MIME validation
 from ..database import get_db
-from .. import models, ocr, llm_client
+from .. import models
+from ..ocr import process_document
+from ..services.file_processor import process_file_recursive
+from ..services.ocr_service import process_ocr_background
 from ..config import settings
-try:
-    import magic
-    HAVE_MAGIC = True
-except ImportError:
-    HAVE_MAGIC = False
-except Exception:
-    # On Windows, missing DLLs can cause other exceptions
-    HAVE_MAGIC = False
 
 router = APIRouter()
 
@@ -151,7 +151,32 @@ async def get_document_text(
         token_count=doc.token_count or 0
     )
 
+# 🔒 SECURITY: MIME type validation
+ALLOWED_MIME_TYPES = {
+    'application/pdf',
+    'image/jpeg', 
+    'image/png',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  # DOCX
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  # XLSX
+    'message/rfc822',  # Email
+}
+
+async def validate_file_type(file: UploadFile) -> str:
+    """Validate MIME type using magic numbers"""
+    header = await file.read(2048)
+    await file.seek(0)
+    
+    mime = magic.from_buffer(header, mime=True)
+    if mime not in ALLOWED_MIME_TYPES:
+        raise HTTPException(400, f"File type '{mime}' not allowed")
+    return mime
+
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 @router.post("/upload", response_model=UploadResponse)
+@limiter.limit("10/minute")  # 🔒 Max 10 uploads/min
+@limiter.limit("50/hour")    # 🔒 Max 50 uploads/hour  
 async def upload_documents(
     request: Request,
     background_tasks: BackgroundTasks,
@@ -176,8 +201,39 @@ async def upload_documents(
     os.makedirs(upload_dir, exist_ok=True)
     
     for file in files:
-        # Save original file temporarily
-        file_path = os.path.join(upload_dir, file.filename)
+        # 🔒 SECURITY: Validate MIME type before processing
+        try:
+            mime_type = await validate_file_type(file)
+            print(f"✅ MIME validation passed: {file.filename} ({mime_type})")
+        except HTTPException as e:
+            print(f"❌ MIME validation failed: {file.filename}")
+            raise
+        
+        # 🔒 CRITICAL SECURITY: Sanitize filename to prevent path traversal
+        # Prevents CVE-2023-XXXX style attacks (../../etc/passwd)
+        import re
+        from pathlib import Path
+        
+        # Extract only the basename (removes ../../../ traversal attempts)
+        safe_filename = Path(file.filename).name
+        
+        # Replace dangerous characters with underscores
+        safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', safe_filename)
+        
+        # Limit length to prevent DOS
+        if len(safe_filename) > 255:
+            extension = safe_filename.split('.')[-1] if '.' in safe_filename else ''
+            safe_filename = safe_filename[:250] + '.' + extension
+        
+        # Log sanitization for audit
+        if safe_filename != file.filename:
+            print(f"⚠️ SECURITY: Sanitized filename: {file.filename} → {safe_filename}")
+        
+        # 🔒 BUGFIX: Add UUID prefix to prevent filename collision across batches
+        unique_filename = f"{uuid.uuid4().hex[:8]}_{safe_filename}"
+        
+        # Save original file temporarily with SAFE + UNIQUE filename
+        file_path = os.path.join(upload_dir, unique_filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         

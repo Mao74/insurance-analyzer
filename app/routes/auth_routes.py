@@ -5,8 +5,10 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime, timedelta
 import secrets
+import asyncio
 from ..database import get_db
 from .. import models, auth
+from ..utils.password_validator import validate_password_strength
 
 router = APIRouter()
 
@@ -119,7 +121,11 @@ async def login(
     user.last_login = datetime.utcnow()
     db.commit()
     
-    # Set session cookie with extended info
+    # 🔒 SECURITY: Prevent session fixation - regenerate session on login
+    # Clear old session to invalidate any pre-set session IDs
+    request.session.clear()
+    
+    # Set NEW session cookie with user info
     request.session["user"] = {
         "id": user.id, 
         "username": user.username or user.email,
@@ -212,12 +218,8 @@ async def change_password(
             detail="Password attuale non corretta"
         )
     
-    # Validate new password
-    if len(payload.new_password) < 8:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="La nuova password deve avere almeno 8 caratteri"
-        )
+    # 🔒 SECURITY: Validate new password strength (OWASP guidelines)
+    validate_password_strength(payload.new_password)
     
     # Update password
     user.password_hash = auth.get_password_hash(payload.new_password)
@@ -238,8 +240,10 @@ async def forgot_password(
     
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     
-    # Always return success to prevent email enumeration attacks
+    # 🔒 SECURITY: Prevent email enumeration via timing attack
     if not user:
+        # Simulate processing time to prevent timing attack
+        await asyncio.sleep(0.5)
         return MessageResponse(message="Se l'email esiste nel sistema, riceverai le istruzioni per il reset.")
     
     # Invalidate any existing tokens for this user
@@ -302,12 +306,8 @@ async def reset_password(
             detail="Token scaduto. Richiedi un nuovo reset password."
         )
     
-    # Validate new password
-    if len(payload.new_password) < 8:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="La nuova password deve avere almeno 8 caratteri"
-        )
+    # 🔒 BUGFIX: Validate new password strength (was missing!)
+    validate_password_strength(payload.new_password)
     
     # Get user and update password
     user = db.query(models.User).filter(models.User.id == reset_token.user_id).first()

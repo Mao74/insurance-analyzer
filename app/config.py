@@ -34,3 +34,22 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+# 🔒 CRITICAL SECURITY: Validate SECRET_KEY
+# Prevents CVE-2021-32677 style default secret vulnerability
+if not settings.SECRET_KEY or settings.SECRET_KEY == "changeme":
+    raise ValueError(
+        "❌ SECURITY ERROR: SECRET_KEY must be set in environment variables!\n"
+        "   Generate a secure key with: openssl rand -hex 32\n"
+        "   Then add to .env: SECRET_KEY=<generated_key>"
+    )
+
+if len(settings.SECRET_KEY) < 32:
+    raise ValueError(
+        "❌ SECURITY ERROR: SECRET_KEY must be at least 32 characters long!\n"
+        f"   Current length: {len(settings.SECRET_KEY)} chars\n"
+        "   Generate with: openssl rand -hex 32"
+    )
+
+print(f"✅ SECRET_KEY validated (length: {len(settings.SECRET_KEY)} chars)")
+
+

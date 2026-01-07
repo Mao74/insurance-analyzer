@@ -375,23 +375,42 @@ async def get_cost_analytics(
     total_output = int(total_data.output_tokens) if total_data else 0
 
     # Query for monthly breakdown (last 12 months)
+    # Query for monthly breakdown (last 12 months)
+    # Check dialect for correct date function
+    is_sqlite = db.bind.dialect.name == "sqlite"
+    
+    if is_sqlite:
+        date_group = func.strftime('%Y-%m', models.Analysis.created_at)
+        date_col = date_group.label('month')
+    else:
+        # Postgres
+        date_group = func.date_trunc('month', models.Analysis.created_at)
+        date_col = date_group.label('month')
+
     monthly_data = db.query(
-        func.date_trunc('month', models.Analysis.created_at).label('month'),
+        date_col,
         func.coalesce(func.sum(models.Analysis.input_tokens), 0).label('input_tokens'),
         func.coalesce(func.sum(models.Analysis.output_tokens), 0).label('output_tokens')
     ).filter(
         models.Analysis.status == models.AnalysisStatus.COMPLETED,
         models.Analysis.created_at.isnot(None)
     ).group_by(
-        func.date_trunc('month', models.Analysis.created_at)
+        date_group
     ).order_by(
-        func.date_trunc('month', models.Analysis.created_at).desc()
+        date_group.desc()
     ).limit(12).all()
 
     monthly_list = []
     for row in monthly_data:
-        month_date = row.month
-        month_str = month_date.strftime('%Y-%m') if month_date else ''
+        month_val = row.month
+        # SQLite returns string, Postgres returns datetime
+        if isinstance(month_val, str):
+             month_str = month_val
+        elif month_val:
+             month_str = month_val.strftime('%Y-%m')
+        else:
+             month_str = ''
+             
         m_input = int(row.input_tokens)
         m_output = int(row.output_tokens)
         monthly_list.append(MonthlyCostData(

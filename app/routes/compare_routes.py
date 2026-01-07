@@ -23,6 +23,16 @@ router = APIRouter(tags=["compare"])
 UPLOAD_DIR = "uploads"
 EXTRACTED_DIR = "extracted"
 
+class CompareRequest(BaseModel):
+    analysis_ids: List[int]
+
+class UpdateCompareContentRequest(BaseModel):
+    html_content: str = [] # Legacy support
+    grouped_document_ids: Optional[List[List[int]]] = None # New structure: [[1,2], [3]]
+    policy_type: str = "rc_generale"
+    masking_data: Optional[dict] = None
+    llm_model: str = "gemini-3-flash-preview"
+
 class CompareStartRequest(BaseModel):
     document_ids: List[int] = [] # Legacy support
     grouped_document_ids: Optional[List[List[int]]] = None # New structure: [[1,2], [3]]
@@ -363,40 +373,34 @@ def comparison_pipeline(
 
 # Additional endpoints for Compare (reusing Analysis logic)
 
-class UpdateContentRequest(BaseModel):
+class UpdateCompareContentRequest(BaseModel):
     html_content: str
 
+
 @router.post("/{analysis_id}/content")
-async def update_compare_content(
-    analysis_id: int,
-    payload: UpdateContentRequest,
+def update_compare_content(
+    analysis_id: int, 
+    req: UpdateCompareContentRequest,
     request: Request,
     db: Session = Depends(get_db)
 ):
-    """Update comparison report HTML content (for user edits)"""
-    # Use same auth pattern as update_analysis_content
     user_data = request.session.get("user")
-    if not user_data:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    
-    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_id).first()
+    if not user_data: raise HTTPException(status_code=401, detail="Not authenticated")
+
+    analysis = db.query(models.Analysis).filter(
+        models.Analysis.id == analysis_id
+    ).first()
 
     if not analysis:
-        raise HTTPException(status_code=404, detail="Comparison analysis not found")
+        raise HTTPException(status_code=404, detail="Analysis not found")
 
-    # Verify it's a comparison (prompt_level = "confronto")
-    if analysis.prompt_level != "confronto":
-        raise HTTPException(status_code=400, detail="Not a comparison analysis")
-
-    # Check if html_content is valid
-    if not payload.html_content or len(payload.html_content) < 100:
-        raise HTTPException(status_code=400, detail="Invalid HTML content")
-
-    analysis.report_html_display = payload.html_content
+    # update both fields to be sure
+    analysis.report_html_display = req.html_content
+    analysis.report_html = req.html_content 
     analysis.last_updated = datetime.utcnow()
     db.commit()
-
-    return {"status": "success", "message": "Comparison report updated"}
+    
+    return {"status": "success", "message": "Contenuto aggiornato"}
 
 
 class SaveRequest(BaseModel):

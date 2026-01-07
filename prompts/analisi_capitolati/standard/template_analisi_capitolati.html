@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Analisi Capitolato d'Appalto</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Analisi Capitolato d'Appalto</h1>
+
+    <div class="info-box">
+        <!-- DATA_PLACEHOLDER_GENERAL -->
+        <p><strong>Ente Appaltante:</strong> {{ ente_appaltante }}</p>
+        <p><strong>Oggetto:</strong> {{ oggetto }}</p>
+        <p><strong>CIG:</strong> {{ cig }}</p>
+        <p><strong>Scadenza:</strong> {{ scadenza }}</p>
+    </div>
+
+    <h2>Requisiti di Partecipazione</h2>
+    <!-- DATA_PLACEHOLDER_REQUISITI -->
+    {{ requisiti_content }}
+
+    <h2>Dettaglio Lotti e Coperture</h2>
+    <!-- DATA_PLACEHOLDER_LOTTI -->
+    {{ lotti_content }}
+
+    <h2>Criteri Aggiudicazione</h2>
+    <!-- DATA_PLACEHOLDER_CRITERI -->
+    {{ criteri_content }}
+
+</body>
+
+</html>

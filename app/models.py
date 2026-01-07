@@ -63,7 +63,7 @@ class Document(Base):
     original_filename = Column(String(255), nullable=False)
     stored_filename = Column(String(255), nullable=False)  # UUID-based
     ramo = Column(String(50), nullable=False)
-    ocr_method = Column(String(20))  # nativo, ocr_doctr, ocr_tesseract
+    ocr_method = Column(String(100))  # nativo, ocr_doctr, ocr_tesseract, ibrido
     extracted_text_path = Column(String(255))  # Path al file TXT estratto
     token_count = Column(Integer, default=0)
     uploaded_at = Column(DateTime, default=datetime.utcnow)
@@ -94,6 +94,7 @@ class Analysis(Base):
     # Saved Reports / Archive features
     title = Column(String(255), nullable=True) # Custom title for saved reports
     is_saved = Column(Boolean, default=False)  # If True, shows in "Archivio"
+    show_in_dashboard = Column(Boolean, default=True) # If False, hidden from dashboard list
     last_updated = Column(DateTime, default=datetime.utcnow) # Track edits
     document = relationship("Document", back_populates="analyses")
 
@@ -111,3 +112,50 @@ class SystemSettings(Base):
     output_cost_per_million = Column(String(20), default="3.00")  # USD
     
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class ProspectAnalysis(Base):
+    """Stores analyses of prospect companies (OpenAPI integration)"""
+    __tablename__ = 'prospect_analyses'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    
+    piva = Column(String(20), index=True)
+    company_name = Column(String(255))
+    service_type = Column(String(20)) # 'advanced' or 'full'
+    
+    # Raw data from OpenAPI
+    data_json = Column(Text)  # Stored as JSON string
+    
+    # Generated HTML Report
+    report_html = Column(Text)
+    
+    is_archived = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    user = relationship("User", back_populates="prospect_analyses")
+
+class UserAnalysisQuota(Base):
+    """Tracks monthly analysis quotas for users"""
+    __tablename__ = 'user_analysis_quotas'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    
+    # YYYY-MM format, e.g. '2026-01'
+    year_month = Column(String(7), index=True)
+    
+    # Quotas
+    advanced_used = Column(Integer, default=0)
+    advanced_purchased = Column(Integer, default=0) # Extra purchased
+    advanced_limit_base = Column(Integer, default=10) # Base monthly limit
+    
+    full_used = Column(Integer, default=0)
+    full_purchased = Column(Integer, default=0) # Extra purchased
+    full_limit_base = Column(Integer, default=5) # Base monthly limit
+    
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    user = relationship("User", back_populates="quotas")
+
+# Update User relationship
+User.prospect_analyses = relationship("ProspectAnalysis", back_populates="user")
+User.quotas = relationship("UserAnalysisQuota", back_populates="user")

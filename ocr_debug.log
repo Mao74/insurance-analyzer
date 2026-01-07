@@ -1,0 +1,246 @@
+[20:34:44] Test message - datetime import works!
+[20:37:28] 📄 SEQUENTIAL OCR STARTED: 7 pages, 1 need OCR
+[20:37:28] Process Page 7 - Start OCR
+[20:37:29] Process Page 7 - Full Page Tesseract Start
+[20:37:30] Process Page 7 - Full Page Tesseract End
+[20:37:30] SEQUENTIAL OCR FINISHED
+[20:45:21] 📄 SEQUENTIAL OCR STARTED: 7 pages, 1 need OCR
+[20:45:21] Process Page 7 - Start OCR
+[20:45:22] Process Page 7 - Full Page Tesseract Start
+[20:45:22] Process Page 7 - Full Page Tesseract End
+[20:45:22] SEQUENTIAL OCR FINISHED
+[12:12:34] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:12:34] Process Page 1 - Start OCR
+[12:12:35] Process Page 1 - Full Page Tesseract Start
+[12:12:36] Process Page 1 - Full Page Tesseract End
+[12:12:36] SEQUENTIAL OCR FINISHED
+[12:12:36] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:12:36] Process Page 1 - Start OCR
+[12:12:36] Process Page 1 - Full Page Tesseract Start
+[12:12:37] Process Page 1 - Full Page Tesseract End
+[12:12:37] SEQUENTIAL OCR FINISHED
+[12:12:37] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:12:37] Process Page 1 - Start OCR
+[12:12:37] Process Page 1 - Full Page Tesseract Start
+[12:12:37] Process Page 1 - Full Page Tesseract End
+[12:12:37] SEQUENTIAL OCR FINISHED
+[12:30:56] 📄 SEQUENTIAL OCR STARTED: 183 pages, 79 need OCR
+[12:30:56] Process Page 1 - Start OCR
+[12:30:58] Process Page 1 - Full Page Tesseract Start
+[12:30:58] Process Page 1 - Full Page Tesseract End
+[12:30:58] Process Page 69 - Start OCR
+[12:31:03] Process Page 69 - Embedded Image OCR Success (243 words)
+[12:31:03] Process Page 70 - Start OCR
+[12:31:11] Process Page 70 - Embedded Image OCR Success (550 words)
+[12:31:11] Process Page 71 - Start OCR
+[12:31:16] Process Page 71 - Embedded Image OCR Success (261 words)
+[12:31:16] Process Page 72 - Start OCR
+[12:31:17] Process Page 72 - Embedded Image OCR Success (47 words)
+[12:31:17] Process Page 73 - Start OCR
+[12:31:22] Process Page 73 - Embedded Image OCR Success (296 words)
+[12:31:22] Process Page 74 - Start OCR
+[12:31:24] Process Page 74 - Embedded Image OCR Success (74 words)
+[12:31:24] Process Page 75 - Start OCR
+[12:31:27] Process Page 75 - Embedded Image OCR Success (150 words)
+[12:31:27] Process Page 76 - Start OCR
+[12:31:31] Process Page 76 - Embedded Image OCR Success (324 words)
+[12:31:31] Process Page 77 - Start OCR
+[12:31:35] Process Page 77 - Embedded Image OCR Success (358 words)
+[12:31:35] Process Page 78 - Start OCR
+[12:31:40] Process Page 78 - Embedded Image OCR Success (312 words)
+[12:31:40] Process Page 79 - Start OCR
+[12:31:41] Process Page 79 - Full Page Tesseract Start
+[12:31:42] Process Page 79 - Full Page Tesseract End
+[12:31:42] Process Page 80 - Start OCR
+[12:31:46] Process Page 80 - Embedded Image OCR Success (269 words)
+[12:31:46] Process Page 81 - Start OCR
+[12:31:50] Process Page 81 - Embedded Image OCR Success (188 words)
+[12:31:50] Process Page 82 - Start OCR
+[12:31:53] Process Page 82 - Embedded Image OCR Success (154 words)
+[12:31:53] Process Page 83 - Start OCR
+[12:31:55] Process Page 83 - Embedded Image OCR Success (64 words)
+[12:31:55] Process Page 84 - Start OCR
+[12:31:57] Process Page 84 - Full Page Tesseract Start
+[12:31:58] Process Page 84 - Full Page Tesseract End
+[12:31:58] Process Page 85 - Start OCR
+[12:31:59] Process Page 85 - Full Page Tesseract Start
+[12:32:00] Process Page 85 - Full Page Tesseract End
+[12:32:00] Process Page 86 - Start OCR
+[12:32:04] Process Page 86 - Embedded Image OCR Success (134 words)
+[12:32:04] Process Page 87 - Start OCR
+[12:32:06] Process Page 87 - Embedded Image OCR Success (110 words)
+[12:32:06] Process Page 88 - Start OCR
+[12:32:08] Process Page 88 - Embedded Image OCR Success (53 words)
+[12:32:08] Process Page 89 - Start OCR
+[12:32:12] Process Page 89 - Embedded Image OCR Success (141 words)
+[12:32:12] Process Page 90 - Start OCR
+[12:32:14] Process Page 90 - Embedded Image OCR Success (72 words)
+[12:32:14] Process Page 91 - Start OCR
+[12:32:16] Process Page 91 - Embedded Image OCR Success (63 words)
+[12:32:16] Process Page 92 - Start OCR
+[12:32:18] Process Page 92 - Embedded Image OCR Success (101 words)
+[12:32:18] Process Page 93 - Start OCR
+[12:32:19] Process Page 93 - Full Page Tesseract Start
+[12:32:20] Process Page 93 - Full Page Tesseract End
+[12:32:20] Process Page 94 - Start OCR
+[12:32:23] Process Page 94 - Embedded Image OCR Success (192 words)
+[12:32:23] Process Page 95 - Start OCR
+[12:32:26] Process Page 95 - Embedded Image OCR Success (100 words)
+[12:32:26] Process Page 96 - Start OCR
+[12:32:31] Process Page 96 - Embedded Image OCR Success (209 words)
+[12:32:31] Process Page 97 - Start OCR
+[12:32:34] Process Page 97 - Embedded Image OCR Success (138 words)
+[12:32:34] Process Page 98 - Start OCR
+[12:32:38] Process Page 98 - Embedded Image OCR Success (205 words)
+[12:32:38] Process Page 99 - Start OCR
+[12:32:41] Process Page 99 - Embedded Image OCR Success (119 words)
+[12:32:41] Process Page 100 - Start OCR
+[12:32:45] Process Page 100 - Embedded Image OCR Success (190 words)
+[12:32:45] Process Page 101 - Start OCR
+[12:32:51] Process Page 101 - Embedded Image OCR Success (255 words)
+[12:32:51] Process Page 102 - Start OCR
+[12:32:52] Process Page 102 - Full Page Tesseract Start
+[12:32:53] Process Page 102 - Full Page Tesseract End
+[12:32:53] Process Page 103 - Start OCR
+[12:32:56] Process Page 103 - Embedded Image OCR Success (114 words)
+[12:32:56] Process Page 104 - Start OCR
+[12:32:58] Process Page 104 - Embedded Image OCR Success (54 words)
+[12:32:58] Process Page 105 - Start OCR
+[12:32:59] Process Page 105 - Embedded Image OCR Success (38 words)
+[12:32:59] Process Page 106 - Start OCR
+[12:33:01] Process Page 106 - Full Page Tesseract Start
+[12:33:02] Process Page 106 - Full Page Tesseract End
+[12:33:02] Process Page 107 - Start OCR
+[12:33:04] Process Page 107 - Embedded Image OCR Success (89 words)
+[12:33:04] Process Page 108 - Start OCR
+[12:33:08] Process Page 108 - Embedded Image OCR Success (200 words)
+[12:33:08] Process Page 109 - Start OCR
+[12:33:10] Process Page 109 - Embedded Image OCR Success (37 words)
+[12:33:10] Process Page 110 - Start OCR
+[12:33:13] Process Page 110 - Embedded Image OCR Success (123 words)
+[12:33:13] Process Page 111 - Start OCR
+[12:33:15] Process Page 111 - Full Page Tesseract Start
+[12:33:16] Process Page 111 - Full Page Tesseract End
+[12:33:16] Process Page 112 - Start OCR
+[12:33:17] Process Page 112 - Full Page Tesseract Start
+[12:33:18] Process Page 112 - Full Page Tesseract End
+[12:33:18] Process Page 113 - Start OCR
+[12:33:20] Process Page 113 - Embedded Image OCR Success (84 words)
+[12:33:20] Process Page 114 - Start OCR
+[12:33:24] Process Page 114 - Embedded Image OCR Success (159 words)
+[12:33:24] Process Page 115 - Start OCR
+[12:33:25] Process Page 115 - Full Page Tesseract Start
+[12:33:27] Process Page 115 - Full Page Tesseract End
+[12:33:27] Process Page 116 - Start OCR
+[12:33:29] Process Page 116 - Embedded Image OCR Success (69 words)
+[12:33:29] Process Page 117 - Start OCR
+[12:33:30] Process Page 117 - Full Page Tesseract Start
+[12:33:31] Process Page 117 - Full Page Tesseract End
+[12:33:31] Process Page 118 - Start OCR
+[12:33:32] Process Page 118 - Full Page Tesseract Start
+[12:33:34] Process Page 118 - Full Page Tesseract End
+[12:33:34] Process Page 119 - Start OCR
+[12:33:36] Process Page 119 - Full Page Tesseract Start
+[12:33:37] Process Page 119 - Full Page Tesseract End
+[12:33:37] Process Page 120 - Start OCR
+[12:33:38] Process Page 120 - Full Page Tesseract Start
+[12:33:40] Process Page 120 - Full Page Tesseract End
+[12:33:40] Process Page 121 - Start OCR
+[12:33:43] Process Page 121 - Embedded Image OCR Success (104 words)
+[12:33:43] Process Page 122 - Start OCR
+[12:33:45] Process Page 122 - Embedded Image OCR Success (92 words)
+[12:33:45] Process Page 123 - Start OCR
+[12:33:48] Process Page 123 - Embedded Image OCR Success (151 words)
+[12:33:48] Process Page 124 - Start OCR
+[12:33:50] Process Page 124 - Full Page Tesseract Start
+[12:33:50] Process Page 124 - Full Page Tesseract End
+[12:33:50] Process Page 125 - Start OCR
+[12:33:52] Process Page 125 - Full Page Tesseract Start
+[12:33:53] Process Page 125 - Full Page Tesseract End
+[12:33:53] Process Page 126 - Start OCR
+[12:33:54] Process Page 126 - Full Page Tesseract Start
+[12:33:55] Process Page 126 - Full Page Tesseract End
+[12:33:55] Process Page 127 - Start OCR
+[12:33:58] Process Page 127 - Embedded Image OCR Success (128 words)
+[12:33:58] Process Page 128 - Start OCR
+[12:34:02] Process Page 128 - Embedded Image OCR Success (141 words)
+[12:34:02] Process Page 129 - Start OCR
+[12:34:06] Process Page 129 - Embedded Image OCR Success (177 words)
+[12:34:06] Process Page 130 - Start OCR
+[12:34:10] Process Page 130 - Embedded Image OCR Success (167 words)
+[12:34:10] Process Page 131 - Start OCR
+[12:34:12] Process Page 131 - Embedded Image OCR Success (119 words)
+[12:34:12] Process Page 132 - Start OCR
+[12:34:15] Process Page 132 - Embedded Image OCR Success (151 words)
+[12:34:15] Process Page 133 - Start OCR
+[12:34:17] Process Page 133 - Embedded Image OCR Success (47 words)
+[12:34:17] Process Page 134 - Start OCR
+[12:34:18] Process Page 134 - Full Page Tesseract Start
+[12:34:19] Process Page 134 - Full Page Tesseract End
+[12:34:19] Process Page 135 - Start OCR
+[12:34:21] Process Page 135 - Embedded Image OCR Success (100 words)
+[12:34:21] Process Page 136 - Start OCR
+[12:34:23] Process Page 136 - Embedded Image OCR Success (62 words)
+[12:34:23] Process Page 137 - Start OCR
+[12:34:24] Process Page 137 - Full Page Tesseract Start
+[12:34:25] Process Page 137 - Full Page Tesseract End
+[12:34:25] Process Page 138 - Start OCR
+[12:34:26] Process Page 138 - Full Page Tesseract Start
+[12:34:27] Process Page 138 - Full Page Tesseract End
+[12:34:27] Process Page 139 - Start OCR
+[12:34:31] Process Page 139 - Embedded Image OCR Success (245 words)
+[12:34:31] Process Page 140 - Start OCR
+[12:34:33] Process Page 140 - Embedded Image OCR Success (69 words)
+[12:34:33] Process Page 141 - Start OCR
+[12:34:38] Process Page 141 - Embedded Image OCR Success (230 words)
+[12:34:38] Process Page 142 - Start OCR
+[12:34:41] Process Page 142 - Embedded Image OCR Success (98 words)
+[12:34:41] Process Page 149 - Start OCR
+[12:34:46] Process Page 149 - Embedded Image OCR Success (472 words)
+[12:34:46] Process Page 150 - Start OCR
+[12:34:47] Process Page 150 - Full Page Tesseract Start
+[12:34:47] Process Page 150 - Full Page Tesseract End
+[12:34:47] Process Page 154 - Start OCR
+[12:34:49] Process Page 154 - Full Page Tesseract Start
+[12:34:50] Process Page 154 - Full Page Tesseract End
+[12:34:50] Process Page 183 - Start OCR
+[12:34:52] Process Page 183 - Embedded Image OCR Success (64 words)
+[12:34:52] SEQUENTIAL OCR FINISHED
+[12:41:31] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:41:31] Process Page 1 - Start OCR
+[12:41:31] Process Page 1 - Full Page Tesseract Start
+[12:41:32] Process Page 1 - Full Page Tesseract End
+[12:41:32] SEQUENTIAL OCR FINISHED
+[12:41:32] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:41:32] Process Page 1 - Start OCR
+[12:41:32] Process Page 1 - Full Page Tesseract Start
+[12:41:33] Process Page 1 - Full Page Tesseract End
+[12:41:33] SEQUENTIAL OCR FINISHED
+[12:41:33] 📄 SEQUENTIAL OCR STARTED: 1 pages, 1 need OCR
+[12:41:33] Process Page 1 - Start OCR
+[12:41:33] Process Page 1 - Full Page Tesseract Start
+[12:41:33] Process Page 1 - Full Page Tesseract End
+[12:41:33] SEQUENTIAL OCR FINISHED
+[12:41:34] 📄 SEQUENTIAL OCR STARTED: 77 pages, 7 need OCR
+[12:41:34] Process Page 1 - Start OCR
+[12:41:35] Process Page 1 - Full Page Tesseract Start
+[12:41:35] Process Page 1 - Full Page Tesseract End
+[12:41:35] Process Page 6 - Start OCR
+[12:41:36] Process Page 6 - Full Page Tesseract Start
+[12:41:37] Process Page 6 - Full Page Tesseract End
+[12:41:37] Process Page 7 - Start OCR
+[12:41:38] Process Page 7 - Full Page Tesseract Start
+[12:41:39] Process Page 7 - Full Page Tesseract End
+[12:41:39] Process Page 62 - Start OCR
+[12:41:40] Process Page 62 - Full Page Tesseract Start
+[12:41:42] Process Page 62 - Full Page Tesseract End
+[12:41:42] Process Page 63 - Start OCR
+[12:41:43] Process Page 63 - Full Page Tesseract Start
+[12:41:46] Process Page 63 - Full Page Tesseract End
+[12:41:46] Process Page 64 - Start OCR
+[12:41:46] Process Page 64 - Full Page Tesseract Start
+[12:41:48] Process Page 64 - Full Page Tesseract End
+[12:41:48] Process Page 65 - Start OCR
+[12:41:49] Process Page 65 - Full Page Tesseract Start
+[12:41:50] Process Page 65 - Full Page Tesseract End
+[12:41:50] SEQUENTIAL OCR FINISHED

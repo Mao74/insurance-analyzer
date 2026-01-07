@@ -1,1206 +1,1168 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confronto Polizze RC - [CONTRAENTE]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         :root {
-            --primary-dark: #1e293b;
-            --primary-blue: #2563eb;
-            --bg-light: #f8fafc;
+            --bg-body: #f4f6f8;
+            --bg-paper: #ffffff;
+            --primary-dark: #0f172a;
+            --primary-main: #334155;
+            --accent-gold: #b49b66;
+            --accent-blue: #2563eb;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --success-border: #22c55e;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+            --warning-border: #f59e0b;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --danger-border: #ef4444;
+            --info-bg: #dbeafe;
+            --info-text: #1e40af;
+            --info-border: #3b82f6;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --border-subtle: #e2e8f0;
             --border-strong: #cbd5e1;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --green-light: #dcfce7;
-            --green-dark: #166534;
-            --red-light: #fee2e2;
-            --red-dark: #991b1b;
-            --orange-light: #fed7aa;
-            --orange-dark: #9a3412;
-            --blue-light: #dbeafe;
-            --blue-dark: #1e40af;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.4;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            font-size: 12px;
+            padding: 30px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 13px;
         }
 
-        .container {
+        .report-container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border: 1px solid var(--border-strong);
+            background-color: var(--bg-paper);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
         }
 
-        /* HEADER */
+        /* === HEADER === */
         .header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
-            color: white;
             padding: 30px 40px;
+            background: white;
+            border-bottom: 4px solid var(--primary-dark);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
         }
 
         .header h1 {
-            margin: 0 0 8px 0;
-            font-size: 22px;
+            font-family: 'Merriweather', serif;
+            font-size: 26px;
+            margin: 0 0 5px 0;
+            color: var(--primary-dark);
+        }
+
+        .header h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0;
             font-weight: 700;
         }
 
-        .header-subtitle {
-            font-size: 12px;
-            opacity: 0.9;
-            margin: 0 0 20px 0;
+        .header-badge {
+            background: var(--primary-dark);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         .header-meta {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            font-size: 11px;
+            border-top: 1px solid var(--border-subtle);
         }
 
-        .header-meta-label {
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
+        .header-meta-item { display: flex; flex-direction: column; }
+        .header-meta-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+        .header-meta-value { font-size: 14px; font-weight: 600; color: var(--primary-dark); }
 
-        .header-meta-value {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* TABS */
+        /* === TABS === */
         .tabs {
+            background: var(--primary-dark);
+            padding: 0 20px;
             display: flex;
-            background: var(--bg-light);
-            border-bottom: 2px solid var(--border-strong);
             overflow-x: auto;
         }
 
         .tab-link {
-            padding: 12px 24px;
-            cursor: pointer;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
             border: none;
-            background: none;
+            padding: 16px 20px;
+            cursor: pointer;
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             border-bottom: 3px solid transparent;
-            transition: all 0.2s;
             white-space: nowrap;
         }
 
-        .tab-link:hover {
-            color: var(--primary-blue);
-            background: white;
-        }
+        .tab-link:hover { color: white; background: rgba(255, 255, 255, 0.05); }
+        .tab-link.active { color: white; border-bottom-color: var(--accent-gold); background: rgba(255, 255, 255, 0.1); }
 
-        .tab-link.active {
-            color: var(--primary-blue);
-            background: white;
-            border-bottom-color: var(--primary-blue);
-        }
+        .tab-content { display: none; padding: 40px; }
+        .tab-content.active { display: block; }
 
-        .tab-content {
-            display: none;
-            padding: 30px 40px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* SECTION */
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin: 0 0 20px 0;
+        /* === TYPOGRAPHY === */
+        h3 {
+            font-family: 'Merriweather', serif;
+            color: var(--primary-main);
+            border-bottom: 2px solid var(--border-subtle);
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin: 30px 0 20px 0;
+            font-size: 18px;
         }
+        h3:first-child { margin-top: 0; }
+        h4 { color: var(--primary-dark); margin: 25px 0 15px 0; font-size: 15px; font-weight: 600; }
 
-        .subsection-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            margin: 20px 0 12px 0;
-        }
-
-        /* RACCOMANDAZIONE BOX */
-        .raccomandazione-box {
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-            color: white;
-            padding: 20px 25px;
+        /* === COMPARISON GRID - Sempre espanso === */
+        .comparison-section {
+            margin-bottom: 35px;
+            border: 1px solid var(--border-subtle);
             border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        .raccomandazione-box h3 {
-            margin: 0 0 12px 0;
-            font-size: 16px;
+        .comparison-header {
+            background: #f1f5f9;
+            padding: 15px 20px;
             font-weight: 700;
+            font-size: 14px;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .raccomandazione-box p {
-            margin: 0;
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 0;
+        }
+
+        .comparison-column {
+            padding: 20px;
+            border-right: 1px solid var(--border-subtle);
+            background: white;
+        }
+
+        .comparison-column:last-child {
+            border-right: none;
+        }
+
+        .comparison-column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .comparison-column-title {
+            font-weight: 700;
             font-size: 13px;
+            color: var(--primary-dark);
+        }
+
+        .comparison-column-text {
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        .comparison-column-text p {
+            margin: 0 0 12px 0;
+        }
+
+        .comparison-column-text em {
+            color: var(--text-muted);
+        }
+
+        /* === PREFERENCE BOX === */
+        .preference-box {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px 20px;
+            margin-top: 0;
+            font-size: 12px;
             line-height: 1.6;
         }
 
-        .raccomandazione-box .motivo {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,0.3);
-            font-size: 12px;
-        }
-
-        /* COMPARISON TABLE */
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        .preference-box strong {
+            color: var(--info-text);
+            display: block;
+            margin-bottom: 8px;
             font-size: 11px;
-        }
-
-        .comparison-table th {
-            background: var(--primary-dark);
-            color: white;
-            padding: 12px 10px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: 1px solid var(--primary-dark);
         }
 
-        .comparison-table th.voce-col {
-            width: 25%;
-        }
-
-        .comparison-table td {
-            padding: 10px;
-            border: 1px solid var(--border-subtle);
+        /* === BADGES === */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
             vertical-align: middle;
         }
 
-        .comparison-table tr:nth-child(even) {
-            background: #f8fafc;
+        .badge-positive, .badge-success { background: var(--success-bg); color: var(--success-text); }
+        .badge-neutral, .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-negative, .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+        .badge-info { background: var(--info-bg); color: var(--info-text); }
+        .badge-best { background: var(--success-text); color: white; }
+
+        /* === TABLES === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 12px;
         }
 
-        .comparison-table .row-header {
-            font-weight: 600;
-            background: var(--bg-light);
+        th {
+            background: #f1f5f9;
             color: var(--primary-dark);
-        }
-
-        /* DIFF HIGHLIGHTING */
-        .diff-better {
-            background: var(--green-light);
-            color: var(--green-dark);
-            font-weight: 600;
-        }
-
-        .diff-worse {
-            background: var(--red-light);
-            color: var(--red-dark);
-            font-weight: 600;
-        }
-
-        .diff-neutral {
-            background: var(--blue-light);
-            color: var(--blue-dark);
-        }
-
-        .diff-warning {
-            background: var(--orange-light);
-            color: var(--orange-dark);
-        }
-
-        /* BADGE */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
-        .badge-migliore {
-            background: var(--green-light);
-            color: var(--green-dark);
+        th.col-policy { background: var(--primary-dark); color: white; }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: top;
+            line-height: 1.6;
         }
 
-        .badge-peggiore {
-            background: var(--red-light);
-            color: var(--red-dark);
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr.row-total { background: #e2e8f0 !important; font-weight: 700; }
+        tr.row-total td { border-top: 2px solid var(--primary-dark); }
+
+        .col-value { text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .col-voce { font-weight: 600; color: var(--primary-dark); width: 28%; }
+
+        .diff-better { background: var(--success-bg) !important; color: var(--success-text); }
+        .diff-worse { background: var(--danger-bg) !important; color: var(--danger-text); }
+        .diff-warning { background: var(--warning-bg) !important; color: var(--warning-text); }
+
+        .note-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+
+        /* === EXECUTIVE SUMMARY === */
+        .exec-summary {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1e3a5f 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
         }
 
-        .badge-pari {
-            background: var(--blue-light);
-            color: var(--blue-dark);
+        .exec-summary h3 { color: white; border-bottom-color: rgba(255,255,255,0.2); margin-top: 0; }
+
+        .exec-summary-recommendation {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-gold);
+            margin-bottom: 20px;
         }
 
-        /* SCORING */
-        .score-container {
+        .exec-summary-recommendation strong { color: var(--accent-gold); }
+        .exec-summary-recommendation p { margin: 10px 0 0 0; font-size: 14px; line-height: 1.7; }
+
+        .exec-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .exec-summary-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .exec-summary-card-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px; }
+        .exec-summary-card-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+        .exec-summary-card-value.positive { color: #4ade80; }
+        .exec-summary-card-value.negative { color: #f87171; }
+        .exec-summary-card-value.neutral { color: var(--accent-gold); }
+
+        /* === KEY DIFFERENCES === */
+        .key-diff-list { list-style: none; padding: 0; margin: 0; }
+        
+        .key-diff-item {
             display: flex;
+            align-items: flex-start;
+            padding: 15px 20px;
+            background: #f8fafc;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .key-diff-number {
+            background: var(--primary-dark);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-right: 15px;
+        }
+
+        .key-diff-content { flex: 1; font-size: 13px; line-height: 1.6; }
+
+        /* === SCORE CARDS === */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
         .score-card {
-            flex: 1;
             background: white;
-            border: 2px solid var(--border-strong);
-            border-radius: 8px;
-            padding: 20px;
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 25px;
             text-align: center;
         }
 
-        .score-card.winner {
-            border-color: var(--green-dark);
-            background: var(--green-light);
-        }
+        .score-card.winner { border-color: var(--success-border); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2); }
+        .score-card-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+        .score-card-value { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: var(--primary-dark); }
+        .score-card.winner .score-card-value { color: var(--success-text); }
+        .score-card-max { font-size: 12px; color: var(--text-muted); }
 
-        .score-card-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
+        /* === PRO/CONTRO === */
+        .pro-contro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
+        .pro-contro-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle); }
+        .pro-contro-header { padding: 12px 20px; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+        .pro-header { background: var(--success-bg); color: var(--success-text); }
+        .contro-header { background: var(--danger-bg); color: var(--danger-text); }
+        .pro-contro-list { padding: 15px 20px; }
+        .pro-contro-list ul { margin: 0; padding-left: 20px; }
+        .pro-contro-list li { margin-bottom: 10px; font-size: 12px; line-height: 1.6; }
 
-        .score-card-value {
-            font-size: 36px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary-dark);
-            margin-bottom: 8px;
-        }
+        /* === ALERT BOX === */
+        .alert-box { padding: 20px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid; }
+        .alert-info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+        .alert-warning { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
+        .alert-success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+        .alert-danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
 
-        .score-card.winner .score-card-value {
-            color: var(--green-dark);
-        }
-
-        .score-card-max {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* PRO/CONTRO */
-        .pro-contro-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .pro-contro-card {
-            border: 1px solid var(--border-strong);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .pro-contro-header {
-            padding: 12px 15px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .pro-header {
-            background: var(--green-light);
-            color: var(--green-dark);
-        }
-
-        .contro-header {
-            background: var(--red-light);
-            color: var(--red-dark);
-        }
-
-        .pro-contro-list {
-            padding: 15px;
-        }
-
-        .pro-contro-list li {
-            margin-bottom: 8px;
-            font-size: 11px;
-            line-height: 1.5;
-        }
-
-        /* INFO GRID */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1px;
-            background: var(--border-strong);
-            border: 1px solid var(--border-strong);
-            margin-bottom: 20px;
-        }
-
-        .info-item {
-            background: white;
-            padding: 10px 12px;
-        }
-
-        .info-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-
-        .info-value {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--primary-dark);
-        }
-
-        /* CURRENCY */
-        .currency {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 500;
-        }
-
-        /* NOTE BOX */
+        /* === NOTE BOX === */
         .note-box {
-            background: #dbeafe;
-            border-left: 3px solid var(--primary-blue);
-            padding: 14px 18px;
+            background: #fefce8;
+            border-left: 4px solid #eab308;
+            padding: 15px 20px;
+            border-radius: 0 6px 6px 0;
             margin: 20px 0;
+        }
+        .note-box strong { color: #854d0e; }
+
+        /* === DISCLAIMER === */
+        .disclaimer {
+            background: #f8fafc;
+            border: 1px solid var(--border-subtle);
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
             font-size: 11px;
-            line-height: 1.6;
+            color: var(--text-muted);
+            text-align: center;
         }
 
-        .note-box strong {
-            color: var(--primary-blue);
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        /* ALERT BOX */
-        .alert-box {
-            padding: 14px 18px;
-            margin: 20px 0;
-            border-left: 4px solid;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .alert-warning {
-            background: #fff7ed;
-            border-color: var(--orange-dark);
-            color: var(--orange-dark);
-        }
-
-        .alert-info {
-            background: #eff6ff;
-            border-color: var(--primary-blue);
-            color: var(--blue-dark);
-        }
-
-        /* LISTA */
-        ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        ul li {
-            margin-bottom: 6px;
-            font-size: 11px;
-            line-height: 1.5;
-        }
-
-        /* PRINT */
+        /* === PRINT === */
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .container {
-                border: none;
-            }
-            .tabs {
-                display: none;
-            }
-            .tab-content {
-                display: block !important;
-                page-break-after: always;
-            }
+            body { padding: 0; background: white; }
+            .report-container { box-shadow: none; border: none; }
+            .tabs { display: none; }
+            .tab-content { display: block !important; page-break-inside: avoid; padding: 20px 0; }
+            .tab-content:not(:first-of-type) { page-break-before: always; }
         }
     </style>
 </head>
-
 <body>
+    <div id="root"></div>
 
-    <div class="container">
+    <script type="text/babel">
+        const { useState } = React;
 
-        <!-- HEADER -->
-        <div class="header">
-            <h1>CONFRONTO POLIZZE RC</h1>
-            <p class="header-subtitle">Analisi Comparativa Responsabilità Civile</p>
+        // ====== UTILITIES ======
+        const formatCurrency = (value) => {
+            if (typeof value !== 'number' || isNaN(value)) return 'N/D';
+            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+        };
+
+        const formatPercent = (value) => {
+            if (typeof value !== 'number' || isNaN(value)) return 'N/D';
+            return `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
+        };
+
+        // ====== DATA - Popolata dall'AI ======
+        const reportData = {
+            metadata: {
+                contraente: "[CONTRAENTE]",
+                settoreAttivita: "[SETTORE]",
+                dataAnalisi: "[DATA]",
+                numeroPolizze: "[N]"
+            },
+            companies: [
+                // Struttura per ogni polizza - vedi prompt per dettagli
+            ],
+            preferences: {},
+            globalConclusion: {
+                recommendation: "",
+                keyDifferences: [],
+                negotiationPoints: [],
+                riskAlerts: []
+            }
+        };
+
+        // ====== COMPONENTS ======
+        const Badge = ({ type, text }) => {
+            if (!text) return null;
+            return <span className={`badge badge-${type || 'neutral'}`}>{text}</span>;
+        };
+
+        const AlertBox = ({ type = 'info', children }) => (
+            <div className={`alert-box alert-${type}`}>{children}</div>
+        );
+
+        // Componente per confronto clausole - SEMPRE ESPANSO
+        const ClauseComparison = ({ title, clauses, preference }) => (
+            <div className="comparison-section">
+                <div className="comparison-header">
+                    <span>{title}</span>
+                    <span style={{display: 'flex', gap: '8px'}}>
+                        {clauses.filter(c => c.badge).map((c, i) => (
+                            <Badge key={i} type={c.badge?.type} text={`${c.companyName.split(' ')[0]}: ${c.badge?.text}`} />
+                        ))}
+                    </span>
+                </div>
+                <div className="comparison-grid">
+                    {clauses.map((clause, idx) => (
+                        <div className="comparison-column" key={idx}>
+                            <div className="comparison-column-header">
+                                <span className="comparison-column-title">{clause.companyName}</span>
+                                {clause.badge && <Badge type={clause.badge.type} text={clause.badge.text} />}
+                            </div>
+                            <div className="comparison-column-text" dangerouslySetInnerHTML={{ __html: clause.text || "<em>Non specificato nel wording analizzato.</em>" }} />
+                        </div>
+                    ))}
+                </div>
+                {preference && (
+                    <div className="preference-box">
+                        <strong>📊 Analisi e Preferenza</strong>
+                        <div dangerouslySetInnerHTML={{ __html: preference }} />
+                    </div>
+                )}
+            </div>
+        );
+
+        const ScoreCard = ({ label, score, max, isWinner }) => (
+            <div className={`score-card ${isWinner ? 'winner' : ''}`}>
+                <div className="score-card-label">{label}</div>
+                <div className="score-card-value">{score}</div>
+                <div className="score-card-max">/ {max} punti</div>
+                {isWinner && <Badge type="success" text="Migliore" />}
+            </div>
+        );
+
+        const ProControCard = ({ companyName, pros, cons }) => (
+            <div style={{marginBottom: '30px'}}>
+                <h4>{companyName}</h4>
+                <div className="pro-contro-grid">
+                    <div className="pro-contro-card">
+                        <div className="pro-contro-header pro-header">✓ Punti di Forza</div>
+                        <div className="pro-contro-list">
+                            <ul>{pros?.map((p, i) => <li key={i} dangerouslySetInnerHTML={{ __html: p }} />)}</ul>
+                        </div>
+                    </div>
+                    <div className="pro-contro-card">
+                        <div className="pro-contro-header contro-header">✗ Punti di Attenzione</div>
+                        <div className="pro-contro-list">
+                            <ul>{cons?.map((c, i) => <li key={i} dangerouslySetInnerHTML={{ __html: c }} />)}</ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // ====== TAB: EXECUTIVE SUMMARY ======
+        const ExecutiveSummary = ({ data }) => {
+            const { companies, globalConclusion } = data;
+            const recommended = companies.find(c => c.isRecommended);
+            const current = companies.find(c => c.isCurrentPolicy);
             
-            <div class="header-meta">
+            let deltaPremioPct = 0, deltaPremioAbs = 0;
+            if (recommended && current) {
+                const premioRec = recommended.quantitative?.premioAnnuoComplessivo?.value || 0;
+                const premioCur = current.quantitative?.premioAnnuoComplessivo?.value || 0;
+                if (premioCur > 0) {
+                    deltaPremioPct = ((premioRec - premioCur) / premioCur) * 100;
+                    deltaPremioAbs = premioRec - premioCur;
+                }
+            }
+
+            return (
                 <div>
-                    <div class="header-meta-label">Contraente</div>
-                    <div class="header-meta-value">[CONTRAENTE]</div>
-                </div>
-                <div>
-                    <div class="header-meta-label">Numero Polizze Confrontate</div>
-                    <div class="header-meta-value">[NUMERO_POLIZZE]</div>
-                </div>
-                <div>
-                    <div class="header-meta-label">Data Confronto</div>
-                    <div class="header-meta-value">[DATA_CONFRONTO]</div>
-                </div>
-            </div>
-        </div>
+                    <div className="exec-summary">
+                        <h3>🎯 Executive Summary</h3>
+                        <div className="exec-summary-recommendation">
+                            <strong>Raccomandazione</strong>
+                            <p dangerouslySetInnerHTML={{ __html: globalConclusion.recommendation }} />
+                        </div>
+                        <div className="exec-summary-grid">
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Polizza Consigliata</div>
+                                <div className="exec-summary-card-value neutral">{recommended?.name?.split(' ')[0] || 'N/D'}</div>
+                            </div>
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Delta Premio</div>
+                                <div className={`exec-summary-card-value ${deltaPremioAbs <= 0 ? 'positive' : 'negative'}`}>
+                                    {formatCurrency(deltaPremioAbs)}
+                                </div>
+                            </div>
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Variazione %</div>
+                                <div className={`exec-summary-card-value ${deltaPremioPct <= 0 ? 'positive' : 'negative'}`}>
+                                    {formatPercent(deltaPremioPct)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="tab-link active" onclick="openTab(event, 'tab1')">1. RACCOMANDAZIONE</button>
-            <button class="tab-link" onclick="openTab(event, 'tab2')">2. SINTESI ECONOMICA</button>
-            <button class="tab-link" onclick="openTab(event, 'tab3')">3. CONFRONTO MASSIMALI</button>
-            <button class="tab-link" onclick="openTab(event, 'tab4')">4. CONFRONTO FRANCHIGIE</button>
-            <button class="tab-link" onclick="openTab(event, 'tab5')">5. CONFRONTO GARANZIE</button>
-            <button class="tab-link" onclick="openTab(event, 'tab6')">6. ESCLUSIONI CRITICHE</button>
-            <button class="tab-link" onclick="openTab(event, 'tab7')">7. SCORING DETTAGLIATO</button>
-            <button class="tab-link" onclick="openTab(event, 'tab8')">8. PRO E CONTRO</button>
-        </div>
+                    <h3>🔑 Principali Differenze Emerse</h3>
+                    <ul className="key-diff-list">
+                        {globalConclusion.keyDifferences?.map((diff, idx) => (
+                            <li className="key-diff-item" key={idx}>
+                                <span className="key-diff-number">{idx + 1}</span>
+                                <div className="key-diff-content" dangerouslySetInnerHTML={{ __html: diff }} />
+                            </li>
+                        ))}
+                    </ul>
 
-        <!-- TAB 1: RACCOMANDAZIONE -->
-        <div id="tab1" class="tab-content active">
-            <div class="raccomandazione-box">
-                <h3>🎯 RACCOMANDAZIONE FINALE</h3>
-                <p><strong>[RACCOMANDAZIONE_TESTO]</strong></p>
-                <div class="motivo">
-                    <strong>Motivazione:</strong><br>
-                    [RACCOMANDAZIONE_MOTIVAZIONE]
+                    {globalConclusion.riskAlerts?.length > 0 && (
+                        <>
+                            <h3>⚠️ Punti di Attenzione</h3>
+                            <AlertBox type="warning">
+                                <ul style={{margin: 0, paddingLeft: '20px'}}>
+                                    {globalConclusion.riskAlerts.map((alert, idx) => (
+                                        <li key={idx} style={{marginBottom: '8px'}} dangerouslySetInnerHTML={{ __html: alert }} />
+                                    ))}
+                                </ul>
+                            </AlertBox>
+                        </>
+                    )}
                 </div>
-            </div>
+            );
+        };
 
-            <h2 class="section-title">Sintesi Differenze Chiave</h2>
+        // ====== TAB: QUANTITATIVE ======
+        const QuantitativeComparison = ({ data }) => {
+            const { companies } = data;
             
-            <h3 class="subsection-title">Top 3 Differenze per Polizza</h3>
-            
-            <!-- Ripetere per OGNI polizza -->
-            <div style="margin-bottom: 30px;">
-                <h4 style="font-size:13px; font-weight:700; color:var(--primary-blue); margin:0 0 12px 0;">[NOME_POLIZZA_1]</h4>
-                <ol style="margin:0; padding-left:20px;">
-                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_1_POLIZZA_1]</li>
-                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_2_POLIZZA_1]</li>
-                    <li style="margin-bottom:8px; font-size:12px; line-height:1.5;">[DIFF_3_POLIZZA_1]</li>
-                </ol>
-            </div>
+            const params = [
+                { key: 'premioAnnuoComplessivo', label: 'Premio Annuo Lordo Complessivo', isTotal: true, lowerIsBetter: true },
+                { key: 'premioNormalizzato', label: 'Premio Normalizzato (a parità di parametri)', lowerIsBetter: true, isSimulated: true },
+                { key: 'fatturatoRiferimento', label: 'Fatturato di Riferimento' },
+                { key: 'massimaleAggregatoRCT', label: 'Massimale Aggregato Annuo RCT/RCO', higherIsBetter: true },
+                { key: 'massimaleSinistroRCT', label: 'Massimale per Sinistro RCT', higherIsBetter: true },
+                { key: 'massimalePersonaRCT', label: 'Massimale per Persona RCT', higherIsBetter: true },
+                { key: 'franchigiaDanniCoseRCT', label: 'Franchigia Danni a Cose RCT', lowerIsBetter: true },
+                { key: 'massimaleAggregatoRCO', label: 'Massimale Aggregato RCO', higherIsBetter: true },
+                { key: 'massimaleSinistroRCO', label: 'Massimale per Sinistro RCO', higherIsBetter: true },
+                { key: 'franchigiaRCO', label: 'Franchigia/Scoperto RCO', lowerIsBetter: true },
+                { key: 'massimaleAggregatoRCP', label: 'Massimale Aggregato RC Prodotti', higherIsBetter: true },
+                { key: 'massimaleSinistroRCP', label: 'Massimale per Sinistro RC Prodotti', higherIsBetter: true },
+                { key: 'scopertoRCP', label: 'Scoperto RC Prodotti' },
+                { key: 'limiteMalattieProfessionali', label: 'Limite Malattie Professionali RCO', higherIsBetter: true },
+                { key: 'limiteInquinamento', label: 'Limite Inquinamento Accidentale', higherIsBetter: true },
+                { key: 'limiteRitiroProdotti', label: 'Limite Ritiro Prodotti', higherIsBetter: true },
+                { key: 'limiteDanniPatrimoniali', label: 'Limite Danni Patrimoniali Puri RCP', higherIsBetter: true },
+                { key: 'limitePostumaOperazioni', label: 'Limite Garanzia Postuma Operazioni', higherIsBetter: true },
+                { key: 'limiteGaranziaFornitura', label: 'Limite Garanzia di Fornitura', higherIsBetter: true }
+            ];
 
-            <!-- Ripetere blocco per polizza 2, 3, N -->
-
-            <h3 class="subsection-title">Impatto Economico Netto</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">Polizza Attuale</span>
-                    <span class="info-value currency">[PREMIO_ATTUALE]</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Opzione Consigliata</span>
-                    <span class="info-value currency">[PREMIO_CONSIGLIATO]</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Delta Economico</span>
-                    <span class="info-value currency">[DELTA_PREMIO]</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Variazione %</span>
-                    <span class="info-value">[VARIAZIONE_PERC]</span>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- TAB 2: SINTESI ECONOMICA -->
-        <div id="tab2" class="tab-content">
-            <h2 class="section-title">Confronto Economico</h2>
-
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Voce</th>
-                        <!-- Ripetere per OGNI polizza -->
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                        <!-- ... -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">Premio Imponibile</td>
-                        <td class="currency">[PREMIO_IMP_1]</td>
-                        <td class="currency">[PREMIO_IMP_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Imposte</td>
-                        <td class="currency">[IMPOSTE_1]</td>
-                        <td class="currency">[IMPOSTE_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">SSN</td>
-                        <td class="currency">[SSN_1]</td>
-                        <td class="currency">[SSN_2]</td>
-                    </tr>
-                    <tr style="font-weight:700; background:#f1f5f9;">
-                        <td class="row-header">PREMIO LORDO TOTALE</td>
-                        <td class="currency [DIFF_CLASS_PREMIO_1]">[PREMIO_LORDO_1]</td>
-                        <td class="currency [DIFF_CLASS_PREMIO_2]">[PREMIO_LORDO_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Frazionamento</td>
-                        <td>[FRAZIONAMENTO_1]</td>
-                        <td>[FRAZIONAMENTO_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Rata</td>
-                        <td class="currency">[RATA_1]</td>
-                        <td class="currency">[RATA_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3 class="subsection-title">Analisi Delta Economico</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>Polizza</th>
-                        <th>vs Attuale</th>
-                        <th>Variazione €</th>
-                        <th>Variazione %</th>
-                        <th>Valutazione</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Ripetere per OGNI polizza (esclusa attuale) -->
-                    <tr>
-                        <td>[NOME_POLIZZA_N]</td>
-                        <td class="currency">[DELTA_VS_ATTUALE_N]</td>
-                        <td class="currency [DIFF_CLASS_N]">[VARIAZIONE_EURO_N]</td>
-                        <td>[VARIAZIONE_PERC_N]</td>
-                        <td><span class="badge [BADGE_CLASS_N]">[VALUTAZIONE_N]</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="note-box">
-                <strong>Nota Confronto Premio:</strong>
-                [NOTE_CONFRONTO_PREMIO]
-            </div>
-
-        </div>
-
-        <!-- TAB 3: CONFRONTO MASSIMALI -->
-        <div id="tab3" class="tab-content">
-            <h2 class="section-title">Confronto Massimali Garanzie</h2>
-
-            <h3 class="subsection-title">RCT - Responsabilità Civile Terzi</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Massimale</th>
-                        <!-- Ripetere colonne polizze -->
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">Per Sinistro</td>
-                        <td class="currency [DIFF_CLASS_RCT_SINISTRO_1]">[RCT_MASSIMALE_SINISTRO_1]</td>
-                        <td class="currency [DIFF_CLASS_RCT_SINISTRO_2]">[RCT_MASSIMALE_SINISTRO_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Per Persona</td>
-                        <td class="currency [DIFF_CLASS_RCT_PERSONA_1]">[RCT_MASSIMALE_PERSONA_1]</td>
-                        <td class="currency [DIFF_CLASS_RCT_PERSONA_2]">[RCT_MASSIMALE_PERSONA_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Per Anno</td>
-                        <td class="currency">[RCT_MASSIMALE_ANNO_1]</td>
-                        <td class="currency">[RCT_MASSIMALE_ANNO_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3 class="subsection-title">RCO - Responsabilità Civile Prestatori d'Opera</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Massimale</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">Per Sinistro</td>
-                        <td class="currency [DIFF_CLASS_RCO_SINISTRO_1]">[RCO_MASSIMALE_SINISTRO_1]</td>
-                        <td class="currency [DIFF_CLASS_RCO_SINISTRO_2]">[RCO_MASSIMALE_SINISTRO_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Per Persona</td>
-                        <td class="currency [DIFF_CLASS_RCO_PERSONA_1]">[RCO_MASSIMALE_PERSONA_1]</td>
-                        <td class="currency [DIFF_CLASS_RCO_PERSONA_2]">[RCO_MASSIMALE_PERSONA_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Per Anno</td>
-                        <td class="currency">[RCO_MASSIMALE_ANNO_1]</td>
-                        <td class="currency">[RCO_MASSIMALE_ANNO_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3 class="subsection-title">RCP - Responsabilità Civile Prodotti</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Massimale</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">Per Sinistro</td>
-                        <td class="currency [DIFF_CLASS_RCP_SINISTRO_1]">[RCP_MASSIMALE_SINISTRO_1]</td>
-                        <td class="currency [DIFF_CLASS_RCP_SINISTRO_2]">[RCP_MASSIMALE_SINISTRO_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Per Anno</td>
-                        <td class="currency">[RCP_MASSIMALE_ANNO_1]</td>
-                        <td class="currency">[RCP_MASSIMALE_ANNO_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3 class="subsection-title">Altre Garanzie</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Garanzia</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header">Danni da Inquinamento</td>
-                        <td class="currency">[INQUIN_MASSIMALE_1]</td>
-                        <td class="currency">[INQUIN_MASSIMALE_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Danni a Cose in Custodia</td>
-                        <td class="currency">[CUSTODIA_MASSIMALE_1]</td>
-                        <td class="currency">[CUSTODIA_MASSIMALE_2]</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">Committente/Proprietario</td>
-                        <td class="currency">[COMMIT_MASSIMALE_1]</td>
-                        <td class="currency">[COMMIT_MASSIMALE_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-        <!-- TAB 4: CONFRONTO FRANCHIGIE -->
-        <div id="tab4" class="tab-content">
-            <h2 class="section-title">Confronto Franchigie e Scoperti</h2>
-
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Garanzia</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>RCT - Responsabilità Civile Terzi</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Franchigia RCT</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCT_1]">[FRANCHIGIA_RCT_1]</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCT_2]">[FRANCHIGIA_RCT_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Scoperto RCT</td>
-                        <td>[SCOPERTO_RCT_1]</td>
-                        <td>[SCOPERTO_RCT_2]</td>
-                    </tr>
-                    
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>RCO - Prestatori d'Opera</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Franchigia RCO</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCO_1]">[FRANCHIGIA_RCO_1]</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCO_2]">[FRANCHIGIA_RCO_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Scoperto RCO</td>
-                        <td>[SCOPERTO_RCO_1]</td>
-                        <td>[SCOPERTO_RCO_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>RCP - Prodotti</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Franchigia RCP</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCP_1]">[FRANCHIGIA_RCP_1]</td>
-                        <td class="[DIFF_CLASS_FRANCH_RCP_2]">[FRANCHIGIA_RCP_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Scoperto RCP</td>
-                        <td>[SCOPERTO_RCP_1]</td>
-                        <td>[SCOPERTO_RCP_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>Altre Garanzie</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Franchigia Inquinamento</td>
-                        <td>[FRANCHIGIA_INQUIN_1]</td>
-                        <td>[FRANCHIGIA_INQUIN_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Franchigia Custodia</td>
-                        <td>[FRANCHIGIA_CUSTODIA_1]</td>
-                        <td>[FRANCHIGIA_CUSTODIA_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="note-box">
-                <strong>Impatto Franchigie:</strong>
-                [ANALISI_IMPATTO_FRANCHIGIE]
-            </div>
-
-        </div>
-
-        <!-- TAB 5: CONFRONTO GARANZIE -->
-        <div id="tab5" class="tab-content">
-            <h2 class="section-title">Confronto Garanzie e Coperture</h2>
-
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Garanzia / Copertura</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Sezione RCT -->
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>GARANZIE RCT</strong></td>
-                    </tr>
-                    <tr>
-                        <td>RC per Danni da Incendio</td>
-                        <td>[GAR_INCENDIO_1]</td>
-                        <td>[GAR_INCENDIO_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RC da Serbatoi Interrati</td>
-                        <td>[GAR_SERBATOI_1]</td>
-                        <td>[GAR_SERBATOI_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RC da Interruzioni/Sospensioni</td>
-                        <td>[GAR_INTERRUZIONI_1]</td>
-                        <td>[GAR_INTERRUZIONI_2]</td>
-                    </tr>
-                    
-                    <!-- Sezione RCO -->
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>GARANZIE RCO</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Copertura Malattie Professionali</td>
-                        <td>[GAR_MALATTIE_1]</td>
-                        <td>[GAR_MALATTIE_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Retroattività Malattie</td>
-                        <td>[GAR_RETROATT_1]</td>
-                        <td>[GAR_RETROATT_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Rivalsa INAIL</td>
-                        <td>[GAR_RIVALSA_INAIL_1]</td>
-                        <td>[GAR_RIVALSA_INAIL_2]</td>
-                    </tr>
-
-                    <!-- Sezione RCP -->
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>GARANZIE RCP</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Post-Delivery (anni)</td>
-                        <td>[GAR_POSTDEL_1]</td>
-                        <td>[GAR_POSTDEL_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Richiamo Prodotti</td>
-                        <td>[GAR_RICHIAMO_1]</td>
-                        <td>[GAR_RICHIAMO_2]</td>
-                    </tr>
-
-                    <!-- Altre Garanzie -->
-                    <tr>
-                        <td class="row-header" colspan="100%"><strong>ALTRE GARANZIE</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Danni da Inquinamento Accidentale</td>
-                        <td>[GAR_INQUIN_ACC_1]</td>
-                        <td>[GAR_INQUIN_ACC_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Danni a Cose in Lavorazione</td>
-                        <td>[GAR_LAV_1]</td>
-                        <td>[GAR_LAV_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RC Committente</td>
-                        <td>[GAR_COMMITTENTE_1]</td>
-                        <td>[GAR_COMMITTENTE_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RC Proprietario</td>
-                        <td>[GAR_PROPRIETARIO_1]</td>
-                        <td>[GAR_PROPRIETARIO_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3 class="subsection-title">Estensioni Territoriali</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Territorio</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>RCT - Territorio Base</td>
-                        <td>[TERR_RCT_BASE_1]</td>
-                        <td>[TERR_RCT_BASE_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RCT - Estensione</td>
-                        <td>[TERR_RCT_EST_1]</td>
-                        <td>[TERR_RCT_EST_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RCP - Territorio Base</td>
-                        <td>[TERR_RCP_BASE_1]</td>
-                        <td>[TERR_RCP_BASE_2]</td>
-                    </tr>
-                    <tr>
-                        <td>RCP - Estensione</td>
-                        <td>[TERR_RCP_EST_1]</td>
-                        <td>[TERR_RCP_EST_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-        <!-- TAB 6: ESCLUSIONI CRITICHE -->
-        <div id="tab6" class="tab-content">
-            <h2 class="section-title">Esclusioni e Limitazioni Critiche</h2>
-
-            <div class="alert-box alert-warning">
-                <strong>⚠️ Attenzione:</strong> Questa sezione evidenzia le esclusioni e limitazioni più rilevanti che potrebbero impattare la copertura in caso di sinistro.
-            </div>
-
-            <!-- Ripetere per OGNI polizza -->
-            <h3 class="subsection-title">[NOME_POLIZZA_1]</h3>
-            
-            <h4 style="font-size:12px; font-weight:600; margin:15px 0 10px 0;">Esclusioni Generali</h4>
-            <ul>
-                <li>[ESCLUSIONE_GEN_1_POL1]</li>
-                <li>[ESCLUSIONE_GEN_2_POL1]</li>
-                <li>[ESCLUSIONE_GEN_3_POL1]</li>
-            </ul>
-
-            <h4 style="font-size:12px; font-weight:600; margin:15px 0 10px 0;">Esclusioni RCO</h4>
-            <ul>
-                <li>[ESCLUSIONE_RCO_1_POL1]</li>
-                <li>[ESCLUSIONE_RCO_2_POL1]</li>
-            </ul>
-
-            <h4 style="font-size:12px; font-weight:600; margin:15px 0 10px 0;">Esclusioni RCP</h4>
-            <ul>
-                <li>[ESCLUSIONE_RCP_1_POL1]</li>
-                <li>[ESCLUSIONE_RCP_2_POL1]</li>
-            </ul>
-
-            <h4 style="font-size:12px; font-weight:600; margin:15px 0 10px 0;">Limitazioni Importanti</h4>
-            <ul>
-                <li>[LIMITAZIONE_1_POL1]</li>
-                <li>[LIMITAZIONE_2_POL1]</li>
-            </ul>
-
-            <!-- Ripetere blocco per polizza 2, 3, N -->
-
-            <h3 class="subsection-title">Differenze Critiche nelle Esclusioni</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Esclusione / Limitazione</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Danni da Amianto</td>
-                        <td>[ESCL_AMIANTO_1]</td>
-                        <td>[ESCL_AMIANTO_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Danni da OGM</td>
-                        <td>[ESCL_OGM_1]</td>
-                        <td>[ESCL_OGM_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Danni da Campi Elettromagnetici</td>
-                        <td>[ESCL_CEM_1]</td>
-                        <td>[ESCL_CEM_2]</td>
-                    </tr>
-                    <tr>
-                        <td>Sanzioni Pecuniarie</td>
-                        <td>[ESCL_SANZIONI_1]</td>
-                        <td>[ESCL_SANZIONI_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-        <!-- TAB 7: SCORING DETTAGLIATO -->
-        <div id="tab7" class="tab-content">
-            <h2 class="section-title">Scoring e Ranking Dettagliato</h2>
-
-            <h3 class="subsection-title">Score Totale</h3>
-            <div class="score-container">
-                <!-- Ripetere per OGNI polizza -->
-                <div class="score-card [WINNER_CLASS_1]">
-                    <div class="score-card-label">[NOME_POLIZZA_1]</div>
-                    <div class="score-card-value">[SCORE_TOTALE_1]</div>
-                    <div class="score-card-max">/ 100 punti</div>
-                </div>
+            // Calcola il migliore, ma solo se c'è effettivamente una differenza
+            const getBest = (key, lower, higher) => {
+                if (!lower && !higher) return {};
+                const vals = companies.map(c => ({ id: c.id, v: c.quantitative?.[key]?.value })).filter(x => typeof x.v === 'number');
+                if (vals.length <= 1) return {};
                 
-                <div class="score-card [WINNER_CLASS_2]">
-                    <div class="score-card-label">[NOME_POLIZZA_2]</div>
-                    <div class="score-card-value">[SCORE_TOTALE_2]</div>
-                    <div class="score-card-max">/ 100 punti</div>
-                </div>
-            </div>
+                // Verifica se tutti i valori sono uguali
+                const uniqueValues = [...new Set(vals.map(x => x.v))];
+                if (uniqueValues.length === 1) return {}; // Tutti uguali, nessun "migliore"
+                
+                const best = lower ? Math.min(...vals.map(x => x.v)) : Math.max(...vals.map(x => x.v));
+                const result = {};
+                const bestCompanies = vals.filter(x => x.v === best);
+                
+                // Mostra badge solo se non tutti hanno il valore migliore
+                if (bestCompanies.length < vals.length) {
+                    bestCompanies.forEach(x => result[x.id] = true);
+                }
+                return result;
+            };
 
-            <h3 class="subsection-title">Dettaglio Punteggi per Categoria</h3>
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th class="voce-col">Categoria (Peso)</th>
-                        <th>[NOME_POLIZZA_1]</th>
-                        <th>[NOME_POLIZZA_2]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>1. Massimali (30 punti)</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_MASS_1]"><strong>[SCORE_MASSIMALI_1]</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_MASS_2]"><strong>[SCORE_MASSIMALI_2]</strong></td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">RCT Massimale</td>
-                        <td>[SUBSCORE_RCT_MASS_1]</td>
-                        <td>[SUBSCORE_RCT_MASS_2]</td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">RCO Massimale</td>
-                        <td>[SUBSCORE_RCO_MASS_1]</td>
-                        <td>[SUBSCORE_RCO_MASS_2]</td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">RCP Massimale</td>
-                        <td>[SUBSCORE_RCP_MASS_1]</td>
-                        <td>[SUBSCORE_RCP_MASS_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>2. Franchigie (20 punti)</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_FRANCH_1]"><strong>[SCORE_FRANCHIGIE_1]</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_FRANCH_2]"><strong>[SCORE_FRANCHIGIE_2]</strong></td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">Franchigie RCT/RCO/RCP</td>
-                        <td>[SUBSCORE_FRANCH_1]</td>
-                        <td>[SUBSCORE_FRANCH_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>3. Garanzie (25 punti)</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_GAR_1]"><strong>[SCORE_GARANZIE_1]</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_GAR_2]"><strong>[SCORE_GARANZIE_2]</strong></td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">Ampiezza Garanzie</td>
-                        <td>[SUBSCORE_AMPIEZZA_1]</td>
-                        <td>[SUBSCORE_AMPIEZZA_2]</td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">Estensioni Territoriali</td>
-                        <td>[SUBSCORE_TERRITORIO_1]</td>
-                        <td>[SUBSCORE_TERRITORIO_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>4. Esclusioni (15 punti)</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_ESCL_1]"><strong>[SCORE_ESCLUSIONI_1]</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_ESCL_2]"><strong>[SCORE_ESCLUSIONI_2]</strong></td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">Minori Esclusioni</td>
-                        <td>[SUBSCORE_ESCLUSIONI_1]</td>
-                        <td>[SUBSCORE_ESCLUSIONI_2]</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>5. Rapporto Qualità/Prezzo (10 punti)</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_QPR_1]"><strong>[SCORE_QPR_1]</strong></td>
-                        <td class="[DIFF_CLASS_SCORE_QPR_2]"><strong>[SCORE_QPR_2]</strong></td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left:20px; font-size:10px;">Value for Money</td>
-                        <td>[SUBSCORE_VALUE_1]</td>
-                        <td>[SUBSCORE_VALUE_2]</td>
-                    </tr>
-
-                    <tr style="background:#f1f5f9; font-weight:700; font-size:13px;">
-                        <td>TOTALE (100 punti)</td>
-                        <td class="[DIFF_CLASS_TOTAL_1]">[SCORE_TOTALE_1]</td>
-                        <td class="[DIFF_CLASS_TOTAL_2]">[SCORE_TOTALE_2]</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="note-box">
-                <strong>Metodologia Scoring:</strong>
-                [METODOLOGIA_SCORING]
-            </div>
-
-        </div>
-
-        <!-- TAB 8: PRO E CONTRO -->
-        <div id="tab8" class="tab-content">
-            <h2 class="section-title">Pro e Contro per Polizza</h2>
-
-            <!-- Ripetere per OGNI polizza -->
-            <h3 class="subsection-title">[NOME_POLIZZA_1]</h3>
-            
-            <div class="pro-contro-grid">
-                <div class="pro-contro-card">
-                    <div class="pro-contro-header pro-header">✓ PUNTI DI FORZA</div>
-                    <div class="pro-contro-list">
-                        <ul>
-                            <li>[PRO_1_POL1]</li>
-                            <li>[PRO_2_POL1]</li>
-                            <li>[PRO_3_POL1]</li>
-                            <li>[PRO_4_POL1]</li>
-                        </ul>
+            return (
+                <div>
+                    <h3>📊 Confronto Quantitativo</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '30%'}}>Parametro</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {params.map(p => {
+                                const best = getBest(p.key, p.lowerIsBetter, p.higherIsBetter);
+                                const hasBest = Object.keys(best).length > 0;
+                                return (
+                                    <tr key={p.key} className={p.isTotal ? 'row-total' : ''} style={p.isSimulated ? {background: '#fefce8'} : {}}>
+                                        <td className="col-voce">
+                                            {p.label}
+                                            {p.isSimulated && <span style={{fontSize: '10px', color: 'var(--warning-text)'}}> ⚡</span>}
+                                        </td>
+                                        {companies.map(c => {
+                                            const d = c.quantitative?.[p.key];
+                                            const isBest = best[c.id];
+                                            return (
+                                                <td key={`${c.id}-${p.key}`} className={`col-value ${isBest ? 'diff-better' : ''}`}>
+                                                    {d?.display || 'N/D'}
+                                                    {isBest && hasBest && <Badge type="best" text="Migliore" />}
+                                                    {d?.notes && <div className="note-text">{d.notes}</div>}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    <div className="note-box">
+                        <strong>📝 Note:</strong> I valori evidenziati in verde rappresentano la condizione migliore per l'assicurato 
+                        (solo quando c'è effettiva differenza tra le polizze). 
+                        Per massimali: più alto è meglio. Per franchigie/scoperti/premi: più basso è meglio.
+                        <br/><br/>
+                        <strong>⚡ Premio Normalizzato:</strong> Se i premi sono calcolati su basi diverse (fatturato/retribuzioni di anni diversi), 
+                        viene mostrato il premio ricalcolato sugli stessi parametri per un confronto omogeneo.
                     </div>
                 </div>
+            );
+        };
 
-                <div class="pro-contro-card">
-                    <div class="pro-contro-header contro-header">✗ PUNTI DI DEBOLEZZA</div>
-                    <div class="pro-contro-list">
-                        <ul>
-                            <li>[CONTRO_1_POL1]</li>
-                            <li>[CONTRO_2_POL1]</li>
-                            <li>[CONTRO_3_POL1]</li>
-                            <li>[CONTRO_4_POL1]</li>
-                        </ul>
+        // ====== TAB: DEFINITIONS ======
+        const DefinitionsComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            const defs = [
+                { key: 'prodotto', title: "Definizione di 'Prodotto'" },
+                { key: 'sinistro', title: "Definizione di 'Sinistro'" },
+                { key: 'sinistroSerie', title: "Definizione di 'Sinistro in Serie' (RC Prodotti)" },
+                { key: 'terzo', title: "Definizione di 'Terzo'" },
+                { key: 'difettoProdotto', title: "Concetto di 'Difetto del Prodotto'" }
+            ];
+
+            return (
+                <div>
+                    <h3>📖 Definizioni Chiave</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        Le definizioni contrattuali determinano l'ampiezza effettiva della copertura. 
+                        Differenze apparentemente minime nel wording possono avere impatto significativo in sede di sinistro.
+                    </p>
+                    {defs.map(def => (
+                        <ClauseComparison
+                            key={def.key}
+                            title={def.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.definitions?.[def.key]?.text,
+                                badge: c.definitions?.[def.key]?.badge
+                            }))}
+                            preference={preferences?.definitions?.[def.key]}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: GENERAL CONDITIONS ======
+        const GeneralConditionsComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            const conds = [
+                { key: 'regimeTemporale', title: "Regime Temporale della Copertura" },
+                { key: 'termineDenuncia', title: "Termine di Denuncia Sinistro" },
+                { key: 'pagamentoPremio', title: "Pagamento Premio e Sospensione Garanzia" },
+                { key: 'regolazionePremio', title: "Regolazione del Premio" },
+                { key: 'disdetta', title: "Clausola di Disdetta" },
+                { key: 'esclusioneGuerraTerrorismo', title: "Esclusione Guerra e Terrorismo" },
+                { key: 'esclusioneCyber', title: "Esclusione Rischi Informatici / Cyber" }
+            ];
+
+            return (
+                <div>
+                    <h3>⚙️ Condizioni Generali di Assicurazione</h3>
+                    {conds.map(cond => (
+                        <ClauseComparison
+                            key={cond.key}
+                            title={cond.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.generalConditions?.[cond.key]?.text,
+                                badge: c.generalConditions?.[cond.key]?.badge
+                            }))}
+                            preference={preferences?.generalConditions?.[cond.key]}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: RCT/RCO ======
+        const RCTRCOComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            
+            const rctClauses = [
+                { key: 'oggetto', title: "Oggetto dell'Assicurazione RCT", section: 'rct' },
+                { key: 'attivitaAssicurate', title: "Attività Assicurate", section: 'rct' },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale RCT", section: 'rct' },
+                { key: 'validitaTemporale', title: "Validità Temporale RCT", section: 'rct' }
+            ];
+
+            const rcoClauses = [
+                { key: 'oggetto', title: "Oggetto dell'Assicurazione RCO", section: 'rco' },
+                { key: 'soggetti', title: "Soggetti Assicurati RCO", section: 'rco' },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale RCO", section: 'rco' },
+                { key: 'malattieProfessionali', title: "Malattie Professionali", section: 'rco' },
+                { key: 'dannoBiologico', title: "Danno Biologico", section: 'rco' }
+            ];
+
+            const estensioni = [
+                { key: 'committenteAppaltatore', title: "Committente / Appaltatore" },
+                { key: 'danniConsegnaCustodia', title: "Danni a Cose in Consegna e Custodia" },
+                { key: 'danniIncendio', title: "Danni da Incendio a Cose di Terzi" },
+                { key: 'inquinamentoAccidentale', title: "Inquinamento Accidentale" },
+                { key: 'postumaOperazioni', title: "Postuma Operazioni Completate" },
+                { key: 'danniInterruzioneAttivita', title: "Danni da Interruzione Attività" },
+                { key: 'rcAutoCaricatrice', title: "RC Auto Caricatrici e Mezzi Speciali" }
+            ];
+
+            return (
+                <div>
+                    <h3>🏢 Sezione RCT - Responsabilità Civile verso Terzi</h3>
+                    {rctClauses.map(clause => (
+                        <ClauseComparison
+                            key={`${clause.section}-${clause.key}`}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c[clause.section]?.[clause.key]?.text,
+                                badge: c[clause.section]?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.[clause.section]?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>👷 Sezione RCO - Responsabilità Civile verso Prestatori di Lavoro</h3>
+                    {rcoClauses.map(clause => (
+                        <ClauseComparison
+                            key={`${clause.section}-${clause.key}`}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c[clause.section]?.[clause.key]?.text,
+                                badge: c[clause.section]?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.[clause.section]?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>➕ Estensioni RCT/RCO</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '25%'}}>Estensione</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {estensioni.map(ext => (
+                                <tr key={ext.key}>
+                                    <td className="col-voce">{ext.title}</td>
+                                    {companies.map(c => {
+                                        const d = c.rct?.estensioni?.[ext.key] || c.rco?.estensioni?.[ext.key];
+                                        return (
+                                            <td key={`${c.id}-${ext.key}`} className={d?.included === true ? 'diff-better' : (d?.included === false ? 'diff-worse' : 'diff-warning')}>
+                                                {d?.included === true && '✓ Inclusa'}
+                                                {d?.included === false && '✗ Non inclusa'}
+                                                {d?.included === undefined && '⚠ N/D'}
+                                                {d?.limit && <div className="note-text"><strong>Limite:</strong> {d.limit}</div>}
+                                                {d?.text && <div className="note-text">{d.text}</div>}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        // ====== TAB: RCP ======
+        const RCPComparison = ({ data }) => {
+            const { companies, preferences } = data;
+
+            const hasRCP = companies.some(c => c.rcp?.oggetto);
+            if (!hasRCP) {
+                return (
+                    <div>
+                        <h3>📦 Sezione RCP - RC Prodotti</h3>
+                        <AlertBox type="info">Nessuna delle polizze include la sezione RC Prodotti.</AlertBox>
+                    </div>
+                );
+            }
+
+            const rcpBase = [
+                { key: 'oggetto', title: "Oggetto della Copertura RC Prodotti" },
+                { key: 'prodottiAssicurati', title: "Prodotti Assicurati" },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale" },
+                { key: 'validitaTemporale', title: "Validità Temporale (Claims Made / Loss Occurrence)" },
+                { key: 'retroattivita', title: "Retroattività" }
+            ];
+
+            const clausoleCritiche = [
+                { key: 'ritiroProdotti', title: "🔴 Ritiro Prodotti (Product Recall)" },
+                { key: 'danniPatrimonialiPuri', title: "🔴 Danni Patrimoniali Puri" },
+                { key: 'garanziaFornitura', title: "🔴 Garanzia di Fornitura / Danno al Prodotto Finito" },
+                { key: 'danniInterruzioneAttivita', title: "🔴 Danni da Interruzione di Attività del Terzo" },
+                { key: 'postuma', title: "🔴 Garanzia Postuma RCP" }
+            ];
+
+            const altreEstensioni = [
+                { key: 'smontaggioMontaggio', title: "Spese Smontaggio/Montaggio" },
+                { key: 'inquinamentoProdotto', title: "Inquinamento da Prodotto" },
+                { key: 'usaCanada', title: "Estensione Territoriale USA/Canada" }
+            ];
+
+            return (
+                <div>
+                    <h3>📦 Sezione RCP - Responsabilità Civile Prodotti</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        La sezione RC Prodotti copre i danni causati da prodotti difettosi dopo la consegna. 
+                        È fondamentale per aziende manifatturiere, soprattutto nel settore automotive e componentistica.
+                    </p>
+
+                    {rcpBase.map(clause => (
+                        <ClauseComparison
+                            key={clause.key}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.rcp?.[clause.key]?.text,
+                                badge: c.rcp?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.rcp?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3 style={{color: 'var(--danger-text)'}}>🚨 Clausole Critiche RCP - Analisi Dettagliata</h3>
+                    <AlertBox type="warning">
+                        <strong>Attenzione:</strong> Le seguenti clausole rappresentano estensioni fondamentali per una copertura RC Prodotti completa. 
+                        L'assenza o l'inadeguatezza di queste garanzie può esporre l'azienda a rischi significativi non coperti.
+                    </AlertBox>
+
+                    {clausoleCritiche.map(clause => (
+                        <ClauseComparison
+                            key={clause.key}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.rcp?.clausoleCritiche?.[clause.key]?.text || c.rcp?.estensioni?.[clause.key]?.text,
+                                badge: c.rcp?.clausoleCritiche?.[clause.key]?.badge || c.rcp?.estensioni?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.rcp?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>➕ Riepilogo Estensioni RCP</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '25%'}}>Estensione</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {[...clausoleCritiche, ...altreEstensioni].map(ext => (
+                                <tr key={ext.key}>
+                                    <td className="col-voce">{ext.title.replace(/🔴 /g, '')}</td>
+                                    {companies.map(c => {
+                                        const d = c.rcp?.clausoleCritiche?.[ext.key] || c.rcp?.estensioni?.[ext.key];
+                                        return (
+                                            <td key={`${c.id}-${ext.key}`} className={d?.included === true ? 'diff-better' : (d?.included === false ? 'diff-worse' : 'diff-warning')}>
+                                                {d?.included === true && '✓ Inclusa'}
+                                                {d?.included === false && '✗ Non inclusa'}
+                                                {d?.included === undefined && '⚠ N/D'}
+                                                {d?.limit && <div className="note-text"><strong>Limite:</strong> {d.limit}</div>}
+                                                {d?.scoperto && <div className="note-text"><strong>Scoperto:</strong> {d.scoperto}</div>}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        // ====== TAB: SPECIAL CLAUSES ======
+        const SpecialClausesComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            
+            return (
+                <div>
+                    <h3>📋 Clausole Speciali e Condizioni Particolari</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        Clausole specifiche, pattuizioni particolari e condizioni custom presenti nelle singole polizze.
+                    </p>
+
+                    {companies.map(c => (
+                        <div key={c.id} className="comparison-section" style={{marginBottom: '25px'}}>
+                            <div className="comparison-header">{c.name}</div>
+                            <div style={{padding: '20px'}}>
+                                {c.specialClauses && Object.keys(c.specialClauses).length > 0 ? (
+                                    <ul style={{margin: 0, paddingLeft: '20px'}}>
+                                        {Object.entries(c.specialClauses).map(([key, clause]) => (
+                                            <li key={key} style={{marginBottom: '15px', fontSize: '12px', lineHeight: '1.7'}}>
+                                                <strong>{clause.title || key}:</strong> 
+                                                <span dangerouslySetInnerHTML={{ __html: ' ' + clause.text }} />
+                                                {clause.badge && <Badge type={clause.badge.type} text={clause.badge.text} />}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p style={{color: 'var(--text-muted)', margin: 0}}>
+                                        Nessuna clausola speciale rilevante identificata nel wording.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: SCORING & CONCLUSIONS ======
+        const ScoringConclusions = ({ data }) => {
+            const { companies, globalConclusion } = data;
+            const scores = companies.map(c => c.scoring?.totale?.score || 0);
+            const maxScore = Math.max(...scores);
+            const uniqueScores = [...new Set(scores)];
+            const showWinner = uniqueScores.length > 1; // Mostra winner solo se ci sono differenze
+
+            return (
+                <div>
+                    <h3>🏆 Scoring Comparativo</h3>
+                    <div className="score-grid">
+                        {companies.map(c => {
+                            const isWinner = showWinner && c.scoring?.totale?.score === maxScore;
+                            return (
+                                <ScoreCard
+                                    key={c.id}
+                                    label={c.name}
+                                    score={c.scoring?.totale?.score || 0}
+                                    max={100}
+                                    isWinner={isWinner}
+                                />
+                            );
+                        })}
+                    </div>
+
+                    <h4>Dettaglio Punteggi per Categoria</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria (Peso)</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {['massimali', 'franchigie', 'garanzie', 'esclusioni', 'qpr'].map(cat => {
+                                const labels = { massimali: 'Massimali (30 pt)', franchigie: 'Franchigie/Scoperti (20 pt)', garanzie: 'Ampiezza Garanzie (25 pt)', esclusioni: 'Esclusioni (15 pt)', qpr: 'Rapporto Q/P (10 pt)' };
+                                const catScores = companies.map(c => c.scoring?.[cat]?.score || 0);
+                                const maxCat = Math.max(...catScores);
+                                const uniqueCatScores = [...new Set(catScores)];
+                                const showCatBest = uniqueCatScores.length > 1; // Solo se c'è differenza
+                                return (
+                                    <tr key={cat}>
+                                        <td className="col-voce">{labels[cat]}</td>
+                                        {companies.map(c => {
+                                            const score = c.scoring?.[cat]?.score || 0;
+                                            const isBest = showCatBest && score === maxCat && maxCat > 0;
+                                            return (
+                                                <td key={`${c.id}-${cat}`} className={`col-value ${isBest ? 'diff-better' : ''}`}>
+                                                    {score} / {c.scoring?.[cat]?.max || '-'}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                            <tr className="row-total">
+                                <td className="col-voce">TOTALE</td>
+                                {companies.map(c => (
+                                    <td key={`${c.id}-total`} className="col-value"><strong>{c.scoring?.totale?.score || 0} / 100</strong></td>
+                                ))}
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>⚖️ Pro e Contro per Polizza</h3>
+                    {companies.map(c => (
+                        <ProControCard key={c.id} companyName={c.name} pros={c.conclusion?.strengthPoints} cons={c.conclusion?.weaknessPoints} />
+                    ))}
+
+                    <h3>📝 Conclusione Finale</h3>
+                    <AlertBox type="success">
+                        <strong>Raccomandazione:</strong>
+                        <p style={{margin: '10px 0 0 0'}} dangerouslySetInnerHTML={{ __html: globalConclusion.recommendation }} />
+                    </AlertBox>
+
+                    {globalConclusion.negotiationPoints?.length > 0 && (
+                        <>
+                            <h4>🤝 Punti di Negoziazione Suggeriti</h4>
+                            <ul>{globalConclusion.negotiationPoints.map((p, i) => <li key={i} dangerouslySetInnerHTML={{ __html: p }} />)}</ul>
+                        </>
+                    )}
+
+                    <div className="disclaimer">
+                        <strong>Disclaimer:</strong> Questa analisi è basata sui documenti forniti e rappresenta una valutazione tecnica comparativa. 
+                        Le raccomandazioni sono indicative e non costituiscono consulenza assicurativa vincolante. 
+                        Si raccomanda la lettura integrale dei testi di polizza prima di qualsiasi decisione.
                     </div>
                 </div>
-            </div>
+            );
+        };
 
-            <!-- Ripetere blocco per polizza 2, 3, N -->
-
-            <h3 class="subsection-title">Sintesi Comparativa Finale</h3>
-            <div class="alert-box alert-info">
-                <strong>Valutazione Complessiva:</strong><br>
-                [SINTESI_COMPARATIVA_FINALE]
-            </div>
-
-        </div>
-
-    </div>
-
-    <script>
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
+        // ====== MAIN APP ======
+        const App = ({ data }) => {
+            const [activeTab, setActiveTab] = useState('summary');
             
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-                tabcontent[i].classList.remove("active");
-            }
-            
-            tablinks = document.getElementsByClassName("tab-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            
-            document.getElementById(tabName).style.display = "block";
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
+            const tabs = [
+                { id: 'summary', label: 'Executive Summary', component: ExecutiveSummary },
+                { id: 'quantitative', label: 'Dati Quantitativi', component: QuantitativeComparison },
+                { id: 'definitions', label: 'Definizioni', component: DefinitionsComparison },
+                { id: 'general', label: 'Condizioni Generali', component: GeneralConditionsComparison },
+                { id: 'rctrco', label: 'RCT / RCO', component: RCTRCOComparison },
+                { id: 'rcp', label: 'RC Prodotti', component: RCPComparison },
+                { id: 'special', label: 'Clausole Speciali', component: SpecialClausesComparison },
+                { id: 'scoring', label: 'Scoring & Conclusioni', component: ScoringConclusions }
+            ];
+
+            return (
+                <div className="report-container">
+                    <div className="header">
+                        <div className="header-top">
+                            <div>
+                                <h2>Analisi Comparativa Polizze RC</h2>
+                                <h1>{data.metadata.contraente}</h1>
+                            </div>
+                            <div className="header-badge">{data.metadata.numeroPolizze} Polizze a Confronto</div>
+                        </div>
+                        <div className="header-meta">
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Contraente</span>
+                                <span className="header-meta-value">{data.metadata.contraente}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Settore</span>
+                                <span className="header-meta-value">{data.metadata.settoreAttivita}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Data Analisi</span>
+                                <span className="header-meta-value">{data.metadata.dataAnalisi}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Polizze</span>
+                                <span className="header-meta-value">{data.companies.map(c => c.name.split(' ')[0]).join(' vs ')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="tabs">
+                        {tabs.map(tab => (
+                            <button key={tab.id} className={`tab-link ${activeTab === tab.id ? 'active' : ''}`} onClick={() => setActiveTab(tab.id)}>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {tabs.map(tab => (
+                        <div key={tab.id} className={`tab-content ${activeTab === tab.id ? 'active' : ''}`}>
+                            <tab.component data={data} />
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App data={reportData} />);
     </script>
-
 </body>
-
 </html>
