@@ -250,6 +250,10 @@ async def start_analysis(
         else:
              # Fallback default if no settings exist
             selected_model = "gemini-3-flash-preview"
+        
+    # Fix: Sanitize model name if loaded from DB (handle underscore vs dash)
+    if selected_model and "gemini" in selected_model and "_" in selected_model:
+        selected_model = selected_model.replace("_", "-")
 
     # Create Analysis record
     analysis = models.Analysis(
@@ -875,31 +879,38 @@ async def correct_analysis(
         raise HTTPException(status_code=404, detail="Analysis not found")
     
     # Get original extracted text from documents
-    # Documents can be from document_id (single) or source_document_ids (JSON array)
     doc_ids = []
     if analysis.source_document_ids:
         try:
-            doc_ids = json.loads(analysis.source_document_ids)
+            raw_ids = json.loads(analysis.source_document_ids)
+            # Fix: Flatten if nested (e.g. for comparisons [[1,2], [3]])
+            if raw_ids and isinstance(raw_ids[0], list):
+                doc_ids = [item for sublist in raw_ids for item in sublist]
+            else:
+                doc_ids = raw_ids
         except:
             pass
+            
     if analysis.document_id and analysis.document_id not in doc_ids:
         doc_ids.append(analysis.document_id)
     
     original_text = ""
     if doc_ids:
+        # Preserve order
         documents = db.query(models.Document).filter(models.Document.id.in_(doc_ids)).all()
+        doc_map = {d.id: d for d in documents}
         
         # Load text from extracted_text_path files
-        for doc in documents:
-            if doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
+        for d_id in doc_ids:
+            doc = doc_map.get(d_id)
+            if doc and doc.extracted_text_path and os.path.exists(doc.extracted_text_path):
                 try:
                     with open(doc.extracted_text_path, 'r', encoding='utf-8') as f:
-                        original_text += f.read() + "\n\n"
+                        original_text += f"\n--- FILE: {doc.original_filename} ---\n" + f.read() + "\n\n"
                 except Exception as e:
                     print(f"Error loading text from {doc.extracted_text_path}: {e}")
     
     # Use masked version for LLM to protect sensitive data
-    # Falls back to display version if masked not available (shouldn't happen in production)
     current_html = analysis.report_html_masked or analysis.report_html_display or ""
     
     # Identify which sections need regeneration based on keywords in correction message
@@ -918,40 +929,60 @@ async def correct_analysis(
     
     # Build correction prompt
     correction_prompt = f"""
+SEI UN SISTEMA DI CORREZIONE CHIRURGICA DEI REPORT.
 L'utente ha segnalato il seguente errore nel report generato:
 "{correction.correction_message}"
 
 TESTO ORIGINALE ESTRATTO DAL DOCUMENTO:
-{original_text[:15000]}  
+{original_text[:25000]}  
 
-REPORT HTML ATTUALE:
-{current_html[:20000] if len(current_html) > 20000 else current_html}
+REPORT HTML ATTUALE (DA PRESERVARE IL PIÙ POSSIBILE):
+{current_html[:50000] if len(current_html) > 50000 else current_html}
 
-ISTRUZIONI:
-1. Analizza la correzione richiesta dall'utente
-2. Cerca nel testo originale le informazioni corrette
-3. Rigenera SOLO le sezioni interessate: {', '.join(sections_list) if 'all' not in sections_list else 'tutte le sezioni'}
-4. Restituisci il report HTML completo aggiornato
+ISTRUZIONI CRITICHE:
+1. Analizza la richiesta di correzione.
+2. Identifica ESATTAMENTE quale parte dell'HTML necessita di modifica.
+3. Applica la modifica SOLAMENTE ai dati errati, basandoti sul TESTO ORIGINALE.
+4. COPIA IL RESTO DEL REPORT ESATTAMENTE COME È (VERBATIM). Non cambiare stile, non cambiare parole, non cambiare formattazione nelle parti non coinvolte.
 
-IMPORTANTE: 
-- Mantieni la stessa struttura HTML e CSS del report originale
-- Aggiorna le sezioni interessate con i dati corretti
-- Se la correzione riguarda un indirizzo, aggiorna anche le coordinate della mappa e i dati catastrofali
-- Restituisci SOLO l'HTML completo, senza spiegazioni
+AMBITO DI MODIFICA STIMATO: {', '.join(sections_list) if 'all' not in sections_list else 'INTERO DOCUMENTO (Solo se strettamente necessario)'}
+
+OUTPUT OBBLIGATORIO:
+- Restituisci l'INTERO codice HTML del report.
+- Il codice deve essere IDENTICO all'originale tranne per la correzione puntuale richiesta.
+- NON USARE MARKDOWN (```html), restituisci SOLO il testo grezzo.
 """
     
     try:
-        # Create LLM client and call Gemini to regenerate
+        # Determine model: Prioritize analysis specific, then SystemSettings, then default
+        model_name = analysis.llm_model
+        
+        if not model_name:
+            settings_obj = db.query(models.SystemSettings).first()
+            if settings_obj and settings_obj.llm_model_name:
+                model_name = settings_obj.llm_model_name
+        
+        # Default if everything fails
+        model_name = model_name or "gemini-3-flash-preview"
+
+        # Fix: Sanitize model name (handle legacy underscores)
+        if "gemini" in model_name and "_" in model_name:
+            model_name = model_name.replace("_", "-")
+
+        # Create LLM client
         from ..llm_client import LLMClient
-        client = LLMClient(model_name=analysis.llm_model or "gemini-3-flash-preview")
+        client = LLMClient(model_name=model_name)
         
         # Use generate_content directly for correction
         import google.generativeai as genai
+        # Increase safety for corrections
         generation_config = genai.GenerationConfig(
-            temperature=0.3,
+            temperature=0.2,
             max_output_tokens=65536,
         )
         
+        print(f"DEBUG Correction: Using model {model_name} for correction.")
+
         response = client.model.generate_content(
             correction_prompt,
             generation_config=generation_config,
@@ -964,18 +995,32 @@ IMPORTANTE:
             if chunk.text:
                 updated_html += chunk.text
         
-        # Clean up the response (remove markdown code blocks if present)
+        # Clean up the response
         updated_html = client._strip_markdown_wrappers(updated_html)
         
+        # Save Masked Version first
+        analysis.report_html_masked = updated_html
+        
+        # Repopulate with real data (Unmasking) for display
+        # Load reverse mapping if exists
+        report_display = updated_html
+        if analysis.reverse_mapping_json:
+            try:
+                reverse_mapping = json.loads(analysis.reverse_mapping_json)
+                report_display = masking.repopulate_report(updated_html, reverse_mapping)
+            except Exception as e:
+                print(f"Error repopulating correction: {e}")
+        
         # Update the analysis in database
-        analysis.report_html_display = updated_html
+        analysis.report_html_display = report_display
+        analysis.last_updated = datetime.utcnow()
         db.commit()
         
         return {
             "success": True,
             "message": f"Correzione applicata. Sezioni aggiornate: {', '.join(sections_list)}",
             "updated_sections": sections_list,
-            "updated_html": updated_html
+            "updated_html": report_display
         }
         
     except Exception as e:

@@ -1,13 +1,31 @@
 ═══════════════════════════════════════════════════════════════════════════════
-PROMPT: CONFRONTO POLIZZE INCENDIO - VERSIONE DINAMICA FINALE
+PROMPT: CONFRONTO POLIZZE INCENDIO - VERSIONE 2.0
 ═══════════════════════════════════════════════════════════════════════════════
 
-OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze Incendio (Property/
-Fire) per supportare decisione contraente/azienda.
+OBIETTIVO: Generare report HTML comparativo tra 2 o più polizze Incendio 
+(Property/Fire) per supportare decisione contraente/azienda.
 
 DESTINATARIO: Cliente, CFO, risk manager, property manager
-TEMPLATE: template_confronto_incendio_finale.html (1138 righe)
+TEMPLATE: template_confronto_incendio_v2.html
 APPROCCIO: Template-first dinamico - scala automaticamente da 2 a N polizze
+
+═══════════════════════════════════════════════════════════════════════════════
+⛔ REGOLA FONDAMENTALE: MAI INVENTARE DATI
+═══════════════════════════════════════════════════════════════════════════════
+
+QUESTA È LA REGOLA PIÙ IMPORTANTE DI TUTTO IL DOCUMENTO.
+
+1. SE UN DATO NON È PRESENTE NEI DOCUMENTI → SCRIVERE "N.D." (Non Disponibile)
+2. SE UN VALORE È INCERTO → SCRIVERE "N.D." O "Da verificare"
+3. SE UNA GARANZIA NON È MENZIONATA → SCRIVERE "N.D."
+4. MAI STIMARE, SUPPORRE, INFERIRE valori non esplicitamente presenti
+5. MAI COMPLETARE con valori "tipici di mercato" o "standard"
+
+⚠️ MEGLIO UN REPORT CON 20 CELLE "N.D." CHE UN REPORT CON 1 DATO INVENTATO.
+
+L'accuratezza è prioritaria rispetto alla completezza.
+Un report incompleto ma accurato ha valore professionale.
+Un report completo ma con dati inventati è INUTILIZZABILE e DANNOSO.
 
 ═══════════════════════════════════════════════════════════════════════════════
 PRINCIPI GUIDA
@@ -15,82 +33,226 @@ PRINCIPI GUIDA
 
 1. FOCUS PROPERTY
    - Somme assicurate (fabbricato, contenuto, merci)
-   - Garanzie (base, naturali, socio-politiche)
-   - Franchigie/scoperti per evento
+   - Garanzie predefinite (44 garanzie / 8 categorie)
+   - Franchigie/scoperti/limiti per garanzia
    - Rischi catastrofali (terremoto, alluvione)
 
 2. CRITICITÀ ZONA
-   - Zona sismica ubicazione
-   - Zona alluvionale
+   - Zona sismica ubicazione (1-4)
+   - Zona alluvionale (P1-P4)
    - Adeguatezza copertura catastrofale
 
 3. DINAMICITÀ 2-N
-   - Tabelle espandibili
-   - Highlighting adattivo
-   - Comparazioni vs polizza attuale
+   - Tabelle espandibili automaticamente
+   - Highlighting adattivo (verde=meglio, rosso=peggio)
+   - Comparazioni sempre vs polizza attuale/base
 
-4. SPECIFICITÀ INCENDIO
-   - Valore a nuovo vs valore commerciale
-   - Terremoto: franchigia + scoperto
-   - Alluvione/inondazione/allagamento (distinzioni)
-   - Perdita pigioni/canoni
+4. STRUTTURA PREDEFINITA
+   - Lista garanzie FISSA per comparabilità immediata
+   - "N.D." per garanzie non trovate nei documenti
+   - Formato consistente: Franchigia / Scoperto / Limite
 
 ═══════════════════════════════════════════════════════════════════════════════
-REGOLE CRITICHE - LEGGI ATTENTAMENTE
+LISTA GARANZIE PREDEFINITE (44 GARANZIE / 8 CATEGORIE)
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. SOMME ASSICURATE
-   ────────────────
-   CRITICO: Adeguatezza vs valore reale
+CATEGORIA 1: GARANZIE BASE (5)
+───────────────────────────────
+1. Incendio
+2. Fulmine  
+3. Esplosione / Scoppio
+4. Rischio Locativo
+5. Ricorso Terzi
+
+CATEGORIA 2: EVENTI NATURALI (6)
+────────────────────────────────
+6. Terremoto
+7. Inondazioni / Alluvioni
+8. Allagamenti
+9. Acqua Condotta
+10. Bradisismo
+11. Franamento / Smottamento
+
+CATEGORIA 3: EVENTI ATMOSFERICI (3)
+───────────────────────────────────
+12. Eventi Atmosferici (grandine, vento, trombe d'aria)
+13. Sovraccarico Neve
+14. Ghiaccio e Gelo
+
+CATEGORIA 4: EVENTI SOCIO-POLITICI (4)
+──────────────────────────────────────
+15. Furto / Rapina / Estorsione
+16. Atti Vandalici / Dolosi
+17. Scioperi / Tumulti / Sommosse
+18. Terrorismo
+
+CATEGORIA 5: DANNI TECNICI (4)
+──────────────────────────────
+19. Fenomeno Elettrico / Elettronico
+20. Guasti alle Macchine
+21. Crollo / Collasso Strutturale
+22. Dispersione Liquidi
+
+CATEGORIA 6: BENI PARTICOLARI (6)
+─────────────────────────────────
+23. Merci Refrigerate
+24. Archivi / Documenti / Modelli
+25. Quadri e Oggetti d'Arte
+26. Enti all'Aperto
+27. Enti presso Terzi
+28. Terreni
+
+CATEGORIA 7: DANNI INDIRETTI (8)
+────────────────────────────────
+29. Perdita Profitto / Margine (franchigia giorni)
+30. Dipendenza Fornitori / Clienti
+31. Interdipendenza
+32. Impedimento Accesso
+33. Interruzione Autorità
+34. Interruzione Forniture Energia
+35. Deprezzamento Merci Indenni
+36. Spese Extra
+
+CATEGORIA 8: SPESE ACCESSORIE (8)
+─────────────────────────────────
+37. Spese Demolizione / Sgombero
+38. Spese Ricerca Guasto
+39. Spese Rimozione / Ricollocamento
+40. Oneri Urbanizzazione
+41. Onorari Architetti / Consulenti
+42. Onorari Periti
+43. Onorari Esperti Contabili
+44. Movimentazione Interna
+
+═══════════════════════════════════════════════════════════════════════════════
+COMPILAZIONE GARANZIE - REGOLE
+═══════════════════════════════════════════════════════════════════════════════
+
+PER OGNI GARANZIA DELLA LISTA PREDEFINITA:
+
+TAB 4 (Garanzie) - Compilare con:
+─────────────────────────────────
+• "Inclusa" - se presente senza sublimite specifico
+• "Inclusa - Limite € X" - se presente con sublimite
+• "Inclusa - Vedi somme assicurate" - se coperta fino a SA
+• "Esclusa" - se esplicitamente esclusa nel documento
+• "N.D." - se NON menzionata nel documento
+
+TAB 5 (Franchigie) - Compilare con formato:
+───────────────────────────────────────────
+"€ X.XXX / Y% / Limite € Z.ZZZ"
+
+Dove:
+• Franchigia fissa: "€ 5.000"
+• Scoperto: "10% min € 10.000 max € 100.000"
+• Limite sinistro: "€ 500.000"
+• Limite annuo: "€ 5.000.000/anno"
+
+Esempi completi:
+• "€ 5.000 / - / € 80.000.000" (franchigia, no scoperto, limite)
+• "Scoperto 10% min € 10.000 max € 100.000 / 50% SA" (scoperto, limite % SA)
+• "3/360 gg / - / Vedi SA" (franchigia giorni per danni indiretti)
+• "N.D." - se informazione non trovata
+
+⚠️ SE LA GARANZIA NON È NEL DOCUMENTO → SCRIVERE "N.D." (mai omettere la riga)
+
+═══════════════════════════════════════════════════════════════════════════════
+REGOLE TECNICHE INCENDIO
+═══════════════════════════════════════════════════════════════════════════════
+
+1. SOMME ASSICURATE E SOTTASSICURAZIONE
+   ────────────────────────────────────
+   CRITICO: Verificare adeguatezza vs valore reale
    
-   Sottassicurazione:
-   - SA € 500.000, valore € 1.000.000
+   Regola proporzionale (art. 1907 c.c.):
+   - SA € 500.000, valore reale € 1.000.000 → sottassicurazione 50%
    - Sinistro € 200.000
-   - Indennizzo: € 200.000 × (€ 500k / € 1.000k) = € 100.000
-   - Penalizzazione 50%!
+   - Indennizzo: € 200.000 × (500k / 1.000k) = € 100.000
+   - Penalizzazione: € 100.000 non indennizzati!
    
-   Verde = SA più alta (MEGLIO)
-   Rosso = SA insufficiente (RISCHIO)
+   Highlighting:
+   • Verde = SA più alta (MEGLIO)
+   • Rosso = SA insufficiente (RISCHIO sottassicurazione)
 
-2. VALORE A NUOVO
-   ───────────────
+2. VALORE A NUOVO VS VALORE COMMERCIALE
+   ────────────────────────────────────
    Valore a Nuovo = MIGLIORE
-   - Indennizzo costo ricostruzione nuovo
-   - No deduzione vetustà
+   - Indennizzo = costo ricostruzione a nuovo
+   - Nessuna deduzione per vetustà
    
    Valore Commerciale = PEGGIORE
-   - Indennizzo dedotta vetustà
-   - Su immobile 20 anni, può essere -40%
+   - Indennizzo = valore corrente dedotta vetustà
+   - Immobile 20 anni → deduzione 30-40%
+   - Macchinario 10 anni → deduzione 50-70%
 
-3. FRANCHIGIE CATASTROFALI
+3. STOP LOSS DI POLIZZA
+   ────────────────────
+   ⚠️ Lo Stop Loss è il LIMITE ANNUO AGGREGATO di polizza
+   - Massimo indennizzo complessivo in un anno
+   - NON è un limite per sinistro
+   - Include tutti gli eventi, tutte le garanzie
+   
+   Esempio: Stop Loss € 80.000.000
+   - Sinistro 1 (incendio): € 50.000.000 → indennizzato
+   - Sinistro 2 (alluvione): € 40.000.000 → indennizzato solo € 30.000.000
+   - Capacità residua anno: € 0
+
+4. FRANCHIGIE CATASTROFALI
    ───────────────────────
-   Terremoto/Alluvione: franchigia + scoperto
+   Terremoto e Alluvione hanno tipicamente:
+   - Franchigia fissa (es. € 10.000)
+   - Scoperto % (es. 10%)
+   - Minimo scoperto (es. min € 10.000)
+   - Massimo scoperto (es. max € 100.000)
    
-   Esempio:
-   Danno € 500.000, franchigia € 10.000, scoperto 10%
-   - Danno - franchigia: € 490.000
-   - Scoperto: € 490.000 × 10% = € 49.000
-   - Indennizzo: € 490.000 - € 49.000 = € 441.000
-   
-   Franchigie alte + scoperti = esposizione elevata
+   Calcolo indennizzo:
+   Danno € 500.000, franchigia € 10.000, scoperto 10% min 10k max 100k
+   1. Danno - franchigia: € 500.000 - € 10.000 = € 490.000
+   2. Scoperto: € 490.000 × 10% = € 49.000 (tra min e max)
+   3. Indennizzo: € 490.000 - € 49.000 = € 441.000
 
-4. ZONA SISMICA
+5. ZONA SISMICA
    ────────────
-   Zona 1 = rischio MASSIMO
-   Zona 2 = rischio ALTO
-   Zona 3 = rischio MEDIO
-   Zona 4 = rischio BASSO
+   Classificazione (OPCM 3274/2003):
+   - Zona 1 = rischio MASSIMO (ag > 0.25g)
+   - Zona 2 = rischio ALTO (0.15g < ag ≤ 0.25g)
+   - Zona 3 = rischio MEDIO (0.05g < ag ≤ 0.15g)
+   - Zona 4 = rischio BASSO (ag ≤ 0.05g)
    
    Copertura terremoto CRITICA per zone 1-2
 
-5. GARANZIE NATURALI
-   ──────────────────
-   Distinguere:
-   - Alluvione: straripamento fiumi/torrenti
-   - Inondazione: accumulo acque piovane
-   - Allagamento: rottura condutture
+6. ZONA ALLUVIONALE
+   ─────────────────
+   Classificazione PGRA:
+   - P4 = pericolosità molto elevata
+   - P3 = pericolosità elevata
+   - P2 = pericolosità media
+   - P1 = pericolosità moderata
+
+7. DISTINZIONE GARANZIE ACQUA
+   ──────────────────────────
+   NON sono sinonimi:
+   - Alluvione: straripamento fiumi, torrenti, corsi d'acqua
+   - Inondazione: accumulo acque piovane esterne
+   - Allagamento: rottura condutture, impianti interni, trabocco vasche
+   - Acqua condotta: danni da rottura/perdita tubazioni idriche
+
+8. DANNI INDIRETTI
+   ───────────────
+   Franchigia espressa in giorni: X/360 gg
+   - 3/360 gg = primi 3 giorni di fermo non indennizzati
+   - 5/360 gg = primi 5 giorni di fermo non indennizzati
    
-   Non sono sinonimi!
+   Durata periodo di indennizzo: tipicamente 12 mesi
+
+9. LIMITI COMBINATI DD + DI
+   ────────────────────────
+   Per eventi catastrofali spesso esiste un limite aggregato
+   che comprende danni diretti + danni indiretti.
+   
+   Esempio AIG:
+   - Terremoto DD + DI: limite combinato € 20.000.000
+   - Alluvione DD + DI: limite combinato € 20.000.000
 
 ═══════════════════════════════════════════════════════════════════════════════
 HEADER
@@ -100,8 +262,8 @@ HEADER
 Ragione sociale contraente
 
 [UBICAZIONE]
-Indirizzo ubicazione rischio
-Esempio: "Via Roma 10, Milano"
+Indirizzo ubicazione rischio principale
+Se multiple ubicazioni: "Multiple - vedi certificati" o elencare principali
 
 [NUMERO_POLIZZE]
 Numero polizze confrontate (formato "N polizze")
@@ -117,24 +279,50 @@ TAB 1: RACCOMANDAZIONE
 Raccomandazione chiara (2-3 righe)
 
 Esempi:
-"Si raccomanda Generali: somme assicurate superiori (Fabbricato € 2M vs € 1.5M, 
-Contenuto € 800k vs € 600k), terremoto incluso con franchigia € 5.000 (vs € 15.000), 
-alluvione coperta, e risparmio € 1.200/anno (-10%)."
+"Si raccomanda Generali: somme assicurate superiori (Fabbricato € 2M vs € 1.5M), 
+terremoto con franchigia € 5.000 (vs € 15.000 AIG), alluvione coperta fino a 
+50% SA, e risparmio € 1.200/anno (-10%)."
 
-"Si raccomanda Allianz attuale: unica con copertura terremoto in Zona 1, valore 
-a nuovo fabbricato, franchigie contenute. Premio +15% giustificato da protezione 
-adeguata per ubicazione ad alto rischio sismico."
-
-"Si raccomanda UnipolSai: miglior rapporto qualità/prezzo con somme adeguate, 
-garanzie base complete, alluvione inclusa. Terremoto escluso accettabile per 
-Zona 4 (rischio basso). Risparmio 22%."
+"Si raccomanda conferma AIG attuale: Stop Loss € 80M superiore, copertura 
+terremoto adeguata per Zona 2 con limite combinato € 20M, garanzie complete 
+inclusi danni indiretti. Premio +8% giustificato da capacità superiore."
 
 [RACCOMANDAZIONE_MOTIVAZIONE]
 Motivazione dettagliata (5-10 righe)
 
-[NOME_POLIZZA_N] + [DIFF_1-3_POLIZZA_N]
+Includere:
+- Perché questa polizza
+- 3-4 ragioni specifiche con numeri
+- Confronto alternative
+- Caveat/limitazioni se presenti
 
-[PREMIO_ATTUALE] [PREMIO_CONSIGLIATO] [DELTA_PREMIO] [VARIAZIONE_PERC]
+SUBSECTION: TOP 3 DIFFERENZE PER POLIZZA
+───────────────────────────────────────────────────────────────────────────────
+
+⚠️ RIPETERE QUESTO BLOCCO PER OGNI POLIZZA (2, 3, 4... N)
+
+[NOME_POLIZZA_N]
+Nome polizza - es: "Polizza Attuale AIG", "Preventivo QBE"
+
+[DIFF_1_POLIZZA_N]
+[DIFF_2_POLIZZA_N]
+[DIFF_3_POLIZZA_N]
+
+Esempi differenze (sempre quantificate):
+• "Stop Loss annuo € 80M vs € 50M (+60% capacità)"
+• "Terremoto: scoperto 10% min € 10k max € 100k (vs 15% min € 25k)"
+• "Alluvione: limite combinato DD+DI € 20M (vs € 10M)"
+• "Danni indiretti: franchigia 3/360 gg (vs 5/360 gg) = 2 gg meno scoperti"
+• "Onorari periti inclusi € 200.000 (vs N.D./esclusi)"
+• "Valore a nuovo fabbricato (vs valore commerciale)"
+
+SUBSECTION: IMPATTO ECONOMICO ANNUALE
+───────────────────────────────────────────────────────────────────────────────
+
+[PREMIO_ATTUALE] - Premio polizza attuale formato "€ XX.XXX"
+[PREMIO_CONSIGLIATO] - Premio opzione consigliata formato "€ XX.XXX"
+[DELTA_PREMIO] - Differenza formato "€ +/-X.XXX" o "€ 0"
+[VARIAZIONE_PERC] - Variazione percentuale formato "+/-X%" o "0%"
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 2: SINTESI ECONOMICA
@@ -143,220 +331,313 @@ TAB 2: SINTESI ECONOMICA
 Per CIASCUNA polizza:
 
 [PREMIO_BASE_N]
-Premio incendio base formato "€ X.XXX"
+Premio incendio base formato "€ X.XXX" o "N.D."
 
 [PREMIO_GARANZIE_N]
-Premio garanzie aggiuntive formato "€ XXX"
+Premio garanzie aggiuntive formato "€ XXX" o "Incluso in base" o "N.D."
 
 [PREMIO_TERREMOTO_N]
-Premio terremoto formato "€ XXX" o "-"
+Premio terremoto formato "€ XXX" o "Incluso" o "N.D."
 
 [IMPOSTE_N]
+Imposte formato "€ XXX" (tipicamente 22,25% in Italia)
+
 [PREMIO_LORDO_N]
+Premio lordo totale formato "€ XX.XXX"
+
 [DIFF_CLASS_PREMIO_N]
+Classe CSS: "diff-better" (verde, più basso) / "diff-worse" (rosso, più alto)
 
 [TASSO_MILLE_N]
-Tasso per mille
-Formato: "X,XX ‰"
-Esempio: "1,50 ‰"
+Tasso per mille formato "X,XX ‰" o "N.D."
 
 [FRAZIONAMENTO_N]
+"Annuale", "Semestrale", "Trimestrale", "Mensile"
 
-Analisi delta: [PREMIO_ANNUO_N] [DELTA_N] [VARIAZIONE_PERC_N] [VALUTAZIONE_N]
+SUBSECTION: ANALISI DELTA
+───────────────────────────────────────────────────────────────────────────────
+
+Tabella con 1 riga per OGNI polizza
+
+[NOME_POLIZZA_N]
+[PREMIO_ANNUO_N]
+[DELTA_N] - Formato "€ +/-X.XXX" vs polizza base/attuale
+[DIFF_CLASS_DELTA_N] - "diff-better" / "diff-worse" / ""
+[VARIAZIONE_PERC_N] - Formato "+/-X%"
+[VALUTAZIONE_N] - "Più conveniente", "Più costoso", "Base", "Pari"
+[BADGE_CLASS_N] - "badge-migliore" / "badge-peggiore" / "badge-pari"
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 3: SOMME ASSICURATE
+TAB 3: SOMME ASSICURATE (MULTI-SOCIETÀ/UBICAZIONI)
 ═══════════════════════════════════════════════════════════════════════════════
 
-3 TABELLE: Fabbricato, Contenuto, Perdita Pigioni
+⚠️ STRUTTURA MULTI-SOCIETÀ: Ogni polizza può coprire più società o ubicazioni.
+Questa sezione mostra il dettaglio per CIASCUNA entità coperta.
 
-TABELLA FABBRICATO
+PER OGNI POLIZZA, CREARE UNA TABELLA CON:
 ───────────────────────────────────────────────────────────────────────────────
 
-[SA_FABBRICATO_N]
-Somma assicurata fabbricato formato "€ X.XXX.XXX"
+Colonne:
+- Società / Ubicazione (nome)
+- Fabbricato (€)
+- Contenuto (€)
+- Macchinari (€)
+- Merci (€)
+- Danni Indiretti (€)
+- TOTALE (€)
 
-[DIFF_CLASS_FABB_N]
-Verde se più alta, rosso se più bassa
+Righe: Una per ogni società/ubicazione coperta + riga TOTALE POLIZZA
 
-[VALORE_NUOVO_FABB_N]
-Valore a nuovo: "Sì" o "No" o "Valore commerciale"
+PLACEHOLDER PER POLIZZA 1 (fino a 7 società):
+[P1_SOC1_NOME] ... [P1_SOC1_TOTALE] - Prima società
+[P1_SOC2_NOME] ... [P1_SOC2_TOTALE] - Seconda società
+[P1_SOC3_NOME] ... [P1_SOC3_TOTALE] - Terza società
+[P1_SOC4_NOME] ... [P1_SOC4_TOTALE] - Quarta società
+[P1_SOC5_NOME] ... [P1_SOC5_TOTALE] - Quinta società
+[P1_SOC6_NOME] ... [P1_SOC6_TOTALE] - Sesta società
+[P1_SOC7_NOME] ... [P1_SOC7_TOTALE] - Settima società
+[P1_RIGHE_SOCIETA_AGGIUNTIVE] - Aggiungere righe HTML se > 7 società
 
-TABELLA CONTENUTO
+Totali polizza:
+[P1_TOT_FABBRICATO] - Somma fabbricati tutte le società
+[P1_TOT_CONTENUTO] - Somma contenuti
+[P1_TOT_MACCHINARI] - Somma macchinari
+[P1_TOT_MERCI] - Somma merci
+[P1_TOT_DANNI_IND] - Somma danni indiretti
+[P1_TOT_GENERALE] - Totale SA polizza
+
+Criteri valutazione:
+[P1_CRITERIO_FABBRICATO] - "Valore a nuovo" / "Valore commerciale" / "N.D."
+[P1_CRITERIO_CONTENUTO] - "Valore a nuovo" / "Valore commerciale" / "N.D."
+
+[P1_NUM_SOCIETA] - Numero società/ubicazioni coperte (es: "3 società")
+
+PLACEHOLDER PER POLIZZA 2 (fino a 7 società):
+[P2_SOC1_NOME] ... [P2_SOC1_TOTALE]
+[P2_SOC2_NOME] ... [P2_SOC2_TOTALE]
+[P2_SOC3_NOME] ... [P2_SOC3_TOTALE]
+[P2_SOC4_NOME] ... [P2_SOC4_TOTALE]
+[P2_SOC5_NOME] ... [P2_SOC5_TOTALE]
+[P2_SOC6_NOME] ... [P2_SOC6_TOTALE]
+[P2_SOC7_NOME] ... [P2_SOC7_TOTALE]
+[P2_RIGHE_SOCIETA_AGGIUNTIVE]
+[P2_TOT_FABBRICATO] ... [P2_TOT_GENERALE]
+[P2_CRITERIO_FABBRICATO], [P2_CRITERIO_CONTENUTO]
+[P2_NUM_SOCIETA]
+
+RIEPILOGO COMPARATIVO TOTALI
 ───────────────────────────────────────────────────────────────────────────────
 
-[SA_CONTENUTO_N]
-Somma contenuto formato "€ XXX.XXX"
+Tabella confronto totali tra polizze:
 
-[DIFF_CLASS_CONT_N]
+[DIFF_CLASS_TOT_FABB_N] - Highlighting totale fabbricati
+[DIFF_CLASS_TOT_CONT_N] - Highlighting totale contenuto
+[DIFF_CLASS_TOT_GEN_N] - Highlighting totale generale
 
-[SA_MACCHINARI_N]
-Somma macchinari formato "€ XXX.XXX" o "-"
+Regole highlighting:
+- Verde (diff-better): SA più alta = migliore protezione
+- Rosso (diff-worse): SA più bassa = rischio sottassicurazione
 
-[SA_MERCI_N]
-Somma merci formato "€ XXX.XXX" o "-"
-
-TABELLA PERDITA PIGIONI
+REGOLE COMPILAZIONE MULTI-SOCIETÀ:
 ───────────────────────────────────────────────────────────────────────────────
 
-[SA_PIGIONI_N]
-Somma perdita pigioni formato "€ XX.XXX" o "-"
+1. ESTRARRE TUTTE le società/ubicazioni da ogni polizza
+2. Per ogni società, estrarre TUTTE le partite assicurate
+3. Se una partita non è presente per una società → "N.D." o "€ 0"
+4. Calcolare i TOTALI per colonna
+5. Se polizza ha 1 sola società, compilare solo SOC1 e lasciare SOC2-7 vuote
+6. Se polizza ha < 7 società, lasciare righe non usate VUOTE (non "N.D.")
+7. Se polizza ha > 7 società, aggiungere righe HTML con placeholder _AGGIUNTIVE
 
-[DURATA_PIGIONI_N]
-Durata indennizzo formato "XX mesi"
+⚠️ IMPORTANTE: Le righe società non utilizzate vanno lasciate con placeholder
+   vuoti o rimosse dal template finale. NON scrivere "N.D." per società inesistenti.
+
+Esempi nomi società:
+- "ABC S.r.l. - Via Roma 10, Milano"
+- "XYZ S.p.A. - Stabilimento Torino"
+- "Capogruppo + Controllate"
 
 [NOTE_SOMME_ASSICURATE]
 Note adeguatezza somme (5-8 righe)
 
-Esempio:
-"FABBRICATO: Valore perizia € 2.000.000. Generali SA € 2.000.000 (100%), Allianz 
-€ 1.800.000 (90%), UnipolSai € 1.500.000 (75%).
-
-Sottassicurazione UnipolSai 25%: su sinistro € 400.000, indennizzo solo € 300.000. 
-Penalizzazione € 100.000.
-
-CONTENUTO: Valore inventario € 800.000. Generali copre 100%, altre sottassicurate.
-
-RACCOMANDAZIONE: Verificare somme adeguate con perizia aggiornata. Sottassicurazione 
-può costare decine/centinaia migliaia € in caso sinistro."
+Includere:
+- Confronto SA vs valore stimato (se noto)
+- Rischio sottassicurazione per società
+- Valore a nuovo vs commerciale
+- Differenze significative tra polizze
+- Raccomandazioni verifica
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 4: GARANZIE
 ═══════════════════════════════════════════════════════════════════════════════
 
-Tabella DINAMICA con 4 sezioni
+Tabella con TUTTE le 44 garanzie predefinite, raggruppate per categoria.
 
-Sezione GARANZIE BASE:
-- Incendio: [GAR_INCENDIO_N]
-- Fulmine: [GAR_FULMINE_N]
-- Esplosione: [GAR_ESPLOSIONE_N]
-- Scoppio: [GAR_SCOPPIO_N]
-
-Sezione EVENTI NATURALI:
-- Terremoto: [GAR_TERREMOTO_N]
-- Alluvione: [GAR_ALLUVIONE_N]
-- Inondazione: [GAR_INONDAZIONE_N]
-- Allagamento: [GAR_ALLAGAMENTO_N]
-- Grandine: [GAR_GRANDINE_N]
-- Neve: [GAR_NEVE_N]
-
-Sezione EVENTI SOCIO-POLITICI:
-- Furto: [GAR_FURTO_N]
-- Atti Vandalici: [GAR_VANDALISMI_N]
-- Scioperi/Tumulti: [GAR_SCIOPERI_N]
-- Terrorismo: [GAR_TERRORISMO_N]
-
-Sezione ALTRE:
-- Danni da Fumo: [GAR_FUMO_N]
-- Acqua Condotta: [GAR_ACQUA_N]
-- Spese Demolizione: [GAR_DEMOLIZIONE_N]
-- Spese Perizia: [GAR_PERIZIA_N]
+Per OGNI garanzia e polizza:
+[GAR_NOMEGAR_N]
 
 Formato valore:
-"Inclusa", "Inclusa - Sublimite € XXX", "Esclusa", "Opzionale +€ XXX"
+• "Inclusa"
+• "Inclusa - Limite € XXX.XXX"
+• "Inclusa - Vedi SA"
+• "Esclusa"
+• "Opzionale +€ XXX"
+• "N.D." (se non menzionata)
+
+Highlighting garanzie critiche (terremoto, alluvione):
+[DIFF_CLASS_GAR_TERR_N] - "diff-better" se inclusa, "diff-worse" se esclusa
+[DIFF_CLASS_GAR_ALL_N]
 
 ═══════════════════════════════════════════════════════════════════════════════
-TAB 5: FRANCHIGIE
+TAB 5: FRANCHIGIE, SCOPERTI E LIMITI
 ═══════════════════════════════════════════════════════════════════════════════
 
-2 TABELLE: Franchigie + Scoperti
-
-TABELLA FRANCHIGIE
+STOP LOSS DI POLIZZA (primo, in evidenza)
 ───────────────────────────────────────────────────────────────────────────────
 
-[FRANCH_INCENDIO_N]
-Franchigia incendio formato "€ X.XXX" o "Nessuna"
+[STOP_LOSS_N]
+Stop Loss annuo aggregato formato "€ XX.XXX.XXX" o "N.D."
 
-[DIFF_CLASS_FRANCH_INC_N]
-Verde se più bassa
+[DIFF_CLASS_SL_N]
+"diff-better" se più alto (più capacità)
 
-[FRANCH_TERREMOTO_N]
-[DIFF_CLASS_FRANCH_TER_N]
+[FRANCH_BASE_N]
+Franchigia base per sinistro formato "€ X.XXX" o "N.D."
 
-[FRANCH_ALLUVIONE_N]
-[DIFF_CLASS_FRANCH_ALL_N]
-
-[FRANCH_ALLAGAMENTO_N]
-[FRANCH_FURTO_N]
-[FRANCH_VANDAL_N]
-
-TABELLA SCOPERTI
+DETTAGLIO PER GARANZIA
 ───────────────────────────────────────────────────────────────────────────────
 
-[SCOPERTO_TERREMOTO_N]
-Scoperto terremoto formato "X%" o "Nessuno"
+Tabella con TUTTE le 44 garanzie, per ciascuna:
 
-[SCOPERTO_ALLUVIONE_N]
-[SCOPERTO_FURTO_N]
+[FSL_NOMEGAR_N]
+Formato: "Franchigia / Scoperto / Limite"
+
+Esempi:
+• "€ 5.000 / - / € 80.000.000"
+• "€ 2.500 / 10% min € 2.500 / € 500.000"
+• "Scoperto 10% min € 10.000 max € 100.000 / 50% SA per ubicazione"
+• "3/360 gg / - / Vedi SA" (per danni indiretti)
+• "€ 0 / - / € 200.000" (franchigia zero)
+• "Secondo causa / - / € 200.000"
+• "N.D." (se non trovato)
+
+Highlighting per catastrofali:
+[DIFF_CLASS_FSL_TERR_N]
+[DIFF_CLASS_FSL_ALL_N]
 
 [ANALISI_IMPATTO_FRANCHIGIE]
 Analisi impatto (5-10 righe)
 
 Esempio:
-"TERREMOTO: Generali franchigia € 5.000 + scoperto 5%, Allianz € 15.000 + 10%, 
-UnipolSai escluso.
+"TERREMOTO: AIG franchigia scoperto 10% min € 10k max € 100k, QBE scoperto 15% 
+min € 25k. Su danno € 500.000:
+- AIG: indennizzo € 441.000 (scoperto € 49.000, entro max)
+- QBE: indennizzo € 400.000 (scoperto € 75.000)
+- Differenza: € 41.000 a favore AIG
 
-Su danno terremoto € 500.000:
-- Generali: (€ 500k - € 5k) × 95% = € 470.250
-- Allianz: (€ 500k - € 15k) × 90% = € 436.500
-Differenza € 33.750.
-
-ALLUVIONE: Franchigie € 2.500-5.000, scoperti 5-10%. Su zona alluvionale classe 
-P3, esposizione significativa. Considerare franchigie basse prioritarie."
+DANNI INDIRETTI: AIG franchigia 3/360 gg, QBE 5/360 gg.
+Su margine giornaliero € 10.000:
+- AIG: primi € 30.000 a carico assicurato
+- QBE: primi € 50.000 a carico assicurato
+- Differenza: € 20.000 a favore AIG"
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 6: RISCHI CATASTROFALI
 ═══════════════════════════════════════════════════════════════════════════════
 
-SUBSECTION: ZONA UBICAZIONE
+ZONA RISCHIO UBICAZIONE
 ───────────────────────────────────────────────────────────────────────────────
 
 [ZONA_SISMICA]
-Zona sismica ubicazione: "Zona 1", "Zona 2", "Zona 3", "Zona 4"
-
-[CLASSE_RISCHIO_SISMICO]
-Classe rischio: "Massimo", "Alto", "Medio", "Basso"
+Formato: "Zona X" (1-4) + descrizione
+Esempio: "Zona 2 - Rischio Alto"
 
 [ZONA_ALLUVIONALE]
-Zona alluvionale: "P1 (alta)", "P2 (media)", "P3 (bassa)", "Nessuna"
+Formato: "PX" (1-4) o "Non classificata"
+Esempio: "P2 - Pericolosità Media"
 
-[CLASSE_RISCHIO_IDRO]
-Classe rischio idro: "Alto", "Medio", "Basso"
-
-SUBSECTION: CONFRONTO COPERTURA
+CONFRONTO TERREMOTO
 ───────────────────────────────────────────────────────────────────────────────
 
-Tabella DINAMICA con dettaglio terremoto e alluvione
+[COV_TERREMOTO_N] - "Inclusa" / "Esclusa" / "N.D."
+[DIFF_CLASS_COV_TERR_N]
+[MAX_TERREMOTO_N] - Massimale formato "€ XX.XXX.XXX" o "Vedi SA" o "N.D."
+[FRANCH_TERREMOTO_N] - Franchigia formato "€ XX.XXX" o "N.D."
+[SCOPERTO_TERREMOTO_N] - Scoperto formato "X% min € Y max € Z" o "N.D."
+[LIMITE_ANNUO_TERR_N] - Limite annuo formato "€ XX.XXX.XXX" o "N.D."
 
-TERREMOTO:
-[TERR_COPERTURA_N]: "Incluso", "Escluso", "Opzionale"
-[TERR_MASSIMALE_N]: € o "-"
-[TERR_FRANCHIGIA_N]: € o "-"
-[TERR_SCOPERTO_N]: % o "-"
+CONFRONTO ALLUVIONE
+───────────────────────────────────────────────────────────────────────────────
 
-ALLUVIONE:
-[ALLUV_COPERTURA_N]
-[ALLUV_MASSIMALE_N]
-[ALLUV_FRANCHIGIA_N]
-[ALLUV_SCOPERTO_N]
+[COV_ALLUVIONE_N] - "Inclusa" / "Esclusa" / "N.D."
+[DIFF_CLASS_COV_ALL_N]
+[MAX_ALLUVIONE_N]
+[FRANCH_ALLUVIONE_N]
+[SCOPERTO_ALLUVIONE_N]
+[LIMITE_ANNUO_ALL_N]
 
-[VALUTAZIONE_CATASTROFALE]
-Valutazione adeguatezza copertura (8-12 righe)
+LIMITI COMBINATI DD + DI
+───────────────────────────────────────────────────────────────────────────────
 
-Esempio:
-"Ubicazione in ZONA SISMICA 2 (rischio ALTO) e ZONA ALLUVIONALE P2 (media).
+[LIMITE_COMB_TERR_N] - Limite combinato terremoto DD+DI formato "€ XX.XXX.XXX"
+[LIMITE_COMB_ALL_N] - Limite combinato alluvione DD+DI
+[LIMITE_COMB_NEVE_N] - Limite combinato neve DD+DI (se presente)
 
-TERREMOTO: Copertura ESSENZIALE per zona ad alto rischio.
-- Generali: Incluso, massimale pieno, franchigia € 5k, scoperto 5% - ADEGUATO
-- Allianz: Incluso, massimale pieno, franchigia € 15k, scoperto 10% - ACCETTABILE
-- UnipolSai: ESCLUSO - INADEGUATO per Zona 2
+[NOTE_CATASTROFALI]
+Valutazione adeguatezza (5-8 righe)
 
-ALLUVIONE: Copertura IMPORTANTE per zona P2.
-- Generali/Allianz: Inclusa - ADEGUATO
-- UnipolSai: Sublimite 50% - ATTENZIONE, può essere insufficiente
+Includere:
+- Adeguatezza copertura per zona rischio
+- Confronto capacità/limiti
+- Impatto franchigie/scoperti
+- Raccomandazioni
 
-RACCOMANDAZIONE: Per ubicazione Zona 2 + P2, polizza DEVE includere terremoto 
-e alluvione senza sublimiti. Solo Generali/Allianz adeguate. UnipolSai inadeguata."
+VERIFICA CONFORMITÀ D.L. 212/2024 (OBBLIGATORIO)
+───────────────────────────────────────────────────────────────────────────────
+
+⚠️ CHECK OBBLIGATORIO: Il D.L. 212/2024 (convertito in L. 56/2025) ha introdotto
+l'OBBLIGO per le imprese italiane di stipulare polizze assicurative a copertura
+dei danni da eventi catastrofali.
+
+SCADENZE:
+- Grandi imprese: 31 dicembre 2024
+- PMI e microimprese: 31 dicembre 2025
+
+EVENTI COPERTI OBBLIGATORI:
+- Terremoto
+- Alluvione  
+- Frana/Smottamento
+- Inondazione/Esondazione
+
+Per OGNI polizza verificare:
+[DL212_TERREMOTO_N] - "✓ Conforme" / "✗ Non conforme" / "⚠️ Parziale"
+[DL212_TERR_CLASS_N] - "diff-better" se conforme, "diff-worse" se non conforme
+
+[DL212_ALLUVIONE_N] - "✓ Conforme" / "✗ Non conforme" / "⚠️ Parziale"
+[DL212_ALL_CLASS_N]
+
+[DL212_FRANA_N] - "✓ Conforme" / "✗ Non conforme" / "⚠️ Parziale"
+[DL212_FRANA_CLASS_N]
+
+[DL212_INONDAZIONE_N] - "✓ Conforme" / "✗ Non conforme" / "⚠️ Parziale"
+[DL212_INOND_CLASS_N]
+
+[DL212_CONFORMITA_N] - Valutazione complessiva:
+- "✓ CONFORME" (verde) - tutte le coperture presenti
+- "⚠️ PARZIALMENTE CONFORME" (arancio) - alcune coperture mancanti
+- "✗ NON CONFORME" (rosso) - coperture catastrofali insufficienti
+
+[DL212_CONF_CLASS_N] - "diff-better" / "diff-warning" / "diff-worse"
+
+[NOTE_DL212_CONFORMITA]
+Valutazione conformità D.L. 212/2024 (5-8 righe)
+
+Includere:
+- Stato conformità per ogni polizza
+- Coperture mancanti
+- Azioni correttive necessarie
+- Tempistiche adeguamento
+- Sanzioni in caso di inadempienza
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 7: SCORING
@@ -368,109 +649,284 @@ METODOLOGIA SCORING
 Totale: 100 punti su 5 categorie
 
 1. SOMME ASSICURATE (25 punti)
-   - Adeguatezza fabbricato (12 pt)
-   - Adeguatezza contenuto (8 pt)
-   - Valore a nuovo (5 pt)
+   - Adeguatezza SA fabbricato (12 pt)
+   - Adeguatezza SA contenuto (8 pt)
+   - Valore a nuovo vs commerciale (5 pt)
 
 2. GARANZIE (30 punti)
-   - Garanzie base (10 pt)
-   - Eventi naturali (10 pt)
-   - Eventi socio-politici (5 pt)
-   - Altre garanzie (5 pt)
+   - Numero garanzie incluse su 44 (15 pt)
+   - Garanzie critiche presenti (15 pt)
 
 3. FRANCHIGIE (20 punti)
-   - Franchigie eventi base (10 pt)
-   - Franchigie catastrofali (10 pt)
+   - Franchigie eventi base (10 pt) - inverse
+   - Franchigie catastrofali (10 pt) - inverse
 
 4. CATASTROFALI (15 punti)
-   - Copertura terremoto (8 pt)
-   - Copertura alluvione (7 pt)
+   - Copertura terremoto adeguata zona (8 pt)
+   - Copertura alluvione adeguata zona (7 pt)
 
-5. QPR (10 punti)
+5. QUALITÀ/PREZZO (10 punti)
+   - Value for money considerando coperture
 
-BONUS: Copertura catastrofale adeguata per zona +5 pt
+CALCOLO:
+Per ogni categoria, polizza migliore = punteggio pieno
+Altre polizze: proporzionale al valore
 
 Per CIASCUNA polizza:
+[SCORE_TOTALE_N] - Score 0-100
+[WINNER_CLASS_N] - "winner" se score più alto
 
-[SCORE_TOTALE_N]
-[WINNER_CLASS_N]
+[SCORE_SOMME_N] - Formato "XX / 25"
+[SCORE_GARANZIE_N] - Formato "XX / 30"
+[SCORE_FRANCHIGIE_N] - Formato "XX / 20"
+[SCORE_CATASTROFALI_N] - Formato "XX / 15"
+[SCORE_QPR_N] - Formato "XX / 10"
 
-[SCORE_SOMME_N] / 25
-[SCORE_GARANZIE_N] / 30
-[SCORE_FRANCHIGIE_N] / 20
-[SCORE_CATASTROFALI_N] / 15
-[SCORE_QPR_N] / 10
-
-[DIFF_CLASS_SCORE_*_N]
+[DIFF_CLASS_SCORE_*_N] - Highlighting per categoria
 
 [METODOLOGIA_SCORING]
-Spiegazione (5-8 righe)
+Spiegazione metodologia (5-8 righe)
 
 ═══════════════════════════════════════════════════════════════════════════════
 TAB 8: PRO E CONTRO
 ═══════════════════════════════════════════════════════════════════════════════
 
-Ripetere per OGNI polizza:
+⚠️ RIPETERE QUESTO BLOCCO PER OGNI POLIZZA (2, 3, 4... N)
 
 [NOME_POLIZZA_N]
 
-PRO (4-6):
-[PRO_1-4_POLN]
+PUNTI DI FORZA (4-6):
+[PRO_1_POLN]
+[PRO_2_POLN]
+[PRO_3_POLN]
+[PRO_4_POLN]
 
-Esempi:
-"Somma fabbricato € 2M adeguata a valore perizia (100% copertura)"
-"Valore a nuovo fabbricato (no deduzione vetustà, +30-40% indennizzo)"
-"Terremoto incluso con franchigia € 5k + scoperto 5% (vs € 15k + 10% mercato)"
-"Alluvione massimale pieno (vs sublimite 50% concorrenza)"
-"Garanzie complete: tutti eventi naturali + socio-politici"
-"Premio competitivo € 11.500/anno (-10% vs attuale)"
+Esempi Pro:
+• "Stop Loss € 80M superiore (+60% capacità vs QBE)"
+• "Somma fabbricato € 2M adeguata a valore perizia (100% copertura)"
+• "Valore a nuovo fabbricato (no deduzione vetustà)"
+• "Terremoto: scoperto 10% max € 100k (vs 15% illimitato)"
+• "Limite combinato alluvione DD+DI € 20M (adeguato per zona P2)"
+• "Onorari periti inclusi fino a € 200.000"
+• "Danni indiretti franchigia 3/360 gg (2 gg meno vs concorrenza)"
 
-CONTRO (4-6):
-[CONTRO_1-4_POLN]
+PUNTI DI DEBOLEZZA (4-6):
+[CONTRO_1_POLN]
+[CONTRO_2_POLN]
+[CONTRO_3_POLN]
+[CONTRO_4_POLN]
 
-Esempi:
-"Somma fabbricato € 1.5M sottassicurata 25% (vs valore € 2M)"
-"Valore commerciale fabbricato (deduzione vetustà 30-40%)"
-"Terremoto escluso (CRITICO per Zona 2 alto rischio)"
-"Alluvione sublimite 50% (inadeguato per ubicazione zona P2)"
-"Franchigia terremoto € 15k + scoperto 10% (alta vs mercato)"
-"Grandine/neve escluse (rischio per copertura)"
-"Premio superiore +15% per somme equivalenti"
+Esempi Contro:
+• "Premio +8% vs alternativa (€ 1.200/anno in più)"
+• "Somma fabbricato € 1.5M sottassicurata 25% vs valore € 2M"
+• "Terremoto escluso (CRITICO per Zona 2)"
+• "Alluvione sublimite 30% SA (inadeguato per zona P3)"
+• "Fenomeno elettrico escluso (N.D. in polizza)"
+• "Onorari periti non menzionati (N.D.)"
+• "Danni indiretti franchigia 5/360 gg (alta vs mercato 3 gg)"
 
 [SINTESI_COMPARATIVA_FINALE]
-Sintesi (10-15 righe)
+Sintesi finale (10-15 righe)
+
+Esempio:
+"POLIZZA AIG ATTUALE: Copertura completa con Stop Loss € 80M, garanzie estese 
+inclusi danni indiretti con franchigia 3/360 gg. Terremoto e alluvione coperti 
+con limiti combinati € 20M adeguati per zona. Franchigie contenute. Premio 
+€ 45.000/anno. Ideale per massima protezione.
+
+PREVENTIVO QBE: Stop Loss inferiore € 50M, ma garanzie base complete. Terremoto 
+scoperto 15% più penalizzante. Alluvione limite combinato € 10M (potenzialmente 
+insufficiente per sinistro grave). Premio € 38.000/anno (-15%).
+
+RACCOMANDAZIONE: Confermare AIG per ubicazione Zona 2 e valore esposto elevato. 
+La differenza premio € 7.000/anno è ampiamente giustificata da capacità 
+superiore e franchigie migliori. QBE accettabile solo per profilo rischio basso."
 
 ═══════════════════════════════════════════════════════════════════════════════
-STRATEGIA ESTRAZIONE - 12 STEP
+STRATEGIA ESTRAZIONE DATI - 12 STEP
 ═══════════════════════════════════════════════════════════════════════════════
 
-STEP 1: Identificare N polizze
-STEP 2: Ubicazione + zona sismica/alluvionale
-STEP 3: Economico per polizza
-STEP 4: Somme assicurate fabbricato/contenuto/pigioni
-STEP 5: Valore a nuovo vs commerciale
-STEP 6: 18 garanzie (base, naturali, socio-politiche, altre)
-STEP 7: Franchigie per garanzia
-STEP 8: Scoperti (terremoto, alluvione, furto)
-STEP 9: Dettaglio catastrofali (massimali, franchigie, scoperti)
-STEP 10: Comparazione cross-polizze + highlighting
-STEP 11: Scoring 0-100 + bonus catastrofale
-STEP 12: Top 3 differenze + Pro/Contro + Raccomandazione
+STEP 1: IDENTIFICAZIONE POLIZZE
+────────────────────────────────
+Contare polizze: N
+Assegnare nome identificativo:
+- Se presente "attuale/in essere": Polizza 1 = base confronto
+- Altre: "Preventivo [Compagnia]"
+
+STEP 2: UBICAZIONE E ZONA RISCHIO
+──────────────────────────────────
+- Indirizzo ubicazione principale
+- Zona sismica (1-4)
+- Zona alluvionale (P1-P4)
+- Se multiple ubicazioni: elencare o "Multiple"
+
+STEP 3: ECONOMICO PER POLIZZA
+──────────────────────────────
+Per OGNI polizza estrarre:
+- Premio base incendio
+- Premio garanzie aggiuntive
+- Premio terremoto (se separato)
+- Imposte
+- Premio lordo totale
+- Tasso ‰ (se indicato)
+- Frazionamento
+
+⚠️ Se dato non presente → "N.D."
+
+STEP 4: SOMME ASSICURATE
+─────────────────────────
+Per OGNI polizza:
+- SA Fabbricato
+- SA Contenuto
+- SA Macchinari (se separato)
+- SA Merci
+- SA Perdita pigioni
+- Criterio valutazione (valore nuovo/commerciale)
+
+STEP 5: STOP LOSS E FRANCHIGIA BASE
+────────────────────────────────────
+Per OGNI polizza:
+- Stop Loss annuo aggregato
+- Franchigia base per sinistro
+
+STEP 6: GARANZIE (44 PREDEFINITE)
+──────────────────────────────────
+Per OGNI polizza verificare TUTTE le 44 garanzie:
+- Inclusa / Esclusa / N.D.
+- Sublimite se presente
+
+⚠️ Se garanzia non menzionata → "N.D." (MAI inventare)
+
+STEP 7: FRANCHIGIE/SCOPERTI/LIMITI
+───────────────────────────────────
+Per OGNI garanzia e polizza:
+- Franchigia fissa (€)
+- Scoperto (% + min/max)
+- Limite per sinistro
+- Limite annuo (se diverso da Stop Loss)
+
+⚠️ Se dato non presente → "N.D."
+
+STEP 8: DETTAGLIO CATASTROFALI
+───────────────────────────────
+Per terremoto e alluvione, dettaglio completo:
+- Copertura Sì/No
+- Massimale
+- Franchigia
+- Scoperto (% min max)
+- Limite annuo
+- Limite combinato DD+DI
+
+STEP 9: COMPARAZIONE CROSS-POLIZZE
+───────────────────────────────────
+Per OGNI campo:
+- Identificare migliore/peggiore
+- Calcolare delta vs attuale
+- Assegnare classe CSS highlighting
+
+STEP 10: SCORING
+────────────────
+Calcolare score 0-100:
+1. Somme Assicurate (25 pt)
+2. Garanzie (30 pt)
+3. Franchigie (20 pt) - inverse
+4. Catastrofali (15 pt)
+5. QPR (10 pt)
+
+STEP 11: TOP 3 DIFFERENZE + PRO/CONTRO
+───────────────────────────────────────
+Per OGNI polizza:
+- 3 differenze più significative (quantificate)
+- 4-6 punti di forza
+- 4-6 punti di debolezza
+- Bilanciati e specifici
+
+STEP 12: RACCOMANDAZIONE
+─────────────────────────
+Sulla base di:
+- Score totale
+- Adeguatezza catastrofale per zona
+- Pro/contro
+- Impatto economico
+- Profilo rischio cliente
+
+Formulare raccomandazione con motivazione dettagliata
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CHECKLIST PRE-CONSEGNA
+═══════════════════════════════════════════════════════════════════════════════
+
+Prima di generare l'output finale, verificare:
+
+□ COMPLETEZZA STRUTTURA
+  □ Tutti i placeholder [XXX] sostituiti
+  □ Tab 8 Pro/Contro presente per OGNI polizza
+  □ Top 3 differenze presente per OGNI polizza
+  □ Tutte le 44 garanzie presenti in Tab 4 e Tab 5
+
+□ ACCURATEZZA DATI
+  □ NESSUN dato inventato - solo dati presenti nei documenti
+  □ Celle "N.D." dove informazione non trovata
+  □ Calcoli verificati (sottassicurazione, franchigie)
+  □ Formati consistenti (€, %, date)
+
+□ HIGHLIGHTING
+  □ diff-better = verde = valore migliore per assicurato
+  □ diff-worse = rosso = valore peggiore
+  □ Applicato a: premi, SA, franchigie, garanzie critiche
+  □ winner class su score più alto
+
+□ COERENZA
+  □ Nomi polizze consistenti in tutto il report
+  □ Valori numerici coerenti tra tab
+  □ Raccomandazione coerente con scoring
+
+□ QUALITÀ CONTENUTI
+  □ Raccomandazione motivata con numeri specifici
+  □ Top 3 differenze quantificate
+  □ Pro/contro bilanciati e specifici
+  □ Analisi franchigie con calcoli esempio
+  □ Note catastrofali con valutazione zona
+
+□ MULTI-SOCIETÀ (TAB 3)
+  □ Tutte le società/ubicazioni estratte per ogni polizza
+  □ Somme assicurate dettagliate per società
+  □ Totali calcolati correttamente
+  □ Criteri valutazione (valore nuovo/commerciale) indicati
+
+□ CONFORMITÀ D.L. 212/2024 (TAB 6)
+  □ Verifica copertura TERREMOTO per ogni polizza
+  □ Verifica copertura ALLUVIONE per ogni polizza
+  □ Verifica copertura FRANA per ogni polizza
+  □ Verifica copertura INONDAZIONE per ogni polizza
+  □ Valutazione conformità complessiva
+  □ Note con azioni correttive se necessario
+
+□ HTML VALIDO
+  □ Tag aperti/chiusi correttamente
+  □ Classi CSS corrette
+  □ JavaScript funzionante (tab navigation)
 
 ═══════════════════════════════════════════════════════════════════════════════
 OUTPUT FINALE
 ═══════════════════════════════════════════════════════════════════════════════
 
-File HTML completo con:
-1. Template compilato
-2. Tabelle dinamiche N colonne
-3. Highlighting corretto
-4. Calcoli sottassicurazione
-5. Valutazione adeguatezza catastrofale
-6. HTML valido
+Generare file HTML completo:
 
-DELIVERABLE: Report confronto Incendio decisional-ready per property risk.
+1. Template template_confronto_incendio_v2.html popolato
+2. TUTTI i placeholder sostituiti
+3. Tabelle con N colonne (dinamiche)
+4. Blocchi Pro/Contro ripetuti per N polizze
+5. Highlighting CSS applicato correttamente
+6. Calcoli precisi e verificati
+7. "N.D." dove dati non disponibili
+8. HTML valido e funzionante
+
+DELIVERABLE:
+File HTML completo, navigabile, decisional-ready per confronto polizze 
+Incendio/Property con sistema scalabile 2-N polizze e lista garanzie 
+predefinite per massima comparabilità.
 
 ═══════════════════════════════════════════════════════════════════════════════
-FINE PROMPT - INCENDIO CONFRONTO
+FINE PROMPT - INCENDIO CONFRONTO V2.0
 ═══════════════════════════════════════════════════════════════════════════════
