@@ -5,8 +5,10 @@ from .config import settings
 class LLMClient:
     def __init__(self, api_key: str = None, model_name: str = None):
         key = api_key or settings.GEMINI_API_KEY
-        genai.configure(api_key=key)
-        # User requested gemini-3-flash-preview
+        # Use REST transport - HTTP/2 gRPC is blocked by Google from this server IP
+        genai.configure(api_key=key, transport='rest')
+
+        # Model should always be provided from SystemSettings, fallback only for emergency
         self.model_name = model_name or 'gemini-3-flash-preview'
         self.model = genai.GenerativeModel(self.model_name)
 
@@ -123,19 +125,41 @@ Se il documento contiene [CONTRAENTE_XXX], il report DEVE contenere [CONTRAENTE_
             from google.api_core import retry
             
             # Use generate_content with streaming for better timeout handling
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config=generation_config,
-                stream=True  # Streaming prevents timeout on large responses
-            )
-            
-            # Collect streamed response
-            report_masked = ""
-            chunk_count = 0
-            for chunk in response:
-                if chunk.text:
-                    report_masked += chunk.text
-                    chunk_count += 1
+            try:
+                response = self.model.generate_content(
+                    full_prompt,
+                    generation_config=generation_config,
+                    stream=True  # Streaming prevents timeout on large responses
+                )
+                
+                # Collect streamed response
+                report_masked = ""
+                chunk_count = 0
+                for chunk in response:
+                    if chunk.text:
+                        report_masked += chunk.text
+                        chunk_count += 1
+                        
+            except Exception as e:
+                # 🚨 FALLBACK LOGIC: If model fails (403/404), try Gemini 3 Flash as fallback
+                error_str = str(e).lower()
+                if "403" in error_str or "404" in error_str or "not found" in error_str or "permission denied" in error_str:
+                    print(f"WARNING: Model {self.model_name} failed ({e}). Falling back to 'gemini-3-flash-preview'...")
+                    fallback_model = genai.GenerativeModel('gemini-3-flash-preview')
+                    response = fallback_model.generate_content(
+                        full_prompt,
+                        generation_config=generation_config,
+                        stream=True
+                    )
+                    report_masked = ""
+                    chunk_count = 0
+                    for chunk in response:
+                        if chunk.text:
+                            report_masked += chunk.text
+                            chunk_count += 1
+                    print(f"DEBUG: Fallback successful using gemini-3-flash-preview")
+                else:
+                    raise e  # Re-raise other errors
             
             print(f"DEBUG: Received {chunk_count} chunks, total length: {len(report_masked)} chars")
             
