@@ -21,7 +21,16 @@ else {
 }
 
 # Step 2: Upload backend files
-Write-Host "`n[2/5] Uploading backend files..." -ForegroundColor Yellow
+Write-Host "`n[2/5] Cleaning and Uploading backend files..." -ForegroundColor Yellow
+
+# Clean old backend directory
+ssh "${VPS_USER}@${VPS_IP}" "rm -rf ${DEPLOY_DIR}/backend && mkdir -p ${DEPLOY_DIR}/backend"
+
+# Force Update API Key in .env
+$NEW_KEY = "AIzaSyCAAXX6-ejwYQmybzfMmoVpmooAkPJ4jPM"
+ssh "${VPS_USER}@${VPS_IP}" "sed -i 's/GEMINI_API_KEY=.*/GEMINI_API_KEY=$NEW_KEY/' ${DEPLOY_DIR}/.env"
+
+# Upload app directory -ForegroundColor Yellow
 
 # Upload app directory
 scp -r app "${VPS_USER}@${VPS_IP}:${DEPLOY_DIR}/backend/"

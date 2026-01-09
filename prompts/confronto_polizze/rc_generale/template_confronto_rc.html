@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Polizze RC - [CONTRAENTE]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --bg-body: #f4f6f8;
+            --bg-paper: #ffffff;
+            --primary-dark: #0f172a;
+            --primary-main: #334155;
+            --accent-gold: #b49b66;
+            --accent-blue: #2563eb;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --success-border: #22c55e;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+            --warning-border: #f59e0b;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --danger-border: #ef4444;
+            --info-bg: #dbeafe;
+            --info-text: #1e40af;
+            --info-border: #3b82f6;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 30px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        .report-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* === HEADER === */
+        .header {
+            padding: 30px 40px;
+            background: white;
+            border-bottom: 4px solid var(--primary-dark);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 26px;
+            margin: 0 0 5px 0;
+            color: var(--primary-dark);
+        }
+
+        .header h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .header-badge {
+            background: var(--primary-dark);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .header-meta-item { display: flex; flex-direction: column; }
+        .header-meta-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+        .header-meta-value { font-size: 14px; font-weight: 600; color: var(--primary-dark); }
+
+        /* === TABS === */
+        .tabs {
+            background: var(--primary-dark);
+            padding: 0 20px;
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .tab-link {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 16px 20px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-link:hover { color: white; background: rgba(255, 255, 255, 0.05); }
+        .tab-link.active { color: white; border-bottom-color: var(--accent-gold); background: rgba(255, 255, 255, 0.1); }
+
+        .tab-content { display: none; padding: 40px; }
+        .tab-content.active { display: block; }
+
+        /* === TYPOGRAPHY === */
+        h3 {
+            font-family: 'Merriweather', serif;
+            color: var(--primary-main);
+            border-bottom: 2px solid var(--border-subtle);
+            padding-bottom: 10px;
+            margin: 30px 0 20px 0;
+            font-size: 18px;
+        }
+        h3:first-child { margin-top: 0; }
+        h4 { color: var(--primary-dark); margin: 25px 0 15px 0; font-size: 15px; font-weight: 600; }
+
+        /* === COMPARISON GRID - Sempre espanso === */
+        .comparison-section {
+            margin-bottom: 35px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-header {
+            background: #f1f5f9;
+            padding: 15px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 0;
+        }
+
+        .comparison-column {
+            padding: 20px;
+            border-right: 1px solid var(--border-subtle);
+            background: white;
+        }
+
+        .comparison-column:last-child {
+            border-right: none;
+        }
+
+        .comparison-column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .comparison-column-title {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--primary-dark);
+        }
+
+        .comparison-column-text {
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        .comparison-column-text p {
+            margin: 0 0 12px 0;
+        }
+
+        .comparison-column-text em {
+            color: var(--text-muted);
+        }
+
+        /* === PREFERENCE BOX === */
+        .preference-box {
+            background: var(--info-bg);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px 20px;
+            margin-top: 0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .preference-box strong {
+            color: var(--info-text);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* === BADGES === */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .badge-positive, .badge-success { background: var(--success-bg); color: var(--success-text); }
+        .badge-neutral, .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-negative, .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+        .badge-info { background: var(--info-bg); color: var(--info-text); }
+        .badge-best { background: var(--success-text); color: white; }
+
+        /* === TABLES === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 700;
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border-strong);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        th.col-policy { background: var(--primary-dark); color: white; }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-subtle);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr.row-total { background: #e2e8f0 !important; font-weight: 700; }
+        tr.row-total td { border-top: 2px solid var(--primary-dark); }
+
+        .col-value { text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .col-voce { font-weight: 600; color: var(--primary-dark); width: 28%; }
+
+        .diff-better { background: var(--success-bg) !important; color: var(--success-text); }
+        .diff-worse { background: var(--danger-bg) !important; color: var(--danger-text); }
+        .diff-warning { background: var(--warning-bg) !important; color: var(--warning-text); }
+
+        .note-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+
+        /* === EXECUTIVE SUMMARY === */
+        .exec-summary {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1e3a5f 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .exec-summary h3 { color: white; border-bottom-color: rgba(255,255,255,0.2); margin-top: 0; }
+
+        .exec-summary-recommendation {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        .exec-summary-recommendation strong { color: var(--accent-gold); }
+        .exec-summary-recommendation p { margin: 10px 0 0 0; font-size: 14px; line-height: 1.7; }
+
+        .exec-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .exec-summary-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .exec-summary-card-label { font-size: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px; }
+        .exec-summary-card-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; }
+        .exec-summary-card-value.positive { color: #4ade80; }
+        .exec-summary-card-value.negative { color: #f87171; }
+        .exec-summary-card-value.neutral { color: var(--accent-gold); }
+
+        /* === KEY DIFFERENCES === */
+        .key-diff-list { list-style: none; padding: 0; margin: 0; }
+        
+        .key-diff-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 20px;
+            background: #f8fafc;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .key-diff-number {
+            background: var(--primary-dark);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-right: 15px;
+        }
+
+        .key-diff-content { flex: 1; font-size: 13px; line-height: 1.6; }
+
+        /* === SCORE CARDS === */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: white;
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .score-card.winner { border-color: var(--success-border); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2); }
+        .score-card-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+        .score-card-value { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: var(--primary-dark); }
+        .score-card.winner .score-card-value { color: var(--success-text); }
+        .score-card-max { font-size: 12px; color: var(--text-muted); }
+
+        /* === PRO/CONTRO === */
+        .pro-contro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
+        .pro-contro-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle); }
+        .pro-contro-header { padding: 12px 20px; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+        .pro-header { background: var(--success-bg); color: var(--success-text); }
+        .contro-header { background: var(--danger-bg); color: var(--danger-text); }
+        .pro-contro-list { padding: 15px 20px; }
+        .pro-contro-list ul { margin: 0; padding-left: 20px; }
+        .pro-contro-list li { margin-bottom: 10px; font-size: 12px; line-height: 1.6; }
+
+        /* === ALERT BOX === */
+        .alert-box { padding: 20px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid; }
+        .alert-info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+        .alert-warning { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
+        .alert-success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+        .alert-danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+
+        /* === NOTE BOX === */
+        .note-box {
+            background: #fefce8;
+            border-left: 4px solid #eab308;
+            padding: 15px 20px;
+            border-radius: 0 6px 6px 0;
+            margin: 20px 0;
+        }
+        .note-box strong { color: #854d0e; }
+
+        /* === DISCLAIMER === */
+        .disclaimer {
+            background: #f8fafc;
+            border: 1px solid var(--border-subtle);
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* === PRINT === */
+        @media print {
+            body { padding: 0; background: white; }
+            .report-container { box-shadow: none; border: none; }
+            .tabs { display: none; }
+            .tab-content { display: block !important; page-break-inside: avoid; padding: 20px 0; }
+            .tab-content:not(:first-of-type) { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // ====== UTILITIES ======
+        const formatCurrency = (value) => {
+            if (typeof value !== 'number' || isNaN(value)) return 'N/D';
+            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+        };
+
+        const formatPercent = (value) => {
+            if (typeof value !== 'number' || isNaN(value)) return 'N/D';
+            return `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
+        };
+
+        // ====== DATA - Popolata dall'AI ======
+        const reportData = {
+            metadata: {
+                contraente: "[CONTRAENTE]",
+                settoreAttivita: "[SETTORE]",
+                dataAnalisi: "[DATA]",
+                numeroPolizze: "[N]"
+            },
+            companies: [
+                // Struttura per ogni polizza - vedi prompt per dettagli
+            ],
+            preferences: {},
+            globalConclusion: {
+                recommendation: "",
+                keyDifferences: [],
+                negotiationPoints: [],
+                riskAlerts: []
+            }
+        };
+
+        // ====== COMPONENTS ======
+        const Badge = ({ type, text }) => {
+            if (!text) return null;
+            return <span className={`badge badge-${type || 'neutral'}`}>{text}</span>;
+        };
+
+        const AlertBox = ({ type = 'info', children }) => (
+            <div className={`alert-box alert-${type}`}>{children}</div>
+        );
+
+        // Componente per confronto clausole - SEMPRE ESPANSO
+        const ClauseComparison = ({ title, clauses, preference }) => (
+            <div className="comparison-section">
+                <div className="comparison-header">
+                    <span>{title}</span>
+                    <span style={{display: 'flex', gap: '8px'}}>
+                        {clauses.filter(c => c.badge).map((c, i) => (
+                            <Badge key={i} type={c.badge?.type} text={`${c.companyName.split(' ')[0]}: ${c.badge?.text}`} />
+                        ))}
+                    </span>
+                </div>
+                <div className="comparison-grid">
+                    {clauses.map((clause, idx) => (
+                        <div className="comparison-column" key={idx}>
+                            <div className="comparison-column-header">
+                                <span className="comparison-column-title">{clause.companyName}</span>
+                                {clause.badge && <Badge type={clause.badge.type} text={clause.badge.text} />}
+                            </div>
+                            <div className="comparison-column-text" dangerouslySetInnerHTML={{ __html: clause.text || "<em>Non specificato nel wording analizzato.</em>" }} />
+                        </div>
+                    ))}
+                </div>
+                {preference && (
+                    <div className="preference-box">
+                        <strong>📊 Analisi e Preferenza</strong>
+                        <div dangerouslySetInnerHTML={{ __html: preference }} />
+                    </div>
+                )}
+            </div>
+        );
+
+        const ScoreCard = ({ label, score, max, isWinner }) => (
+            <div className={`score-card ${isWinner ? 'winner' : ''}`}>
+                <div className="score-card-label">{label}</div>
+                <div className="score-card-value">{score}</div>
+                <div className="score-card-max">/ {max} punti</div>
+                {isWinner && <Badge type="success" text="Migliore" />}
+            </div>
+        );
+
+        const ProControCard = ({ companyName, pros, cons }) => (
+            <div style={{marginBottom: '30px'}}>
+                <h4>{companyName}</h4>
+                <div className="pro-contro-grid">
+                    <div className="pro-contro-card">
+                        <div className="pro-contro-header pro-header">✓ Punti di Forza</div>
+                        <div className="pro-contro-list">
+                            <ul>{pros?.map((p, i) => <li key={i} dangerouslySetInnerHTML={{ __html: p }} />)}</ul>
+                        </div>
+                    </div>
+                    <div className="pro-contro-card">
+                        <div className="pro-contro-header contro-header">✗ Punti di Attenzione</div>
+                        <div className="pro-contro-list">
+                            <ul>{cons?.map((c, i) => <li key={i} dangerouslySetInnerHTML={{ __html: c }} />)}</ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // ====== TAB: EXECUTIVE SUMMARY ======
+        const ExecutiveSummary = ({ data }) => {
+            const { companies, globalConclusion } = data;
+            const recommended = companies.find(c => c.isRecommended);
+            const current = companies.find(c => c.isCurrentPolicy);
+            
+            let deltaPremioPct = 0, deltaPremioAbs = 0;
+            if (recommended && current) {
+                const premioRec = recommended.quantitative?.premioAnnuoComplessivo?.value || 0;
+                const premioCur = current.quantitative?.premioAnnuoComplessivo?.value || 0;
+                if (premioCur > 0) {
+                    deltaPremioPct = ((premioRec - premioCur) / premioCur) * 100;
+                    deltaPremioAbs = premioRec - premioCur;
+                }
+            }
+
+            return (
+                <div>
+                    <div className="exec-summary">
+                        <h3>🎯 Executive Summary</h3>
+                        <div className="exec-summary-recommendation">
+                            <strong>Raccomandazione</strong>
+                            <p dangerouslySetInnerHTML={{ __html: globalConclusion.recommendation }} />
+                        </div>
+                        <div className="exec-summary-grid">
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Polizza Consigliata</div>
+                                <div className="exec-summary-card-value neutral">{recommended?.name?.split(' ')[0] || 'N/D'}</div>
+                            </div>
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Delta Premio</div>
+                                <div className={`exec-summary-card-value ${deltaPremioAbs <= 0 ? 'positive' : 'negative'}`}>
+                                    {formatCurrency(deltaPremioAbs)}
+                                </div>
+                            </div>
+                            <div className="exec-summary-card">
+                                <div className="exec-summary-card-label">Variazione %</div>
+                                <div className={`exec-summary-card-value ${deltaPremioPct <= 0 ? 'positive' : 'negative'}`}>
+                                    {formatPercent(deltaPremioPct)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>🔑 Principali Differenze Emerse</h3>
+                    <ul className="key-diff-list">
+                        {globalConclusion.keyDifferences?.map((diff, idx) => (
+                            <li className="key-diff-item" key={idx}>
+                                <span className="key-diff-number">{idx + 1}</span>
+                                <div className="key-diff-content" dangerouslySetInnerHTML={{ __html: diff }} />
+                            </li>
+                        ))}
+                    </ul>
+
+                    {globalConclusion.riskAlerts?.length > 0 && (
+                        <>
+                            <h3>⚠️ Punti di Attenzione</h3>
+                            <AlertBox type="warning">
+                                <ul style={{margin: 0, paddingLeft: '20px'}}>
+                                    {globalConclusion.riskAlerts.map((alert, idx) => (
+                                        <li key={idx} style={{marginBottom: '8px'}} dangerouslySetInnerHTML={{ __html: alert }} />
+                                    ))}
+                                </ul>
+                            </AlertBox>
+                        </>
+                    )}
+                </div>
+            );
+        };
+
+        // ====== TAB: QUANTITATIVE ======
+        const QuantitativeComparison = ({ data }) => {
+            const { companies } = data;
+            
+            const params = [
+                { key: 'premioAnnuoComplessivo', label: 'Premio Annuo Lordo Complessivo', isTotal: true, lowerIsBetter: true },
+                { key: 'premioNormalizzato', label: 'Premio Normalizzato (a parità di parametri)', lowerIsBetter: true, isSimulated: true },
+                { key: 'fatturatoRiferimento', label: 'Fatturato di Riferimento' },
+                { key: 'massimaleAggregatoRCT', label: 'Massimale Aggregato Annuo RCT/RCO', higherIsBetter: true },
+                { key: 'massimaleSinistroRCT', label: 'Massimale per Sinistro RCT', higherIsBetter: true },
+                { key: 'massimalePersonaRCT', label: 'Massimale per Persona RCT', higherIsBetter: true },
+                { key: 'franchigiaDanniCoseRCT', label: 'Franchigia Danni a Cose RCT', lowerIsBetter: true },
+                { key: 'massimaleAggregatoRCO', label: 'Massimale Aggregato RCO', higherIsBetter: true },
+                { key: 'massimaleSinistroRCO', label: 'Massimale per Sinistro RCO', higherIsBetter: true },
+                { key: 'franchigiaRCO', label: 'Franchigia/Scoperto RCO', lowerIsBetter: true },
+                { key: 'massimaleAggregatoRCP', label: 'Massimale Aggregato RC Prodotti', higherIsBetter: true },
+                { key: 'massimaleSinistroRCP', label: 'Massimale per Sinistro RC Prodotti', higherIsBetter: true },
+                { key: 'scopertoRCP', label: 'Scoperto RC Prodotti' },
+                { key: 'limiteMalattieProfessionali', label: 'Limite Malattie Professionali RCO', higherIsBetter: true },
+                { key: 'limiteInquinamento', label: 'Limite Inquinamento Accidentale', higherIsBetter: true },
+                { key: 'limiteRitiroProdotti', label: 'Limite Ritiro Prodotti', higherIsBetter: true },
+                { key: 'limiteDanniPatrimoniali', label: 'Limite Danni Patrimoniali Puri RCP', higherIsBetter: true },
+                { key: 'limitePostumaOperazioni', label: 'Limite Garanzia Postuma Operazioni', higherIsBetter: true },
+                { key: 'limiteGaranziaFornitura', label: 'Limite Garanzia di Fornitura', higherIsBetter: true }
+            ];
+
+            // Calcola il migliore, ma solo se c'è effettivamente una differenza
+            const getBest = (key, lower, higher) => {
+                if (!lower && !higher) return {};
+                const vals = companies.map(c => ({ id: c.id, v: c.quantitative?.[key]?.value })).filter(x => typeof x.v === 'number');
+                if (vals.length <= 1) return {};
+                
+                // Verifica se tutti i valori sono uguali
+                const uniqueValues = [...new Set(vals.map(x => x.v))];
+                if (uniqueValues.length === 1) return {}; // Tutti uguali, nessun "migliore"
+                
+                const best = lower ? Math.min(...vals.map(x => x.v)) : Math.max(...vals.map(x => x.v));
+                const result = {};
+                const bestCompanies = vals.filter(x => x.v === best);
+                
+                // Mostra badge solo se non tutti hanno il valore migliore
+                if (bestCompanies.length < vals.length) {
+                    bestCompanies.forEach(x => result[x.id] = true);
+                }
+                return result;
+            };
+
+            return (
+                <div>
+                    <h3>📊 Confronto Quantitativo</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '30%'}}>Parametro</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {params.map(p => {
+                                const best = getBest(p.key, p.lowerIsBetter, p.higherIsBetter);
+                                const hasBest = Object.keys(best).length > 0;
+                                return (
+                                    <tr key={p.key} className={p.isTotal ? 'row-total' : ''} style={p.isSimulated ? {background: '#fefce8'} : {}}>
+                                        <td className="col-voce">
+                                            {p.label}
+                                            {p.isSimulated && <span style={{fontSize: '10px', color: 'var(--warning-text)'}}> ⚡</span>}
+                                        </td>
+                                        {companies.map(c => {
+                                            const d = c.quantitative?.[p.key];
+                                            const isBest = best[c.id];
+                                            return (
+                                                <td key={`${c.id}-${p.key}`} className={`col-value ${isBest ? 'diff-better' : ''}`}>
+                                                    {d?.display || 'N/D'}
+                                                    {isBest && hasBest && <Badge type="best" text="Migliore" />}
+                                                    {d?.notes && <div className="note-text">{d.notes}</div>}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    <div className="note-box">
+                        <strong>📝 Note:</strong> I valori evidenziati in verde rappresentano la condizione migliore per l'assicurato 
+                        (solo quando c'è effettiva differenza tra le polizze). 
+                        Per massimali: più alto è meglio. Per franchigie/scoperti/premi: più basso è meglio.
+                        <br/><br/>
+                        <strong>⚡ Premio Normalizzato:</strong> Se i premi sono calcolati su basi diverse (fatturato/retribuzioni di anni diversi), 
+                        viene mostrato il premio ricalcolato sugli stessi parametri per un confronto omogeneo.
+                    </div>
+                </div>
+            );
+        };
+
+        // ====== TAB: DEFINITIONS ======
+        const DefinitionsComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            const defs = [
+                { key: 'prodotto', title: "Definizione di 'Prodotto'" },
+                { key: 'sinistro', title: "Definizione di 'Sinistro'" },
+                { key: 'sinistroSerie', title: "Definizione di 'Sinistro in Serie' (RC Prodotti)" },
+                { key: 'terzo', title: "Definizione di 'Terzo'" },
+                { key: 'difettoProdotto', title: "Concetto di 'Difetto del Prodotto'" }
+            ];
+
+            return (
+                <div>
+                    <h3>📖 Definizioni Chiave</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        Le definizioni contrattuali determinano l'ampiezza effettiva della copertura. 
+                        Differenze apparentemente minime nel wording possono avere impatto significativo in sede di sinistro.
+                    </p>
+                    {defs.map(def => (
+                        <ClauseComparison
+                            key={def.key}
+                            title={def.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.definitions?.[def.key]?.text,
+                                badge: c.definitions?.[def.key]?.badge
+                            }))}
+                            preference={preferences?.definitions?.[def.key]}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: GENERAL CONDITIONS ======
+        const GeneralConditionsComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            const conds = [
+                { key: 'regimeTemporale', title: "Regime Temporale della Copertura" },
+                { key: 'termineDenuncia', title: "Termine di Denuncia Sinistro" },
+                { key: 'pagamentoPremio', title: "Pagamento Premio e Sospensione Garanzia" },
+                { key: 'regolazionePremio', title: "Regolazione del Premio" },
+                { key: 'disdetta', title: "Clausola di Disdetta" },
+                { key: 'esclusioneGuerraTerrorismo', title: "Esclusione Guerra e Terrorismo" },
+                { key: 'esclusioneCyber', title: "Esclusione Rischi Informatici / Cyber" }
+            ];
+
+            return (
+                <div>
+                    <h3>⚙️ Condizioni Generali di Assicurazione</h3>
+                    {conds.map(cond => (
+                        <ClauseComparison
+                            key={cond.key}
+                            title={cond.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.generalConditions?.[cond.key]?.text,
+                                badge: c.generalConditions?.[cond.key]?.badge
+                            }))}
+                            preference={preferences?.generalConditions?.[cond.key]}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: RCT/RCO ======
+        const RCTRCOComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            
+            const rctClauses = [
+                { key: 'oggetto', title: "Oggetto dell'Assicurazione RCT", section: 'rct' },
+                { key: 'attivitaAssicurate', title: "Attività Assicurate", section: 'rct' },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale RCT", section: 'rct' },
+                { key: 'validitaTemporale', title: "Validità Temporale RCT", section: 'rct' }
+            ];
+
+            const rcoClauses = [
+                { key: 'oggetto', title: "Oggetto dell'Assicurazione RCO", section: 'rco' },
+                { key: 'soggetti', title: "Soggetti Assicurati RCO", section: 'rco' },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale RCO", section: 'rco' },
+                { key: 'malattieProfessionali', title: "Malattie Professionali", section: 'rco' },
+                { key: 'dannoBiologico', title: "Danno Biologico", section: 'rco' }
+            ];
+
+            const estensioni = [
+                { key: 'committenteAppaltatore', title: "Committente / Appaltatore" },
+                { key: 'danniConsegnaCustodia', title: "Danni a Cose in Consegna e Custodia" },
+                { key: 'danniIncendio', title: "Danni da Incendio a Cose di Terzi" },
+                { key: 'inquinamentoAccidentale', title: "Inquinamento Accidentale" },
+                { key: 'postumaOperazioni', title: "Postuma Operazioni Completate" },
+                { key: 'danniInterruzioneAttivita', title: "Danni da Interruzione Attività" },
+                { key: 'rcAutoCaricatrice', title: "RC Auto Caricatrici e Mezzi Speciali" }
+            ];
+
+            return (
+                <div>
+                    <h3>🏢 Sezione RCT - Responsabilità Civile verso Terzi</h3>
+                    {rctClauses.map(clause => (
+                        <ClauseComparison
+                            key={`${clause.section}-${clause.key}`}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c[clause.section]?.[clause.key]?.text,
+                                badge: c[clause.section]?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.[clause.section]?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>👷 Sezione RCO - Responsabilità Civile verso Prestatori di Lavoro</h3>
+                    {rcoClauses.map(clause => (
+                        <ClauseComparison
+                            key={`${clause.section}-${clause.key}`}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c[clause.section]?.[clause.key]?.text,
+                                badge: c[clause.section]?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.[clause.section]?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>➕ Estensioni RCT/RCO</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '25%'}}>Estensione</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {estensioni.map(ext => (
+                                <tr key={ext.key}>
+                                    <td className="col-voce">{ext.title}</td>
+                                    {companies.map(c => {
+                                        const d = c.rct?.estensioni?.[ext.key] || c.rco?.estensioni?.[ext.key];
+                                        return (
+                                            <td key={`${c.id}-${ext.key}`} className={d?.included === true ? 'diff-better' : (d?.included === false ? 'diff-worse' : 'diff-warning')}>
+                                                {d?.included === true && '✓ Inclusa'}
+                                                {d?.included === false && '✗ Non inclusa'}
+                                                {d?.included === undefined && '⚠ N/D'}
+                                                {d?.limit && <div className="note-text"><strong>Limite:</strong> {d.limit}</div>}
+                                                {d?.text && <div className="note-text">{d.text}</div>}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        // ====== TAB: RCP ======
+        const RCPComparison = ({ data }) => {
+            const { companies, preferences } = data;
+
+            const hasRCP = companies.some(c => c.rcp?.oggetto);
+            if (!hasRCP) {
+                return (
+                    <div>
+                        <h3>📦 Sezione RCP - RC Prodotti</h3>
+                        <AlertBox type="info">Nessuna delle polizze include la sezione RC Prodotti.</AlertBox>
+                    </div>
+                );
+            }
+
+            const rcpBase = [
+                { key: 'oggetto', title: "Oggetto della Copertura RC Prodotti" },
+                { key: 'prodottiAssicurati', title: "Prodotti Assicurati" },
+                { key: 'estensioneTerritoriale', title: "Estensione Territoriale" },
+                { key: 'validitaTemporale', title: "Validità Temporale (Claims Made / Loss Occurrence)" },
+                { key: 'retroattivita', title: "Retroattività" }
+            ];
+
+            const clausoleCritiche = [
+                { key: 'ritiroProdotti', title: "🔴 Ritiro Prodotti (Product Recall)" },
+                { key: 'danniPatrimonialiPuri', title: "🔴 Danni Patrimoniali Puri" },
+                { key: 'garanziaFornitura', title: "🔴 Garanzia di Fornitura / Danno al Prodotto Finito" },
+                { key: 'danniInterruzioneAttivita', title: "🔴 Danni da Interruzione di Attività del Terzo" },
+                { key: 'postuma', title: "🔴 Garanzia Postuma RCP" }
+            ];
+
+            const altreEstensioni = [
+                { key: 'smontaggioMontaggio', title: "Spese Smontaggio/Montaggio" },
+                { key: 'inquinamentoProdotto', title: "Inquinamento da Prodotto" },
+                { key: 'usaCanada', title: "Estensione Territoriale USA/Canada" }
+            ];
+
+            return (
+                <div>
+                    <h3>📦 Sezione RCP - Responsabilità Civile Prodotti</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        La sezione RC Prodotti copre i danni causati da prodotti difettosi dopo la consegna. 
+                        È fondamentale per aziende manifatturiere, soprattutto nel settore automotive e componentistica.
+                    </p>
+
+                    {rcpBase.map(clause => (
+                        <ClauseComparison
+                            key={clause.key}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.rcp?.[clause.key]?.text,
+                                badge: c.rcp?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.rcp?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3 style={{color: 'var(--danger-text)'}}>🚨 Clausole Critiche RCP - Analisi Dettagliata</h3>
+                    <AlertBox type="warning">
+                        <strong>Attenzione:</strong> Le seguenti clausole rappresentano estensioni fondamentali per una copertura RC Prodotti completa. 
+                        L'assenza o l'inadeguatezza di queste garanzie può esporre l'azienda a rischi significativi non coperti.
+                    </AlertBox>
+
+                    {clausoleCritiche.map(clause => (
+                        <ClauseComparison
+                            key={clause.key}
+                            title={clause.title}
+                            clauses={companies.map(c => ({
+                                companyName: c.name,
+                                text: c.rcp?.clausoleCritiche?.[clause.key]?.text || c.rcp?.estensioni?.[clause.key]?.text,
+                                badge: c.rcp?.clausoleCritiche?.[clause.key]?.badge || c.rcp?.estensioni?.[clause.key]?.badge
+                            }))}
+                            preference={preferences?.rcp?.[clause.key]}
+                        />
+                    ))}
+
+                    <h3>➕ Riepilogo Estensioni RCP</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style={{width: '25%'}}>Estensione</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {[...clausoleCritiche, ...altreEstensioni].map(ext => (
+                                <tr key={ext.key}>
+                                    <td className="col-voce">{ext.title.replace(/🔴 /g, '')}</td>
+                                    {companies.map(c => {
+                                        const d = c.rcp?.clausoleCritiche?.[ext.key] || c.rcp?.estensioni?.[ext.key];
+                                        return (
+                                            <td key={`${c.id}-${ext.key}`} className={d?.included === true ? 'diff-better' : (d?.included === false ? 'diff-worse' : 'diff-warning')}>
+                                                {d?.included === true && '✓ Inclusa'}
+                                                {d?.included === false && '✗ Non inclusa'}
+                                                {d?.included === undefined && '⚠ N/D'}
+                                                {d?.limit && <div className="note-text"><strong>Limite:</strong> {d.limit}</div>}
+                                                {d?.scoperto && <div className="note-text"><strong>Scoperto:</strong> {d.scoperto}</div>}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        // ====== TAB: SPECIAL CLAUSES ======
+        const SpecialClausesComparison = ({ data }) => {
+            const { companies, preferences } = data;
+            
+            return (
+                <div>
+                    <h3>📋 Clausole Speciali e Condizioni Particolari</h3>
+                    <p style={{color: 'var(--text-muted)', marginBottom: '25px'}}>
+                        Clausole specifiche, pattuizioni particolari e condizioni custom presenti nelle singole polizze.
+                    </p>
+
+                    {companies.map(c => (
+                        <div key={c.id} className="comparison-section" style={{marginBottom: '25px'}}>
+                            <div className="comparison-header">{c.name}</div>
+                            <div style={{padding: '20px'}}>
+                                {c.specialClauses && Object.keys(c.specialClauses).length > 0 ? (
+                                    <ul style={{margin: 0, paddingLeft: '20px'}}>
+                                        {Object.entries(c.specialClauses).map(([key, clause]) => (
+                                            <li key={key} style={{marginBottom: '15px', fontSize: '12px', lineHeight: '1.7'}}>
+                                                <strong>{clause.title || key}:</strong> 
+                                                <span dangerouslySetInnerHTML={{ __html: ' ' + clause.text }} />
+                                                {clause.badge && <Badge type={clause.badge.type} text={clause.badge.text} />}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p style={{color: 'var(--text-muted)', margin: 0}}>
+                                        Nessuna clausola speciale rilevante identificata nel wording.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        // ====== TAB: SCORING & CONCLUSIONS ======
+        const ScoringConclusions = ({ data }) => {
+            const { companies, globalConclusion } = data;
+            const scores = companies.map(c => c.scoring?.totale?.score || 0);
+            const maxScore = Math.max(...scores);
+            const uniqueScores = [...new Set(scores)];
+            const showWinner = uniqueScores.length > 1; // Mostra winner solo se ci sono differenze
+
+            return (
+                <div>
+                    <h3>🏆 Scoring Comparativo</h3>
+                    <div className="score-grid">
+                        {companies.map(c => {
+                            const isWinner = showWinner && c.scoring?.totale?.score === maxScore;
+                            return (
+                                <ScoreCard
+                                    key={c.id}
+                                    label={c.name}
+                                    score={c.scoring?.totale?.score || 0}
+                                    max={100}
+                                    isWinner={isWinner}
+                                />
+                            );
+                        })}
+                    </div>
+
+                    <h4>Dettaglio Punteggi per Categoria</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria (Peso)</th>
+                                {companies.map(c => <th key={c.id} className="col-policy">{c.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {['massimali', 'franchigie', 'garanzie', 'esclusioni', 'qpr'].map(cat => {
+                                const labels = { massimali: 'Massimali (30 pt)', franchigie: 'Franchigie/Scoperti (20 pt)', garanzie: 'Ampiezza Garanzie (25 pt)', esclusioni: 'Esclusioni (15 pt)', qpr: 'Rapporto Q/P (10 pt)' };
+                                const catScores = companies.map(c => c.scoring?.[cat]?.score || 0);
+                                const maxCat = Math.max(...catScores);
+                                const uniqueCatScores = [...new Set(catScores)];
+                                const showCatBest = uniqueCatScores.length > 1; // Solo se c'è differenza
+                                return (
+                                    <tr key={cat}>
+                                        <td className="col-voce">{labels[cat]}</td>
+                                        {companies.map(c => {
+                                            const score = c.scoring?.[cat]?.score || 0;
+                                            const isBest = showCatBest && score === maxCat && maxCat > 0;
+                                            return (
+                                                <td key={`${c.id}-${cat}`} className={`col-value ${isBest ? 'diff-better' : ''}`}>
+                                                    {score} / {c.scoring?.[cat]?.max || '-'}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                            <tr className="row-total">
+                                <td className="col-voce">TOTALE</td>
+                                {companies.map(c => (
+                                    <td key={`${c.id}-total`} className="col-value"><strong>{c.scoring?.totale?.score || 0} / 100</strong></td>
+                                ))}
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>⚖️ Pro e Contro per Polizza</h3>
+                    {companies.map(c => (
+                        <ProControCard key={c.id} companyName={c.name} pros={c.conclusion?.strengthPoints} cons={c.conclusion?.weaknessPoints} />
+                    ))}
+
+                    <h3>📝 Conclusione Finale</h3>
+                    <AlertBox type="success">
+                        <strong>Raccomandazione:</strong>
+                        <p style={{margin: '10px 0 0 0'}} dangerouslySetInnerHTML={{ __html: globalConclusion.recommendation }} />
+                    </AlertBox>
+
+                    {globalConclusion.negotiationPoints?.length > 0 && (
+                        <>
+                            <h4>🤝 Punti di Negoziazione Suggeriti</h4>
+                            <ul>{globalConclusion.negotiationPoints.map((p, i) => <li key={i} dangerouslySetInnerHTML={{ __html: p }} />)}</ul>
+                        </>
+                    )}
+
+                    <div className="disclaimer">
+                        <strong>Disclaimer:</strong> Questa analisi è basata sui documenti forniti e rappresenta una valutazione tecnica comparativa. 
+                        Le raccomandazioni sono indicative e non costituiscono consulenza assicurativa vincolante. 
+                        Si raccomanda la lettura integrale dei testi di polizza prima di qualsiasi decisione.
+                    </div>
+                </div>
+            );
+        };
+
+        // ====== MAIN APP ======
+        const App = ({ data }) => {
+            const [activeTab, setActiveTab] = useState('summary');
+            
+            const tabs = [
+                { id: 'summary', label: 'Executive Summary', component: ExecutiveSummary },
+                { id: 'quantitative', label: 'Dati Quantitativi', component: QuantitativeComparison },
+                { id: 'definitions', label: 'Definizioni', component: DefinitionsComparison },
+                { id: 'general', label: 'Condizioni Generali', component: GeneralConditionsComparison },
+                { id: 'rctrco', label: 'RCT / RCO', component: RCTRCOComparison },
+                { id: 'rcp', label: 'RC Prodotti', component: RCPComparison },
+                { id: 'special', label: 'Clausole Speciali', component: SpecialClausesComparison },
+                { id: 'scoring', label: 'Scoring & Conclusioni', component: ScoringConclusions }
+            ];
+
+            return (
+                <div className="report-container">
+                    <div className="header">
+                        <div className="header-top">
+                            <div>
+                                <h2>Analisi Comparativa Polizze RC</h2>
+                                <h1>{data.metadata.contraente}</h1>
+                            </div>
+                            <div className="header-badge">{data.metadata.numeroPolizze} Polizze a Confronto</div>
+                        </div>
+                        <div className="header-meta">
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Contraente</span>
+                                <span className="header-meta-value">{data.metadata.contraente}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Settore</span>
+                                <span className="header-meta-value">{data.metadata.settoreAttivita}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Data Analisi</span>
+                                <span className="header-meta-value">{data.metadata.dataAnalisi}</span>
+                            </div>
+                            <div className="header-meta-item">
+                                <span className="header-meta-label">Polizze</span>
+                                <span className="header-meta-value">{data.companies.map(c => c.name.split(' ')[0]).join(' vs ')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="tabs">
+                        {tabs.map(tab => (
+                            <button key={tab.id} className={`tab-link ${activeTab === tab.id ? 'active' : ''}`} onClick={() => setActiveTab(tab.id)}>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {tabs.map(tab => (
+                        <div key={tab.id} className={`tab-content ${activeTab === tab.id ? 'active' : ''}`}>
+                            <tab.component data={data} />
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App data={reportData} />);
+    </script>
+</body>
+</html>

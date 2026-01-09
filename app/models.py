@@ -105,7 +105,7 @@ class SystemSettings(Base):
     id = Column(Integer, primary_key=True, index=True)
     
     # LLM Model configuration
-    llm_model_name = Column(String(100), default="gemini-2.5-flash-preview-05-20")
+    llm_model_name = Column(String(100), default="gemini-3-flash-preview")
     
     # Token pricing (per million tokens)
     input_cost_per_million = Column(String(20), default="0.50")  # USD

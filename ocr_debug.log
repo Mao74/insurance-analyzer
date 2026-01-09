@@ -349,3 +349,80 @@
 [16:37:25] Process Page 4 - Full Page Tesseract Start
 [16:37:26] Process Page 4 - Full Page Tesseract End
 [16:37:26] SEQUENTIAL OCR FINISHED
+[14:14:59] 📄 SEQUENTIAL OCR STARTED: 40 pages, 3 need OCR
+[14:14:59] Process Page 2 - Start OCR
+[14:15:00] Process Page 2 - Full Page Tesseract Start
+[14:15:02] Process Page 2 - Full Page Tesseract End
+[14:15:02] Process Page 3 - Start OCR
+[14:15:03] Process Page 3 - Full Page Tesseract Start
+[14:15:04] Process Page 3 - Full Page Tesseract End
+[14:15:04] Process Page 4 - Start OCR
+[14:15:05] Process Page 4 - Full Page Tesseract Start
+[14:15:06] Process Page 4 - Full Page Tesseract End
+[14:15:06] SEQUENTIAL OCR FINISHED
+[14:29:40] 📄 SEQUENTIAL OCR STARTED: 40 pages, 3 need OCR
+[14:29:40] Process Page 2 - Start OCR
+[14:29:42] Process Page 2 - Full Page Tesseract Start
+[14:29:43] Process Page 2 - Full Page Tesseract End
+[14:29:43] Process Page 3 - Start OCR
+[14:29:44] Process Page 3 - Full Page Tesseract Start
+[14:29:46] Process Page 3 - Full Page Tesseract End
+[14:29:46] Process Page 4 - Start OCR
+[14:29:47] Process Page 4 - Full Page Tesseract Start
+[14:29:47] Process Page 4 - Full Page Tesseract End
+[14:29:47] SEQUENTIAL OCR FINISHED
+[14:29:48] 📄 SEQUENTIAL OCR STARTED: 57 pages, 1 need OCR
+[14:29:48] Process Page 1 - Start OCR
+[14:29:49] Process Page 1 - Full Page Tesseract Start
+[14:29:50] Process Page 1 - Full Page Tesseract End
+[14:29:50] SEQUENTIAL OCR FINISHED
+[14:29:50] 📄 SEQUENTIAL OCR STARTED: 2 pages, 2 need OCR
+[14:29:50] Process Page 1 - Start OCR
+[14:29:52] Process Page 1 - Embedded Image OCR Success (168 words)
+[14:29:52] Process Page 2 - Start OCR
+[14:29:54] Process Page 2 - Embedded Image OCR Success (83 words)
+[14:29:54] SEQUENTIAL OCR FINISHED
+[14:53:36] 📄 SEQUENTIAL OCR STARTED: 57 pages, 1 need OCR
+[14:53:36] Process Page 1 - Start OCR
+[14:53:37] Process Page 1 - Full Page Tesseract Start
+[14:53:37] Process Page 1 - Full Page Tesseract End
+[14:53:37] SEQUENTIAL OCR FINISHED
+[14:53:38] 📄 SEQUENTIAL OCR STARTED: 2 pages, 2 need OCR
+[14:53:38] Process Page 1 - Start OCR
+[14:53:40] Process Page 1 - Embedded Image OCR Success (168 words)
+[14:53:40] Process Page 2 - Start OCR
+[14:53:42] Process Page 2 - Embedded Image OCR Success (83 words)
+[14:53:42] SEQUENTIAL OCR FINISHED
+[14:53:42] 📄 SEQUENTIAL OCR STARTED: 40 pages, 3 need OCR
+[14:53:42] Process Page 2 - Start OCR
+[14:53:43] Process Page 2 - Full Page Tesseract Start
+[14:53:45] Process Page 2 - Full Page Tesseract End
+[14:53:45] Process Page 3 - Start OCR
+[14:53:45] Process Page 3 - Full Page Tesseract Start
+[14:53:47] Process Page 3 - Full Page Tesseract End
+[14:53:47] Process Page 4 - Start OCR
+[14:53:48] Process Page 4 - Full Page Tesseract Start
+[14:53:48] Process Page 4 - Full Page Tesseract End
+[14:53:48] SEQUENTIAL OCR FINISHED
+[14:59:43] 📄 SEQUENTIAL OCR STARTED: 57 pages, 1 need OCR
+[14:59:43] Process Page 1 - Start OCR
+[14:59:44] Process Page 1 - Full Page Tesseract Start
+[14:59:45] Process Page 1 - Full Page Tesseract End
+[14:59:45] SEQUENTIAL OCR FINISHED
+[14:59:45] 📄 SEQUENTIAL OCR STARTED: 2 pages, 2 need OCR
+[14:59:45] Process Page 1 - Start OCR
+[14:59:47] Process Page 1 - Embedded Image OCR Success (168 words)
+[14:59:47] Process Page 2 - Start OCR
+[14:59:49] Process Page 2 - Embedded Image OCR Success (83 words)
+[14:59:49] SEQUENTIAL OCR FINISHED
+[14:59:49] 📄 SEQUENTIAL OCR STARTED: 40 pages, 3 need OCR
+[14:59:49] Process Page 2 - Start OCR
+[14:59:50] Process Page 2 - Full Page Tesseract Start
+[14:59:51] Process Page 2 - Full Page Tesseract End
+[14:59:51] Process Page 3 - Start OCR
+[14:59:52] Process Page 3 - Full Page Tesseract Start
+[14:59:54] Process Page 3 - Full Page Tesseract End
+[14:59:54] Process Page 4 - Start OCR
+[14:59:54] Process Page 4 - Full Page Tesseract Start
+[14:59:55] Process Page 4 - Full Page Tesseract End
+[14:59:55] SEQUENTIAL OCR FINISHED

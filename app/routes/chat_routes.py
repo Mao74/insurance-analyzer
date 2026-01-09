@@ -1,15 +1,11 @@
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import List, Optional, Any
+from typing import List, Optional
 import os
 import asyncio
-from sqlalchemy.orm import Session
 from ..llm_client import LLMClient
 from ..config import settings
-from ..database import get_db
-from .. import models
-from ..masking import mask_document
 
 router = APIRouter()
 
@@ -20,80 +16,6 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     history: Optional[List[ChatMessage]] = []
-
-class ChatContextRequest(BaseModel):
-    document_ids: List[int]
-    masking_data: dict
-
-@router.post("/context/prepare")
-async def prepare_chat_context(
-    payload: ChatContextRequest,
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    """
-    Prepare masked context for chat from uploaded documents.
-    """
-    user_data = request.session.get("user")
-    if not user_data:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    if not payload.document_ids:
-        raise HTTPException(status_code=400, detail="No documents provided")
-
-    full_context_text = ""
-    filenames = []
-
-    for i, doc_id in enumerate(payload.document_ids, 1):
-        doc = db.query(models.Document).filter(
-            models.Document.id == doc_id,
-            models.Document.user_id == user_data["id"]
-        ).first()
-
-        if not doc or not doc.extracted_text_path or not os.path.exists(doc.extracted_text_path):
-            continue
-
-        filenames.append(doc.original_filename)
-        
-        # Read text
-        try:
-            with open(doc.extracted_text_path, "r", encoding="utf-8") as f:
-                raw_text = f.read()
-            
-            # Map frontend keys (camelCase) to masking module keys (snake_case)
-            mapping_keys = {
-                'policyNumber': 'numero_polizza',
-                'contractor': 'contraente',
-                'vat': 'partita_iva',
-                'fiscalCode': 'codice_fiscale',
-                'insured': 'assicurato',
-                'address': 'indirizzo',
-                'city': 'citta',
-                'cap': 'cap',
-                'other': 'altri'
-            }
-            
-            backend_masking_data = {}
-            for fe_key, be_key in mapping_keys.items():
-                if fe_key in payload.masking_data:
-                    backend_masking_data[be_key] = payload.masking_data[fe_key]
-            
-            # Apply Masking
-            masked_text, _, _ = mask_document(raw_text, backend_masking_data)
-            
-            full_context_text += f"\n\n--- DOCUMENTO MASCHERATO {i} ---\n{masked_text}"
-            
-        except Exception as e:
-            print(f"Error reading doc {doc_id}: {e}")
-            continue
-
-    if not full_context_text:
-        raise HTTPException(status_code=400, detail="Could not extract text from documents")
-
-    return {
-        "context": full_context_text,
-        "filename": ", ".join(filenames) if len(filenames) < 3 else f"{len(filenames)} Documenti"
-    }
 
 @router.post("/stream")
 async def chat_stream(payload: ChatRequest):
@@ -140,10 +62,9 @@ async def chat_stream(payload: ChatRequest):
         
         async def generate():
             try:
-                response = client.model.generate_content(full_prompt, stream=True)
-                for chunk in response:
-                    if chunk.text:
-                        yield chunk.text
+                # Proxy call is blocking/non-streaming currently
+                response = client.generate_content(full_prompt)
+                yield response
             except Exception as e:
                 yield f"Error: {str(e)}"
 

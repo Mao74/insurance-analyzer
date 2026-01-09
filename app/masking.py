@@ -25,10 +25,6 @@ def mask_document(text: str, sensitive_data: dict) -> tuple[str, list[dict], dic
     reverse_mapping = {}  # mask -> originale
     masked = text
     
-    # Collect all potential replacements
-    to_replace = []
-
-    # 1. Standard Fields
     field_masks = {
         'numero_polizza': '[POLIZZA_XXX]',
         'contraente': '[CONTRAENTE_XXX]',
@@ -39,53 +35,51 @@ def mask_document(text: str, sensitive_data: dict) -> tuple[str, list[dict], dic
         'citta': '[CITTA_XXX]',
         'cap': '[CAP_XXX]'
     }
-
+    
     for field, mask in field_masks.items():
         value = sensitive_data.get(field, '').strip()
         if value:
-             to_replace.append({'field': field, 'value': value, 'mask': mask})
-
-    # 2. Custom Fields (Alt)
+            # Escape regex characters in value
+            pattern = re.escape(value)
+            # Find all occurrences (case insensitive)
+            flag = re.IGNORECASE
+            
+            # Count occurrences before replacement
+            count = len(re.findall(pattern, masked, flags=flag))
+            
+            if count > 0:
+                # Perform replacement
+                masked = re.sub(pattern, mask, masked, flags=flag)
+                reverse_mapping[mask] = value
+                replacements.append({
+                    'campo': field,
+                    'originale': value,
+                    'mascherato': mask,
+                    'occorrenze': count
+                })
+    
+    # Altri dati custom
     altri = sensitive_data.get('altri', [])
-    if isinstance(altri, str):
-         # Split by semicolon or newline, and strip whitespace
-         altri = [x.strip() for x in re.split(r'[;\n]', altri) if x.strip()]
-
+    if isinstance(altri, str): # Handle if passed as string
+         altri = [altri]
+         
     for i, dato in enumerate(altri, 1):
         dato = dato.strip()
         if dato:
             mask = f'[DATO_OSCURATO_{i}]'
-            to_replace.append({'field': f'altro_{i}', 'value': dato, 'mask': mask})
-
-    # 3. Sort by length descending to handle substrings strictly
-    # (e.g. mask "Mario Rossi" before "Rossi")
-    to_replace.sort(key=lambda x: len(x['value']), reverse=True)
-
-    # 4. Apply replacements
-    for item in to_replace:
-        field = item['field']
-        value = item['value']
-        mask = item['mask']
-        
-        # Escape regex characters
-        # Replace escaped spaces with \s+ for PDF robustness
-        pattern = re.escape(value).replace(r'\ ', r'\s+')
-        
-        flag = re.IGNORECASE
-        
-        # Count occurrences in currently masked text
-        count = len(re.findall(pattern, masked, flags=flag))
-        
-        if count > 0:
-            masked = re.sub(pattern, mask, masked, flags=flag)
-            reverse_mapping[mask] = value
-            replacements.append({
-                'campo': field,
-                'originale': value,
-                'mascherato': mask,
-                'occorrenze': count
-            })
-
+            pattern = re.escape(dato)
+            count = len(re.findall(pattern, masked, flags=re.IGNORECASE))
+            
+            if count > 0:
+                masked = re.sub(pattern, mask, masked, flags=re.IGNORECASE)
+                reverse_mapping[mask] = dato
+                replacements.append({
+                    'campo': f'altro_{i}',
+                    'originale': dato,
+                    'mascherato': mask,
+                    'occorrenze': count
+                })
+    
     return masked, replacements, reverse_mapping
 
 

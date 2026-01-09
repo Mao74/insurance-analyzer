@@ -26,12 +26,19 @@ EXTRACTED_DIR = "extracted"
 class CompareRequest(BaseModel):
     analysis_ids: List[int]
 
+class UpdateCompareContentRequest(BaseModel):
+    html_content: str = [] # Legacy support
+    grouped_document_ids: Optional[List[List[int]]] = None # New structure: [[1,2], [3]]
+    policy_type: str = "rc_generale"
+    masking_data: Optional[dict] = None
+    llm_model: str = "gemini-3-flash-preview"
+
 class CompareStartRequest(BaseModel):
     document_ids: List[int] = [] # Legacy support
     grouped_document_ids: Optional[List[List[int]]] = None # New structure: [[1,2], [3]]
     policy_type: str = "rc_generale"
     masking_data: Optional[dict] = None
-    llm_model: Optional[str] = None
+    llm_model: str = "gemini-3-flash-preview"
 
 class CompareStartResponse(BaseModel):
     analysis_id: int
@@ -185,20 +192,6 @@ async def start_comparison(
         missing = set(all_doc_ids) - found_ids
         raise HTTPException(status_code=404, detail=f"Documents not found or access denied: {missing}")
     
-    # Determine model to use
-    selected_model = payload.llm_model
-    if not selected_model:
-        # Fetch from SystemSettings or default
-        settings_obj = db.query(models.SystemSettings).first()
-        if settings_obj and settings_obj.llm_model_name:
-            selected_model = settings_obj.llm_model_name
-            # Fix: Sanitize model name (handle underscore vs dash mismatch)
-            if "gemini" in selected_model and "_" in selected_model:
-                selected_model = selected_model.replace("_", "-")
-                print(f"DEBUG: Sanitized model name from DB: {selected_model}")
-        else:
-            selected_model = "gemini-3-flash-preview"
-
     # Create analysis record
     # source_document_ids field (Text) can store the full JSON structure
     analysis = models.Analysis(
@@ -206,7 +199,7 @@ async def start_comparison(
         status=models.AnalysisStatus.ANALYZING,
         policy_type=payload.policy_type,
         prompt_level="confronto",  # Mark as comparison
-        llm_model=selected_model,
+        llm_model=payload.llm_model,
         created_at=datetime.utcnow()
     )
     db.add(analysis)
@@ -241,7 +234,7 @@ async def start_comparison(
         groups,
         sensitive_data,
         payload.policy_type,
-        selected_model,
+        payload.llm_model,
         user_data["id"]
     )
     
